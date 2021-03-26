@@ -1,6 +1,5 @@
-# TODO: Write documentation for `Htslib`
-module Htslib
-  VERSION = "0.0.1"
+@[Link("hts")]
 
-  # TODO: Put your code here
+lib LibHTS
+  fun hts_version() : LibC::Char*
 end
