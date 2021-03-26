@@ -9,7 +9,7 @@ Crystal bindings to [HTSlib](https://github.com/samtools/htslib).
    ```yaml
    dependencies:
      htslib:
-       github: your-github-user/htslib
+       github: kojix2/htslib
    ```
 
 2. Run `shards install`
@@ -19,8 +19,6 @@ Crystal bindings to [HTSlib](https://github.com/samtools/htslib).
 ```crystal
 require "htslib"
 ```
-
-TODO: Write usage instructions here
 
 ## Development
 
