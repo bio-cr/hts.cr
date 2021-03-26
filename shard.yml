@@ -12,8 +12,8 @@ authors:
 #     github: will/crystal-pg
 #     version: "~> 0.5"
 
-# development_dependencies:
-#   webmock:
-#     github: manastech/webmock.cr
+development_dependencies:
+  minitest:
+    github: ysbaddaden/minitest.cr
 
 license: MIT
