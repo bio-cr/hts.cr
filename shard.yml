@@ -1,0 +1,19 @@
+name: htslib
+version: 0.0.0
+
+authors:
+  - kojix2 <2xijok@gmail.com>
+
+# description: |
+#   Short description of htslib-cr
+
+# dependencies:
+#   pg:
+#     github: will/crystal-pg
+#     version: "~> 0.5"
+
+# development_dependencies:
+#   webmock:
+#     github: manastech/webmock.cr
+
+license: MIT

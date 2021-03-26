@@ -1,0 +1,7 @@
+doc
+lib
+.crystal
+.shards
+app
+bin
+shard.lock
