@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1
+        with:
+          crystal: 0.36.1
+      - name: Install HTSlib
+        run: |
+          sudo apt update
+          sudo apt install libhts-dev
+      - name: Run tests
+        run: |
+          shards install
+          crystal test/*_test.cr -- --chaos --paralel 4 --verbose
