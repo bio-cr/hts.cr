@@ -21,6 +21,20 @@ TYPE_TABLE = {
   ':void' => 'Void'
 }.freeze
 
+def camel(str)
+  str.split(/_/).map do |w|
+    next if w[0].nil?
+    w[0] = w[0].upcase
+    w 
+  end.join
+end
+
+def snake(str)
+  str.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+     .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+     .downcase
+end
+
 @unknown = []
 @error_flag = false
 
@@ -35,6 +49,22 @@ def crystal_type(str, fname)
 end
 
 data = JSON.parse(File.read(ARGV[0]))
+
+# struct
+structs = data.filter { |d| d['tag'] == 'struct' }
+structs.each do |s|
+  str = String.new('')
+  str << "struct "
+  str << camel(s['name'])
+  str << "\n"
+  s['fields'].each do |field|
+    str << "  #{field['name']} : "
+    str << crystal_type(field['type']&.[]('tag'), s['name']) << "\n"
+  end
+  str << "end"
+  puts str
+  puts
+end
 
 # functions
 funcs = data.filter { |d| d['tag'] == 'function' }
