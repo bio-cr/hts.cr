@@ -4,7 +4,7 @@
 
 🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬
 
-Crystal bindings to [HTSlib](https://github.com/samtools/htslib).
+Crystal bindings to [HTSlib](https://github.com/samtools/htslib). Under development.
 
 ## Installation
 
@@ -25,6 +25,10 @@ require "htslib"
 ```
 
 ## Development
+
+```
+crystal run scripts/generate.cr
+```
 
 No plan. What will be will be.
 
