@@ -9,15 +9,32 @@ require 'json'
 TYPE_TABLE = {
   ':int' => 'Int32',
   ':unsigned-int' => 'UInt32',
+  'int64_t' => 'Int64',
+  '__uint8_t' => 'UInt8',
+  '__uint16_t' => 'UInt16',
+  '__uint32_t' => 'UInt32',
+  '__uint64_t' => 'UInt64',
+  'int8_t' => 'Int8',
+  'int16_t' => 'Int16',
+  'int32_t' => 'Int32',
+  'int64_t' => 'Int64',
+  'uint8_t' => 'UInt8',
+  'uint16_t' => 'UInt16',
+  'uint32_t' => 'UInt32',
+  'uint64_t' => 'UInt64',
   ':float' => 'Float32',
   ':double' => 'Float64',
+  ':short' => 'Short',
   ':unsigned-short' => 'UShort',
   ':long' => 'Long',
   ':unsigned-long' => 'ULong',
   ':long-long' => 'LongLong',
   ':unsigned-long-long' => 'ULongLong',
   ':char' => 'UInt8',
+  ':signed-char' => 'Int8',
   'size_t' => 'SizeT',
+  'ssize_t' => 'SSizeT',
+  '__ssize_t' => 'SSizeT',
   ':void' => 'Void'
 }.freeze
 
@@ -48,7 +65,7 @@ def crystal_type(str, fname)
   type
 end
 
-data = JSON.parse(File.read(ARGV[0]))
+data = JSON.parse(ARGF.read)
 
 # struct
 structs = data.filter { |d| d['tag'] == 'struct' }
