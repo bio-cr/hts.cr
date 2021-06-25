@@ -5,4 +5,3 @@ lib
 app
 bin
 shard.lock
-scripts/json
