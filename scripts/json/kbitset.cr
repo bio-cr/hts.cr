@@ -14,13 +14,13 @@ end
 
 
 struct RandomData
-  fptr : 
-  rptr : 
-  state : 
+  fptr : Int32*
+  rptr : Int32*
+  state : Int32*
   rand_type : Int32
   rand_deg : Int32
   rand_sep : Int32
-  end_ptr : 
+  end_ptr : Int32*
 end
 
 struct Drand48Data
@@ -45,21 +45,21 @@ struct KbitsetIterT
   i : Int32
 end
 # fun __ctype_get_mb_cur_max() : SizeT
-fun atof(UInt8*) : Float64
-fun atoi(UInt8*) : Int32
-fun atol(UInt8*) : Long
-fun atoll(UInt8*) : LongLong
-fun strtod(UInt8*, UInt8**) : Float64
-fun strtof(UInt8*, UInt8**) : Float32
-# fun strtold(UInt8*, UInt8**) : 
-fun strtol(UInt8*, UInt8**, Int32) : Long
-fun strtoul(UInt8*, UInt8**, Int32) : ULong
-fun strtoq(UInt8*, UInt8**, Int32) : LongLong
-fun strtouq(UInt8*, UInt8**, Int32) : ULongLong
-fun strtoll(UInt8*, UInt8**, Int32) : LongLong
-fun strtoull(UInt8*, UInt8**, Int32) : ULongLong
-fun l64a(Long) : UInt8*
-fun a64l(UInt8*) : Long
+fun atof(LibC::Char*) : Float64
+fun atoi(LibC::Char*) : Int32
+fun atol(LibC::Char*) : Long
+fun atoll(LibC::Char*) : LongLong
+fun strtod(LibC::Char*, LibC::Char**) : Float64
+fun strtof(LibC::Char*, LibC::Char**) : Float32
+# fun strtold(LibC::Char*, LibC::Char**) : 
+fun strtol(LibC::Char*, LibC::Char**, Int32) : Long
+fun strtoul(LibC::Char*, LibC::Char**, Int32) : ULong
+fun strtoq(LibC::Char*, LibC::Char**, Int32) : LongLong
+fun strtouq(LibC::Char*, LibC::Char**, Int32) : ULongLong
+fun strtoll(LibC::Char*, LibC::Char**, Int32) : LongLong
+fun strtoull(LibC::Char*, LibC::Char**, Int32) : ULongLong
+fun l64a(Long) : LibC::Char*
+fun a64l(LibC::Char*) : Long
 fun __bswap_16(UInt16) : UInt16
 fun __bswap_32(UInt32) : UInt32
 fun __bswap_64(UInt64) : UInt64
@@ -70,12 +70,12 @@ fun __uint64_identity(UInt64) : UInt64
 # fun pselect(Int32, *, *, *, *, *) : Int32
 fun random() : Long
 fun srandom(UInt32) : Void
-fun initstate(UInt32, UInt8*, SizeT) : UInt8*
-fun setstate(UInt8*) : UInt8*
+fun initstate(UInt32, LibC::Char*, SizeT) : LibC::Char*
+fun setstate(LibC::Char*) : LibC::Char*
 # fun random_r(*, Int32*) : Int32
 # fun srandom_r(UInt32, *) : Int32
-# fun initstate_r(UInt32, UInt8*, SizeT, *) : Int32
-# fun setstate_r(UInt8*, *) : Int32
+# fun initstate_r(UInt32, LibC::Char*, SizeT, *) : Int32
+# fun setstate_r(LibC::Char*, *) : Int32
 fun rand() : Int32
 fun srand(UInt32) : Void
 fun rand_r(UInt32*) : Int32
@@ -113,17 +113,17 @@ fun abort() : Void
 fun exit(Int32) : Void
 fun quick_exit(Int32) : Void
 fun _Exit(Int32) : Void
-fun getenv(UInt8*) : UInt8*
-fun putenv(UInt8*) : Int32
-fun setenv(UInt8*, UInt8*, Int32) : Int32
-fun unsetenv(UInt8*) : Int32
+fun getenv(LibC::Char*) : LibC::Char*
+fun putenv(LibC::Char*) : Int32
+fun setenv(LibC::Char*, LibC::Char*, Int32) : Int32
+fun unsetenv(LibC::Char*) : Int32
 fun clearenv() : Int32
-fun mktemp(UInt8*) : UInt8*
-fun mkstemp(UInt8*) : Int32
-fun mkstemps(UInt8*, Int32) : Int32
-fun mkdtemp(UInt8*) : UInt8*
-fun system(UInt8*) : Int32
-fun realpath(UInt8*, UInt8*) : UInt8*
+fun mktemp(LibC::Char*) : LibC::Char*
+fun mkstemp(LibC::Char*) : Int32
+fun mkstemps(LibC::Char*, Int32) : Int32
+fun mkdtemp(LibC::Char*) : LibC::Char*
+fun system(LibC::Char*) : Int32
+fun realpath(LibC::Char*, LibC::Char*) : LibC::Char*
 # fun bsearch(Void*, Void*, SizeT, SizeT, ) : Void*
 # fun qsort(Void*, SizeT, SizeT, ) : Void
 fun abs(Int32) : Int32
@@ -132,23 +132,23 @@ fun llabs(LongLong) : LongLong
 # fun div(Int32, Int32) : 
 # fun ldiv(Long, Long) : 
 # fun lldiv(LongLong, LongLong) : 
-fun ecvt(Float64, Int32, Int32*, Int32*) : UInt8*
-fun fcvt(Float64, Int32, Int32*, Int32*) : UInt8*
-fun gcvt(Float64, Int32, UInt8*) : UInt8*
-# fun qecvt(, Int32, Int32*, Int32*) : UInt8*
-# fun qfcvt(, Int32, Int32*, Int32*) : UInt8*
-# fun qgcvt(, Int32, UInt8*) : UInt8*
-fun ecvt_r(Float64, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-fun fcvt_r(Float64, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-# fun qecvt_r(, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-# fun qfcvt_r(, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-fun mblen(UInt8*, SizeT) : Int32
-# fun mbtowc(*, UInt8*, SizeT) : Int32
-# fun wctomb(UInt8*, ) : Int32
-# fun mbstowcs(*, UInt8*, SizeT) : SizeT
-# fun wcstombs(UInt8*, *, SizeT) : SizeT
-fun rpmatch(UInt8*) : Int32
-fun getsubopt(UInt8**, UInt8**, UInt8**) : Int32
+fun ecvt(Float64, Int32, Int32*, Int32*) : LibC::Char*
+fun fcvt(Float64, Int32, Int32*, Int32*) : LibC::Char*
+fun gcvt(Float64, Int32, LibC::Char*) : LibC::Char*
+# fun qecvt(, Int32, Int32*, Int32*) : LibC::Char*
+# fun qfcvt(, Int32, Int32*, Int32*) : LibC::Char*
+# fun qgcvt(, Int32, LibC::Char*) : LibC::Char*
+fun ecvt_r(Float64, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+fun fcvt_r(Float64, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+# fun qecvt_r(, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+# fun qfcvt_r(, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+fun mblen(LibC::Char*, SizeT) : Int32
+# fun mbtowc(*, LibC::Char*, SizeT) : Int32
+# fun wctomb(LibC::Char*, ) : Int32
+# fun mbstowcs(*, LibC::Char*, SizeT) : SizeT
+# fun wcstombs(LibC::Char*, *, SizeT) : SizeT
+fun rpmatch(LibC::Char*) : Int32
+fun getsubopt(LibC::Char**, LibC::Char**, LibC::Char**) : Int32
 fun getloadavg(Float64*, Int32) : Int32
 fun memcpy(Void*, Void*, SizeT) : Void*
 fun memmove(Void*, Void*, SizeT) : Void*
@@ -156,51 +156,51 @@ fun memccpy(Void*, Void*, Int32, SizeT) : Void*
 fun memset(Void*, Int32, SizeT) : Void*
 fun memcmp(Void*, Void*, SizeT) : Int32
 fun memchr(Void*, Int32, SizeT) : Void*
-fun strcpy(UInt8*, UInt8*) : UInt8*
-fun strncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun strcat(UInt8*, UInt8*) : UInt8*
-fun strncat(UInt8*, UInt8*, SizeT) : UInt8*
-fun strcmp(UInt8*, UInt8*) : Int32
-fun strncmp(UInt8*, UInt8*, SizeT) : Int32
-fun strcoll(UInt8*, UInt8*) : Int32
-fun strxfrm(UInt8*, UInt8*, SizeT) : ULong
-# fun strcoll_l(UInt8*, UInt8*, ) : Int32
-# fun strxfrm_l(UInt8*, UInt8*, SizeT, ) : SizeT
-fun strdup(UInt8*) : UInt8*
-fun strndup(UInt8*, SizeT) : UInt8*
-fun strchr(UInt8*, Int32) : UInt8*
-fun strrchr(UInt8*, Int32) : UInt8*
-fun strcspn(UInt8*, UInt8*) : ULong
-fun strspn(UInt8*, UInt8*) : ULong
-fun strpbrk(UInt8*, UInt8*) : UInt8*
-fun strstr(UInt8*, UInt8*) : UInt8*
-fun strtok(UInt8*, UInt8*) : UInt8*
-fun __strtok_r(UInt8*, UInt8*, UInt8**) : UInt8*
-fun strtok_r(UInt8*, UInt8*, UInt8**) : UInt8*
-fun strlen(UInt8*) : ULong
-fun strnlen(UInt8*, SizeT) : SizeT
-fun strerror(Int32) : UInt8*
-fun __xpg_strerror_r(Int32, UInt8*, SizeT) : Int32
-# fun strerror_l(Int32, ) : UInt8*
+fun strcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun strcat(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strncat(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun strcmp(LibC::Char*, LibC::Char*) : Int32
+fun strncmp(LibC::Char*, LibC::Char*, SizeT) : Int32
+fun strcoll(LibC::Char*, LibC::Char*) : Int32
+fun strxfrm(LibC::Char*, LibC::Char*, SizeT) : ULong
+# fun strcoll_l(LibC::Char*, LibC::Char*, ) : Int32
+# fun strxfrm_l(LibC::Char*, LibC::Char*, SizeT, ) : SizeT
+fun strdup(LibC::Char*) : LibC::Char*
+fun strndup(LibC::Char*, SizeT) : LibC::Char*
+fun strchr(LibC::Char*, Int32) : LibC::Char*
+fun strrchr(LibC::Char*, Int32) : LibC::Char*
+fun strcspn(LibC::Char*, LibC::Char*) : ULong
+fun strspn(LibC::Char*, LibC::Char*) : ULong
+fun strpbrk(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strstr(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strtok(LibC::Char*, LibC::Char*) : LibC::Char*
+fun __strtok_r(LibC::Char*, LibC::Char*, LibC::Char**) : LibC::Char*
+fun strtok_r(LibC::Char*, LibC::Char*, LibC::Char**) : LibC::Char*
+fun strlen(LibC::Char*) : ULong
+fun strnlen(LibC::Char*, SizeT) : SizeT
+fun strerror(Int32) : LibC::Char*
+fun __xpg_strerror_r(Int32, LibC::Char*, SizeT) : Int32
+# fun strerror_l(Int32, ) : LibC::Char*
 fun bcmp(Void*, Void*, SizeT) : Int32
 fun bcopy(Void*, Void*, SizeT) : Void
 fun bzero(Void*, SizeT) : Void
-fun index(UInt8*, Int32) : UInt8*
-fun rindex(UInt8*, Int32) : UInt8*
+fun index(LibC::Char*, Int32) : LibC::Char*
+fun rindex(LibC::Char*, Int32) : LibC::Char*
 fun ffs(Int32) : Int32
 fun ffsl(Long) : Int32
 fun ffsll(LongLong) : Int32
-fun strcasecmp(UInt8*, UInt8*) : Int32
-fun strncasecmp(UInt8*, UInt8*, SizeT) : Int32
-# fun strcasecmp_l(UInt8*, UInt8*, ) : Int32
-# fun strncasecmp_l(UInt8*, UInt8*, SizeT, ) : Int32
+fun strcasecmp(LibC::Char*, LibC::Char*) : Int32
+fun strncasecmp(LibC::Char*, LibC::Char*, SizeT) : Int32
+# fun strcasecmp_l(LibC::Char*, LibC::Char*, ) : Int32
+# fun strncasecmp_l(LibC::Char*, LibC::Char*, SizeT, ) : Int32
 fun explicit_bzero(Void*, SizeT) : Void
-fun strsep(UInt8**, UInt8*) : UInt8*
-fun strsignal(Int32) : UInt8*
-fun __stpcpy(UInt8*, UInt8*) : UInt8*
-fun stpcpy(UInt8*, UInt8*) : UInt8*
-fun __stpncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun stpncpy(UInt8*, UInt8*, SizeT) : UInt8*
+fun strsep(LibC::Char**, LibC::Char*) : LibC::Char*
+fun strsignal(Int32) : LibC::Char*
+fun __stpcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun stpcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun __stpncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun stpncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
 fun kbs_last_mask(SizeT) : ULong
 # fun kbs_init2(SizeT, Int32) : *
 # fun kbs_init(SizeT) : *
@@ -216,15 +216,11 @@ fun kbs_last_mask(SizeT) : ULong
 # fun kbs_next(*, *) : Int32
 
 # Unknown types
-# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", ":array", ":long-double", "fd_set", ":struct", "__sigset_t", ":function-pointer", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t", "locale_t", "kbitset_t", "kbitset_iter_t"]
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":array", ":long-double", "fd_set", ":struct", "__sigset_t", ":function-pointer", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t", "locale_t", "kbitset_t", "kbitset_iter_t"]
 # timeval, __time_t
 # timeval, __suseconds_t
 # timespec, __time_t
 # timespec, __syscall_slong_t
-# random_data, :pointer
-# random_data, :pointer
-# random_data, :pointer
-# random_data, :pointer
 # drand48_data, :array
 # drand48_data, :array
 # kbitset_t, :array

@@ -50,14 +50,14 @@ struct BGZF
   block_offset : Int32
   block_address : Int64
   uncompressed_address : Int64
-  uncompressed_block : 
-  compressed_block : 
-  cache : 
-  fp : 
-  mt : 
-  idx : 
+  uncompressed_block : Void*
+  compressed_block : Void*
+  cache : *
+  fp : *
+  mt : *
+  idx : *
   idx_build_otf : Int32
-  gz_stream : 
+  gz_stream : *
   seeked : Int64
 end
 # fun __bswap_16(UInt16) : UInt16
@@ -68,9 +68,9 @@ fun __uint32_identity(UInt32) : UInt32
 fun __uint64_identity(UInt64) : UInt64
 # fun select(Int32, *, *, *, *) : Int32
 # fun pselect(Int32, *, *, *, *, *) : Int32
-# fun bgzf_dopen(Int32, UInt8*) : *
-# fun bgzf_open(UInt8*, UInt8*) : *
-# fun bgzf_hopen(*, UInt8*) : *
+# fun bgzf_dopen(Int32, LibC::Char*) : *
+# fun bgzf_open(LibC::Char*, LibC::Char*) : *
+# fun bgzf_hopen(*, LibC::Char*) : *
 # fun bgzf_close(*) : Int32
 # fun bgzf_read(*, Void*, SizeT) : SSizeT
 # fun bgzf_write(*, Void*, SizeT) : SSizeT
@@ -82,7 +82,7 @@ fun __uint64_identity(UInt64) : UInt64
 # fun bgzf_seek(*, Int64, Int32) : Int64
 # fun bgzf_check_EOF(*) : Int32
 # fun bgzf_compression(*) : Int32
-fun bgzf_is_bgzf(UInt8*) : Int32
+fun bgzf_is_bgzf(LibC::Char*) : Int32
 # fun bgzf_set_cache_size(*, Int32) : Void
 # fun bgzf_flush_try(*, SSizeT) : Int32
 # fun bgzf_getc(*) : Int32
@@ -94,13 +94,13 @@ fun bgzf_compress(Void*, SizeT*, Void*, SizeT, Int32) : Int32
 # fun bgzf_useek(*, , Int32) : Int32
 # fun bgzf_utell(*) : 
 # fun bgzf_index_build_init(*) : Int32
-# fun bgzf_index_load(*, UInt8*, UInt8*) : Int32
-# fun bgzf_index_load_hfile(*, *, UInt8*) : Int32
-# fun bgzf_index_dump(*, UInt8*, UInt8*) : Int32
-# fun bgzf_index_dump_hfile(*, *, UInt8*) : Int32
+# fun bgzf_index_load(*, LibC::Char*, LibC::Char*) : Int32
+# fun bgzf_index_load_hfile(*, *, LibC::Char*) : Int32
+# fun bgzf_index_dump(*, LibC::Char*, LibC::Char*) : Int32
+# fun bgzf_index_dump_hfile(*, *, LibC::Char*) : Int32
 
 # Unknown types
-# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":bitfield", ":pointer", "fd_set", ":struct", "__sigset_t", "BGZF", "struct", "off_t"]
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":bitfield", "bgzf_cache_t", "struct", "bgzidx_t", "fd_set", ":struct", "__sigset_t", "BGZF", "off_t"]
 # timeval, __time_t
 # timeval, __suseconds_t
 # timespec, __time_t
@@ -114,13 +114,11 @@ fun bgzf_compress(Void*, SizeT*, Void*, SizeT, Int32) : Int32
 # BGZF, :bitfield
 # BGZF, :bitfield
 # BGZF, :bitfield
-# BGZF, :pointer
-# BGZF, :pointer
-# BGZF, :pointer
-# BGZF, :pointer
-# BGZF, :pointer
-# BGZF, :pointer
-# BGZF, :pointer
+# BGZF, bgzf_cache_t
+# BGZF, struct
+# BGZF, struct
+# BGZF, bgzidx_t
+# BGZF, struct
 # select, fd_set
 # select, fd_set
 # select, fd_set

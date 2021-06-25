@@ -14,13 +14,13 @@ end
 
 
 struct RandomData
-  fptr : 
-  rptr : 
-  state : 
+  fptr : Int32*
+  rptr : Int32*
+  state : Int32*
   rand_type : Int32
   rand_deg : Int32
   rand_sep : Int32
-  end_ptr : 
+  end_ptr : Int32*
 end
 
 struct Drand48Data
@@ -45,14 +45,14 @@ end
 struct KstringT
   l : SizeT
   m : SizeT
-  s : 
+  s : LibC::Char*
 end
 
 struct KsTokauxT
   tab : 
   sep : Int32
   finished : Int32
-  p : 
+  p : LibC::Char*
 end
 
 struct BGZF
@@ -76,7 +76,7 @@ struct HtsFormat
   version : 
   compression : 
   compression_level : Short
-  specific : 
+  specific : Void*
 end
 
 struct HtsIdxT
@@ -94,27 +94,27 @@ struct HtsFile
   dummy : 
   lineno : Int64
   line : 
-  fn : 
-  fn_aux : 
+  fn : LibC::Char*
+  fn_aux : LibC::Char*
   fp : 
-  state : 
+  state : Void*
   format : 
-  idx : 
-  fnidx : 
-  bam_header : 
-  filter : 
+  idx : *
+  fnidx : LibC::Char*
+  bam_header : *
+  filter : *
 end
 
 struct HtsThreadPool
-  pool : 
+  pool : *
   qsize : Int32
 end
 
 struct HtsOpt
-  arg : 
+  arg : LibC::Char*
   opt : 
   val : 
-  next : 
+  next : *
 end
 
 struct HtsPairPosT
@@ -134,8 +134,8 @@ struct HtsPair64MaxT
 end
 
 struct HtsReglistT
-  reg : 
-  intervals : 
+  reg : LibC::Char*
+  intervals : *
   tid : Int32
   count : UInt32
   min_beg : 
@@ -155,7 +155,7 @@ struct HtsItrT
   n_reg : Int32
   beg : 
   end : 
-  reg_list : 
+  reg_list : *
   curr_tid : Int32
   curr_reg : Int32
   curr_intv : Int32
@@ -163,7 +163,7 @@ struct HtsItrT
   curr_end : 
   curr_off : UInt64
   nocoor_off : UInt64
-  off : 
+  off : *
   readrec : 
   seek : 
   tell : 
@@ -184,11 +184,11 @@ end
 
 struct BcfHrecT
   type : Int32
-  key : 
-  value : 
+  key : LibC::Char*
+  value : LibC::Char*
   nkeys : Int32
-  keys : 
-  vals : 
+  keys : LibC::Char**
+  vals : LibC::Char**
 end
 
 struct BcfIdinfoT
@@ -198,22 +198,22 @@ struct BcfIdinfoT
 end
 
 struct BcfIdpairT
-  key : 
-  val : 
+  key : LibC::Char*
+  val : *
 end
 
 struct BcfHdrT
   n : 
   id : 
   dict : 
-  samples : 
-  hrec : 
+  samples : LibC::Char**
+  hrec : **
   nhrec : Int32
   dirty : Int32
   ntransl : Int32
   transl : 
   nsamples_ori : Int32
-  keep_samples : 
+  keep_samples : UInt8*
   mem : 
   m : 
 end
@@ -228,7 +228,7 @@ struct BcfFmtT
   n : Int32
   size : Int32
   type : Int32
-  p : 
+  p : UInt8*
   p_len : UInt32
   p_off : 
   p_free : 
@@ -238,7 +238,7 @@ struct BcfInfoT
   key : Int32
   type : Int32
   v1 : 
-  vptr : 
+  vptr : UInt8*
   vptr_len : UInt32
   vptr_off : 
   vptr_free : 
@@ -253,13 +253,13 @@ struct BcfDecT
   m_allele : Int32
   m_flt : Int32
   n_flt : Int32
-  flt : 
-  id : 
-  als : 
-  allele : 
-  info : 
-  fmt : 
-  var : 
+  flt : Int32*
+  id : LibC::Char*
+  als : LibC::Char*
+  allele : LibC::Char**
+  info : *
+  fmt : *
+  var : *
   n_var : Int32
   var_type : Int32
   shared_dirty : Int32
@@ -289,29 +289,29 @@ end
 # fun __errno_location() : Int32*
 # fun imaxabs() : 
 # fun imaxdiv(, ) : 
-# fun strtoimax(UInt8*, UInt8**, Int32) : 
-# fun strtoumax(UInt8*, UInt8**, Int32) : 
+# fun strtoimax(LibC::Char*, LibC::Char**, Int32) : 
+# fun strtoumax(LibC::Char*, LibC::Char**, Int32) : 
 # fun wcstoimax(*, **, Int32) : 
 # fun wcstoumax(*, **, Int32) : 
 # fun hts_set_log_level() : Void
 # fun hts_get_log_level() : 
-# fun hts_log(, UInt8*, UInt8*) : Void
+# fun hts_log(, LibC::Char*, LibC::Char*) : Void
 fun __ctype_get_mb_cur_max() : SizeT
-fun atof(UInt8*) : Float64
-fun atoi(UInt8*) : Int32
-fun atol(UInt8*) : Long
-fun atoll(UInt8*) : LongLong
-fun strtod(UInt8*, UInt8**) : Float64
-fun strtof(UInt8*, UInt8**) : Float32
-# fun strtold(UInt8*, UInt8**) : 
-fun strtol(UInt8*, UInt8**, Int32) : Long
-fun strtoul(UInt8*, UInt8**, Int32) : ULong
-fun strtoq(UInt8*, UInt8**, Int32) : LongLong
-fun strtouq(UInt8*, UInt8**, Int32) : ULongLong
-fun strtoll(UInt8*, UInt8**, Int32) : LongLong
-fun strtoull(UInt8*, UInt8**, Int32) : ULongLong
-fun l64a(Long) : UInt8*
-fun a64l(UInt8*) : Long
+fun atof(LibC::Char*) : Float64
+fun atoi(LibC::Char*) : Int32
+fun atol(LibC::Char*) : Long
+fun atoll(LibC::Char*) : LongLong
+fun strtod(LibC::Char*, LibC::Char**) : Float64
+fun strtof(LibC::Char*, LibC::Char**) : Float32
+# fun strtold(LibC::Char*, LibC::Char**) : 
+fun strtol(LibC::Char*, LibC::Char**, Int32) : Long
+fun strtoul(LibC::Char*, LibC::Char**, Int32) : ULong
+fun strtoq(LibC::Char*, LibC::Char**, Int32) : LongLong
+fun strtouq(LibC::Char*, LibC::Char**, Int32) : ULongLong
+fun strtoll(LibC::Char*, LibC::Char**, Int32) : LongLong
+fun strtoull(LibC::Char*, LibC::Char**, Int32) : ULongLong
+fun l64a(Long) : LibC::Char*
+fun a64l(LibC::Char*) : Long
 fun __bswap_16(UInt16) : UInt16
 fun __bswap_32(UInt32) : UInt32
 fun __bswap_64(UInt64) : UInt64
@@ -322,12 +322,12 @@ fun __uint64_identity(UInt64) : UInt64
 # fun pselect(Int32, *, *, *, *, *) : Int32
 fun random() : Long
 fun srandom(UInt32) : Void
-fun initstate(UInt32, UInt8*, SizeT) : UInt8*
-fun setstate(UInt8*) : UInt8*
+fun initstate(UInt32, LibC::Char*, SizeT) : LibC::Char*
+fun setstate(LibC::Char*) : LibC::Char*
 # fun random_r(*, Int32*) : Int32
 # fun srandom_r(UInt32, *) : Int32
-# fun initstate_r(UInt32, UInt8*, SizeT, *) : Int32
-# fun setstate_r(UInt8*, *) : Int32
+# fun initstate_r(UInt32, LibC::Char*, SizeT, *) : Int32
+# fun setstate_r(LibC::Char*, *) : Int32
 fun rand() : Int32
 fun srand(UInt32) : Void
 fun rand_r(UInt32*) : Int32
@@ -365,17 +365,17 @@ fun abort() : Void
 fun exit(Int32) : Void
 fun quick_exit(Int32) : Void
 fun _Exit(Int32) : Void
-fun getenv(UInt8*) : UInt8*
-fun putenv(UInt8*) : Int32
-fun setenv(UInt8*, UInt8*, Int32) : Int32
-fun unsetenv(UInt8*) : Int32
+fun getenv(LibC::Char*) : LibC::Char*
+fun putenv(LibC::Char*) : Int32
+fun setenv(LibC::Char*, LibC::Char*, Int32) : Int32
+fun unsetenv(LibC::Char*) : Int32
 fun clearenv() : Int32
-fun mktemp(UInt8*) : UInt8*
-fun mkstemp(UInt8*) : Int32
-fun mkstemps(UInt8*, Int32) : Int32
-fun mkdtemp(UInt8*) : UInt8*
-fun system(UInt8*) : Int32
-fun realpath(UInt8*, UInt8*) : UInt8*
+fun mktemp(LibC::Char*) : LibC::Char*
+fun mkstemp(LibC::Char*) : Int32
+fun mkstemps(LibC::Char*, Int32) : Int32
+fun mkdtemp(LibC::Char*) : LibC::Char*
+fun system(LibC::Char*) : Int32
+fun realpath(LibC::Char*, LibC::Char*) : LibC::Char*
 # fun bsearch(Void*, Void*, SizeT, SizeT, ) : Void*
 # fun qsort(Void*, SizeT, SizeT, ) : Void
 fun abs(Int32) : Int32
@@ -384,23 +384,23 @@ fun llabs(LongLong) : LongLong
 # fun div(Int32, Int32) : 
 # fun ldiv(Long, Long) : 
 # fun lldiv(LongLong, LongLong) : 
-fun ecvt(Float64, Int32, Int32*, Int32*) : UInt8*
-fun fcvt(Float64, Int32, Int32*, Int32*) : UInt8*
-fun gcvt(Float64, Int32, UInt8*) : UInt8*
-# fun qecvt(, Int32, Int32*, Int32*) : UInt8*
-# fun qfcvt(, Int32, Int32*, Int32*) : UInt8*
-# fun qgcvt(, Int32, UInt8*) : UInt8*
-fun ecvt_r(Float64, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-fun fcvt_r(Float64, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-# fun qecvt_r(, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-# fun qfcvt_r(, Int32, Int32*, Int32*, UInt8*, SizeT) : Int32
-fun mblen(UInt8*, SizeT) : Int32
-# fun mbtowc(*, UInt8*, SizeT) : Int32
-# fun wctomb(UInt8*, ) : Int32
-# fun mbstowcs(*, UInt8*, SizeT) : SizeT
-# fun wcstombs(UInt8*, *, SizeT) : SizeT
-fun rpmatch(UInt8*) : Int32
-fun getsubopt(UInt8**, UInt8**, UInt8**) : Int32
+fun ecvt(Float64, Int32, Int32*, Int32*) : LibC::Char*
+fun fcvt(Float64, Int32, Int32*, Int32*) : LibC::Char*
+fun gcvt(Float64, Int32, LibC::Char*) : LibC::Char*
+# fun qecvt(, Int32, Int32*, Int32*) : LibC::Char*
+# fun qfcvt(, Int32, Int32*, Int32*) : LibC::Char*
+# fun qgcvt(, Int32, LibC::Char*) : LibC::Char*
+fun ecvt_r(Float64, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+fun fcvt_r(Float64, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+# fun qecvt_r(, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+# fun qfcvt_r(, Int32, Int32*, Int32*, LibC::Char*, SizeT) : Int32
+fun mblen(LibC::Char*, SizeT) : Int32
+# fun mbtowc(*, LibC::Char*, SizeT) : Int32
+# fun wctomb(LibC::Char*, ) : Int32
+# fun mbstowcs(*, LibC::Char*, SizeT) : SizeT
+# fun wcstombs(LibC::Char*, *, SizeT) : SizeT
+fun rpmatch(LibC::Char*) : Int32
+fun getsubopt(LibC::Char**, LibC::Char**, LibC::Char**) : Int32
 fun getloadavg(Float64*, Int32) : Int32
 fun memcpy(Void*, Void*, SizeT) : Void*
 fun memmove(Void*, Void*, SizeT) : Void*
@@ -408,92 +408,92 @@ fun memccpy(Void*, Void*, Int32, SizeT) : Void*
 fun memset(Void*, Int32, SizeT) : Void*
 fun memcmp(Void*, Void*, SizeT) : Int32
 fun memchr(Void*, Int32, SizeT) : Void*
-fun strcpy(UInt8*, UInt8*) : UInt8*
-fun strncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun strcat(UInt8*, UInt8*) : UInt8*
-fun strncat(UInt8*, UInt8*, SizeT) : UInt8*
-fun strcmp(UInt8*, UInt8*) : Int32
-fun strncmp(UInt8*, UInt8*, SizeT) : Int32
-fun strcoll(UInt8*, UInt8*) : Int32
-fun strxfrm(UInt8*, UInt8*, SizeT) : ULong
-# fun strcoll_l(UInt8*, UInt8*, ) : Int32
-# fun strxfrm_l(UInt8*, UInt8*, SizeT, ) : SizeT
-fun strdup(UInt8*) : UInt8*
-fun strndup(UInt8*, SizeT) : UInt8*
-fun strchr(UInt8*, Int32) : UInt8*
-fun strrchr(UInt8*, Int32) : UInt8*
-fun strcspn(UInt8*, UInt8*) : ULong
-fun strspn(UInt8*, UInt8*) : ULong
-fun strpbrk(UInt8*, UInt8*) : UInt8*
-fun strstr(UInt8*, UInt8*) : UInt8*
-fun strtok(UInt8*, UInt8*) : UInt8*
-fun __strtok_r(UInt8*, UInt8*, UInt8**) : UInt8*
-fun strtok_r(UInt8*, UInt8*, UInt8**) : UInt8*
-fun strlen(UInt8*) : ULong
-fun strnlen(UInt8*, SizeT) : SizeT
-fun strerror(Int32) : UInt8*
-fun __xpg_strerror_r(Int32, UInt8*, SizeT) : Int32
-# fun strerror_l(Int32, ) : UInt8*
+fun strcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun strcat(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strncat(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun strcmp(LibC::Char*, LibC::Char*) : Int32
+fun strncmp(LibC::Char*, LibC::Char*, SizeT) : Int32
+fun strcoll(LibC::Char*, LibC::Char*) : Int32
+fun strxfrm(LibC::Char*, LibC::Char*, SizeT) : ULong
+# fun strcoll_l(LibC::Char*, LibC::Char*, ) : Int32
+# fun strxfrm_l(LibC::Char*, LibC::Char*, SizeT, ) : SizeT
+fun strdup(LibC::Char*) : LibC::Char*
+fun strndup(LibC::Char*, SizeT) : LibC::Char*
+fun strchr(LibC::Char*, Int32) : LibC::Char*
+fun strrchr(LibC::Char*, Int32) : LibC::Char*
+fun strcspn(LibC::Char*, LibC::Char*) : ULong
+fun strspn(LibC::Char*, LibC::Char*) : ULong
+fun strpbrk(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strstr(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strtok(LibC::Char*, LibC::Char*) : LibC::Char*
+fun __strtok_r(LibC::Char*, LibC::Char*, LibC::Char**) : LibC::Char*
+fun strtok_r(LibC::Char*, LibC::Char*, LibC::Char**) : LibC::Char*
+fun strlen(LibC::Char*) : ULong
+fun strnlen(LibC::Char*, SizeT) : SizeT
+fun strerror(Int32) : LibC::Char*
+fun __xpg_strerror_r(Int32, LibC::Char*, SizeT) : Int32
+# fun strerror_l(Int32, ) : LibC::Char*
 fun bcmp(Void*, Void*, SizeT) : Int32
 fun bcopy(Void*, Void*, SizeT) : Void
 fun bzero(Void*, SizeT) : Void
-fun index(UInt8*, Int32) : UInt8*
-fun rindex(UInt8*, Int32) : UInt8*
+fun index(LibC::Char*, Int32) : LibC::Char*
+fun rindex(LibC::Char*, Int32) : LibC::Char*
 fun ffs(Int32) : Int32
 fun ffsl(Long) : Int32
 fun ffsll(LongLong) : Int32
-fun strcasecmp(UInt8*, UInt8*) : Int32
-fun strncasecmp(UInt8*, UInt8*, SizeT) : Int32
-# fun strcasecmp_l(UInt8*, UInt8*, ) : Int32
-# fun strncasecmp_l(UInt8*, UInt8*, SizeT, ) : Int32
+fun strcasecmp(LibC::Char*, LibC::Char*) : Int32
+fun strncasecmp(LibC::Char*, LibC::Char*, SizeT) : Int32
+# fun strcasecmp_l(LibC::Char*, LibC::Char*, ) : Int32
+# fun strncasecmp_l(LibC::Char*, LibC::Char*, SizeT, ) : Int32
 fun explicit_bzero(Void*, SizeT) : Void
-fun strsep(UInt8**, UInt8*) : UInt8*
-fun strsignal(Int32) : UInt8*
-fun __stpcpy(UInt8*, UInt8*) : UInt8*
-fun stpcpy(UInt8*, UInt8*) : UInt8*
-fun __stpncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun stpncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun remove(UInt8*) : Int32
-fun rename(UInt8*, UInt8*) : Int32
-fun renameat(Int32, UInt8*, Int32, UInt8*) : Int32
+fun strsep(LibC::Char**, LibC::Char*) : LibC::Char*
+fun strsignal(Int32) : LibC::Char*
+fun __stpcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun stpcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun __stpncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun stpncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun remove(LibC::Char*) : Int32
+fun rename(LibC::Char*, LibC::Char*) : Int32
+fun renameat(Int32, LibC::Char*, Int32, LibC::Char*) : Int32
 # fun tmpfile() : *
-fun tmpnam(UInt8*) : UInt8*
-fun tmpnam_r(UInt8*) : UInt8*
-fun tempnam(UInt8*, UInt8*) : UInt8*
+fun tmpnam(LibC::Char*) : LibC::Char*
+fun tmpnam_r(LibC::Char*) : LibC::Char*
+fun tempnam(LibC::Char*, LibC::Char*) : LibC::Char*
 # fun fclose(*) : Int32
 # fun fflush(*) : Int32
 # fun fflush_unlocked(*) : Int32
-# fun fopen(UInt8*, UInt8*) : *
-# fun freopen(UInt8*, UInt8*, *) : *
-# fun fdopen(Int32, UInt8*) : *
-# fun fmemopen(Void*, SizeT, UInt8*) : *
-# fun open_memstream(UInt8**, SizeT*) : *
-# fun setbuf(*, UInt8*) : Void
-# fun setvbuf(*, UInt8*, Int32, SizeT) : Int32
-# fun setbuffer(*, UInt8*, SizeT) : Void
+# fun fopen(LibC::Char*, LibC::Char*) : *
+# fun freopen(LibC::Char*, LibC::Char*, *) : *
+# fun fdopen(Int32, LibC::Char*) : *
+# fun fmemopen(Void*, SizeT, LibC::Char*) : *
+# fun open_memstream(LibC::Char**, SizeT*) : *
+# fun setbuf(*, LibC::Char*) : Void
+# fun setvbuf(*, LibC::Char*, Int32, SizeT) : Int32
+# fun setbuffer(*, LibC::Char*, SizeT) : Void
 # fun setlinebuf(*) : Void
-# fun fprintf(*, UInt8*) : Int32
-fun printf(UInt8*) : Int32
-fun sprintf(UInt8*, UInt8*) : Int32
-# fun vfprintf(*, UInt8*, ) : Int32
-# fun vprintf(UInt8*, ) : Int32
-# fun vsprintf(UInt8*, UInt8*, ) : Int32
-fun snprintf(UInt8*, SizeT, UInt8*) : Int32
-# fun vsnprintf(UInt8*, SizeT, UInt8*, ) : Int32
-# fun vdprintf(Int32, UInt8*, ) : Int32
-fun dprintf(Int32, UInt8*) : Int32
-# fun fscanf(*, UInt8*) : Int32
-fun scanf(UInt8*) : Int32
-fun sscanf(UInt8*, UInt8*) : Int32
-# fun __isoc99_fscanf(*, UInt8*) : Int32
-fun __isoc99_scanf(UInt8*) : Int32
-fun __isoc99_sscanf(UInt8*, UInt8*) : Int32
-# fun vfscanf(*, UInt8*, ) : Int32
-# fun vscanf(UInt8*, ) : Int32
-# fun vsscanf(UInt8*, UInt8*, ) : Int32
-# fun __isoc99_vfscanf(*, UInt8*, ) : Int32
-# fun __isoc99_vscanf(UInt8*, ) : Int32
-# fun __isoc99_vsscanf(UInt8*, UInt8*, ) : Int32
+# fun fprintf(*, LibC::Char*) : Int32
+fun printf(LibC::Char*) : Int32
+fun sprintf(LibC::Char*, LibC::Char*) : Int32
+# fun vfprintf(*, LibC::Char*, ) : Int32
+# fun vprintf(LibC::Char*, ) : Int32
+# fun vsprintf(LibC::Char*, LibC::Char*, ) : Int32
+fun snprintf(LibC::Char*, SizeT, LibC::Char*) : Int32
+# fun vsnprintf(LibC::Char*, SizeT, LibC::Char*, ) : Int32
+# fun vdprintf(Int32, LibC::Char*, ) : Int32
+fun dprintf(Int32, LibC::Char*) : Int32
+# fun fscanf(*, LibC::Char*) : Int32
+fun scanf(LibC::Char*) : Int32
+fun sscanf(LibC::Char*, LibC::Char*) : Int32
+# fun __isoc99_fscanf(*, LibC::Char*) : Int32
+fun __isoc99_scanf(LibC::Char*) : Int32
+fun __isoc99_sscanf(LibC::Char*, LibC::Char*) : Int32
+# fun vfscanf(*, LibC::Char*, ) : Int32
+# fun vscanf(LibC::Char*, ) : Int32
+# fun vsscanf(LibC::Char*, LibC::Char*, ) : Int32
+# fun __isoc99_vfscanf(*, LibC::Char*, ) : Int32
+# fun __isoc99_vscanf(LibC::Char*, ) : Int32
+# fun __isoc99_vsscanf(LibC::Char*, LibC::Char*, ) : Int32
 # fun fgetc(*) : Int32
 # fun getc(*) : Int32
 fun getchar() : Int32
@@ -508,12 +508,12 @@ fun putchar(Int32) : Int32
 fun putchar_unlocked(Int32) : Int32
 # fun getw(*) : Int32
 # fun putw(Int32, *) : Int32
-# fun fgets(UInt8*, Int32, *) : UInt8*
-# fun __getdelim(UInt8**, SizeT*, Int32, *) : SSizeT
-# fun getdelim(UInt8**, SizeT*, Int32, *) : SSizeT
-# fun getline(UInt8**, SizeT*, *) : SSizeT
-# fun fputs(UInt8*, *) : Int32
-fun puts(UInt8*) : Int32
+# fun fgets(LibC::Char*, Int32, *) : LibC::Char*
+# fun __getdelim(LibC::Char**, SizeT*, Int32, *) : SSizeT
+# fun getdelim(LibC::Char**, SizeT*, Int32, *) : SSizeT
+# fun getline(LibC::Char**, SizeT*, *) : SSizeT
+# fun fputs(LibC::Char*, *) : Int32
+fun puts(LibC::Char*) : Int32
 # fun ungetc(Int32, *) : Int32
 # fun fread(Void*, SizeT, SizeT, *) : ULong
 # fun fwrite(Void*, SizeT, SizeT, *) : ULong
@@ -532,38 +532,38 @@ fun puts(UInt8*) : Int32
 # fun clearerr_unlocked(*) : Void
 # fun feof_unlocked(*) : Int32
 # fun ferror_unlocked(*) : Int32
-fun perror(UInt8*) : Void
+fun perror(LibC::Char*) : Void
 # fun fileno(*) : Int32
 # fun fileno_unlocked(*) : Int32
-# fun popen(UInt8*, UInt8*) : *
+# fun popen(LibC::Char*, LibC::Char*) : *
 # fun pclose(*) : Int32
-fun ctermid(UInt8*) : UInt8*
+fun ctermid(LibC::Char*) : LibC::Char*
 # fun flockfile(*) : Void
 # fun ftrylockfile(*) : Int32
 # fun funlockfile(*) : Void
 # fun __uflow(*) : Int32
 # fun __overflow(*, Int32) : Int32
-# fun kvsprintf(*, UInt8*, ) : Int32
-# fun ksprintf(*, UInt8*) : Int32
+# fun kvsprintf(*, LibC::Char*, ) : Int32
+# fun ksprintf(*, LibC::Char*) : Int32
 # fun kputd(Float64, *) : Int32
-fun ksplit_core(UInt8*, Int32, Int32*, Int32**) : Int32
-fun kstrstr(UInt8*, UInt8*, Int32**) : UInt8*
-fun kstrnstr(UInt8*, UInt8*, Int32, Int32**) : UInt8*
+fun ksplit_core(LibC::Char*, Int32, Int32*, Int32**) : Int32
+fun kstrstr(LibC::Char*, LibC::Char*, Int32**) : LibC::Char*
+fun kstrnstr(LibC::Char*, LibC::Char*, Int32, Int32**) : LibC::Char*
 fun kmemmem(Void*, Int32, Void*, Int32, Int32**) : Void*
-# fun kstrtok(UInt8*, UInt8*, *) : UInt8*
+# fun kstrtok(LibC::Char*, LibC::Char*, *) : LibC::Char*
 # fun kgetline(*, , Void*) : Int32
 # fun kgetline2(*, , Void*) : Int32
 # fun ks_initialize(*) : Void
 # fun ks_resize(*, SizeT) : Int32
 # fun ks_expand(*, SizeT) : Int32
-# fun ks_str(*) : UInt8*
-# fun ks_c_str(*) : UInt8*
+# fun ks_str(*) : LibC::Char*
+# fun ks_c_str(*) : LibC::Char*
 # fun ks_len(*) : SizeT
 # fun ks_clear(*) : *
-# fun ks_release(*) : UInt8*
+# fun ks_release(*) : LibC::Char*
 # fun ks_free(*) : Void
-# fun kputsn(UInt8*, SizeT, *) : Int32
-# fun kputs(UInt8*, *) : Int32
+# fun kputsn(LibC::Char*, SizeT, *) : Int32
+# fun kputs(LibC::Char*, *) : Int32
 # fun kputc(Int32, *) : Int32
 # fun kputc_(Int32, *) : Int32
 # fun kputsn_(Void*, SizeT, *) : Int32
@@ -572,67 +572,67 @@ fun kmemmem(Void*, Int32, Void*, Int32, Int32**) : Void*
 # fun kputll(LongLong, *) : Int32
 # fun kputl(Long, *) : Int32
 # fun ksplit(*, Int32, Int32*) : Int32*
-fun hts_resize_array_(SizeT, SizeT, SizeT, Void*, Void**, Int32, UInt8*) : Int32
+fun hts_resize_array_(SizeT, SizeT, SizeT, Void*, Void**, Int32, LibC::Char*) : Int32
 fun hts_lib_shutdown() : Void
 fun hts_free(Void*) : Void
-# fun hts_opt_add(**, UInt8*) : Int32
+# fun hts_opt_add(**, LibC::Char*) : Int32
 # fun hts_opt_apply(*, *) : Int32
 # fun hts_opt_free(*) : Void
-# fun hts_parse_format(*, UInt8*) : Int32
-# fun hts_parse_opt_list(*, UInt8*) : Int32
-fun hts_version() : UInt8*
+# fun hts_parse_format(*, LibC::Char*) : Int32
+# fun hts_parse_opt_list(*, LibC::Char*) : Int32
+fun hts_version() : LibC::Char*
 fun hts_features() : UInt32
-fun hts_test_feature(UInt32) : UInt8*
-fun hts_feature_string() : UInt8*
+fun hts_test_feature(UInt32) : LibC::Char*
+fun hts_feature_string() : LibC::Char*
 # fun hts_detect_format(*, *) : Int32
-# fun hts_format_description(*) : UInt8*
-# fun hts_open(UInt8*, UInt8*) : *
-# fun hts_open_format(UInt8*, UInt8*, *) : *
-# fun hts_hopen(*, UInt8*, UInt8*) : *
+# fun hts_format_description(*) : LibC::Char*
+# fun hts_open(LibC::Char*, LibC::Char*) : *
+# fun hts_open_format(LibC::Char*, LibC::Char*, *) : *
+# fun hts_hopen(*, LibC::Char*, LibC::Char*) : *
 # fun hts_close(*) : Int32
 # fun hts_get_format(*) : *
-# fun hts_format_file_extension(*) : UInt8*
+# fun hts_format_file_extension(*) : LibC::Char*
 # fun hts_set_opt(*, ) : Int32
 # fun hts_getline(*, Int32, *) : Int32
-# fun hts_readlines(UInt8*, Int32*) : *
-# fun hts_readlist(UInt8*, Int32, Int32*) : *
+# fun hts_readlines(LibC::Char*, Int32*) : *
+# fun hts_readlist(LibC::Char*, Int32, Int32*) : *
 # fun hts_set_threads(*, Int32) : Int32
 # fun hts_set_thread_pool(*, *) : Int32
 # fun hts_set_cache_size(*, Int32) : Void
-# fun hts_set_fai_filename(*, UInt8*) : Int32
-# fun hts_set_filter_expression(*, UInt8*) : Int32
+# fun hts_set_fai_filename(*, LibC::Char*) : Int32
+# fun hts_set_filter_expression(*, LibC::Char*) : Int32
 # fun hts_check_EOF(*) : Int32
 # fun hts_idx_init(Int32, Int32, UInt64, Int32, Int32) : *
 # fun hts_idx_destroy(*) : Void
 # fun hts_idx_push(*, Int32, , , UInt64, Int32) : Int32
 # fun hts_idx_finish(*, UInt64) : Int32
 # fun hts_idx_fmt(*) : Int32
-# fun hts_idx_tbi_name(*, Int32, UInt8*) : Int32
-# fun hts_idx_save(*, UInt8*, Int32) : Int32
-# fun hts_idx_save_as(*, UInt8*, UInt8*, Int32) : Int32
-# fun hts_idx_load(UInt8*, Int32) : *
-# fun hts_idx_load2(UInt8*, UInt8*) : *
-# fun hts_idx_load3(UInt8*, UInt8*, Int32, Int32) : *
+# fun hts_idx_tbi_name(*, Int32, LibC::Char*) : Int32
+# fun hts_idx_save(*, LibC::Char*, Int32) : Int32
+# fun hts_idx_save_as(*, LibC::Char*, LibC::Char*, Int32) : Int32
+# fun hts_idx_load(LibC::Char*, Int32) : *
+# fun hts_idx_load2(LibC::Char*, LibC::Char*) : *
+# fun hts_idx_load3(LibC::Char*, LibC::Char*, Int32, Int32) : *
 # fun hts_idx_get_meta(*, UInt32*) : UInt8*
 # fun hts_idx_set_meta(*, UInt32, UInt8*, Int32) : Int32
 # fun hts_idx_get_stat(*, Int32, UInt64*, UInt64*) : Int32
 # fun hts_idx_get_n_no_coor(*) : UInt64
-fun hts_parse_decimal(UInt8*, UInt8**, Int32) : LongLong
-# fun hts_parse_reg64(UInt8*, *, *) : UInt8*
-fun hts_parse_reg(UInt8*, Int32*, Int32*) : UInt8*
-# fun hts_parse_region(UInt8*, Int32*, *, *, , Void*, Int32) : UInt8*
+fun hts_parse_decimal(LibC::Char*, LibC::Char**, Int32) : LongLong
+# fun hts_parse_reg64(LibC::Char*, *, *) : LibC::Char*
+fun hts_parse_reg(LibC::Char*, Int32*, Int32*) : LibC::Char*
+# fun hts_parse_region(LibC::Char*, Int32*, *, *, , Void*, Int32) : LibC::Char*
 # fun hts_itr_query(*, Int32, , , ) : *
 # fun hts_itr_destroy(*) : Void
-# fun hts_itr_querys(*, UInt8*, , Void*, , ) : *
+# fun hts_itr_querys(*, LibC::Char*, , Void*, , ) : *
 # fun hts_itr_next(*, *, Void*, Void*) : Int32
 # fun hts_idx_seqnames(*, Int32*, , Void*) : *
 # fun hts_itr_multi_bam(*, *) : Int32
 # fun hts_itr_multi_cram(*, *) : Int32
 # fun hts_itr_regions(*, *, Int32, , Void*, , , , ) : *
 # fun hts_itr_multi_next(*, *, Void*) : Int32
-# fun hts_reglist_create(UInt8**, Int32, Int32*, Void*, ) : *
+# fun hts_reglist_create(LibC::Char**, Int32, Int32*, Void*, ) : *
 # fun hts_reglist_free(*, Int32) : Void
-fun hts_file_type(UInt8*) : Int32
+fun hts_file_type(LibC::Char*) : Int32
 # fun errmod_init(Float64) : *
 # fun errmod_destroy(*) : Void
 # fun errmod_cal(*, Int32, Int32, UInt16*, Float32*) : Int32
@@ -641,7 +641,7 @@ fun hts_file_type(UInt8*) : Int32
 # fun hts_md5_update(*, Void*, ULong) : Void
 # fun hts_md5_final(*, *) : Void
 # fun hts_md5_reset(*) : Void
-# fun hts_md5_hex(UInt8*, *) : Void
+# fun hts_md5_hex(LibC::Char*, *) : Void
 # fun hts_md5_destroy(*) : Void
 # fun hts_reg2bin(, , Int32, Int32) : Int32
 fun hts_bin_bot(Int32, Int32) : Int32
@@ -669,21 +669,21 @@ fun le_to_float(UInt8*) : Float32
 fun le_to_double(UInt8*) : Float64
 fun float_to_le(Float32, UInt8*) : Void
 fun double_to_le(Float64, UInt8*) : Void
-fun __assert_fail(UInt8*, UInt8*, UInt32, UInt8*) : Void
-fun __assert_perror_fail(Int32, UInt8*, UInt32, UInt8*) : Void
-fun __assert(UInt8*, UInt8*, Int32) : Void
-# fun bcf_hdr_init(UInt8*) : *
+fun __assert_fail(LibC::Char*, LibC::Char*, UInt32, LibC::Char*) : Void
+fun __assert_perror_fail(Int32, LibC::Char*, UInt32, LibC::Char*) : Void
+fun __assert(LibC::Char*, LibC::Char*, Int32) : Void
+# fun bcf_hdr_init(LibC::Char*) : *
 # fun bcf_hdr_destroy(*) : Void
 # fun bcf_init() : *
 # fun bcf_destroy(*) : Void
 # fun bcf_empty(*) : Void
 # fun bcf_clear(*) : Void
 # fun bcf_hdr_read(*) : *
-# fun bcf_hdr_set_samples(*, UInt8*, Int32) : Int32
+# fun bcf_hdr_set_samples(*, LibC::Char*, Int32) : Int32
 # fun bcf_subset_format(*, *) : Int32
 # fun bcf_hdr_write(*, *) : Int32
 # fun vcf_parse(*, *, *) : Int32
-fun vcf_open_mode(UInt8*, UInt8*, UInt8*) : Int32
+fun vcf_open_mode(LibC::Char*, LibC::Char*, LibC::Char*) : Int32
 # fun vcf_format(*, *, *) : Int32
 # fun bcf_read(*, *, *) : Int32
 # fun bcf_unpack(*, Int32) : Int32
@@ -699,27 +699,27 @@ fun vcf_open_mode(UInt8*, UInt8*, UInt8*) : Int32
 # fun bcf_hdr_dup(*) : *
 # fun bcf_hdr_combine(*, *) : Int32
 # fun bcf_hdr_merge(*, *) : *
-# fun bcf_hdr_add_sample(*, UInt8*) : Int32
-# fun bcf_hdr_set(*, UInt8*) : Int32
+# fun bcf_hdr_add_sample(*, LibC::Char*) : Int32
+# fun bcf_hdr_set(*, LibC::Char*) : Int32
 # fun bcf_hdr_format(*, Int32, *) : Int32
-# fun bcf_hdr_fmt_text(*, Int32, Int32*) : UInt8*
-# fun bcf_hdr_append(*, UInt8*) : Int32
-# fun bcf_hdr_printf(*, UInt8*) : Int32
-# fun bcf_hdr_get_version(*) : UInt8*
-# fun bcf_hdr_set_version(*, UInt8*) : Int32
-# fun bcf_hdr_remove(*, Int32, UInt8*) : Void
-# fun bcf_hdr_subset(*, Int32, UInt8**, Int32*) : *
+# fun bcf_hdr_fmt_text(*, Int32, Int32*) : LibC::Char*
+# fun bcf_hdr_append(*, LibC::Char*) : Int32
+# fun bcf_hdr_printf(*, LibC::Char*) : Int32
+# fun bcf_hdr_get_version(*) : LibC::Char*
+# fun bcf_hdr_set_version(*, LibC::Char*) : Int32
+# fun bcf_hdr_remove(*, Int32, LibC::Char*) : Void
+# fun bcf_hdr_subset(*, Int32, LibC::Char**, Int32*) : *
 # fun bcf_hdr_seqnames(*, Int32*) : *
-# fun bcf_hdr_parse(*, UInt8*) : Int32
+# fun bcf_hdr_parse(*, LibC::Char*) : Int32
 # fun bcf_hdr_sync(*) : Int32
-# fun bcf_hdr_parse_line(*, UInt8*, Int32*) : *
+# fun bcf_hdr_parse_line(*, LibC::Char*, Int32*) : *
 # fun bcf_hrec_format(*, *) : Int32
 # fun bcf_hdr_add_hrec(*, *) : Int32
-# fun bcf_hdr_get_hrec(*, Int32, UInt8*, UInt8*, UInt8*) : *
+# fun bcf_hdr_get_hrec(*, Int32, LibC::Char*, LibC::Char*, LibC::Char*) : *
 # fun bcf_hrec_dup(*) : *
-# fun bcf_hrec_add_key(*, UInt8*, SizeT) : Int32
-# fun bcf_hrec_set_val(*, Int32, UInt8*, SizeT, Int32) : Int32
-# fun bcf_hrec_find_key(*, UInt8*) : Int32
+# fun bcf_hrec_add_key(*, LibC::Char*, SizeT) : Int32
+# fun bcf_hrec_set_val(*, Int32, LibC::Char*, SizeT, Int32) : Int32
+# fun bcf_hrec_find_key(*, LibC::Char*) : Int32
 # fun hrec_add_idx(*, Int32) : Int32
 # fun bcf_hrec_destroy(*) : Void
 # fun bcf_subset(*, *, Int32, Int32*) : Int32
@@ -730,41 +730,41 @@ fun vcf_open_mode(UInt8*, UInt8*, UInt8*) : Int32
 # fun bcf_update_filter(*, *, Int32*, Int32) : Int32
 # fun bcf_add_filter(*, *, Int32) : Int32
 # fun bcf_remove_filter(*, *, Int32, Int32) : Int32
-# fun bcf_has_filter(*, *, UInt8*) : Int32
-# fun bcf_update_alleles(*, *, UInt8**, Int32) : Int32
-# fun bcf_update_alleles_str(*, *, UInt8*) : Int32
-# fun bcf_update_id(*, *, UInt8*) : Int32
-# fun bcf_add_id(*, *, UInt8*) : Int32
-# fun bcf_update_info(*, *, UInt8*, Void*, Int32, Int32) : Int32
-# fun bcf_update_info_int64(*, *, UInt8*, Int64*, Int32) : Int32
-# fun bcf_update_format_string(*, *, UInt8*, UInt8**, Int32) : Int32
-# fun bcf_update_format(*, *, UInt8*, Void*, Int32, Int32) : Int32
+# fun bcf_has_filter(*, *, LibC::Char*) : Int32
+# fun bcf_update_alleles(*, *, LibC::Char**, Int32) : Int32
+# fun bcf_update_alleles_str(*, *, LibC::Char*) : Int32
+# fun bcf_update_id(*, *, LibC::Char*) : Int32
+# fun bcf_add_id(*, *, LibC::Char*) : Int32
+# fun bcf_update_info(*, *, LibC::Char*, Void*, Int32, Int32) : Int32
+# fun bcf_update_info_int64(*, *, LibC::Char*, Int64*, Int32) : Int32
+# fun bcf_update_format_string(*, *, LibC::Char*, LibC::Char**, Int32) : Int32
+# fun bcf_update_format(*, *, LibC::Char*, Void*, Int32, Int32) : Int32
 fun bcf_gt2alleles(Int32, Int32*, Int32*) : Void
-# fun bcf_get_fmt(*, *, UInt8*) : *
-# fun bcf_get_info(*, *, UInt8*) : *
+# fun bcf_get_fmt(*, *, LibC::Char*) : *
+# fun bcf_get_info(*, *, LibC::Char*) : *
 # fun bcf_get_fmt_id(*, Int32) : *
 # fun bcf_get_info_id(*, Int32) : *
-# fun bcf_get_info_values(*, *, UInt8*, Void**, Int32*, Int32) : Int32
-# fun bcf_get_info_int64(*, *, UInt8*, Int64**, Int32*) : Int32
-# fun bcf_get_format_string(*, *, UInt8*, **, Int32*) : Int32
-# fun bcf_get_format_values(*, *, UInt8*, Void**, Int32*, Int32) : Int32
-# fun bcf_hdr_id2int(*, Int32, UInt8*) : Int32
-# fun bcf_hdr_name2id(*, UInt8*) : Int32
-# fun bcf_hdr_id2name(*, Int32) : UInt8*
-# fun bcf_seqname(*, *) : UInt8*
-# fun bcf_seqname_safe(*, *) : UInt8*
+# fun bcf_get_info_values(*, *, LibC::Char*, Void**, Int32*, Int32) : Int32
+# fun bcf_get_info_int64(*, *, LibC::Char*, Int64**, Int32*) : Int32
+# fun bcf_get_format_string(*, *, LibC::Char*, **, Int32*) : Int32
+# fun bcf_get_format_values(*, *, LibC::Char*, Void**, Int32*, Int32) : Int32
+# fun bcf_hdr_id2int(*, Int32, LibC::Char*) : Int32
+# fun bcf_hdr_name2id(*, LibC::Char*) : Int32
+# fun bcf_hdr_id2name(*, Int32) : LibC::Char*
+# fun bcf_seqname(*, *) : LibC::Char*
+# fun bcf_seqname_safe(*, *) : LibC::Char*
 # fun bcf_fmt_array(*, Int32, Int32, Void*) : Int32
 # fun bcf_fmt_sized_array(*, UInt8*) : UInt8*
-# fun bcf_enc_vchar(*, Int32, UInt8*) : Int32
+# fun bcf_enc_vchar(*, Int32, LibC::Char*) : Int32
 # fun bcf_enc_vint(*, Int32, Int32*, Int32) : Int32
 # fun bcf_enc_vfloat(*, Int32, Float32*) : Int32
 # fun bcf_itr_next(*, *, Void*) : Int32
-# fun bcf_index_load2(UInt8*, UInt8*) : *
-# fun bcf_index_load3(UInt8*, UInt8*, Int32) : *
-fun bcf_index_build(UInt8*, Int32) : Int32
-fun bcf_index_build2(UInt8*, UInt8*, Int32) : Int32
-fun bcf_index_build3(UInt8*, UInt8*, Int32, Int32) : Int32
-# fun bcf_idx_init(*, *, Int32, UInt8*) : Int32
+# fun bcf_index_load2(LibC::Char*, LibC::Char*) : *
+# fun bcf_index_load3(LibC::Char*, LibC::Char*, Int32) : *
+fun bcf_index_build(LibC::Char*, Int32) : Int32
+fun bcf_index_build2(LibC::Char*, LibC::Char*, Int32) : Int32
+fun bcf_index_build3(LibC::Char*, LibC::Char*, Int32, Int32) : Int32
+# fun bcf_idx_init(*, *, Int32, LibC::Char*) : Int32
 # fun bcf_idx_save(*) : Int32
 fun bcf_float_set(Float32*, UInt32) : Void
 fun bcf_float_is_missing(Float32) : Int32
@@ -781,28 +781,21 @@ fun bcf_dec_size(UInt8*, UInt8**, Int32*) : Int32
 # fun bcf_remove_allele_set(*, *, *) : Int32
 # fun bcf_calc_ac(*, *, Int32*, Int32) : Int32
 # fun bcf_gt_type(*, Int32, Int32*, Int32*) : Int32
-fun bcf_acgt2int(UInt8) : Int32
+fun bcf_acgt2int(LibC::Char) : Int32
 
 # Unknown types
-# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", ":array", ":enum", "struct", ":bitfield", "kstring_t", "union", "htsFormat", "hts_pos_t", ":function-pointer", "bcf_dec_t", "intmax_t", "imaxdiv_t", "uintmax_t", "__gwchar_t", ":long-double", "fd_set", ":struct", "__sigset_t", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t", "locale_t", "FILE", "__gnuc_va_list", "__off_t", "fpos_t", "va_list", "ks_tokaux_t", "hts_opt", "htsFile", "htsThreadPool", "hts_idx_t", "hts_name2id_f", "hts_itr_t", "BGZF", "hts_id2name_f", "hts_reglist_t", "errmod_t", "probaln_par_t", "hts_md5_context", ":unsigned-char", "bcf_hdr_t", "bcf1_t", "bcf_hrec_t", "bcf_fmt_t", "bcf_info_t"]
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":array", ":enum", "struct", ":bitfield", "kstring_t", "union", "htsFormat", "hts_idx_t", ":struct", "hts_pos_t", "hts_pair_pos_t", "hts_reglist_t", "hts_pair64_max_t", ":function-pointer", "bcf_idinfo_t", "bcf_hrec_t", "bcf_info_t", "bcf_fmt_t", "bcf_variant_t", "bcf_dec_t", "intmax_t", "imaxdiv_t", "uintmax_t", "__gwchar_t", ":long-double", "fd_set", "__sigset_t", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t", "locale_t", "FILE", "__gnuc_va_list", "__off_t", "fpos_t", "va_list", "ks_tokaux_t", "hts_opt", "htsFile", ":pointer", "htsThreadPool", "hts_name2id_f", "hts_itr_t", "BGZF", "hts_id2name_f", "errmod_t", "probaln_par_t", "hts_md5_context", ":unsigned-char", "bcf_hdr_t", "bcf1_t"]
 # timeval, __time_t
 # timeval, __suseconds_t
 # timespec, __time_t
 # timespec, __syscall_slong_t
-# random_data, :pointer
-# random_data, :pointer
-# random_data, :pointer
-# random_data, :pointer
 # drand48_data, :array
 # drand48_data, :array
-# kstring_t, :pointer
 # ks_tokaux_t, :array
-# ks_tokaux_t, :pointer
 # htsFormat, :enum
 # htsFormat, :enum
 # htsFormat, struct
 # htsFormat, :enum
-# htsFormat, :pointer
 # htsFile, :bitfield
 # htsFile, :bitfield
 # htsFile, :bitfield
@@ -810,24 +803,18 @@ fun bcf_acgt2int(UInt8) : Int32
 # htsFile, :bitfield
 # htsFile, :bitfield
 # htsFile, kstring_t
-# htsFile, :pointer
-# htsFile, :pointer
 # htsFile, union
-# htsFile, :pointer
 # htsFile, htsFormat
-# htsFile, :pointer
-# htsFile, :pointer
-# htsFile, :pointer
-# htsFile, :pointer
-# htsThreadPool, :pointer
-# hts_opt, :pointer
+# htsFile, hts_idx_t
+# htsFile, struct
+# htsFile, struct
+# htsThreadPool, struct
 # hts_opt, :enum
 # hts_opt, union
-# hts_opt, :pointer
+# hts_opt, :struct
 # hts_pair_pos_t, hts_pos_t
 # hts_pair_pos_t, hts_pos_t
-# hts_reglist_t, :pointer
-# hts_reglist_t, :pointer
+# hts_reglist_t, hts_pair_pos_t
 # hts_reglist_t, hts_pos_t
 # hts_reglist_t, hts_pos_t
 # hts_itr_t, :bitfield
@@ -838,45 +825,32 @@ fun bcf_acgt2int(UInt8) : Int32
 # hts_itr_t, :bitfield
 # hts_itr_t, hts_pos_t
 # hts_itr_t, hts_pos_t
-# hts_itr_t, :pointer
+# hts_itr_t, hts_reglist_t
 # hts_itr_t, hts_pos_t
 # hts_itr_t, hts_pos_t
-# hts_itr_t, :pointer
+# hts_itr_t, hts_pair64_max_t
 # hts_itr_t, :function-pointer
 # hts_itr_t, :function-pointer
 # hts_itr_t, :function-pointer
 # hts_itr_t, struct
-# bcf_hrec_t, :pointer
-# bcf_hrec_t, :pointer
-# bcf_hrec_t, :pointer
-# bcf_hrec_t, :pointer
 # bcf_idinfo_t, :array
 # bcf_idinfo_t, :array
-# bcf_idpair_t, :pointer
-# bcf_idpair_t, :pointer
+# bcf_idpair_t, bcf_idinfo_t
 # bcf_hdr_t, :array
 # bcf_hdr_t, :array
 # bcf_hdr_t, :array
-# bcf_hdr_t, :pointer
-# bcf_hdr_t, :pointer
+# bcf_hdr_t, bcf_hrec_t
 # bcf_hdr_t, :array
-# bcf_hdr_t, :pointer
 # bcf_hdr_t, kstring_t
 # bcf_hdr_t, :array
-# bcf_fmt_t, :pointer
 # bcf_fmt_t, :bitfield
 # bcf_fmt_t, :bitfield
 # bcf_info_t, union
-# bcf_info_t, :pointer
 # bcf_info_t, :bitfield
 # bcf_info_t, :bitfield
-# bcf_dec_t, :pointer
-# bcf_dec_t, :pointer
-# bcf_dec_t, :pointer
-# bcf_dec_t, :pointer
-# bcf_dec_t, :pointer
-# bcf_dec_t, :pointer
-# bcf_dec_t, :pointer
+# bcf_dec_t, bcf_info_t
+# bcf_dec_t, bcf_fmt_t
+# bcf_dec_t, bcf_variant_t
 # bcf1_t, hts_pos_t
 # bcf1_t, hts_pos_t
 # bcf1_t, :bitfield

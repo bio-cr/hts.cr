@@ -22,11 +22,11 @@ struct KstringT
 end
 
 struct HFILE
-  buffer : 
-  begin : 
-  end : 
-  limit : 
-  backend : 
+  buffer : LibC::Char*
+  begin : LibC::Char*
+  end : LibC::Char*
+  limit : LibC::Char*
+  backend : *
   offset : 
   at_eof : 
   mobile : 
@@ -39,51 +39,51 @@ fun memccpy(Void*, Void*, Int32, SizeT) : Void*
 fun memset(Void*, Int32, SizeT) : Void*
 fun memcmp(Void*, Void*, SizeT) : Int32
 fun memchr(Void*, Int32, SizeT) : Void*
-fun strcpy(UInt8*, UInt8*) : UInt8*
-fun strncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun strcat(UInt8*, UInt8*) : UInt8*
-fun strncat(UInt8*, UInt8*, SizeT) : UInt8*
-fun strcmp(UInt8*, UInt8*) : Int32
-fun strncmp(UInt8*, UInt8*, SizeT) : Int32
-fun strcoll(UInt8*, UInt8*) : Int32
-fun strxfrm(UInt8*, UInt8*, SizeT) : ULong
-# fun strcoll_l(UInt8*, UInt8*, ) : Int32
-# fun strxfrm_l(UInt8*, UInt8*, SizeT, ) : SizeT
-fun strdup(UInt8*) : UInt8*
-fun strndup(UInt8*, SizeT) : UInt8*
-fun strchr(UInt8*, Int32) : UInt8*
-fun strrchr(UInt8*, Int32) : UInt8*
-fun strcspn(UInt8*, UInt8*) : ULong
-fun strspn(UInt8*, UInt8*) : ULong
-fun strpbrk(UInt8*, UInt8*) : UInt8*
-fun strstr(UInt8*, UInt8*) : UInt8*
-fun strtok(UInt8*, UInt8*) : UInt8*
-fun __strtok_r(UInt8*, UInt8*, UInt8**) : UInt8*
-fun strtok_r(UInt8*, UInt8*, UInt8**) : UInt8*
-fun strlen(UInt8*) : ULong
-fun strnlen(UInt8*, SizeT) : SizeT
-fun strerror(Int32) : UInt8*
-fun __xpg_strerror_r(Int32, UInt8*, SizeT) : Int32
-# fun strerror_l(Int32, ) : UInt8*
+fun strcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun strcat(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strncat(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun strcmp(LibC::Char*, LibC::Char*) : Int32
+fun strncmp(LibC::Char*, LibC::Char*, SizeT) : Int32
+fun strcoll(LibC::Char*, LibC::Char*) : Int32
+fun strxfrm(LibC::Char*, LibC::Char*, SizeT) : ULong
+# fun strcoll_l(LibC::Char*, LibC::Char*, ) : Int32
+# fun strxfrm_l(LibC::Char*, LibC::Char*, SizeT, ) : SizeT
+fun strdup(LibC::Char*) : LibC::Char*
+fun strndup(LibC::Char*, SizeT) : LibC::Char*
+fun strchr(LibC::Char*, Int32) : LibC::Char*
+fun strrchr(LibC::Char*, Int32) : LibC::Char*
+fun strcspn(LibC::Char*, LibC::Char*) : ULong
+fun strspn(LibC::Char*, LibC::Char*) : ULong
+fun strpbrk(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strstr(LibC::Char*, LibC::Char*) : LibC::Char*
+fun strtok(LibC::Char*, LibC::Char*) : LibC::Char*
+fun __strtok_r(LibC::Char*, LibC::Char*, LibC::Char**) : LibC::Char*
+fun strtok_r(LibC::Char*, LibC::Char*, LibC::Char**) : LibC::Char*
+fun strlen(LibC::Char*) : ULong
+fun strnlen(LibC::Char*, SizeT) : SizeT
+fun strerror(Int32) : LibC::Char*
+fun __xpg_strerror_r(Int32, LibC::Char*, SizeT) : Int32
+# fun strerror_l(Int32, ) : LibC::Char*
 fun bcmp(Void*, Void*, SizeT) : Int32
 fun bcopy(Void*, Void*, SizeT) : Void
 fun bzero(Void*, SizeT) : Void
-fun index(UInt8*, Int32) : UInt8*
-fun rindex(UInt8*, Int32) : UInt8*
+fun index(LibC::Char*, Int32) : LibC::Char*
+fun rindex(LibC::Char*, Int32) : LibC::Char*
 fun ffs(Int32) : Int32
 fun ffsl(Long) : Int32
 fun ffsll(LongLong) : Int32
-fun strcasecmp(UInt8*, UInt8*) : Int32
-fun strncasecmp(UInt8*, UInt8*, SizeT) : Int32
-# fun strcasecmp_l(UInt8*, UInt8*, ) : Int32
-# fun strncasecmp_l(UInt8*, UInt8*, SizeT, ) : Int32
+fun strcasecmp(LibC::Char*, LibC::Char*) : Int32
+fun strncasecmp(LibC::Char*, LibC::Char*, SizeT) : Int32
+# fun strcasecmp_l(LibC::Char*, LibC::Char*, ) : Int32
+# fun strncasecmp_l(LibC::Char*, LibC::Char*, SizeT, ) : Int32
 fun explicit_bzero(Void*, SizeT) : Void
-fun strsep(UInt8**, UInt8*) : UInt8*
-fun strsignal(Int32) : UInt8*
-fun __stpcpy(UInt8*, UInt8*) : UInt8*
-fun stpcpy(UInt8*, UInt8*) : UInt8*
-fun __stpncpy(UInt8*, UInt8*, SizeT) : UInt8*
-fun stpncpy(UInt8*, UInt8*, SizeT) : UInt8*
+fun strsep(LibC::Char**, LibC::Char*) : LibC::Char*
+fun strsignal(Int32) : LibC::Char*
+fun __stpcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun stpcpy(LibC::Char*, LibC::Char*) : LibC::Char*
+fun __stpncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
+fun stpncpy(LibC::Char*, LibC::Char*, SizeT) : LibC::Char*
 fun __bswap_16(UInt16) : UInt16
 fun __bswap_32(UInt32) : UInt32
 fun __bswap_64(UInt64) : UInt64
@@ -92,10 +92,10 @@ fun __uint32_identity(UInt32) : UInt32
 fun __uint64_identity(UInt64) : UInt64
 # fun select(Int32, *, *, *, *) : Int32
 # fun pselect(Int32, *, *, *, *, *) : Int32
-# fun hopen(UInt8*, UInt8*) : *
-# fun hdopen(Int32, UInt8*) : *
-fun hisremote(UInt8*) : Int32
-# fun haddextension(*, UInt8*, Int32, UInt8*) : UInt8*
+# fun hopen(LibC::Char*, LibC::Char*) : *
+# fun hdopen(Int32, LibC::Char*) : *
+fun hisremote(LibC::Char*) : Int32
+# fun haddextension(*, LibC::Char*, Int32, LibC::Char*) : LibC::Char*
 # fun hclose(*) : Int32
 # fun hclose_abruptly(*) : Void
 # fun herrno(*) : Int32
@@ -103,32 +103,28 @@ fun hisremote(UInt8*) : Int32
 # fun hseek(*, , Int32) : 
 # fun htell(*) : 
 # fun hgetc(*) : Int32
-# fun hgetdelim(UInt8*, SizeT, Int32, *) : SSizeT
-# fun hgetln(UInt8*, SizeT, *) : SSizeT
-# fun hgets(UInt8*, Int32, *) : UInt8*
+# fun hgetdelim(LibC::Char*, SizeT, Int32, *) : SSizeT
+# fun hgetln(LibC::Char*, SizeT, *) : SSizeT
+# fun hgets(LibC::Char*, Int32, *) : LibC::Char*
 # fun hpeek(*, Void*, SizeT) : SSizeT
 # fun hread(*, Void*, SizeT) : SSizeT
 # fun hputc(Int32, *) : Int32
-# fun hputs(UInt8*, *) : Int32
+# fun hputs(LibC::Char*, *) : Int32
 # fun hwrite(*, Void*, SizeT) : SSizeT
 # fun hflush(*) : Int32
-# fun hfile_mem_get_buffer(*, SizeT*) : UInt8*
-# fun hfile_mem_steal_buffer(*, SizeT*) : UInt8*
-fun hfile_list_schemes(UInt8*, UInt8**, Int32*) : Int32
-fun hfile_list_plugins(UInt8**, Int32*) : Int32
-fun hfile_has_plugin(UInt8*) : Int32
+# fun hfile_mem_get_buffer(*, SizeT*) : LibC::Char*
+# fun hfile_mem_steal_buffer(*, SizeT*) : LibC::Char*
+fun hfile_list_schemes(LibC::Char*, LibC::Char**, Int32*) : Int32
+fun hfile_list_plugins(LibC::Char**, Int32*) : Int32
+fun hfile_has_plugin(LibC::Char*) : Int32
 
 # Unknown types
-# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", "off_t", ":bitfield", "locale_t", "fd_set", ":struct", "__sigset_t", "hFILE", "struct"]
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", "struct", "off_t", ":bitfield", "locale_t", "fd_set", ":struct", "__sigset_t", "hFILE"]
 # timeval, __time_t
 # timeval, __suseconds_t
 # timespec, __time_t
 # timespec, __syscall_slong_t
-# hFILE, :pointer
-# hFILE, :pointer
-# hFILE, :pointer
-# hFILE, :pointer
-# hFILE, :pointer
+# hFILE, struct
 # hFILE, off_t
 # hFILE, :bitfield
 # hFILE, :bitfield

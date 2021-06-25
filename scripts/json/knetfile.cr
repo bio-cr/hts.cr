@@ -43,26 +43,26 @@ struct KnetFileS
   type : Int32
   fd : Int32
   offset : Int64
-  host : 
-  port : 
+  host : LibC::Char*
+  port : LibC::Char*
   ctrl_fd : Int32
   pasv_ip : 
   pasv_port : Int32
   max_response : Int32
   no_reconnect : Int32
   is_ready : Int32
-  response : 
-  retr : 
-  size_cmd : 
+  response : LibC::Char*
+  retr : LibC::Char*
+  size_cmd : LibC::Char*
   seek_offset : Int64
   file_size : Int64
-  path : 
-  http_host : 
+  path : LibC::Char*
+  http_host : LibC::Char*
 end
 # fun fcntl(Int32, Int32) : Int32
-fun open(UInt8*, Int32) : Int32
-fun openat(Int32, UInt8*, Int32) : Int32
-# fun creat(UInt8*, ) : Int32
+fun open(LibC::Char*, Int32) : Int32
+fun openat(Int32, LibC::Char*, Int32) : Int32
+# fun creat(LibC::Char*, ) : Int32
 # fun lockf(Int32, Int32, ) : Int32
 # fun posix_fadvise(Int32, , , Int32) : Int32
 # fun posix_fallocate(Int32, , ) : Int32
@@ -74,14 +74,14 @@ fun __uint32_identity(UInt32) : UInt32
 fun __uint64_identity(UInt64) : UInt64
 # fun select(Int32, *, *, *, *) : Int32
 # fun pselect(Int32, *, *, *, *, *) : Int32
-# fun knet_open(UInt8*, UInt8*) : *
-# fun knet_dopen(Int32, UInt8*) : *
+# fun knet_open(LibC::Char*, LibC::Char*) : *
+# fun knet_dopen(Int32, LibC::Char*) : *
 # fun knet_read(*, Void*, SizeT) : SSizeT
 # fun knet_seek(*, , Int32) : 
 # fun knet_close(*) : Int32
 
 # Unknown types
-# ["__off_t", "__pid_t", "__time_t", "__syscall_slong_t", "__dev_t", "__ino_t", "__nlink_t", "__mode_t", "__uid_t", "__gid_t", "__blksize_t", "__blkcnt_t", ":struct", ":array", "__suseconds_t", ":pointer", "mode_t", "off_t", "fd_set", "__sigset_t", "knetFile"]
+# ["__off_t", "__pid_t", "__time_t", "__syscall_slong_t", "__dev_t", "__ino_t", "__nlink_t", "__mode_t", "__uid_t", "__gid_t", "__blksize_t", "__blkcnt_t", ":struct", ":array", "__suseconds_t", "mode_t", "off_t", "fd_set", "__sigset_t", "knetFile"]
 # flock, __off_t
 # flock, __off_t
 # flock, __pid_t
@@ -103,14 +103,7 @@ fun __uint64_identity(UInt64) : UInt64
 # stat, :array
 # timeval, __time_t
 # timeval, __suseconds_t
-# knetFile_s, :pointer
-# knetFile_s, :pointer
 # knetFile_s, :array
-# knetFile_s, :pointer
-# knetFile_s, :pointer
-# knetFile_s, :pointer
-# knetFile_s, :pointer
-# knetFile_s, :pointer
 # creat, mode_t
 # lockf, off_t
 # posix_fadvise, off_t

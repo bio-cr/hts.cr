@@ -31,7 +31,7 @@ class Converter
     ":unsigned-long"      => "ULong",
     ":long-long"          => "LongLong",
     ":unsigned-long-long" => "ULongLong",
-    ":char"               => "UInt8",
+    ":char"               => "LibC::Char",
     ":signed-char"        => "Int8",
     "size_t"              => "SizeT",
     "ssize_t"             => "SSizeT",
@@ -87,7 +87,7 @@ class Converter
 
   def struct_to_string(sh)
     name = sh["name"].to_s
-    
+
     if name.starts_with?("_")
       return nil
     end
@@ -95,7 +95,7 @@ class Converter
     str = "struct " + name.camelcase + "\n"
     sh["fields"].as_a.each do |field|
       str += "  #{field["name"]} : "
-      str += crystal_type(field.dig?("type", "tag"), name)
+      str += parse_parameters(field, name)
       str += "\n"
     end
     str += "end\n"
@@ -111,24 +111,7 @@ class Converter
       unless idx == 0
         str += ", "
       end
-
-      type_1 = param["type"]
-      # not pointer
-      unless type_1["tag"] == ":pointer"
-        str += crystal_type(type_1["tag"], name)
-        # pointer
-      else
-        type_2 = type_1["type"]
-        # not pointer of pointer
-        unless type_2["tag"] == ":pointer"
-          str += crystal_type(type_2["tag"], name)
-          str += "*"
-          # pointer of pointer
-        else
-          str += crystal_type(type_2.dig("type", "tag"), name)
-          str += "**"
-        end
-      end
+      str += parse_parameters(param, name)
     end
 
     str += ") : "
@@ -148,6 +131,28 @@ class Converter
     else
       str
     end
+  end
+
+  def parse_parameters(param, name)
+    str = ""
+    type_1 = param["type"]
+    # not pointer
+    unless type_1["tag"] == ":pointer"
+      str += crystal_type(type_1["tag"], name)
+      # pointer
+    else
+      type_2 = type_1["type"]
+      # not pointer of pointer
+      unless type_2["tag"] == ":pointer"
+        str += crystal_type(type_2["tag"], name)
+        str += "*"
+        # pointer of pointer
+      else
+        str += crystal_type(type_2.dig("type", "tag"), name)
+        str += "**"
+      end
+    end
+    str
   end
 
   def unknown_types_info
