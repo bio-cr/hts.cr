@@ -8,50 +8,10 @@ struct Timespec
   tv_nsec : 
 end
 
-struct PthreadInternalList
-  __prev : 
-  __next : 
-end
 
-struct PthreadInternalSlist
-  __next : 
-end
 
-struct PthreadMutexS
-  __lock : Int32
-  __count : UInt32
-  __owner : Int32
-  __nusers : UInt32
-  __kind : Int32
-  __spins : Short
-  __elision : Short
-  __list : 
-end
 
-struct PthreadRwlockArchT
-  __readers : UInt32
-  __writers : UInt32
-  __wrphase_futex : UInt32
-  __writers_futex : UInt32
-  __pad3 : UInt32
-  __pad4 : UInt32
-  __cur_writer : Int32
-  __shared : Int32
-  __rwelision : Int8
-  __pad1 : 
-  __pad2 : ULong
-  __flags : UInt32
-end
 
-struct PthreadCondS
-   : 
-   : 
-  __g_refs : 
-  __g_size : 
-  __g1_orig_size : UInt32
-  __wrefs : UInt32
-  __g_signals : 
-end
 
 struct RandomData
   fptr : 
@@ -71,76 +31,16 @@ struct Drand48Data
   __a : ULongLong
 end
 
-struct LocaleStruct
-  __locales : 
-  __ctype_b : 
-  __ctype_tolower : 
-  __ctype_toupper : 
-  __names : 
-end
 
-struct LocaleData
-end
 
-struct GFposT
-  __pos : 
-  __state : 
-end
 
-struct GFpos64T
-  __pos : 
-  __state : 
-end
 
-struct IOFILE
-end
 
-struct IOFILE
-end
 
-struct IOFILE
-end
 
-struct IOMarker
-end
 
-struct IOCodecvt
-end
 
-struct IOWideData
-end
 
-struct IOFILE
-  _flags : Int32
-  _IO_read_ptr : 
-  _IO_read_end : 
-  _IO_read_base : 
-  _IO_write_base : 
-  _IO_write_ptr : 
-  _IO_write_end : 
-  _IO_buf_base : 
-  _IO_buf_end : 
-  _IO_save_base : 
-  _IO_backup_base : 
-  _IO_save_end : 
-  _markers : 
-  _chain : 
-  _fileno : Int32
-  _flags2 : Int32
-  _old_offset : 
-  _cur_column : UShort
-  _vtable_offset : Int8
-  _shortbuf : 
-  _lock : 
-  _offset : 
-  _codecvt : 
-  _wide_data : 
-  _freeres_list : 
-  _freeres_buf : 
-  __pad5 : SizeT
-  _mode : Int32
-  _unused2 : 
-end
 
 struct KstringT
   l : SizeT
@@ -346,7 +246,6 @@ end
 
 struct BamMplpS
 end
-
 # fun __errno_location() : Int32*
 fun __bswap_16(UInt16) : UInt16
 fun __bswap_32(UInt32) : UInt32
@@ -846,579 +745,537 @@ fun bam_auxB2f(UInt8*, UInt32) : Float64
 # fun sam_cap_mapq(*, UInt8*, , Int32) : Int32
 # fun sam_prob_realn(*, UInt8*, , Int32) : Int32
 
-# Unknow types
-# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", "__pthread_list_t", ":array", "union", "__off_t", "__mbstate_t", "__off64_t", ":enum", "struct", ":bitfield", "kstring_t", "htsFormat", "hts_pos_t", ":function-pointer", "bam1_core_t", "bam_pileup_cd", "fd_set", ":struct", "__sigset_t", "intmax_t", "imaxdiv_t", "uintmax_t", "__gwchar_t", ":long-double", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t", "locale_t", "FILE", "__gnuc_va_list", "fpos_t", "va_list", "ks_tokaux_t", "hts_opt", "htsFile", "htsThreadPool", "hts_idx_t", "hts_name2id_f", "hts_itr_t", "BGZF", "hts_id2name_f", "hts_reglist_t", "errmod_t", "probaln_par_t", "hts_md5_context", ":unsigned-char", "sam_hdr_t", "samFile", "bam1_t", "bam_plp_auto_f", "bam_plp_t", "bam_pileup1_t", "bam_mplp_t"]
-# caller
-# timeval, __time_t, convert.rb:79:in `block (2 levels) in <main>'
-# timeval, __suseconds_t, convert.rb:79:in `block (2 levels) in <main>'
-# timespec, __time_t, convert.rb:79:in `block (2 levels) in <main>'
-# timespec, __syscall_slong_t, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_list, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_list, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_slist, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_mutex_s, __pthread_list_t, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_rwlock_arch_t, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, union, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, union, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# drand48_data, :array, convert.rb:79:in `block (2 levels) in <main>'
-# drand48_data, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :array, convert.rb:79:in `block (2 levels) in <main>'
-# _G_fpos_t, __off_t, convert.rb:79:in `block (2 levels) in <main>'
-# _G_fpos_t, __mbstate_t, convert.rb:79:in `block (2 levels) in <main>'
-# _G_fpos64_t, __off64_t, convert.rb:79:in `block (2 levels) in <main>'
-# _G_fpos64_t, __mbstate_t, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, __off_t, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :array, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, __off64_t, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# _IO_FILE, :array, convert.rb:79:in `block (2 levels) in <main>'
-# kstring_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# ks_tokaux_t, :array, convert.rb:79:in `block (2 levels) in <main>'
-# ks_tokaux_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFormat, :enum, convert.rb:79:in `block (2 levels) in <main>'
-# htsFormat, :enum, convert.rb:79:in `block (2 levels) in <main>'
-# htsFormat, struct, convert.rb:79:in `block (2 levels) in <main>'
-# htsFormat, :enum, convert.rb:79:in `block (2 levels) in <main>'
-# htsFormat, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, kstring_t, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, union, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, htsFormat, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsFile, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# htsThreadPool, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_opt, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_opt, :enum, convert.rb:79:in `block (2 levels) in <main>'
-# hts_opt, union, convert.rb:79:in `block (2 levels) in <main>'
-# hts_opt, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_pair_pos_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_pair_pos_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_reglist_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_reglist_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_reglist_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_reglist_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :function-pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :function-pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, :function-pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hts_itr_t, struct, convert.rb:79:in `block (2 levels) in <main>'
-# sam_hdr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# sam_hdr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# sam_hdr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# sam_hdr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# sam_hdr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# sam_hdr_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_core_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_core_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_core_t, hts_pos_t, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_t, bam1_core_t, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# bam_pileup1_t, bam_pileup_cd, convert.rb:79:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, __sigset_t, convert.rb:100:in `block (2 levels) in <main>'
-# imaxabs, intmax_t, convert.rb:104:in `block (2 levels) in <main>'
-# imaxabs, intmax_t, convert.rb:112:in `block in <main>'
-# imaxdiv, intmax_t, convert.rb:104:in `block (2 levels) in <main>'
-# imaxdiv, intmax_t, convert.rb:104:in `block (2 levels) in <main>'
-# imaxdiv, imaxdiv_t, convert.rb:112:in `block in <main>'
-# strtoimax, intmax_t, convert.rb:112:in `block in <main>'
-# strtoumax, uintmax_t, convert.rb:112:in `block in <main>'
-# wcstoimax, __gwchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# wcstoimax, __gwchar_t, convert.rb:97:in `block (2 levels) in <main>'
-# wcstoimax, intmax_t, convert.rb:112:in `block in <main>'
-# wcstoumax, __gwchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# wcstoumax, __gwchar_t, convert.rb:97:in `block (2 levels) in <main>'
-# wcstoumax, uintmax_t, convert.rb:112:in `block in <main>'
-# hts_set_log_level, :enum, convert.rb:104:in `block (2 levels) in <main>'
-# hts_get_log_level, :enum, convert.rb:112:in `block in <main>'
-# hts_log, :enum, convert.rb:104:in `block (2 levels) in <main>'
-# strtold, :long-double, convert.rb:112:in `block in <main>'
-# random_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# srandom_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# initstate_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# setstate_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# erand48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# nrand48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# jrand48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# seed48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# lcong48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# drand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# erand48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# erand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# lrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# nrand48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# nrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# mrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# jrand48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# jrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# srand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# seed48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# seed48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# lcong48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# lcong48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# atexit, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# at_quick_exit, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# on_exit, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# bsearch, __compar_fn_t, convert.rb:104:in `block (2 levels) in <main>'
-# qsort, __compar_fn_t, convert.rb:104:in `block (2 levels) in <main>'
-# div, div_t, convert.rb:112:in `block in <main>'
-# ldiv, ldiv_t, convert.rb:112:in `block in <main>'
-# lldiv, lldiv_t, convert.rb:112:in `block in <main>'
-# qecvt, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qfcvt, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qgcvt, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qecvt_r, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qfcvt_r, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# mbtowc, wchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# wctomb, wchar_t, convert.rb:104:in `block (2 levels) in <main>'
-# mbstowcs, wchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# wcstombs, wchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# strcoll_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strxfrm_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strerror_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strcasecmp_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strncasecmp_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# fclose, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fflush, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fflush_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# freopen, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# setbuf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# setvbuf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# setbuffer, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# setlinebuf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fprintf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# vfprintf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# vfprintf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# vprintf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# vsprintf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# vsnprintf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# vdprintf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# fscanf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# __isoc99_fscanf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# vfscanf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# vfscanf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# vscanf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# vsscanf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# __isoc99_vfscanf, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# __isoc99_vfscanf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# __isoc99_vscanf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# __isoc99_vsscanf, __gnuc_va_list, convert.rb:104:in `block (2 levels) in <main>'
-# fgetc, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# getc, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# getc_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fgetc_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fputc, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# putc, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fputc_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# putc_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# getw, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# putw, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fgets, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# __getdelim, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# getdelim, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# getline, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fputs, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# ungetc, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fread, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fwrite, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fread_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fwrite_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fseek, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# ftell, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# rewind, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fseeko, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fseeko, __off_t, convert.rb:104:in `block (2 levels) in <main>'
-# ftello, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# ftello, __off_t, convert.rb:112:in `block in <main>'
-# fgetpos, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fgetpos, fpos_t, convert.rb:100:in `block (2 levels) in <main>'
-# fsetpos, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fsetpos, fpos_t, convert.rb:100:in `block (2 levels) in <main>'
-# clearerr, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# feof, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# ferror, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# clearerr_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# feof_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# ferror_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fileno, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# fileno_unlocked, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# , FILE, convert.rb:109:in `block in <main>'
-# pclose, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# flockfile, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# ftrylockfile, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# funlockfile, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# __uflow, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# __overflow, FILE, convert.rb:100:in `block (2 levels) in <main>'
-# kvsprintf, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kvsprintf, va_list, convert.rb:104:in `block (2 levels) in <main>'
-# ksprintf, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputd, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kstrtok, ks_tokaux_t, convert.rb:100:in `block (2 levels) in <main>'
-# kgetline, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kgetline, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# kgetline2, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kgetline2, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# ks_initialize, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_resize, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_expand, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_str, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_c_str, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_len, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_clear, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# , kstring_t, convert.rb:109:in `block in <main>'
-# ks_release, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ks_free, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputsn, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputs, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputc, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputc_, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputsn_, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputuw, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputw, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputll, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# kputl, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# ksplit, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_opt_add, hts_opt, convert.rb:97:in `block (2 levels) in <main>'
-# hts_opt_apply, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_opt_apply, hts_opt, convert.rb:100:in `block (2 levels) in <main>'
-# hts_opt_free, hts_opt, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_format, htsFormat, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_opt_list, htsFormat, convert.rb:100:in `block (2 levels) in <main>'
-# hts_detect_format, struct, convert.rb:100:in `block (2 levels) in <main>'
-# hts_detect_format, htsFormat, convert.rb:100:in `block (2 levels) in <main>'
-# hts_format_description, htsFormat, convert.rb:100:in `block (2 levels) in <main>'
-# , htsFile, convert.rb:109:in `block in <main>'
-# hts_open_format, htsFormat, convert.rb:100:in `block (2 levels) in <main>'
-# , htsFile, convert.rb:109:in `block in <main>'
-# hts_hopen, struct, convert.rb:100:in `block (2 levels) in <main>'
-# , htsFile, convert.rb:109:in `block in <main>'
-# hts_close, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_get_format, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# , htsFormat, convert.rb:109:in `block in <main>'
-# hts_format_file_extension, htsFormat, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_opt, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_opt, :enum, convert.rb:104:in `block (2 levels) in <main>'
-# hts_getline, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_getline, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# , :pointer, convert.rb:109:in `block in <main>'
-# , :pointer, convert.rb:109:in `block in <main>'
-# hts_set_threads, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_thread_pool, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_thread_pool, htsThreadPool, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_cache_size, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_fai_filename, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_set_filter_expression, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_check_EOF, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# hts_idx_destroy, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_push, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_push, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# hts_idx_push, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# hts_idx_finish, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_fmt, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_tbi_name, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_save, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_save_as, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# hts_idx_get_meta, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_set_meta, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_get_stat, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_get_n_no_coor, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_reg64, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_reg64, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_region, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_region, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_parse_region, hts_name2id_f, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_query, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_query, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_query, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_query, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# hts_itr_destroy, hts_itr_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_querys, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_querys, hts_name2id_f, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_querys, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_querys, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# hts_itr_next, BGZF, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_next, hts_itr_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_seqnames, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_idx_seqnames, hts_id2name_f, convert.rb:104:in `block (2 levels) in <main>'
-# , :pointer, convert.rb:109:in `block in <main>'
-# hts_itr_multi_bam, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_multi_bam, hts_itr_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_multi_cram, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_multi_cram, hts_itr_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_regions, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_regions, hts_reglist_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_regions, hts_name2id_f, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_regions, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_regions, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_regions, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# hts_itr_regions, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# hts_itr_multi_next, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# hts_itr_multi_next, hts_itr_t, convert.rb:100:in `block (2 levels) in <main>'
-# hts_reglist_create, hts_name2id_f, convert.rb:104:in `block (2 levels) in <main>'
-# , hts_reglist_t, convert.rb:109:in `block in <main>'
-# hts_reglist_free, hts_reglist_t, convert.rb:100:in `block (2 levels) in <main>'
-# , errmod_t, convert.rb:109:in `block in <main>'
-# errmod_destroy, errmod_t, convert.rb:100:in `block (2 levels) in <main>'
-# errmod_cal, errmod_t, convert.rb:100:in `block (2 levels) in <main>'
-# probaln_glocal, probaln_par_t, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_md5_context, convert.rb:109:in `block in <main>'
-# hts_md5_update, hts_md5_context, convert.rb:100:in `block (2 levels) in <main>'
-# hts_md5_final, :unsigned-char, convert.rb:100:in `block (2 levels) in <main>'
-# hts_md5_final, hts_md5_context, convert.rb:100:in `block (2 levels) in <main>'
-# hts_md5_reset, hts_md5_context, convert.rb:100:in `block (2 levels) in <main>'
-# hts_md5_hex, :unsigned-char, convert.rb:100:in `block (2 levels) in <main>'
-# hts_md5_destroy, hts_md5_context, convert.rb:100:in `block (2 levels) in <main>'
-# hts_reg2bin, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# hts_reg2bin, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# bam_hdr_read, BGZF, convert.rb:100:in `block (2 levels) in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# bam_hdr_write, BGZF, convert.rb:100:in `block (2 levels) in <main>'
-# bam_hdr_write, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_destroy, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_dup, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# bam_hdr_destroy, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_hdr_dup, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# sam_hdr_read, samFile, convert.rb:100:in `block (2 levels) in <main>'
-# , sam_hdr_t, convert.rb:109:in `block in <main>'
-# sam_hdr_write, samFile, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_write, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_length, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_str, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_nref, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_add_lines, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_add_line, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_line_id, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_line_id, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_line_pos, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_line_pos, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_remove_line_id, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_remove_line_pos, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_update_line, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_remove_except, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_remove_lines, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_count_lines, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_line_index, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_line_name, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_tag_id, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_tag_id, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_tag_pos, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_find_tag_pos, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_remove_tag_id, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_name2tid, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_tid2name, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_tid2len, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_tid2len, hts_pos_t, convert.rb:112:in `block in <main>'
-# bam_name2id, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_pg_id, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_add_pg, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_incr_ref, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# , bam1_t, convert.rb:109:in `block in <main>'
-# bam_destroy1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_set_mempolicy, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_get_mempolicy, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_read1, BGZF, convert.rb:100:in `block (2 levels) in <main>'
-# bam_read1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_write1, BGZF, convert.rb:100:in `block (2 levels) in <main>'
-# bam_write1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_copy1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_copy1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# , bam1_t, convert.rb:109:in `block in <main>'
-# bam_dup1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# , bam1_t, convert.rb:109:in `block in <main>'
-# bam_set1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_set1, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_set1, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_set1, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_cigar2qlen, hts_pos_t, convert.rb:112:in `block in <main>'
-# bam_cigar2rlen, hts_pos_t, convert.rb:112:in `block in <main>'
-# bam_endpos, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_endpos, hts_pos_t, convert.rb:112:in `block in <main>'
-# bam_set_qname, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_parse_cigar, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_idx_init, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# sam_idx_init, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_idx_save, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# sam_index_load, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# sam_index_load2, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# sam_index_load3, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_idx_t, convert.rb:109:in `block in <main>'
-# sam_itr_queryi, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_queryi, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# sam_itr_queryi, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# sam_itr_querys, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_querys, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# sam_itr_regions, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_regions, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_regions, hts_reglist_t, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# sam_itr_regarray, hts_idx_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_regarray, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# , hts_itr_t, convert.rb:109:in `block in <main>'
-# sam_itr_next, htsFile, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_next, hts_itr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_itr_next, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_parse_region, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_parse_region, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_parse_region, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_hdr_change_HD, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_parse1, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_parse1, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_parse1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_format1, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_format1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_format1, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_read1, samFile, convert.rb:100:in `block (2 levels) in <main>'
-# sam_read1, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_read1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_write1, samFile, convert.rb:100:in `block (2 levels) in <main>'
-# sam_write1, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_write1, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_passes_filter, sam_hdr_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_passes_filter, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_passes_filter, struct, convert.rb:100:in `block (2 levels) in <main>'
-# sam_format_aux1, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_get, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_get, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_aux_get_str, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_get_str, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_aux_get_str, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_append, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_append, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_aux_del, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_update_str, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_update_str, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_aux_update_int, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_update_int, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_aux_update_float, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_update_float, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_aux_update_array, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_aux_update_array, :array, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_init, bam_plp_auto_f, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_init, bam_plp_t, convert.rb:112:in `block in <main>'
-# bam_plp_destroy, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_push, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_push, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_plp_next, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# , bam_pileup1_t, convert.rb:109:in `block in <main>'
-# bam_plp_auto, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# , bam_pileup1_t, convert.rb:109:in `block in <main>'
-# bam_plp64_next, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp64_next, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# , bam_pileup1_t, convert.rb:109:in `block in <main>'
-# bam_plp64_auto, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp64_auto, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# , bam_pileup1_t, convert.rb:109:in `block in <main>'
-# bam_plp_set_maxcnt, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_reset, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_constructor, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_constructor, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_destructor, bam_plp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_destructor, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# bam_plp_insertion, bam_pileup1_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_plp_insertion, kstring_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_mplp_init, bam_plp_auto_f, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_init, bam_mplp_t, convert.rb:112:in `block in <main>'
-# bam_mplp_init_overlaps, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_destroy, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_set_maxcnt, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_auto, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_auto, bam_pileup1_t, convert.rb:97:in `block (2 levels) in <main>'
-# bam_mplp64_auto, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp64_auto, hts_pos_t, convert.rb:100:in `block (2 levels) in <main>'
-# bam_mplp64_auto, bam_pileup1_t, convert.rb:97:in `block (2 levels) in <main>'
-# bam_mplp_reset, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_constructor, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_constructor, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_destructor, bam_mplp_t, convert.rb:104:in `block (2 levels) in <main>'
-# bam_mplp_destructor, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# sam_cap_mapq, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_cap_mapq, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
-# sam_prob_realn, bam1_t, convert.rb:100:in `block (2 levels) in <main>'
-# sam_prob_realn, hts_pos_t, convert.rb:104:in `block (2 levels) in <main>'
+# Unknown types
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", ":array", ":enum", "struct", ":bitfield", "kstring_t", "union", "htsFormat", "hts_pos_t", ":function-pointer", "bam1_core_t", "bam_pileup_cd", "fd_set", ":struct", "__sigset_t", "intmax_t", "imaxdiv_t", "uintmax_t", "__gwchar_t", ":long-double", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t", "locale_t", "FILE", "__gnuc_va_list", "__off_t", "fpos_t", "va_list", "ks_tokaux_t", "hts_opt", "htsFile", "htsThreadPool", "hts_idx_t", "hts_name2id_f", "hts_itr_t", "BGZF", "hts_id2name_f", "hts_reglist_t", "errmod_t", "probaln_par_t", "hts_md5_context", ":unsigned-char", "sam_hdr_t", "samFile", "bam1_t", "bam_plp_auto_f", "bam_plp_t", "bam_pileup1_t", "bam_mplp_t"]
+# timeval, __time_t
+# timeval, __suseconds_t
+# timespec, __time_t
+# timespec, __syscall_slong_t
+# random_data, :pointer
+# random_data, :pointer
+# random_data, :pointer
+# random_data, :pointer
+# drand48_data, :array
+# drand48_data, :array
+# kstring_t, :pointer
+# ks_tokaux_t, :array
+# ks_tokaux_t, :pointer
+# htsFormat, :enum
+# htsFormat, :enum
+# htsFormat, struct
+# htsFormat, :enum
+# htsFormat, :pointer
+# htsFile, :bitfield
+# htsFile, :bitfield
+# htsFile, :bitfield
+# htsFile, :bitfield
+# htsFile, :bitfield
+# htsFile, :bitfield
+# htsFile, kstring_t
+# htsFile, :pointer
+# htsFile, :pointer
+# htsFile, union
+# htsFile, :pointer
+# htsFile, htsFormat
+# htsFile, :pointer
+# htsFile, :pointer
+# htsFile, :pointer
+# htsFile, :pointer
+# htsThreadPool, :pointer
+# hts_opt, :pointer
+# hts_opt, :enum
+# hts_opt, union
+# hts_opt, :pointer
+# hts_pair_pos_t, hts_pos_t
+# hts_pair_pos_t, hts_pos_t
+# hts_reglist_t, :pointer
+# hts_reglist_t, :pointer
+# hts_reglist_t, hts_pos_t
+# hts_reglist_t, hts_pos_t
+# hts_itr_t, :bitfield
+# hts_itr_t, :bitfield
+# hts_itr_t, :bitfield
+# hts_itr_t, :bitfield
+# hts_itr_t, :bitfield
+# hts_itr_t, :bitfield
+# hts_itr_t, hts_pos_t
+# hts_itr_t, hts_pos_t
+# hts_itr_t, :pointer
+# hts_itr_t, hts_pos_t
+# hts_itr_t, hts_pos_t
+# hts_itr_t, :pointer
+# hts_itr_t, :function-pointer
+# hts_itr_t, :function-pointer
+# hts_itr_t, :function-pointer
+# hts_itr_t, struct
+# sam_hdr_t, :pointer
+# sam_hdr_t, :pointer
+# sam_hdr_t, :pointer
+# sam_hdr_t, :pointer
+# sam_hdr_t, :pointer
+# sam_hdr_t, :pointer
+# bam1_core_t, hts_pos_t
+# bam1_core_t, hts_pos_t
+# bam1_core_t, hts_pos_t
+# bam1_t, bam1_core_t
+# bam1_t, :pointer
+# bam1_t, :bitfield
+# bam1_t, :bitfield
+# bam_pileup1_t, :pointer
+# bam_pileup1_t, :bitfield
+# bam_pileup1_t, :bitfield
+# bam_pileup1_t, :bitfield
+# bam_pileup1_t, :bitfield
+# bam_pileup1_t, :bitfield
+# bam_pileup1_t, :bitfield
+# bam_pileup1_t, bam_pileup_cd
+# select, fd_set
+# select, fd_set
+# select, fd_set
+# select, :struct
+# pselect, fd_set
+# pselect, fd_set
+# pselect, fd_set
+# pselect, :struct
+# pselect, __sigset_t
+# imaxabs, intmax_t
+# imaxabs, intmax_t
+# imaxdiv, intmax_t
+# imaxdiv, intmax_t
+# imaxdiv, imaxdiv_t
+# strtoimax, intmax_t
+# strtoumax, uintmax_t
+# wcstoimax, __gwchar_t
+# wcstoimax, __gwchar_t
+# wcstoimax, intmax_t
+# wcstoumax, __gwchar_t
+# wcstoumax, __gwchar_t
+# wcstoumax, uintmax_t
+# hts_set_log_level, :enum
+# hts_get_log_level, :enum
+# hts_log, :enum
+# strtold, :long-double
+# random_r, :struct
+# srandom_r, :struct
+# initstate_r, :struct
+# setstate_r, :struct
+# erand48, :array
+# nrand48, :array
+# jrand48, :array
+# seed48, :array
+# lcong48, :array
+# drand48_r, :struct
+# erand48_r, :array
+# erand48_r, :struct
+# lrand48_r, :struct
+# nrand48_r, :array
+# nrand48_r, :struct
+# mrand48_r, :struct
+# jrand48_r, :array
+# jrand48_r, :struct
+# srand48_r, :struct
+# seed48_r, :array
+# seed48_r, :struct
+# lcong48_r, :array
+# lcong48_r, :struct
+# atexit, :function-pointer
+# at_quick_exit, :function-pointer
+# on_exit, :function-pointer
+# bsearch, __compar_fn_t
+# qsort, __compar_fn_t
+# div, div_t
+# ldiv, ldiv_t
+# lldiv, lldiv_t
+# qecvt, :long-double
+# qfcvt, :long-double
+# qgcvt, :long-double
+# qecvt_r, :long-double
+# qfcvt_r, :long-double
+# mbtowc, wchar_t
+# wctomb, wchar_t
+# mbstowcs, wchar_t
+# wcstombs, wchar_t
+# strcoll_l, locale_t
+# strxfrm_l, locale_t
+# strerror_l, locale_t
+# strcasecmp_l, locale_t
+# strncasecmp_l, locale_t
+# tmpfile, FILE
+# fclose, FILE
+# fflush, FILE
+# fflush_unlocked, FILE
+# fopen, FILE
+# freopen, FILE
+# freopen, FILE
+# fdopen, FILE
+# fmemopen, FILE
+# open_memstream, FILE
+# setbuf, FILE
+# setvbuf, FILE
+# setbuffer, FILE
+# setlinebuf, FILE
+# fprintf, FILE
+# vfprintf, FILE
+# vfprintf, __gnuc_va_list
+# vprintf, __gnuc_va_list
+# vsprintf, __gnuc_va_list
+# vsnprintf, __gnuc_va_list
+# vdprintf, __gnuc_va_list
+# fscanf, FILE
+# __isoc99_fscanf, FILE
+# vfscanf, FILE
+# vfscanf, __gnuc_va_list
+# vscanf, __gnuc_va_list
+# vsscanf, __gnuc_va_list
+# __isoc99_vfscanf, FILE
+# __isoc99_vfscanf, __gnuc_va_list
+# __isoc99_vscanf, __gnuc_va_list
+# __isoc99_vsscanf, __gnuc_va_list
+# fgetc, FILE
+# getc, FILE
+# getc_unlocked, FILE
+# fgetc_unlocked, FILE
+# fputc, FILE
+# putc, FILE
+# fputc_unlocked, FILE
+# putc_unlocked, FILE
+# getw, FILE
+# putw, FILE
+# fgets, FILE
+# __getdelim, FILE
+# getdelim, FILE
+# getline, FILE
+# fputs, FILE
+# ungetc, FILE
+# fread, FILE
+# fwrite, FILE
+# fread_unlocked, FILE
+# fwrite_unlocked, FILE
+# fseek, FILE
+# ftell, FILE
+# rewind, FILE
+# fseeko, FILE
+# fseeko, __off_t
+# ftello, FILE
+# ftello, __off_t
+# fgetpos, FILE
+# fgetpos, fpos_t
+# fsetpos, FILE
+# fsetpos, fpos_t
+# clearerr, FILE
+# feof, FILE
+# ferror, FILE
+# clearerr_unlocked, FILE
+# feof_unlocked, FILE
+# ferror_unlocked, FILE
+# fileno, FILE
+# fileno_unlocked, FILE
+# popen, FILE
+# pclose, FILE
+# flockfile, FILE
+# ftrylockfile, FILE
+# funlockfile, FILE
+# __uflow, FILE
+# __overflow, FILE
+# kvsprintf, kstring_t
+# kvsprintf, va_list
+# ksprintf, kstring_t
+# kputd, kstring_t
+# kstrtok, ks_tokaux_t
+# kgetline, kstring_t
+# kgetline, :function-pointer
+# kgetline2, kstring_t
+# kgetline2, :function-pointer
+# ks_initialize, kstring_t
+# ks_resize, kstring_t
+# ks_expand, kstring_t
+# ks_str, kstring_t
+# ks_c_str, kstring_t
+# ks_len, kstring_t
+# ks_clear, kstring_t
+# ks_clear, kstring_t
+# ks_release, kstring_t
+# ks_free, kstring_t
+# kputsn, kstring_t
+# kputs, kstring_t
+# kputc, kstring_t
+# kputc_, kstring_t
+# kputsn_, kstring_t
+# kputuw, kstring_t
+# kputw, kstring_t
+# kputll, kstring_t
+# kputl, kstring_t
+# ksplit, kstring_t
+# hts_opt_add, hts_opt
+# hts_opt_apply, htsFile
+# hts_opt_apply, hts_opt
+# hts_opt_free, hts_opt
+# hts_parse_format, htsFormat
+# hts_parse_opt_list, htsFormat
+# hts_detect_format, struct
+# hts_detect_format, htsFormat
+# hts_format_description, htsFormat
+# hts_open, htsFile
+# hts_open_format, htsFormat
+# hts_open_format, htsFile
+# hts_hopen, struct
+# hts_hopen, htsFile
+# hts_close, htsFile
+# hts_get_format, htsFile
+# hts_get_format, htsFormat
+# hts_format_file_extension, htsFormat
+# hts_set_opt, htsFile
+# hts_set_opt, :enum
+# hts_getline, htsFile
+# hts_getline, kstring_t
+# hts_readlines, :pointer
+# hts_readlist, :pointer
+# hts_set_threads, htsFile
+# hts_set_thread_pool, htsFile
+# hts_set_thread_pool, htsThreadPool
+# hts_set_cache_size, htsFile
+# hts_set_fai_filename, htsFile
+# hts_set_filter_expression, htsFile
+# hts_check_EOF, htsFile
+# hts_idx_init, hts_idx_t
+# hts_idx_destroy, hts_idx_t
+# hts_idx_push, hts_idx_t
+# hts_idx_push, hts_pos_t
+# hts_idx_push, hts_pos_t
+# hts_idx_finish, hts_idx_t
+# hts_idx_fmt, hts_idx_t
+# hts_idx_tbi_name, hts_idx_t
+# hts_idx_save, hts_idx_t
+# hts_idx_save_as, hts_idx_t
+# hts_idx_load, hts_idx_t
+# hts_idx_load2, hts_idx_t
+# hts_idx_load3, hts_idx_t
+# hts_idx_get_meta, hts_idx_t
+# hts_idx_set_meta, hts_idx_t
+# hts_idx_get_stat, hts_idx_t
+# hts_idx_get_n_no_coor, hts_idx_t
+# hts_parse_reg64, hts_pos_t
+# hts_parse_reg64, hts_pos_t
+# hts_parse_region, hts_pos_t
+# hts_parse_region, hts_pos_t
+# hts_parse_region, hts_name2id_f
+# hts_itr_query, hts_idx_t
+# hts_itr_query, hts_pos_t
+# hts_itr_query, hts_pos_t
+# hts_itr_query, :function-pointer
+# hts_itr_query, hts_itr_t
+# hts_itr_destroy, hts_itr_t
+# hts_itr_querys, hts_idx_t
+# hts_itr_querys, hts_name2id_f
+# hts_itr_querys, :function-pointer
+# hts_itr_querys, :function-pointer
+# hts_itr_querys, hts_itr_t
+# hts_itr_next, BGZF
+# hts_itr_next, hts_itr_t
+# hts_idx_seqnames, hts_idx_t
+# hts_idx_seqnames, hts_id2name_f
+# hts_idx_seqnames, :pointer
+# hts_itr_multi_bam, hts_idx_t
+# hts_itr_multi_bam, hts_itr_t
+# hts_itr_multi_cram, hts_idx_t
+# hts_itr_multi_cram, hts_itr_t
+# hts_itr_regions, hts_idx_t
+# hts_itr_regions, hts_reglist_t
+# hts_itr_regions, hts_name2id_f
+# hts_itr_regions, :function-pointer
+# hts_itr_regions, :function-pointer
+# hts_itr_regions, :function-pointer
+# hts_itr_regions, :function-pointer
+# hts_itr_regions, hts_itr_t
+# hts_itr_multi_next, htsFile
+# hts_itr_multi_next, hts_itr_t
+# hts_reglist_create, hts_name2id_f
+# hts_reglist_create, hts_reglist_t
+# hts_reglist_free, hts_reglist_t
+# errmod_init, errmod_t
+# errmod_destroy, errmod_t
+# errmod_cal, errmod_t
+# probaln_glocal, probaln_par_t
+# hts_md5_init, hts_md5_context
+# hts_md5_update, hts_md5_context
+# hts_md5_final, :unsigned-char
+# hts_md5_final, hts_md5_context
+# hts_md5_reset, hts_md5_context
+# hts_md5_hex, :unsigned-char
+# hts_md5_destroy, hts_md5_context
+# hts_reg2bin, hts_pos_t
+# hts_reg2bin, hts_pos_t
+# sam_hdr_init, sam_hdr_t
+# bam_hdr_read, BGZF
+# bam_hdr_read, sam_hdr_t
+# bam_hdr_write, BGZF
+# bam_hdr_write, sam_hdr_t
+# sam_hdr_destroy, sam_hdr_t
+# sam_hdr_dup, sam_hdr_t
+# sam_hdr_dup, sam_hdr_t
+# bam_hdr_init, sam_hdr_t
+# bam_hdr_destroy, sam_hdr_t
+# bam_hdr_dup, sam_hdr_t
+# bam_hdr_dup, sam_hdr_t
+# sam_hdr_parse, sam_hdr_t
+# sam_hdr_read, samFile
+# sam_hdr_read, sam_hdr_t
+# sam_hdr_write, samFile
+# sam_hdr_write, sam_hdr_t
+# sam_hdr_length, sam_hdr_t
+# sam_hdr_str, sam_hdr_t
+# sam_hdr_nref, sam_hdr_t
+# sam_hdr_add_lines, sam_hdr_t
+# sam_hdr_add_line, sam_hdr_t
+# sam_hdr_find_line_id, sam_hdr_t
+# sam_hdr_find_line_id, kstring_t
+# sam_hdr_find_line_pos, sam_hdr_t
+# sam_hdr_find_line_pos, kstring_t
+# sam_hdr_remove_line_id, sam_hdr_t
+# sam_hdr_remove_line_pos, sam_hdr_t
+# sam_hdr_update_line, sam_hdr_t
+# sam_hdr_remove_except, sam_hdr_t
+# sam_hdr_remove_lines, sam_hdr_t
+# sam_hdr_count_lines, sam_hdr_t
+# sam_hdr_line_index, sam_hdr_t
+# sam_hdr_line_name, sam_hdr_t
+# sam_hdr_find_tag_id, sam_hdr_t
+# sam_hdr_find_tag_id, kstring_t
+# sam_hdr_find_tag_pos, sam_hdr_t
+# sam_hdr_find_tag_pos, kstring_t
+# sam_hdr_remove_tag_id, sam_hdr_t
+# sam_hdr_name2tid, sam_hdr_t
+# sam_hdr_tid2name, sam_hdr_t
+# sam_hdr_tid2len, sam_hdr_t
+# sam_hdr_tid2len, hts_pos_t
+# bam_name2id, sam_hdr_t
+# sam_hdr_pg_id, sam_hdr_t
+# sam_hdr_add_pg, sam_hdr_t
+# sam_hdr_incr_ref, sam_hdr_t
+# bam_init1, bam1_t
+# bam_destroy1, bam1_t
+# bam_set_mempolicy, bam1_t
+# bam_get_mempolicy, bam1_t
+# bam_read1, BGZF
+# bam_read1, bam1_t
+# bam_write1, BGZF
+# bam_write1, bam1_t
+# bam_copy1, bam1_t
+# bam_copy1, bam1_t
+# bam_copy1, bam1_t
+# bam_dup1, bam1_t
+# bam_dup1, bam1_t
+# bam_set1, bam1_t
+# bam_set1, hts_pos_t
+# bam_set1, hts_pos_t
+# bam_set1, hts_pos_t
+# bam_cigar2qlen, hts_pos_t
+# bam_cigar2rlen, hts_pos_t
+# bam_endpos, bam1_t
+# bam_endpos, hts_pos_t
+# bam_set_qname, bam1_t
+# bam_parse_cigar, bam1_t
+# sam_idx_init, htsFile
+# sam_idx_init, sam_hdr_t
+# sam_idx_save, htsFile
+# sam_index_load, htsFile
+# sam_index_load, hts_idx_t
+# sam_index_load2, htsFile
+# sam_index_load2, hts_idx_t
+# sam_index_load3, htsFile
+# sam_index_load3, hts_idx_t
+# sam_itr_queryi, hts_idx_t
+# sam_itr_queryi, hts_pos_t
+# sam_itr_queryi, hts_pos_t
+# sam_itr_queryi, hts_itr_t
+# sam_itr_querys, hts_idx_t
+# sam_itr_querys, sam_hdr_t
+# sam_itr_querys, hts_itr_t
+# sam_itr_regions, hts_idx_t
+# sam_itr_regions, sam_hdr_t
+# sam_itr_regions, hts_reglist_t
+# sam_itr_regions, hts_itr_t
+# sam_itr_regarray, hts_idx_t
+# sam_itr_regarray, sam_hdr_t
+# sam_itr_regarray, hts_itr_t
+# sam_itr_next, htsFile
+# sam_itr_next, hts_itr_t
+# sam_itr_next, bam1_t
+# sam_parse_region, sam_hdr_t
+# sam_parse_region, hts_pos_t
+# sam_parse_region, hts_pos_t
+# sam_hdr_change_HD, sam_hdr_t
+# sam_parse1, kstring_t
+# sam_parse1, sam_hdr_t
+# sam_parse1, bam1_t
+# sam_format1, sam_hdr_t
+# sam_format1, bam1_t
+# sam_format1, kstring_t
+# sam_read1, samFile
+# sam_read1, sam_hdr_t
+# sam_read1, bam1_t
+# sam_write1, samFile
+# sam_write1, sam_hdr_t
+# sam_write1, bam1_t
+# sam_passes_filter, sam_hdr_t
+# sam_passes_filter, bam1_t
+# sam_passes_filter, struct
+# sam_format_aux1, kstring_t
+# bam_aux_get, bam1_t
+# bam_aux_get, :array
+# bam_aux_get_str, bam1_t
+# bam_aux_get_str, :array
+# bam_aux_get_str, kstring_t
+# bam_aux_append, bam1_t
+# bam_aux_append, :array
+# bam_aux_del, bam1_t
+# bam_aux_update_str, bam1_t
+# bam_aux_update_str, :array
+# bam_aux_update_int, bam1_t
+# bam_aux_update_int, :array
+# bam_aux_update_float, bam1_t
+# bam_aux_update_float, :array
+# bam_aux_update_array, bam1_t
+# bam_aux_update_array, :array
+# bam_plp_init, bam_plp_auto_f
+# bam_plp_init, bam_plp_t
+# bam_plp_destroy, bam_plp_t
+# bam_plp_push, bam_plp_t
+# bam_plp_push, bam1_t
+# bam_plp_next, bam_plp_t
+# bam_plp_next, bam_pileup1_t
+# bam_plp_auto, bam_plp_t
+# bam_plp_auto, bam_pileup1_t
+# bam_plp64_next, bam_plp_t
+# bam_plp64_next, hts_pos_t
+# bam_plp64_next, bam_pileup1_t
+# bam_plp64_auto, bam_plp_t
+# bam_plp64_auto, hts_pos_t
+# bam_plp64_auto, bam_pileup1_t
+# bam_plp_set_maxcnt, bam_plp_t
+# bam_plp_reset, bam_plp_t
+# bam_plp_constructor, bam_plp_t
+# bam_plp_constructor, :function-pointer
+# bam_plp_destructor, bam_plp_t
+# bam_plp_destructor, :function-pointer
+# bam_plp_insertion, bam_pileup1_t
+# bam_plp_insertion, kstring_t
+# bam_mplp_init, bam_plp_auto_f
+# bam_mplp_init, bam_mplp_t
+# bam_mplp_init_overlaps, bam_mplp_t
+# bam_mplp_destroy, bam_mplp_t
+# bam_mplp_set_maxcnt, bam_mplp_t
+# bam_mplp_auto, bam_mplp_t
+# bam_mplp_auto, bam_pileup1_t
+# bam_mplp64_auto, bam_mplp_t
+# bam_mplp64_auto, hts_pos_t
+# bam_mplp64_auto, bam_pileup1_t
+# bam_mplp_reset, bam_mplp_t
+# bam_mplp_constructor, bam_mplp_t
+# bam_mplp_constructor, :function-pointer
+# bam_mplp_destructor, bam_mplp_t
+# bam_mplp_destructor, :function-pointer
+# sam_cap_mapq, bam1_t
+# sam_cap_mapq, hts_pos_t
+# sam_prob_realn, bam1_t
+# sam_prob_realn, hts_pos_t

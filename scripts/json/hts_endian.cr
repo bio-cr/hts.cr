@@ -1,3 +1,4 @@
+
 fun le_to_u16(UInt8*) : UInt16
 fun le_to_u32(UInt8*) : UInt32
 fun le_to_u64(UInt8*) : UInt64
@@ -16,6 +17,5 @@ fun le_to_double(UInt8*) : Float64
 fun float_to_le(Float32, UInt8*) : Void
 fun double_to_le(Float64, UInt8*) : Void
 
-# Unknow types
+# Unknown types
 # []
-# caller

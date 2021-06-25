@@ -8,50 +8,10 @@ struct Timespec
   tv_nsec : 
 end
 
-struct PthreadInternalList
-  __prev : 
-  __next : 
-end
 
-struct PthreadInternalSlist
-  __next : 
-end
 
-struct PthreadMutexS
-  __lock : Int32
-  __count : UInt32
-  __owner : Int32
-  __nusers : UInt32
-  __kind : Int32
-  __spins : Short
-  __elision : Short
-  __list : 
-end
 
-struct PthreadRwlockArchT
-  __readers : UInt32
-  __writers : UInt32
-  __wrphase_futex : UInt32
-  __writers_futex : UInt32
-  __pad3 : UInt32
-  __pad4 : UInt32
-  __cur_writer : Int32
-  __shared : Int32
-  __rwelision : Int8
-  __pad1 : 
-  __pad2 : ULong
-  __flags : UInt32
-end
 
-struct PthreadCondS
-   : 
-   : 
-  __g_refs : 
-  __g_size : 
-  __g1_orig_size : UInt32
-  __wrefs : UInt32
-  __g_signals : 
-end
 
 struct RandomData
   fptr : 
@@ -70,7 +30,6 @@ struct Drand48Data
   __init : UShort
   __a : ULongLong
 end
-
 # fun __ctype_get_mb_cur_max() : SizeT
 fun atof(UInt8*) : Float64
 fun atoi(UInt8*) : Int32
@@ -178,76 +137,65 @@ fun rpmatch(UInt8*) : Int32
 fun getsubopt(UInt8**, UInt8**, UInt8**) : Int32
 fun getloadavg(Float64*, Int32) : Int32
 
-# Unknow types
-# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", "__pthread_list_t", ":array", "union", ":long-double", "fd_set", ":struct", "__sigset_t", ":function-pointer", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t"]
-# caller
-# timeval, __time_t, convert.rb:79:in `block (2 levels) in <main>'
-# timeval, __suseconds_t, convert.rb:79:in `block (2 levels) in <main>'
-# timespec, __time_t, convert.rb:79:in `block (2 levels) in <main>'
-# timespec, __syscall_slong_t, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_list, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_list, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_slist, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_mutex_s, __pthread_list_t, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_rwlock_arch_t, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, union, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, union, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# random_data, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# drand48_data, :array, convert.rb:79:in `block (2 levels) in <main>'
-# drand48_data, :array, convert.rb:79:in `block (2 levels) in <main>'
-# strtold, :long-double, convert.rb:112:in `block in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, __sigset_t, convert.rb:100:in `block (2 levels) in <main>'
-# random_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# srandom_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# initstate_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# setstate_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# erand48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# nrand48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# jrand48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# seed48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# lcong48, :array, convert.rb:104:in `block (2 levels) in <main>'
-# drand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# erand48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# erand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# lrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# nrand48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# nrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# mrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# jrand48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# jrand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# srand48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# seed48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# seed48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# lcong48_r, :array, convert.rb:104:in `block (2 levels) in <main>'
-# lcong48_r, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# atexit, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# at_quick_exit, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# on_exit, :function-pointer, convert.rb:104:in `block (2 levels) in <main>'
-# bsearch, __compar_fn_t, convert.rb:104:in `block (2 levels) in <main>'
-# qsort, __compar_fn_t, convert.rb:104:in `block (2 levels) in <main>'
-# div, div_t, convert.rb:112:in `block in <main>'
-# ldiv, ldiv_t, convert.rb:112:in `block in <main>'
-# lldiv, lldiv_t, convert.rb:112:in `block in <main>'
-# qecvt, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qfcvt, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qgcvt, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qecvt_r, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# qfcvt_r, :long-double, convert.rb:104:in `block (2 levels) in <main>'
-# mbtowc, wchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# wctomb, wchar_t, convert.rb:104:in `block (2 levels) in <main>'
-# mbstowcs, wchar_t, convert.rb:100:in `block (2 levels) in <main>'
-# wcstombs, wchar_t, convert.rb:100:in `block (2 levels) in <main>'
+# Unknown types
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", ":array", ":long-double", "fd_set", ":struct", "__sigset_t", ":function-pointer", "__compar_fn_t", "div_t", "ldiv_t", "lldiv_t", "wchar_t"]
+# timeval, __time_t
+# timeval, __suseconds_t
+# timespec, __time_t
+# timespec, __syscall_slong_t
+# random_data, :pointer
+# random_data, :pointer
+# random_data, :pointer
+# random_data, :pointer
+# drand48_data, :array
+# drand48_data, :array
+# strtold, :long-double
+# select, fd_set
+# select, fd_set
+# select, fd_set
+# select, :struct
+# pselect, fd_set
+# pselect, fd_set
+# pselect, fd_set
+# pselect, :struct
+# pselect, __sigset_t
+# random_r, :struct
+# srandom_r, :struct
+# initstate_r, :struct
+# setstate_r, :struct
+# erand48, :array
+# nrand48, :array
+# jrand48, :array
+# seed48, :array
+# lcong48, :array
+# drand48_r, :struct
+# erand48_r, :array
+# erand48_r, :struct
+# lrand48_r, :struct
+# nrand48_r, :array
+# nrand48_r, :struct
+# mrand48_r, :struct
+# jrand48_r, :array
+# jrand48_r, :struct
+# srand48_r, :struct
+# seed48_r, :array
+# seed48_r, :struct
+# lcong48_r, :array
+# lcong48_r, :struct
+# atexit, :function-pointer
+# at_quick_exit, :function-pointer
+# on_exit, :function-pointer
+# bsearch, __compar_fn_t
+# qsort, __compar_fn_t
+# div, div_t
+# ldiv, ldiv_t
+# lldiv, lldiv_t
+# qecvt, :long-double
+# qfcvt, :long-double
+# qgcvt, :long-double
+# qecvt_r, :long-double
+# qfcvt_r, :long-double
+# mbtowc, wchar_t
+# wctomb, wchar_t
+# mbstowcs, wchar_t
+# wcstombs, wchar_t

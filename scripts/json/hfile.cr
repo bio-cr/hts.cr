@@ -1,13 +1,4 @@
-struct LocaleStruct
-  __locales : 
-  __ctype_b : 
-  __ctype_tolower : 
-  __ctype_toupper : 
-  __names : 
-end
 
-struct LocaleData
-end
 
 struct Timeval
   tv_sec : 
@@ -19,50 +10,10 @@ struct Timespec
   tv_nsec : 
 end
 
-struct PthreadInternalList
-  __prev : 
-  __next : 
-end
 
-struct PthreadInternalSlist
-  __next : 
-end
 
-struct PthreadMutexS
-  __lock : Int32
-  __count : UInt32
-  __owner : Int32
-  __nusers : UInt32
-  __kind : Int32
-  __spins : Short
-  __elision : Short
-  __list : 
-end
 
-struct PthreadRwlockArchT
-  __readers : UInt32
-  __writers : UInt32
-  __wrphase_futex : UInt32
-  __writers_futex : UInt32
-  __pad3 : UInt32
-  __pad4 : UInt32
-  __cur_writer : Int32
-  __shared : Int32
-  __rwelision : Int8
-  __pad1 : 
-  __pad2 : ULong
-  __flags : UInt32
-end
 
-struct PthreadCondS
-   : 
-   : 
-  __g_refs : 
-  __g_size : 
-  __g1_orig_size : UInt32
-  __wrefs : UInt32
-  __g_signals : 
-end
 
 struct HFILEBackend
 end
@@ -82,7 +33,6 @@ struct HFILE
   readonly : 
   has_errno : Int32
 end
-
 # fun memcpy(Void*, Void*, SizeT) : Void*
 fun memmove(Void*, Void*, SizeT) : Void*
 fun memccpy(Void*, Void*, Int32, SizeT) : Void*
@@ -168,72 +118,56 @@ fun hfile_list_schemes(UInt8*, UInt8**, Int32*) : Int32
 fun hfile_list_plugins(UInt8**, Int32*) : Int32
 fun hfile_has_plugin(UInt8*) : Int32
 
-# Unknow types
-# [":array", ":pointer", "__time_t", "__suseconds_t", "__syscall_slong_t", "__pthread_list_t", "union", "off_t", ":bitfield", "locale_t", "fd_set", ":struct", "__sigset_t", "hFILE", "struct"]
-# caller
-# __locale_struct, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __locale_struct, :array, convert.rb:79:in `block (2 levels) in <main>'
-# timeval, __time_t, convert.rb:79:in `block (2 levels) in <main>'
-# timeval, __suseconds_t, convert.rb:79:in `block (2 levels) in <main>'
-# timespec, __time_t, convert.rb:79:in `block (2 levels) in <main>'
-# timespec, __syscall_slong_t, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_list, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_list, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_internal_slist, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_mutex_s, __pthread_list_t, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_rwlock_arch_t, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, union, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, union, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# __pthread_cond_s, :array, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :pointer, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, off_t, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# hFILE, :bitfield, convert.rb:79:in `block (2 levels) in <main>'
-# strcoll_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strxfrm_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strerror_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strcasecmp_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# strncasecmp_l, locale_t, convert.rb:104:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# select, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, fd_set, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, :struct, convert.rb:100:in `block (2 levels) in <main>'
-# pselect, __sigset_t, convert.rb:100:in `block (2 levels) in <main>'
-# , hFILE, convert.rb:109:in `block in <main>'
-# , hFILE, convert.rb:109:in `block in <main>'
-# haddextension, struct, convert.rb:100:in `block (2 levels) in <main>'
-# hclose, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hclose_abruptly, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# herrno, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hclearerr, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hseek, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hseek, off_t, convert.rb:104:in `block (2 levels) in <main>'
-# hseek, off_t, convert.rb:112:in `block in <main>'
-# htell, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# htell, off_t, convert.rb:112:in `block in <main>'
-# hgetc, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hgetdelim, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hgetln, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hgets, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hpeek, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hread, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hputc, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hputs, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hwrite, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hflush, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hfile_mem_get_buffer, hFILE, convert.rb:100:in `block (2 levels) in <main>'
-# hfile_mem_steal_buffer, hFILE, convert.rb:100:in `block (2 levels) in <main>'
+# Unknown types
+# ["__time_t", "__suseconds_t", "__syscall_slong_t", ":pointer", "off_t", ":bitfield", "locale_t", "fd_set", ":struct", "__sigset_t", "hFILE", "struct"]
+# timeval, __time_t
+# timeval, __suseconds_t
+# timespec, __time_t
+# timespec, __syscall_slong_t
+# hFILE, :pointer
+# hFILE, :pointer
+# hFILE, :pointer
+# hFILE, :pointer
+# hFILE, :pointer
+# hFILE, off_t
+# hFILE, :bitfield
+# hFILE, :bitfield
+# hFILE, :bitfield
+# strcoll_l, locale_t
+# strxfrm_l, locale_t
+# strerror_l, locale_t
+# strcasecmp_l, locale_t
+# strncasecmp_l, locale_t
+# select, fd_set
+# select, fd_set
+# select, fd_set
+# select, :struct
+# pselect, fd_set
+# pselect, fd_set
+# pselect, fd_set
+# pselect, :struct
+# pselect, __sigset_t
+# hopen, hFILE
+# hdopen, hFILE
+# haddextension, struct
+# hclose, hFILE
+# hclose_abruptly, hFILE
+# herrno, hFILE
+# hclearerr, hFILE
+# hseek, hFILE
+# hseek, off_t
+# hseek, off_t
+# htell, hFILE
+# htell, off_t
+# hgetc, hFILE
+# hgetdelim, hFILE
+# hgetln, hFILE
+# hgets, hFILE
+# hpeek, hFILE
+# hread, hFILE
+# hputc, hFILE
+# hputs, hFILE
+# hwrite, hFILE
+# hflush, hFILE
+# hfile_mem_get_buffer, hFILE
+# hfile_mem_steal_buffer, hFILE
