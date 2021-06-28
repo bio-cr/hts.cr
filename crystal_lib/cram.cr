@@ -1,6 +1,6 @@
 @[Include(
   "htslib/cram.h",
-  prefix: %w(cram_), 
+  prefix: %w(cram_),
   import_docstrings: "brief",
   remove_prefix: false,
 )]

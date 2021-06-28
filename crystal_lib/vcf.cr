@@ -1,6 +1,6 @@
 @[Include(
   "htslib/vcf.h",
-  prefix: %w(vcf_ bcf_), 
+  prefix: %w(vcf_ bcf_),
   import_docstrings: "brief",
   remove_prefix: false,
 )]
