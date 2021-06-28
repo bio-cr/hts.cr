@@ -15,7 +15,7 @@ lib HTS
   fun hts_resize_array_(x0 : LibC::SizeT, x1 : LibC::SizeT, x2 : LibC::SizeT, x3 : Void*, x4 : Void**, x5 : LibC::Int, x6 : LibC::Char*) : LibC::Int
   fun hts_lib_shutdown
   fun hts_free(ptr : Void*)
-  alias HtsIdxT = Void
+  type HtsIdxT = Void*
   struct HtsOpt
     arg : LibC::Char*
     opt : HtsFmtOption
@@ -147,7 +147,6 @@ lib HTS
     Bzip2Compression = 4
     CompressionMaximum = 32767
   end
-  type HtsIdxT = Void*
   alias SamHdrT = Void
   fun hts_opt_free(opts : HtsOpt*)
   fun hts_parse_format(opt : HtsFormat*, str : LibC::Char*) : LibC::Int
@@ -265,9 +264,8 @@ lib HTS
   fun hts_reglist_create(argv : LibC::Char**, argc : LibC::Int, r_count : LibC::Int*, hdr : Void*, getid : HtsName2idF) : HtsReglistT*
   fun hts_reglist_free(reglist : HtsReglistT*, count : LibC::Int)
   fun hts_file_type(fname : LibC::Char*) : LibC::Int
-  alias HtsMd5Context = Void
-  fun hts_md5_init : HtsMd5Context
   type HtsMd5Context = Void*
+  fun hts_md5_init : HtsMd5Context
   fun hts_md5_update(ctx : HtsMd5Context, data : Void*, size : LibC::ULong)
   fun hts_md5_final(digest : UInt8*, ctx : HtsMd5Context)
   fun hts_md5_reset(ctx : HtsMd5Context)
