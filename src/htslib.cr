@@ -1,5 +1,5 @@
 @[Link("htslib")]
-lib Htslib
+lib HTSlib
   alias HtsTpool = Void
   alias BgzfMtauxT = Void
   type BgzfCacheT = Void*
