@@ -1,3 +1,3 @@
 require "../src/htslib.cr"
 
-p String.new(HTSlib.hts_version())
+p String.new(LibHTS.hts_version())
