@@ -22,7 +22,30 @@ Crystal bindings to [HTSlib](https://github.com/samtools/htslib). Under developm
 
 ```crystal
 require "htslib"
+puts String.new(HTS::LibHTS.hts_version())
 ```
+
+## API Overview (Plan)
+
+```
+    ┌───────────────────────────────────────────────────────────────┐
+    │                              HTS                              │
+    │                                                               │
+    │   ┌─────────────┬─────────────┬─────────────┬─────────────┐   │
+    │   │ SAM/BAM     │ VCF/BCF     │ CRAM        │ Tabix       │   │
+    │   │             │             │             │             │   │
+    │   │             │             │             │             │   │
+    │   ├─────────────┴─────────────┴─────────────┴─────────────┤   │
+    │   │ LibHTS                                                │   │
+    │   │ Native C bindings                                     │   │
+    │   │                                                       │   │
+    │   └───────────────────────────────────────────────────────┘   │
+    │                                                               │
+    └───────────────────────────────────────────────────────────────┘
+```
+
+* High level API - Create as needed. But don't overdo it.
+* Low level API - Native C bindings to HTSLib
 
 ## Development
 
@@ -31,6 +54,10 @@ crystal run scripts/generate.cr
 ```
 
 No plan. What will be will be.
+
+## Related Work
+
+* [ruby-htslib](https://github.com/kojix2/ruby-htslib)
 
 ## Contributing
 
