@@ -1,6 +1,6 @@
 require "./htslib"
 
 module HTS
-  class Tbx
+  class Tabix
   end
 end
