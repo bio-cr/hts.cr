@@ -7,15 +7,16 @@ lib LibHTS
   fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
 
   struct Bgzf
-    errcode : LibC::UInt
-    reserved : LibC::UInt
-    is_write : LibC::UInt
-    no_eof_block : LibC::UInt
-    is_be : LibC::UInt
-    compress_level : LibC::Int
-    last_block_eof : LibC::UInt
-    is_compressed : LibC::UInt
-    is_gzip : LibC::UInt
+    bitfields : Uint32T # Fixme
+    # errcode : LibC::UInt
+    # reserved : LibC::UInt
+    # is_write : LibC::UInt
+    # no_eof_block : LibC::UInt
+    # is_be : LibC::UInt
+    # compress_level : LibC::Int
+    # last_block_eof : LibC::UInt
+    # is_compressed : LibC::UInt
+    # is_gzip : LibC::UInt
     cache_size : LibC::Int
     block_length : LibC::Int
     block_clength : LibC::Int
@@ -173,12 +174,13 @@ lib LibHTS
   fun hts_opt_apply(fp : HtsFile*, opts : HtsOpt*) : LibC::Int
 
   struct HtsFile
-    is_bin : Uint32T
-    is_write : Uint32T
-    is_be : Uint32T
-    is_cram : Uint32T
-    is_bgzf : Uint32T
-    dummy : Uint32T
+    bitfields : Uint32T # Fixme
+    # is_bin : Uint32T
+    # is_write : Uint32T
+    # is_be : Uint32T
+    # is_cram : Uint32T
+    # is_bgzf : Uint32T
+    # dummy : Uint32T
     lineno : Int64T
     line : KstringT
     fn : LibC::Char*
@@ -314,12 +316,13 @@ lib LibHTS
   end
 
   struct HtsItrT
-    read_rest : Uint32T
-    finished : Uint32T
-    is_cram : Uint32T
-    nocoor : Uint32T
-    multi : Uint32T
-    dummy : Uint32T
+    bitfields : Uint32T # Fixme
+    # read_rest : Uint32T
+    # finished : Uint32T
+    # is_cram : Uint32T
+    # nocoor : Uint32T
+    # multi : Uint32T
+    # dummy : Uint32T
     tid : LibC::Int
     n_off : LibC::Int
     i : LibC::Int
@@ -446,8 +449,7 @@ lib LibHTS
     data : Uint8T*
     l_data : LibC::Int
     m_data : Uint32T
-    mempolicy : Uint32T
-    # Fixme : Uint32T
+    mempolicy : Uint32T # Fixme
   end
 
   struct Bam1CoreT
@@ -524,12 +526,13 @@ lib LibHTS
     qpos : Int32T
     indel : LibC::Int
     level : LibC::Int
-    is_del : Uint32T
-    is_head : Uint32T
-    is_tail : Uint32T
-    is_refskip : Uint32T
-    # Fixme : Uint32T
-    aux : Uint32T
+    bitfields : Uint32T # Fixme
+    # is_del : Uint32T
+    # is_head : Uint32T
+    # is_tail : Uint32T
+    # is_refskip : Uint32T
+    # reserved
+    # aux : Uint32T
     cd : BamPileupCd
     cigar_ind : LibC::Int
   end
@@ -746,10 +749,12 @@ lib LibHTS
     rlen : HtsPosT
     rid : Int32T
     qual : LibC::Float
-    n_info : Uint32T
-    n_allele : Uint32T
-    n_fmt : Uint32T
-    n_sample : Uint32T
+    n_info_allele : Uint32T # Fixme
+    # n_info : Uint32T
+    # n_allele : Uint32T
+    n_fmt_sample : Uint32T  # Fixme
+    # n_fmt : Uint32T
+    # n_sample : Uint32T
     shared : KstringT
     indiv : KstringT
     d : BcfDecT
@@ -786,8 +791,9 @@ lib LibHTS
     v1 : BcfInfoTV1
     vptr : Uint8T*
     vptr_len : Uint32T
-    vptr_off : Uint32T
-    vptr_free : Uint32T
+    vptr_off_free : Uint32T # Fixme
+    # vptr_off : Uint32T
+    # vptr_free : Uint32T
     len : LibC::Int
   end
 
@@ -803,8 +809,9 @@ lib LibHTS
     type : LibC::Int
     p : Uint8T*
     p_len : Uint32T
-    p_off : Uint32T
-    p_free : Uint32T
+    p_off_free : Uint32T # Fixme
+    # p_off : Uint32T
+    # p_free : Uint32T
   end
 
   struct BcfVariantT
