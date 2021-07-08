@@ -1,3 +1,3 @@
-require "../src/htslib.cr"
+require "../src/hts/htslib.cr"
 
-p String.new(HTS::LibHTS.hts_version())
+p String.new(HTS::LibHTS.hts_version)

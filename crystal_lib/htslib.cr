@@ -13,4 +13,3 @@
 @[Link("htslib")]
 lib Htslib
 end
-

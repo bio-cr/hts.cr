@@ -1,13 +1,13 @@
-require "../src/htslib"
+require "../src/hts/htslib"
 
 bam_path = File.expand_path("../../test/fixtures/poo.sort.bam", __FILE__)
 
 htf = HTS::LibHTS.hts_open(bam_path, "r")
 idx = HTS::LibHTS.sam_index_load(htf, bam_path)
 hdr = HTS::LibHTS.sam_hdr_read(htf)
-b   = HTS::LibHTS.bam_init1
+b = HTS::LibHTS.bam_init1
 
-nuc = { 1 => "A", 2 => "C", 4 => "G", 8 => "T", 15 => "N" }
+nuc = {1 => "A", 2 => "C", 4 => "G", 8 => "T", 15 => "N"}
 
 cig = {
   0 => :BAM_CMATCH,
@@ -19,7 +19,7 @@ cig = {
   6 => :BAM_CPAD,
   7 => :BAM_CEQUAL,
   8 => :BAM_CDIFF,
-  9 => :BAM_CBACK
+  9 => :BAM_CBACK,
 }
 
 10.times do
