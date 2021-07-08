@@ -19,4 +19,4 @@ jobs:
       - name: Run tests
         run: |
           shards install
-          crystal test/*_test.cr -- --chaos --paralel 4 --verbose
+          crystal test/run_all.cr -- --chaos --paralel 4 --verbose
