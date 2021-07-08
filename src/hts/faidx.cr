@@ -2,7 +2,7 @@ require "./htslib"
 require "./utils"
 
 module HTS
-  class Fai
+  class Faidx
     include Utils
   end
 end
