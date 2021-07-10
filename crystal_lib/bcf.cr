@@ -5,5 +5,5 @@
   remove_prefix: false,
 )]
 @[Link("htslib")]
-lib VCF
+lib Bcf
 end

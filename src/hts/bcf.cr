@@ -2,7 +2,7 @@ require "./htslib"
 require "./utils"
 
 module HTS
-  class Vcf
+  class Bcf
     include Utils
   end
 end
