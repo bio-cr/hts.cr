@@ -55,6 +55,7 @@ crystal run scripts/generate.cr
 
 No plan. What will be will be.
 The author is not familiar with Crystal, so it may be written in an inefficient way, and you may be able to fix it.
+If you want the right to commit to this project, please contact me.
 
 ## Related Work
 
