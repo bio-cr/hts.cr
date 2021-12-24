@@ -6,7 +6,6 @@ module HTS
     type BgzfCacheT = Void*
 
     fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
-
     struct Bgzf
       bitfields : Uint32T # Fixme
       # errcode : LibC::UInt
@@ -258,11 +257,15 @@ module HTS
     fun hts_parse_format(opt : HtsFormat*, str : LibC::Char*) : LibC::Int
     fun hts_parse_opt_list(opt : HtsFormat*, str : LibC::Char*) : LibC::Int
     fun hts_version : LibC::Char*
+    fun hts_features : LibC::UInt
+    fun hts_test_feature(id : LibC::UInt) : LibC::Char*
+    fun hts_feature_string : LibC::Char*
     fun hts_detect_format(fp : HFile*, fmt : HtsFormat*) : LibC::Int
     fun hts_format_description(format : HtsFormat*) : LibC::Char*
     fun hts_open(fn : LibC::Char*, mode : LibC::Char*) : HtsFile*
     fun hts_open_format(fn : LibC::Char*, mode : LibC::Char*, fmt : HtsFormat*) : HtsFile*
     fun hts_hopen(fp : HFile*, fn : LibC::Char*, mode : LibC::Char*) : HtsFile*
+    fun hts_flush(fp : HtsFile*) : LibC::Int
     fun hts_close(fp : HtsFile*) : LibC::Int
     fun hts_get_format(fp : HtsFile*) : HtsFormat*
     fun hts_format_file_extension(format : HtsFormat*) : LibC::Char*
@@ -278,6 +281,7 @@ module HTS
     end
     fun hts_set_cache_size(fp : HtsFile*, n : LibC::Int)
     fun hts_set_fai_filename(fp : HtsFile*, fn_aux : LibC::Char*) : LibC::Int
+    fun hts_set_filter_expression(fp : HtsFile*, expr : LibC::Char*) : LibC::Int
     fun hts_check_eof = hts_check_EOF(fp : HtsFile*) : LibC::Int
     struct HtsPairPosT
       beg : HtsPosT
@@ -353,6 +357,9 @@ module HTS
     fun hts_idx_set_meta(idx : HtsIdxT, l_meta : Uint32T, meta : Uint8T*, is_copy : LibC::Int) : LibC::Int
     fun hts_idx_get_stat(idx : HtsIdxT, tid : LibC::Int, mapped : Uint64T*, unmapped : Uint64T*) : LibC::Int
     fun hts_idx_get_n_no_coor(idx : HtsIdxT) : Uint64T
+    fun hts_idx_seqnames(idx : HtsIdxT, n : LibC::Int*, getid : HtsId2nameF, hdr : Void*) : LibC::Char**
+    alias HtsId2nameF = (Void*, LibC::Int -> LibC::Char*)
+    fun hts_idx_nseq(idx : HtsIdxT) : LibC::Int
     fun hts_parse_decimal(str : LibC::Char*, strend : LibC::Char**, flags : LibC::Int) : LibC::LongLong
     fun hts_parse_reg64(str : LibC::Char*, beg : HtsPosT*, _end : HtsPosT*) : LibC::Char*
     fun hts_parse_reg(str : LibC::Char*, beg : LibC::Int*, _end : LibC::Int*) : LibC::Char*
@@ -362,10 +369,6 @@ module HTS
     fun hts_itr_destroy(iter : HtsItrT*)
     fun hts_itr_querys(idx : HtsIdxT, reg : LibC::Char*, getid : HtsName2idF, hdr : Void*, itr_query : (HtsIdxT, LibC::Int, HtsPosT, HtsPosT, (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int) -> HtsItrT*), readrec : (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int)) : HtsItrT*
     fun hts_itr_next(fp : Bgzf*, iter : HtsItrT*, r : Void*, data : Void*) : LibC::Int
-    fun hts_idx_seqnames(idx : HtsIdxT, n : LibC::Int*, getid : HtsId2nameF, hdr : Void*) : LibC::Char**
-
-    alias HtsId2nameF = (Void*, LibC::Int -> LibC::Char*)
-
     fun hts_itr_multi_bam(idx : HtsIdxT, iter : HtsItrT*) : LibC::Int
     fun hts_itr_multi_cram(idx : HtsIdxT, iter : HtsItrT*) : LibC::Int
     fun hts_itr_regions(idx : HtsIdxT, reglist : HtsReglistT*, count : LibC::Int, getid : HtsName2idF, hdr : Void*, itr_specific : (HtsIdxT, HtsItrT* -> LibC::Int), readrec : (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int), seek : (Void*, Int64T, LibC::Int -> LibC::Int), tell : (Void* -> Int64T)) : HtsItrT*
@@ -383,7 +386,9 @@ module HTS
     fun hts_md5_hex(hex : LibC::Char*, digest : UInt8*)
     fun hts_md5_destroy(ctx : HtsMd5Context)
     fun hts_reg2bin(beg : HtsPosT, _end : HtsPosT, min_shift : LibC::Int, n_lvls : LibC::Int) : LibC::Int
+    fun hts_bin_level(bin : LibC::Int) : LibC::Int
     fun hts_bin_bot(bin : LibC::Int, n_lvls : LibC::Int) : LibC::Int
+    alias SamHrecsT = Void
     fun sam_hdr_init : SamHdrT*
     fun bam_hdr_read(fp : Bgzf*) : SamHdrT*
     fun bam_hdr_write(fp : Bgzf*, h : SamHdrT*) : LibC::Int
@@ -453,12 +458,15 @@ module HTS
     fun bam_write1(fp : Bgzf*, b : Bam1T*) : LibC::Int
     fun bam_copy1(bdst : Bam1T*, bsrc : Bam1T*) : Bam1T*
     fun bam_dup1(bsrc : Bam1T*) : Bam1T*
+    fun bam_set1(bam : Bam1T*, l_qname : LibC::SizeT, qname : LibC::Char*, flag : Uint16T, tid : Int32T, pos : HtsPosT, mapq : Uint8T, n_cigar : LibC::SizeT, cigar : Uint32T*, mtid : Int32T, mpos : HtsPosT, isize : HtsPosT, l_seq : LibC::SizeT, seq : LibC::Char*, qual : LibC::Char*, l_aux : LibC::SizeT) : LibC::Int
     fun bam_cigar2qlen(n_cigar : LibC::Int, cigar : Uint32T*) : HtsPosT
     fun bam_cigar2rlen(n_cigar : LibC::Int, cigar : Uint32T*) : HtsPosT
     fun bam_endpos(b : Bam1T*) : HtsPosT
     fun bam_str2flag(str : LibC::Char*) : LibC::Int
     fun bam_flag2str(flag : LibC::Int) : LibC::Char*
     fun bam_set_qname(b : Bam1T*, qname : LibC::Char*) : LibC::Int
+    fun sam_parse_cigar(in : LibC::Char*, _end : LibC::Char**, a_cigar : Uint32T**, a_mem : LibC::SizeT*) : SsizeT
+    fun bam_parse_cigar(in : LibC::Char*, _end : LibC::Char**, b : Bam1T*) : SsizeT
     fun sam_idx_init(fp : HtsFile*, h : SamHdrT*, min_shift : LibC::Int, fnidx : LibC::Char*) : LibC::Int
     fun sam_idx_save(fp : HtsFile*) : LibC::Int
     fun sam_index_load(fp : HtsFile*, fn : LibC::Char*) : HtsIdxT
@@ -480,6 +488,7 @@ module HTS
     fun sam_format1(h : SamHdrT*, b : Bam1T*, str : KstringT*) : LibC::Int
     fun sam_read1(fp : SamFile*, h : SamHdrT*, b : Bam1T*) : LibC::Int
     fun sam_write1(fp : SamFile*, h : SamHdrT*, b : Bam1T*) : LibC::Int
+    fun sam_passes_filter(h : SamHdrT*, b : Bam1T*, filt : HtsFilterT*) : LibC::Int
     fun sam_format_aux1(key : Uint8T*, type : Uint8T, tag : Uint8T*, _end : Uint8T*, ks : KstringT*) : Uint8T*
     fun bam_aux_get(b : Bam1T*, tag : LibC::Char[2]) : Uint8T*
     fun bam_aux_get_str(b : Bam1T*, tag : LibC::Char[2], s : KstringT*) : LibC::Int
@@ -532,6 +541,8 @@ module HTS
     fun bam_plp_constructor(plp : BamPlpT, func : (Void*, Bam1T*, BamPileupCd* -> LibC::Int))
     fun bam_plp_destructor(plp : BamPlpT, func : (Void*, Bam1T*, BamPileupCd* -> LibC::Int))
     fun bam_plp_insertion(p : BamPileup1T*, ins : KstringT*, del_len : LibC::Int*) : LibC::Int
+    alias HtsBaseModState = Void
+    fun bam_plp_insertion_mod(p : BamPileup1T*, m : HtsBaseModState, ins : KstringT*, del_len : LibC::Int*) : LibC::Int
     fun bam_mplp_init(n : LibC::Int, func : BamPlpAutoF, data : Void**) : BamMplpT
     type BamMplpT = Void*
     fun bam_mplp_init_overlaps(iter : BamMplpT) : LibC::Int
