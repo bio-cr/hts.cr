@@ -12,6 +12,6 @@ module HTS
     remove_prefix: false,
   )]
   @[Link("htslib")]
-  lib Htslib
+  lib LibHTS
   end
 end
