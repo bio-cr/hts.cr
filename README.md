@@ -6,7 +6,36 @@ Crystal bindings to [HTSlib](https://github.com/samtools/htslib). Under developm
 
 ## Installation
 
-1. Add the dependency to your `shard.yml`:
+### Install [htslib](https://github.com/samtools/htslib)
+
+Use the package manager to install the htslib and development files.
+
+```sh
+sudo apt install libhts-dev
+```
+
+
+Alternatively, you can install it from the source code and use the latest version of htslib.
+
+```sh
+git clone https://github.com/samtools/htslib
+git checkout refs/tags/1.1X # Replace x with the latest version number
+cd htslib
+autoreconf -i  # Build the configure script and install files it uses
+./configure    # Optional but recommended, for choosing extra functionality
+make -j4
+sudo checkinstall
+```
+
+It is important that [pkg-config can discover the library](https://crystal-lang.org/reference/syntax_and_semantics/c_bindings/lib.html). If the following command fails, the compilation may not succeed.
+
+```sh
+pkg-config --libs htslib
+````
+
+### crystal
+
+Add the dependency to your `shard.yml`:
 
    ```yaml
    dependencies:
@@ -14,7 +43,7 @@ Crystal bindings to [HTSlib](https://github.com/samtools/htslib). Under developm
        github: kojix2/htslib
    ```
 
-2. Run `shards install`
+Run `shards install`
 
 ## Usage
 
@@ -44,16 +73,6 @@ puts String.new(HTS::LibHTS.hts_version())
 
 * High level API - Create as needed. But don't overdo it.
 * Low level API - Native C bindings to HTSLib
-
-## Development
-
-```
-crystal run scripts/generate.cr
-```
-
-No plan. What will be will be.
-The author is not familiar with Crystal, so it may be written in an inefficient way, and you may be able to fix it.
-If you want the right to commit to this project, please contact me.
 
 ## Related Work
 
