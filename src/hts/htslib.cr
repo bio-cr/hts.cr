@@ -6,7 +6,7 @@ module HTS
     alias BgzfCacheT = Void*
     fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
     struct Bgzf
-      bitfields : Uint32T # Fixme
+      bitfields : Uint32T # FIXME
       # errcode : LibC::UInt
       # reserved : LibC::UInt
       # is_write : LibC::UInt
@@ -165,7 +165,7 @@ module HTS
     fun hts_opt_add(opts : HtsOpt**, c_arg : LibC::Char*) : LibC::Int
     fun hts_opt_apply(fp : HtsFile*, opts : HtsOpt*) : LibC::Int
     struct HtsFile
-      bitfields : Uint32T # Fixme
+      bitfields : Uint32T # FIXME
       # is_bin : Uint32T
       # is_write : Uint32T
       # is_be : Uint32T
@@ -182,6 +182,7 @@ module HTS
       idx : HtsIdxT
       fnidx : LibC::Char*
       bam_header : SamHdrT*
+      filter : HtsFilterT*
     end
     union HtsFileFp
       bgzf : Bgzf*
@@ -300,7 +301,7 @@ module HTS
       max_end : HtsPosT
     end
     struct HtsItrT
-      bitfields : Uint32T # Fixme
+      bitfields : Uint32T # FIXME
       # read_rest : Uint32T
       # finished : Uint32T
       # is_cram : Uint32T
@@ -423,7 +424,7 @@ module HTS
       data : Uint8T*
       l_data : LibC::Int
       m_data : Uint32T
-      mempolicy : Uint32T # Fixme
+      mempolicy : Uint32T # FIXME
     end
     struct Bam1CoreT
       pos : HtsPosT
@@ -500,7 +501,7 @@ module HTS
       qpos : Int32T
       indel : LibC::Int
       level : LibC::Int
-      bitfields : Uint32T # Fixme
+      bitfields : Uint32T # FIXME
       # is_del : Uint32T
       # is_head : Uint32T
       # is_tail : Uint32T
@@ -558,14 +559,13 @@ module HTS
     fun bam_next_basemod(b : Bam1T*, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int, pos : LibC::Int*) : LibC::Int
     fun bam_mods_at_qpos(b : Bam1T*, qpos : LibC::Int, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int) : LibC::Int
     alias CramFileDef = Void
-    type CramContainer = Void*
-    type CramBlock = Void*
-    alias CramSlice = Void
-    type CramMetrics = Void*
+    alias CramContainer = Void*
+    alias CramBlock = Void*
+    alias CramSlice = Void*
+    alias CramMetrics = Void*
     alias CramBlockSliceHdr = Void
     alias CramBlockCompressionHdr = Void
     fun cram_fd_get_header(fd : CramFd) : SamHdrT*
-
     fun cram_fd_set_header(fd : CramFd, hdr : SamHdrT*)
     fun cram_fd_get_version(fd : CramFd) : LibC::Int
     fun cram_fd_set_version(fd : CramFd, vers : LibC::Int)
@@ -581,7 +581,6 @@ module HTS
     fun cram_container_set_landmarks(c : CramContainer, num_landmarks : Int32T, landmarks : Int32T*)
     fun cram_container_is_empty(fd : CramFd) : LibC::Int
     fun cram_block_get_content_id(b : CramBlock) : Int32T
-
     fun cram_block_get_comp_size(b : CramBlock) : Int32T
     fun cram_block_get_uncomp_size(b : CramBlock) : Int32T
     fun cram_block_get_crc32(b : CramBlock) : Int32T
@@ -711,10 +710,10 @@ module HTS
       rlen : HtsPosT
       rid : Int32T
       qual : LibC::Float
-      n_info_allele : Uint32T # Fixme
+      n_info_allele : Uint32T # FIXME
       # n_info : Uint32T
       # n_allele : Uint32T
-      n_fmt_sample : Uint32T # Fixme
+      n_fmt_sample : Uint32T # FIXME
       # n_fmt : Uint32T
       # n_sample : Uint32T
       shared : KstringT
@@ -751,7 +750,7 @@ module HTS
       v1 : BcfInfoTV1
       vptr : Uint8T*
       vptr_len : Uint32T
-      vptr_off_free : Uint32T # Fixme
+      vptr_off_free : Uint32T # FIXME
       # vptr_off : Uint32T
       # vptr_free : Uint32T
       len : LibC::Int
@@ -767,7 +766,7 @@ module HTS
       type : LibC::Int
       p : Uint8T*
       p_len : Uint32T
-      p_off_free : Uint32T # Fixme
+      p_off_free : Uint32T # FIXME
       # p_off : Uint32T
       # p_free : Uint32T
     end
