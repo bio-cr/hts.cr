@@ -3,8 +3,7 @@ module HTS
   lib LibHTS
     alias HtsTpool = Void
     alias BgzfMtauxT = Void
-    type BgzfCacheT = Void*
-
+    alias BgzfCacheT = Void*
     fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
     struct Bgzf
       bitfields : Uint32T # Fixme
@@ -35,7 +34,6 @@ module HTS
     end
     alias X__Int64T = LibC::Long
     alias Int64T = X__Int64T
-
     alias HFile = Void
     type BgzidxT = Void*
     alias ZStreamS = Void
@@ -88,10 +86,7 @@ module HTS
     end
     fun hts_get_log_level : HtsLogLevel
     fun hts_log(severity : HtsLogLevel, context : LibC::Char*, format : LibC::Char*, ...)
-
-    type CramFd = Void*
-    type SamHrecsT = Void*
-
+    alias CramFd = Void*
     struct SamHdrT
       n_targets : Int32T
       ignore_sam_err : Int32T
@@ -110,13 +105,11 @@ module HTS
     alias Uint32T = X__Uint32T
     alias X__Int8T = LibC::Char
     alias Int8T = X__Int8T
-
     fun hts_resize_array_(x0 : LibC::SizeT, x1 : LibC::SizeT, x2 : LibC::SizeT, x3 : Void*, x4 : Void**, x5 : LibC::Int, x6 : LibC::Char*) : LibC::Int
     fun hts_lib_shutdown
     fun hts_free(ptr : Void*)
-
-    type HtsIdxT = Void*
-
+    alias HtsIdxT = Void*
+    alias HtsFilterT = Void
     struct HtsOpt
       arg : LibC::Char*
       opt : HtsFmtOption
@@ -252,7 +245,6 @@ module HTS
       ZstdCompression = 7
       CompressionMaximum = 32767
     end
-
     fun hts_opt_free(opts : HtsOpt*)
     fun hts_parse_format(opt : HtsFormat*, str : LibC::Char*) : LibC::Int
     fun hts_parse_opt_list(opt : HtsFormat*, str : LibC::Char*) : LibC::Int
@@ -376,9 +368,7 @@ module HTS
     fun hts_reglist_create(argv : LibC::Char**, argc : LibC::Int, r_count : LibC::Int*, hdr : Void*, getid : HtsName2idF) : HtsReglistT*
     fun hts_reglist_free(reglist : HtsReglistT*, count : LibC::Int)
     fun hts_file_type(fname : LibC::Char*) : LibC::Int
-
-    type HtsMd5Context = Void*
-
+    alias HtsMd5Context = Void*
     fun hts_md5_init : HtsMd5Context
     fun hts_md5_update(ctx : HtsMd5Context, data : Void*, size : LibC::ULong)
     fun hts_md5_final(digest : UInt8*, ctx : HtsMd5Context)
@@ -388,7 +378,7 @@ module HTS
     fun hts_reg2bin(beg : HtsPosT, _end : HtsPosT, min_shift : LibC::Int, n_lvls : LibC::Int) : LibC::Int
     fun hts_bin_level(bin : LibC::Int) : LibC::Int
     fun hts_bin_bot(bin : LibC::Int, n_lvls : LibC::Int) : LibC::Int
-    alias SamHrecsT = Void
+    alias SamHrecsT = Void*
     fun sam_hdr_init : SamHdrT*
     fun bam_hdr_read(fp : Bgzf*) : SamHdrT*
     fun bam_hdr_write(fp : Bgzf*, h : SamHdrT*) : LibC::Int
@@ -541,7 +531,7 @@ module HTS
     fun bam_plp_constructor(plp : BamPlpT, func : (Void*, Bam1T*, BamPileupCd* -> LibC::Int))
     fun bam_plp_destructor(plp : BamPlpT, func : (Void*, Bam1T*, BamPileupCd* -> LibC::Int))
     fun bam_plp_insertion(p : BamPileup1T*, ins : KstringT*, del_len : LibC::Int*) : LibC::Int
-    alias HtsBaseModState = Void
+    alias HtsBaseModState = Void*
     fun bam_plp_insertion_mod(p : BamPileup1T*, m : HtsBaseModState, ins : KstringT*, del_len : LibC::Int*) : LibC::Int
     fun bam_mplp_init(n : LibC::Int, func : BamPlpAutoF, data : Void**) : BamMplpT
     type BamMplpT = Void*
@@ -555,7 +545,18 @@ module HTS
     fun bam_mplp_destructor(iter : BamMplpT, func : (Void*, Bam1T*, BamPileupCd* -> LibC::Int))
     fun sam_cap_mapq(b : Bam1T*, ref : LibC::Char*, ref_len : HtsPosT, thres : LibC::Int) : LibC::Int
     fun sam_prob_realn(b : Bam1T*, ref : LibC::Char*, ref_len : HtsPosT, flag : LibC::Int) : LibC::Int
-
+    struct HtsBaseMod
+      modified_base : LibC::Int
+      canonical_base : LibC::Int
+      strand : LibC::Int
+      qual : LibC::Int
+    end
+    fun hts_base_mod_state_alloc : HtsBaseModState
+    fun hts_base_mod_state_free(state : HtsBaseModState)
+    fun bam_parse_basemod(b : Bam1T*, state : HtsBaseModState) : LibC::Int
+    fun bam_mods_at_next_pos(b : Bam1T*, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int) : LibC::Int
+    fun bam_next_basemod(b : Bam1T*, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int, pos : LibC::Int*) : LibC::Int
+    fun bam_mods_at_qpos(b : Bam1T*, qpos : LibC::Int, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int) : LibC::Int
     alias CramFileDef = Void
     type CramContainer = Void*
     type CramBlock = Void*
@@ -613,7 +614,7 @@ module HTS
     fun cram_free_block(b : CramBlock)
     fun cram_uncompress_block(b : CramBlock) : LibC::Int
     fun cram_compress_block(fd : CramFd, b : CramBlock, metrics : CramMetrics, method : LibC::Int, level : LibC::Int) : LibC::Int
-
+    fun cram_compress_block2(fd : CramFd, s : CramSlice, b : CramBlock, metrics : CramMetrics, method : LibC::Int, level : LibC::Int) : LibC::Int
     fun cram_new_container(nrec : LibC::Int, nslice : LibC::Int) : CramContainer
     fun cram_free_container(c : CramContainer)
     fun cram_read_container(fd : CramFd) : CramContainer
@@ -637,8 +638,7 @@ module HTS
     fun sam_hdr_free(hdr : SamHdr*)
     fun cram_get_refs(fd : HtsFile*) : RefsT
     type RefsT = Void*
-    type FaidxT = Void*
-
+    alias FaidxT = Void*
     fun faidx_fetch_nseq(fai : FaidxT) : LibC::Int
     fun faidx_fetch_seq(fai : FaidxT, c_name : LibC::Char*, p_beg_i : LibC::Int, p_end_i : LibC::Int, len : LibC::Int*) : LibC::Char*
     fun faidx_fetch_seq64(fai : FaidxT, c_name : LibC::Char*, p_beg_i : HtsPosT, p_end_i : HtsPosT, len : HtsPosT*) : LibC::Char*
