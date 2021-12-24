@@ -1,8 +1,6 @@
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/5798442/114347767-72eadf80-9ba0-11eb-9784-3e3518841412.png" width="25%" height="25%" />
-</p>
+# htslib.cr
 
-🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬🐈🧬🔬
+[![CI](https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml)
 
 Crystal bindings to [HTSlib](https://github.com/samtools/htslib). Under development.
 
