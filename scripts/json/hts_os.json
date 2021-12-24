@@ -1,6 +1,0 @@
-[
-{ "tag": "function", "name": "hts_srand48", "ns": 0, "location": "../htslib/htslib/hts_os.h:41:6", "variadic": false, "inline": false, "storage-class": "none", "parameters": [{ "tag": "parameter", "name": "seed", "type": { "tag": ":long", "bit-size": 64, "bit-alignment": 64 } }], "return-type": { "tag": ":void" } },
-{ "tag": "function", "name": "hts_erand48", "ns": 0, "location": "../htslib/htslib/hts_os.h:44:8", "variadic": false, "inline": false, "storage-class": "none", "parameters": [{ "tag": "parameter", "name": "xseed", "type": { "tag": ":array", "type": { "tag": ":unsigned-short", "bit-size": 16, "bit-alignment": 16 }, "size": 3 } }], "return-type": { "tag": ":double", "bit-size": 64, "bit-alignment": 64 } },
-{ "tag": "function", "name": "hts_drand48", "ns": 0, "location": "../htslib/htslib/hts_os.h:47:8", "variadic": false, "inline": false, "storage-class": "none", "parameters": [], "return-type": { "tag": ":double", "bit-size": 64, "bit-alignment": 64 } },
-{ "tag": "function", "name": "hts_lrand48", "ns": 0, "location": "../htslib/htslib/hts_os.h:50:6", "variadic": false, "inline": false, "storage-class": "none", "parameters": [], "return-type": { "tag": ":long", "bit-size": 64, "bit-alignment": 64 } }
-]
