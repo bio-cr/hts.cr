@@ -62,13 +62,5 @@ If you want the right to commit to this project, please contact me.
 ## Contributing
 
 htslib.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.
-
-1. Fork it (<https://github.com/kojix2/htslib.cr/fork>)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
 If you are interested in becoming a project owner, please contact me.
 Or you can simply fork it and start a project with a different name than htslib.cr.
-This is open source.
