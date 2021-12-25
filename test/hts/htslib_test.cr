@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require "../../src/hts/htslib.cr"
+require "../../src/hts/libhts.cr"
 
 class LibHTSTest < Minitest::Test
   def test_hts_version

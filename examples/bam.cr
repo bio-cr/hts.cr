@@ -1,4 +1,4 @@
-require "../src/hts/htslib"
+require "../src/hts/libhts"
 
 bam_path = File.expand_path("../../test/fixtures/poo.sort.bam", __FILE__)
 
