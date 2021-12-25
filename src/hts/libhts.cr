@@ -203,7 +203,7 @@ module HTS
       VariantData = 2
       IndexFile = 3
       RegionList = 4
-      CategoryMaximum = 32767
+      CategoryMaximum = 32_767
     end
     enum HtsExactFormat
       UnknownFormat = 0
@@ -229,7 +229,7 @@ module HTS
       FqiFormat = 19
       HtsCrypt4ghFormat = 20
       D4Format = 21
-      FormatMaximum = 32767
+      FormatMaximum = 32_767
     end
     struct HtsFormatVersion
       major : LibC::Short
@@ -244,7 +244,7 @@ module HTS
       RazfCompression = 5
       XzCompression = 6
       ZstdCompression = 7
-      CompressionMaximum = 32767
+      CompressionMaximum = 32_767
     end
     fun hts_opt_free(opts : HtsOpt*)
     fun hts_parse_format(opt : HtsFormat*, str : LibC::Char*) : LibC::Int
