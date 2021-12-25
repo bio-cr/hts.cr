@@ -1,4 +1,4 @@
-require "./htslib"
+require "./libhts"
 require "./utils"
 require "./version"
 

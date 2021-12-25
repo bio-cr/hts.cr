@@ -1,1 +1,1 @@
-require "./**" # FIXME
+require "./hts/*"
