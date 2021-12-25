@@ -40,7 +40,7 @@ Add the dependency to your `shard.yml`:
    ```yaml
    dependencies:
      htslib:
-       github: kojix2/htslib
+       github: bio-crystal/htslib
    ```
 
 Run `shards install`
@@ -48,7 +48,6 @@ Run `shards install`
 ## Usage
 
 ```crystal
-require "htslib"
 puts String.new(HTS::LibHTS.hts_version())
 ```
 
