@@ -1,9 +1,12 @@
 require "./libhts"
-require "./utils"
 require "./version"
+
+require "./bcf/header"
+require "./bcf/info"
+require "./bcf/format"
+require "./bcf/record"
 
 module HTS
   class Bcf
-    include Utils
   end
 end
