@@ -3,7 +3,7 @@ module HTS
     class Cigar
       # include Enumerable
 
-      def initialize(pointer, n_cigar)
+      def initialize(pointer : Pointer(UInt32), n_cigar : UInt32)
         @pointer = pointer
         @n_cigar = n_cigar
       end
@@ -13,7 +13,7 @@ module HTS
       end
 
       def to_s
-        to_a.flatten.join
+        # to_a.flatten.join
       end
 
       # def each

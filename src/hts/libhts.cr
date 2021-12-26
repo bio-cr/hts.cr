@@ -1,3 +1,3 @@
 require "./libhts/libhts"
-# require "./libhts/sam"
-# require "./libhts/vcf"
+require "./libhts/sam"
+require "./libhts/vcf"

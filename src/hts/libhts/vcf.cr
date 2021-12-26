@@ -1,4 +1,5 @@
 module HTS
-  lib LibHTS
+  module LibHTS2 # FIXME
+    extend self
   end
 end

@@ -16,7 +16,7 @@ module HTS
 
       # returns the query name.
       def qname
-        String.new(LibHTS.bam_get_qname(@bam1))
+        String.new(LibHTS2.bam_get_qname(@bam1))
       end
 
       # Set (query) name.
@@ -48,7 +48,10 @@ module HTS
       def mate_start
         @bam1.value.core.mpos
       end
-      # alias mate_pos mate_start
+
+      def mate_pos
+        mate_start
+      end
 
       # returns the chromosome or '' if not mapped.
       def chrom
@@ -86,7 +89,7 @@ module HTS
 
       # returns a `Cigar` object.
       def cigar
-        Cigar.new(LibHTS.bam_get_cigar(@bam1), @bam1[:core][:n_cigar])
+        Cigar.new(LibHTS2.bam_get_cigar(@bam1), @bam1.value.core.n_cigar)
       end
 
       def qlen
@@ -98,19 +101,19 @@ module HTS
 
       def rlen
         LibHTS.bam_cigar2rlen(
-          @bam1[:core][:n_cigar],
+          @bam1.value.core.n_cigar,
           LibHTS.bam_get_cigar(@bam1)
         )
       end
 
       # return the read sequence
       def sequence
-        r = LibHTS.bam_get_seq(@bam1)
-        seq = String.new
-        (@bam1[:core][:l_qseq]).times do |i|
-          seq << SEQ_NT16_STR[LibHTS.bam_seqi(r, i)]
+        r = LibHTS2.bam_get_seq(@bam1)
+        String.build do |seq|
+          (@bam1.value.core.l_qseq).times do |i|
+            seq << SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
+          end
         end
-        seq
       end
 
       # return only the base of the requested index "i" of the query sequence.
@@ -124,8 +127,10 @@ module HTS
 
       # return the base qualities
       def base_qualities
-        q_ptr = LibHTS.bam_get_qual(@bam1)
-        q_ptr.read_array_of_uint8(@bam1[:core][:l_qseq])
+        q_ptr = LibHTS2.bam_get_qual(@bam1)
+        Array.new(@bam1.value.core.l_qseq) do |i|
+          q_ptr[i]
+        end
       end
 
       # return only the base quality of the requested index "i" of the query sequence.
@@ -143,7 +148,7 @@ module HTS
 
       # returns a `Flag` object.
       def flag
-        Flag.new(@bam1[:core][:flag])
+        Flag.new(@bam1.value.core.flag)
       end
 
       def tag(str)

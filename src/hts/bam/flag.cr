@@ -1,9 +1,7 @@
 module HTS
   class Bam
     class Flag
-      def initialize(flag_value)
-        raise TypeError unless flag_value.is_a? Integer
-
+      def initialize(flag_value : UInt16)
         @value = flag_value
       end
 
