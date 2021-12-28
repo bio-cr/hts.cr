@@ -3,6 +3,7 @@ require "../../src/hts/utils.cr"
 
 class UtilsTest < Minitest::Test
   include HTS::Utils
+
   def test_warn
     output, error = capture_io do
       warn("The sky is falling!")

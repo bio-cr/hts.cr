@@ -21,7 +21,7 @@ module HTS
       end
 
       @htf_file = LibHTS.hts_open(file_path, "r")
-      @header   = Bcf::Header.new(LibHTS.bcf_hdr_read(htf_file))
+      @header = Bcf::Header.new(LibHTS.bcf_hdr_read(htf_file))
     end
 
     # Close the current file.
@@ -33,6 +33,6 @@ module HTS
       while LibHTS.bcf_read(htf_file, header.struct, bcf1 = LibHTS.bcf_init) > 0
         yield Bcf::Record.new(bcf1, header)
       end
-    end   
+    end
   end
 end

@@ -5,6 +5,7 @@ module HTS
     alias BgzfMtauxT = Void
     alias BgzfCacheT = Void*
     fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
+
     struct Bgzf
       bitfields : Uint32T # FIXME
       # errcode : LibC::UInt
@@ -32,6 +33,7 @@ module HTS
       gz_stream : ZStreamS*
       seeked : Int64T
     end
+
     alias X__Int64T = LibC::Long
     alias Int64T = X__Int64T
     alias HFile = Void
@@ -57,11 +59,13 @@ module HTS
     fun bgzf_flush_try(fp : Bgzf*, size : SsizeT) : LibC::Int
     fun bgzf_getc(fp : Bgzf*) : LibC::Int
     fun bgzf_getline(fp : Bgzf*, delim : LibC::Int, str : KstringT*) : LibC::Int
+
     struct KstringT
       l : LibC::SizeT
       m : LibC::SizeT
       s : LibC::Char*
     end
+
     fun bgzf_read_block(fp : Bgzf*) : LibC::Int
     fun bgzf_thread_pool(fp : Bgzf*, pool : HtsTpool*, qsize : LibC::Int) : LibC::Int
     fun bgzf_mt(fp : Bgzf*, n_threads : LibC::Int, n_sub_blks : LibC::Int) : LibC::Int
@@ -77,16 +81,17 @@ module HTS
     fun bgzf_index_dump_hfile(fp : Bgzf*, idx : HFile*, name : LibC::Char*) : LibC::Int
     fun hts_set_log_level(level : HtsLogLevel)
     enum HtsLogLevel
-      HtsLogOff = 0
-      HtsLogError = 1
+      HtsLogOff     = 0
+      HtsLogError   = 1
       HtsLogWarning = 3
-      HtsLogInfo = 4
-      HtsLogDebug = 5
-      HtsLogTrace = 6
+      HtsLogInfo    = 4
+      HtsLogDebug   = 5
+      HtsLogTrace   = 6
     end
     fun hts_get_log_level : HtsLogLevel
     fun hts_log(severity : HtsLogLevel, context : LibC::Char*, format : LibC::Char*, ...)
     alias CramFd = Void*
+
     struct SamHdrT
       n_targets : Int32T
       ignore_sam_err : Int32T
@@ -99,6 +104,7 @@ module HTS
       hrecs : SamHrecsT
       ref_count : Uint32T
     end
+
     alias X__Int32T = LibC::Int
     alias Int32T = X__Int32T
     alias X__Uint32T = LibC::UInt
@@ -110,60 +116,65 @@ module HTS
     fun hts_free(ptr : Void*)
     alias HtsIdxT = Void*
     alias HtsFilterT = Void
+
     struct HtsOpt
       arg : LibC::Char*
       opt : HtsFmtOption
       val : HtsOptVal
       next : HtsOpt*
     end
+
     enum HtsFmtOption
-      CramOptDecodeMd = 0
-      CramOptPrefix = 1
-      CramOptVerbosity = 2
-      CramOptSeqsPerSlice = 3
-      CramOptSlicesPerContainer = 4
-      CramOptRange = 5
-      CramOptVersion = 6
-      CramOptEmbedRef = 7
-      CramOptIgnoreMd5 = 8
-      CramOptReference = 9
-      CramOptMultiSeqPerSlice = 10
-      CramOptNoRef = 11
-      CramOptUseBzip2 = 12
-      CramOptSharedRef = 13
-      CramOptNthreads = 14
-      CramOptThreadPool = 15
-      CramOptUseLzma = 16
-      CramOptUseRans = 17
-      CramOptRequiredFields = 18
-      CramOptLossyNames = 19
-      CramOptBasesPerSlice = 20
-      CramOptStoreMd = 21
-      CramOptStoreNm = 22
-      CramOptRangeNoseek = 23
-      CramOptUseTok = 24
-      CramOptUseFqz = 25
-      CramOptUseArith = 26
-      CramOptPosDelta = 27
-      HtsOptCompressionLevel = 100
-      HtsOptNthreads = 101
-      HtsOptThreadPool = 102
-      HtsOptCacheSize = 103
-      HtsOptBlockSize = 104
-      HtsOptFilter = 105
-      HtsOptProfile = 106
-      FastqOptCasava = 1000
-      FastqOptAux = 1001
-      FastqOptRnum = 1002
-      FastqOptBarcode = 1003
-      FastqOptName2 = 1004
+      CramOptDecodeMd           =    0
+      CramOptPrefix             =    1
+      CramOptVerbosity          =    2
+      CramOptSeqsPerSlice       =    3
+      CramOptSlicesPerContainer =    4
+      CramOptRange              =    5
+      CramOptVersion            =    6
+      CramOptEmbedRef           =    7
+      CramOptIgnoreMd5          =    8
+      CramOptReference          =    9
+      CramOptMultiSeqPerSlice   =   10
+      CramOptNoRef              =   11
+      CramOptUseBzip2           =   12
+      CramOptSharedRef          =   13
+      CramOptNthreads           =   14
+      CramOptThreadPool         =   15
+      CramOptUseLzma            =   16
+      CramOptUseRans            =   17
+      CramOptRequiredFields     =   18
+      CramOptLossyNames         =   19
+      CramOptBasesPerSlice      =   20
+      CramOptStoreMd            =   21
+      CramOptStoreNm            =   22
+      CramOptRangeNoseek        =   23
+      CramOptUseTok             =   24
+      CramOptUseFqz             =   25
+      CramOptUseArith           =   26
+      CramOptPosDelta           =   27
+      HtsOptCompressionLevel    =  100
+      HtsOptNthreads            =  101
+      HtsOptThreadPool          =  102
+      HtsOptCacheSize           =  103
+      HtsOptBlockSize           =  104
+      HtsOptFilter              =  105
+      HtsOptProfile             =  106
+      FastqOptCasava            = 1000
+      FastqOptAux               = 1001
+      FastqOptRnum              = 1002
+      FastqOptBarcode           = 1003
+      FastqOptName2             = 1004
     end
+
     union HtsOptVal
       i : LibC::Int
       s : LibC::Char*
     end
+
     fun hts_opt_add(opts : HtsOpt**, c_arg : LibC::Char*) : LibC::Int
     fun hts_opt_apply(fp : HtsFile*, opts : HtsOpt*) : LibC::Int
+
     struct HtsFile
       bitfields : Uint32T # FIXME
       # is_bin : Uint32T
@@ -184,11 +195,13 @@ module HTS
       bam_header : SamHdrT*
       filter : HtsFilterT*
     end
+
     union HtsFileFp
       bgzf : Bgzf*
       cram : CramFd*
       hfile : HFile*
     end
+
     struct HtsFormat
       category : HtsFormatCategory
       format : HtsExactFormat
@@ -197,53 +210,56 @@ module HTS
       compression_level : LibC::Short
       specific : Void*
     end
+
     enum HtsFormatCategory
-      UnknownCategory = 0
-      SequenceData = 1
-      VariantData = 2
-      IndexFile = 3
-      RegionList = 4
+      UnknownCategory =      0
+      SequenceData    =      1
+      VariantData     =      2
+      IndexFile       =      3
+      RegionList      =      4
       CategoryMaximum = 32_767
     end
     enum HtsExactFormat
-      UnknownFormat = 0
-      BinaryFormat = 1
-      TextFormat = 2
-      Sam = 3
-      Bam = 4
-      Bai = 5
-      Cram = 6
-      Crai = 7
-      Vcf = 8
-      Bcf = 9
-      Csi = 10
-      Gzi = 11
-      Tbi = 12
-      Bed = 13
-      Htsget = 14
-      Json = 14
-      EmptyFormat = 15
-      FastaFormat = 16
-      FastqFormat = 17
-      FaiFormat = 18
-      FqiFormat = 19
-      HtsCrypt4ghFormat = 20
-      D4Format = 21
-      FormatMaximum = 32_767
+      UnknownFormat     =      0
+      BinaryFormat      =      1
+      TextFormat        =      2
+      Sam               =      3
+      Bam               =      4
+      Bai               =      5
+      Cram              =      6
+      Crai              =      7
+      Vcf               =      8
+      Bcf               =      9
+      Csi               =     10
+      Gzi               =     11
+      Tbi               =     12
+      Bed               =     13
+      Htsget            =     14
+      Json              =     14
+      EmptyFormat       =     15
+      FastaFormat       =     16
+      FastqFormat       =     17
+      FaiFormat         =     18
+      FqiFormat         =     19
+      HtsCrypt4ghFormat =     20
+      D4Format          =     21
+      FormatMaximum     = 32_767
     end
+
     struct HtsFormatVersion
       major : LibC::Short
       minor : LibC::Short
     end
+
     enum HtsCompression
-      NoCompression = 0
-      Gzip = 1
-      Bgzf = 2
-      Custom = 3
-      Bzip2Compression = 4
-      RazfCompression = 5
-      XzCompression = 6
-      ZstdCompression = 7
+      NoCompression      =      0
+      Gzip               =      1
+      Bgzf               =      2
+      Custom             =      3
+      Bzip2Compression   =      4
+      RazfCompression    =      5
+      XzCompression      =      6
+      ZstdCompression    =      7
       CompressionMaximum = 32_767
     end
     fun hts_opt_free(opts : HtsOpt*)
@@ -268,30 +284,38 @@ module HTS
     fun hts_readlist(fn : LibC::Char*, is_file : LibC::Int, _n : LibC::Int*) : LibC::Char**
     fun hts_set_threads(fp : HtsFile*, n : LibC::Int) : LibC::Int
     fun hts_set_thread_pool(fp : HtsFile*, p : HtsThreadPool*) : LibC::Int
+
     struct HtsThreadPool
       pool : HtsTpool*
       qsize : LibC::Int
     end
+
     fun hts_set_cache_size(fp : HtsFile*, n : LibC::Int)
     fun hts_set_fai_filename(fp : HtsFile*, fn_aux : LibC::Char*) : LibC::Int
     fun hts_set_filter_expression(fp : HtsFile*, expr : LibC::Char*) : LibC::Int
     fun hts_check_eof = hts_check_EOF(fp : HtsFile*) : LibC::Int
+
     struct HtsPairPosT
       beg : HtsPosT
       _end : HtsPosT
     end
+
     alias HtsPosT = Int64T
+
     struct HtsPair64T
       u : Uint64T
       v : Uint64T
     end
+
     alias X__Uint64T = LibC::ULong
     alias Uint64T = X__Uint64T
+
     struct HtsPair64MaxT
       u : Uint64T
       v : Uint64T
       max : Uint64T
     end
+
     struct HtsReglistT
       reg : LibC::Char*
       intervals : HtsPairPosT*
@@ -300,6 +324,7 @@ module HTS
       min_beg : HtsPosT
       max_end : HtsPosT
     end
+
     struct HtsItrT
       bitfields : Uint32T # FIXME
       # read_rest : Uint32T
@@ -328,11 +353,13 @@ module HTS
       tell : (Void* -> Int64T)
       bins : HtsItrTBins
     end
+
     struct HtsItrTBins
       n : LibC::Int
       m : LibC::Int
       a : LibC::Int*
     end
+
     fun hts_idx_init(n : LibC::Int, fmt : LibC::Int, offset0 : Uint64T, min_shift : LibC::Int, n_lvls : LibC::Int) : HtsIdxT
     fun hts_idx_destroy(idx : HtsIdxT)
     fun hts_idx_push(idx : HtsIdxT, tid : LibC::Int, beg : HtsPosT, _end : HtsPosT, offset : Uint64T, is_mapped : LibC::Int) : LibC::Int
@@ -418,6 +445,7 @@ module HTS
     fun sam_hdr_add_pg(h : SamHdrT*, name : LibC::Char*, ...) : LibC::Int
     fun sam_hdr_incr_ref(h : SamHdrT*)
     fun bam_init1 : Bam1T*
+
     struct Bam1T
       core : Bam1CoreT
       id : Uint64T
@@ -426,6 +454,7 @@ module HTS
       m_data : Uint32T
       mempolicy : Uint32T # FIXME
     end
+
     struct Bam1CoreT
       pos : HtsPosT
       tid : Int32T
@@ -440,6 +469,7 @@ module HTS
       mpos : HtsPosT
       isize : HtsPosT
     end
+
     alias X__Uint16T = LibC::UShort
     alias Uint16T = X__Uint16T
     fun bam_destroy1(b : Bam1T*)
@@ -496,6 +526,7 @@ module HTS
     fun bam_aux_update_int(b : Bam1T*, tag : LibC::Char[2], val : Int64T) : LibC::Int
     fun bam_aux_update_float(b : Bam1T*, tag : LibC::Char[2], val : LibC::Float) : LibC::Int
     fun bam_aux_update_array(b : Bam1T*, tag : LibC::Char[2], type : Uint8T, items : Uint32T, data : Void*) : LibC::Int
+
     struct BamPileup1T
       b : Bam1T*
       qpos : Int32T
@@ -511,11 +542,13 @@ module HTS
       cd : BamPileupCd
       cigar_ind : LibC::Int
     end
+
     union BamPileupCd
       p : Void*
       i : Int64T
       f : LibC::Double
     end
+
     alias BamPlpS = Void
     alias BamMplpS = Void
     fun bam_plp_init(func : BamPlpAutoF, data : Void*) : BamPlpT
@@ -546,12 +579,14 @@ module HTS
     fun bam_mplp_destructor(iter : BamMplpT, func : (Void*, Bam1T*, BamPileupCd* -> LibC::Int))
     fun sam_cap_mapq(b : Bam1T*, ref : LibC::Char*, ref_len : HtsPosT, thres : LibC::Int) : LibC::Int
     fun sam_prob_realn(b : Bam1T*, ref : LibC::Char*, ref_len : HtsPosT, flag : LibC::Int) : LibC::Int
+
     struct HtsBaseMod
       modified_base : LibC::Int
       canonical_base : LibC::Int
       strand : LibC::Int
       qual : LibC::Int
     end
+
     fun hts_base_mod_state_alloc : HtsBaseModState
     fun hts_base_mod_state_free(state : HtsBaseModState)
     fun bam_parse_basemod(b : Bam1T*, state : HtsBaseModState) : LibC::Int
@@ -587,13 +622,13 @@ module HTS
     fun cram_block_get_data(b : CramBlock) : Void*
     fun cram_block_get_content_type(b : CramBlock) : CramContentType
     enum CramContentType
-      CtError = -1
-      FileHeader = 0
-      CompressionHeader = 1
-      MappedSlice = 2
-      UnmappedSlice = 3
-      External = 4
-      Core = 5
+      CtError           = -1
+      FileHeader        =  0
+      CompressionHeader =  1
+      MappedSlice       =  2
+      UnmappedSlice     =  3
+      External          =  4
+      Core              =  5
     end
     fun cram_block_set_content_id(b : CramBlock, id : Int32T)
     fun cram_block_set_comp_size(b : CramBlock, size : Int32T)
@@ -647,6 +682,7 @@ module HTS
     fun faidx_nseq(fai : FaidxT) : LibC::Int
     fun faidx_iseq(fai : FaidxT, i : LibC::Int) : LibC::Char*
     fun faidx_seq_len(fai : FaidxT, seq : LibC::Char*) : LibC::Int
+
     struct TbxConfT
       preset : Int32T
       sc : Int32T
@@ -655,11 +691,13 @@ module HTS
       meta_char : Int32T
       line_skip : Int32T
     end
+
     struct TbxT
       conf : TbxConfT
       idx : HtsIdxT
       dict : Void*
     end
+
     fun tbx_name2id(tbx : TbxT*, ss : LibC::Char*) : LibC::Int
     fun hts_get_bgzfp(fp : HtsFile*) : Bgzf*
     fun tbx_readrec(fp : Bgzf*, tbxv : Void*, sv : Void*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*) : LibC::Int
@@ -673,6 +711,7 @@ module HTS
     fun tbx_seqnames(tbx : TbxT*, n : LibC::Int*) : LibC::Char**
     fun tbx_destroy(tbx : TbxT*)
     fun vcf_parse(s : KstringT*, h : BcfHdrT*, v : Bcf1T*) : LibC::Int
+
     struct BcfHdrT
       n : Int32T[3]
       id : BcfIdpairT*[3]
@@ -688,15 +727,18 @@ module HTS
       mem : KstringT
       m : Int32T[3]
     end
+
     struct BcfIdpairT
       key : LibC::Char*
       val : BcfIdinfoT*
     end
+
     struct BcfIdinfoT
       info : Uint64T[3]
       hrec : BcfHrecT*[3]
       id : LibC::Int
     end
+
     struct BcfHrecT
       type : LibC::Int
       key : LibC::Char*
@@ -705,6 +747,7 @@ module HTS
       keys : LibC::Char**
       vals : LibC::Char**
     end
+
     struct Bcf1T
       pos : HtsPosT
       rlen : HtsPosT
@@ -724,6 +767,7 @@ module HTS
       unpack_size : LibC::Int[3]
       errcode : LibC::Int
     end
+
     struct BcfDecT
       m_fmt : LibC::Int
       m_info : LibC::Int
@@ -744,6 +788,7 @@ module HTS
       shared_dirty : LibC::Int
       indiv_dirty : LibC::Int
     end
+
     struct BcfInfoT
       key : LibC::Int
       type : LibC::Int
@@ -755,10 +800,12 @@ module HTS
       # vptr_free : Uint32T
       len : LibC::Int
     end
+
     union BcfInfoTV1
       i : Int64T
       f : LibC::Float
     end
+
     struct BcfFmtT
       id : LibC::Int
       n : LibC::Int
@@ -770,10 +817,12 @@ module HTS
       # p_off : Uint32T
       # p_free : Uint32T
     end
+
     struct BcfVariantT
       type : LibC::Int
       n : LibC::Int
     end
+
     fun vcf_open_mode(mode : LibC::Char*, fn : LibC::Char*, format : LibC::Char*) : LibC::Int
     fun vcf_format(h : BcfHdrT*, v : Bcf1T*, s : KstringT*) : LibC::Int
     fun vcf_hdr_read(fp : HtsFile*) : BcfHdrT*
