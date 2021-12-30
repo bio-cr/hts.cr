@@ -7,7 +7,7 @@ class BcfTest < Minitest::Test
   end
 
   def test_bcf_path
-    File.expand_path("../../../htslib/test/index.vcf", __DIR__)
+    File.expand_path("../fixtures/test.bcf", __DIR__)
   end
   
   def bcf
