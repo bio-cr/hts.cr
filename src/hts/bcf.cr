@@ -10,11 +10,12 @@ module HTS
   class Bcf
     include Enumerable(Bcf::Record)
 
+    getter :file_path
     getter :header
     getter :htf_file
 
     def initialize(filename : Path | String)
-      file_path = File.expand_path(filename).to_s
+      @file_path = File.expand_path(filename)
 
       unless File.exists?(file_path)
         raise "File not found: #{file_path}"
