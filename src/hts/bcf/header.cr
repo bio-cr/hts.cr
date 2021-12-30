@@ -6,7 +6,7 @@ module HTS
       end
 
       def struct
-        @bcf_hdr 
+        @bcf_hdr
       end
     end
   end

@@ -9,7 +9,7 @@ class BcfTest < Minitest::Test
   def test_bcf_path
     File.expand_path("../fixtures/test.bcf", __DIR__)
   end
-  
+
   def bcf
     @bcf ||= HTS::Bcf.new(test_bcf_path)
   end

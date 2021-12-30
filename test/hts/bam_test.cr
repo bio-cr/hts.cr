@@ -9,7 +9,7 @@ class BamTest < Minitest::Test
   def test_bam_path
     File.expand_path("../fixtures/poo.sort.bam", __DIR__)
   end
-  
+
   def bam
     @bam ||= HTS::Bam.new(test_bam_path)
   end
