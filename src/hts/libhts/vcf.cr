@@ -83,100 +83,100 @@ module HTS
       hdr.value.n[BCF_DT_SAMPLE]
     end
 
-    # def bcf_update_info_int32(hdr, line, key, values, n)
-    #   bcf_update_info(hdr, line, key, values, n, BCF_HT_INT)
-    # end
+    def bcf_update_info_int32(hdr, line, key, values, n)
+      bcf_update_info(hdr, line, key, values, n, BCF_HT_INT)
+    end
 
-    # def bcf_update_info_float(hdr, line, key, values, n)
-    #   bcf_update_info(hdr, line, key, values, n, BCF_HT_REAL)
-    # end
+    def bcf_update_info_float(hdr, line, key, values, n)
+      bcf_update_info(hdr, line, key, values, n, BCF_HT_REAL)
+    end
 
-    # def bcf_update_info_flag(hdr, line, key, string, n)
-    #   bcf_update_info(hdr, line, key, string, n, BCF_HT_FLAG)
-    # end
+    def bcf_update_info_flag(hdr, line, key, string, n)
+      bcf_update_info(hdr, line, key, string, n, BCF_HT_FLAG)
+    end
 
-    # def bcf_update_info_string(hdr, line, key, string)
-    #   bcf_update_info(hdr, line, key, string, 1, BCF_HT_STR)
-    # end
+    def bcf_update_info_string(hdr, line, key, string)
+      bcf_update_info(hdr, line, key, string, 1, BCF_HT_STR)
+    end
 
-    # def bcf_update_format_int32(hdr, line, key, values, n)
-    #   bcf_update_format(hdr, line, key, values, n,
-    #     BCF_HT_INT)
-    # end
+    def bcf_update_format_int32(hdr, line, key, values, n)
+      bcf_update_format(hdr, line, key, values, n,
+        BCF_HT_INT)
+    end
 
-    # def bcf_update_format_float(hdr, line, key, values, n)
-    #   bcf_update_format(hdr, line, key, values, n,
-    #     BCF_HT_REAL)
-    # end
+    def bcf_update_format_float(hdr, line, key, values, n)
+      bcf_update_format(hdr, line, key, values, n,
+        BCF_HT_REAL)
+    end
 
-    # def bcf_update_format_char(hdr, line, key, values, n)
-    #   bcf_update_format(hdr, line, key, values, n,
-    #     BCF_HT_STR)
-    # end
+    def bcf_update_format_char(hdr, line, key, values, n)
+      bcf_update_format(hdr, line, key, values, n,
+        BCF_HT_STR)
+    end
 
-    # def bcf_update_genotypes(hdr, line, gts, n)
-    #   bcf_update_format(hdr, line, "GT", gts, n, BCF_HT_INT)
-    # end
+    def bcf_update_genotypes(hdr, line, gts, n)
+      bcf_update_format(hdr, line, "GT", gts, n, BCF_HT_INT)
+    end
 
-    # def bcf_gt_phased(idx)
-    #   ((idx + 1) << 1 | 1)
-    # end
+    def bcf_gt_phased(idx)
+      ((idx + 1) << 1 | 1)
+    end
 
-    # def bcf_gt_unphased(idx)
-    #   ((idx + 1) << 1)
-    # end
+    def bcf_gt_unphased(idx)
+      ((idx + 1) << 1)
+    end
 
-    # def bcf_gt_missing
-    #   0
-    # end
+    def bcf_gt_missing
+      0
+    end
 
-    # def bcf_gt_is_missing(val)
-    #   ((val) >> 1 ? 0 : 1)
-    # end
+    def bcf_gt_is_missing(val)
+      ((val) >> 1 ? 0 : 1)
+    end
 
-    # def bcf_gt_is_phased(idx)
-    #   ((idx) & 1)
-    # end
+    def bcf_gt_is_phased(idx)
+      ((idx) & 1)
+    end
 
-    # def bcf_gt_allele(val)
-    #   (((val) >> 1) - 1)
-    # end
+    def bcf_gt_allele(val)
+      (((val) >> 1) - 1)
+    end
 
-    # def bcf_alleles2gt(a, b)
-    #   ((a) > (b) ? (a * (a + 1) / 2 + b) : (b * (b + 1) / 2 + a))
-    # end
+    def bcf_alleles2gt(a, b)
+      ((a) > (b) ? (a * (a + 1) / 2 + b) : (b * (b + 1) / 2 + a))
+    end
 
-    # def bcf_get_info_int32(hdr, line, tag, dst, ndst)
-    #   bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_INT)
-    # end
+    def bcf_get_info_int32(hdr, line, tag, dst, ndst)
+      bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_INT)
+    end
 
-    # def bcf_get_info_float(hdr, line, tag, dst, ndst)
-    #   bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_REAL)
-    # end
+    def bcf_get_info_float(hdr, line, tag, dst, ndst)
+      bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_REAL)
+    end
 
-    # def bcf_get_info_string(hdr, line, tag, dst, ndst)
-    #   bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_STR)
-    # end
+    def bcf_get_info_string(hdr, line, tag, dst, ndst)
+      bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_STR)
+    end
 
-    # def bcf_get_info_flag(hdr, line, tag, dst, ndst)
-    #   bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_FLAG)
-    # end
+    def bcf_get_info_flag(hdr, line, tag, dst, ndst)
+      bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_FLAG)
+    end
 
-    # def bcf_get_format_int32(hdr, line, tag, dst, ndst)
-    #   bcf_get_format_values(hdr, line, tag, dst, ndst, BCF_HT_INT)
-    # end
+    def bcf_get_format_int32(hdr, line, tag, dst, ndst)
+      bcf_get_format_values(hdr, line, tag, dst, ndst, BCF_HT_INT)
+    end
 
-    # def bcf_get_format_float(hdr, line, tag, dst, ndst)
-    #   bcf_get_format_values(hdr, line, tag, dst, ndst, BCF_HT_REAL)
-    # end
+    def bcf_get_format_float(hdr, line, tag, dst, ndst)
+      bcf_get_format_values(hdr, line, tag, dst, ndst, BCF_HT_REAL)
+    end
 
-    # def bcf_get_format_char(hdr, line, tag, dst, ndst)
-    #   bcf_get_format_values(hdr, line, tag, dst, ndst, BCF_HT_STR)
-    # end
+    def bcf_get_format_char(hdr, line, tag, dst, ndst)
+      bcf_get_format_values(hdr, line, tag, dst, ndst, BCF_HT_STR)
+    end
 
-    # def bcf_get_genotypes(hdr, line, dst, ndst)
-    #   bcf_get_format_values(hdr, line, "GT", dst, ndst, BCF_HT_INT)
-    # end
+    def bcf_get_genotypes(hdr, line, dst, ndst)
+      bcf_get_format_values(hdr, line, "GT", dst, ndst, BCF_HT_INT)
+    end
 
     # def bcf_hdr_int2id(hdr, type, int_id)
     #   LibHTS::BcfIdpair.new(
