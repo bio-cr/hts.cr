@@ -1,1 +1,1 @@
-require "./hts/*"
+require "./hts/**"
