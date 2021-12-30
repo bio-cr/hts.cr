@@ -22,6 +22,22 @@ module HTS
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_INFO)
         String.new(@bcf1.value.d.id)
       end
+
+      def qual
+        @bcf1.value.qual
+      end
+
+      def ref
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
+        String.new(@bcf1.value.d.allele[0])
+      end
+
+      def to_s
+        ksr = LibHTS::KstringT.new
+        raise "Failed to format record" if LibHTS.vcf_format(@header.struct, @bcf1, pointerof(ksr)) == -1
+
+        String.new(ksr.s)
+      end
     end
   end
 end

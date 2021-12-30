@@ -8,7 +8,10 @@ bcf.each do |r|
   p pos: r.pos,
     start: r.start,
     stop: r.stop,
-    id: r.id
+    id: r.id,
+    qual: r.qual,
+    ref: r.ref
+  puts r.to_s
 end
 
 bcf.close
