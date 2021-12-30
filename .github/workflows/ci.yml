@@ -11,7 +11,7 @@ jobs:
       - name: Install Crystal
         uses: oprypin/install-crystal@v1
         with:
-          crystal: 1.0.0
+          crystal: 1.2
       - name: Install HTSlib
         run: |
           sudo apt update
