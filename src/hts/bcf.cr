@@ -31,7 +31,7 @@ module HTS
     end
 
     def each
-      while LibHTS.bcf_read(htf_file, header.struct, bcf1 = LibHTS.bcf_init) > 0
+      while LibHTS.bcf_read(htf_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
       end
     end

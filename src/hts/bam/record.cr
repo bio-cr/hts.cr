@@ -3,7 +3,7 @@ module HTS
     class Record
       SEQ_NT16_STR = "=ACMGRSVTWYHKDBN"
 
-      def initialize(bam1_t : Pointer(HTS::LibHTS::Bam1T), header : Header)
+      def initialize(bam1_t : Pointer(HTS::LibHTS::Bam1T), header : Bam::Header)
         @bam1 = bam1_t
         @header = header
       end
