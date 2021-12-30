@@ -79,8 +79,8 @@ module HTS
     BCF_UN_IND  = BCF_UN_FMT                              # a synonym of BCF_UN_FMT
     BCF_UN_ALL  = (BCF_UN_SHR | BCF_UN_FMT)               # everything
 
-    def bcf_hdr_nsamples(hdr)
-      hdr[:n][BCF_DT_SAMPLE]
+    def bcf_hdr_nsamples(hdr : Pointer(HTS::LibHTS::BcfHdrT))
+      hdr.value.n[BCF_DT_SAMPLE]
     end
 
     # def bcf_update_info_int32(hdr, line, key, values, n)

@@ -25,4 +25,8 @@ class BcfTest < Minitest::Test
   def test_header
     assert_instance_of HTS::Bcf::Header, bcf.header
   end
+
+  def test_n_samples
+    assert_equal 1, bcf.n_samples
+  end
 end

@@ -35,5 +35,9 @@ module HTS
         yield Bcf::Record.new(bcf1, header)
       end
     end
+
+    def n_samples
+      LibHTS2.bcf_hdr_nsamples(header.struct)
+    end
   end
 end
