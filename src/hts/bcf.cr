@@ -36,7 +36,7 @@ module HTS
       end
     end
 
-    def n_samples
+    def sample_count
       LibHTS2.bcf_hdr_nsamples(header.struct)
     end
   end
