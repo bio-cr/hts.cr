@@ -70,6 +70,16 @@ module HTS
         end
       end
 
+      def info
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_SHR)
+        Info.new(self)
+      end
+
+      def format
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FMT)
+        Format.new(self)
+      end   
+
       def to_s
         ksr = LibHTS::KstringT.new
         raise "Failed to format record" if LibHTS.vcf_format(@header.struct, @bcf1, pointerof(ksr)) == -1

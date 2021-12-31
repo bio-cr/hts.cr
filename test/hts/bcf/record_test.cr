@@ -49,6 +49,14 @@ class BcfRecordTest < Minitest::Test
     assert_equal ["T", "C"], var1.alleles
   end
 
+  def test_info
+    assert_instance_of HTS::Bcf::Info, var1.info
+  end
+
+  def test_format
+    assert_instance_of HTS::Bcf::Format, var1.format
+  end
+
   def test_s
     assert_equal "poo\t2126\t.\tT\tC\t142.416\t.\tDP=31;VDB=0.673439;SGB=-0.69311;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,14,17;MQ=60\tGT:PL\t1/1:172,93,0\n",
       var1.to_s
