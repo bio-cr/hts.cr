@@ -102,7 +102,7 @@ module HTS
       def rlen
         LibHTS.bam_cigar2rlen(
           @bam1.value.core.n_cigar,
-          LibHTS.bam_get_cigar(@bam1)
+          LibHTS2.bam_get_cigar(@bam1)
         )
       end
 
@@ -118,11 +118,11 @@ module HTS
 
       # return only the base of the requested index "i" of the query sequence.
       def base_at(n)
-        n += @bam1[:core][:l_qseq] if n < 0
-        return "." if (n >= @bam1[:core][:l_qseq]) || (n < 0) # eg. base_at(-1000)
+        n += @bam1.value.core.l_qseq if n < 0
+        return '.' if (n >= @bam1.value.core.l_qseq) || (n < 0) # eg. base_at(-1000)
 
-        r = LibHTS.bam_get_seq(@bam1)
-        SEQ_NT16_STR[LibHTS.bam_seqi(r, n)]
+        r = LibHTS2.bam_get_seq(@bam1)
+        SEQ_NT16_STR[LibHTS2.bam_seqi(r, n)]
       end
 
       # return the base qualities

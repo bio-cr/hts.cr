@@ -52,7 +52,7 @@ class BamRecordTest < Minitest::Test
   def test_strand
     assert_equal "+", aln1.strand
   end
-  
+
   def test_isize
     assert_equal 0, aln1.isize
   end
@@ -77,5 +77,18 @@ class BamRecordTest < Minitest::Test
     assert_equal 0, aln1.rlen
   end
 
-  
+  def test_sequence
+    assert_equal "GGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC", aln1.sequence
+  end
+
+  def test_base_at
+    assert_equal 'G', aln1.base_at(0)
+    assert_equal 'C', aln1.base_at(4)
+    assert_equal 'A', aln1.base_at(5)
+    assert_equal '.', aln1.base_at(70)
+    assert_equal 'C', aln1.base_at(-1)
+    assert_equal 'G', aln1.base_at(-2)
+    assert_equal 'G', aln1.base_at(-70)
+    assert_equal '.', aln1.base_at(-71)
+  end
 end
