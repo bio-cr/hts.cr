@@ -11,7 +11,6 @@ bcf.each do |r|
     id: r.id,
     qual: r.qual,
     ref: r.ref
-  puts r.to_s
 end
 
 bcf.close

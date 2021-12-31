@@ -23,6 +23,28 @@ module HTS
         String.new(@bcf1.value.d.id)
       end
 
+      def filter
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FLT)
+        d = @bcf1.value.d
+        n_flt = d.n_flt
+
+        case n_flt
+        when 0
+          "PASS"
+        when 1
+          i = d.flt.value
+          String.new(LibHTS2.bcf_hdr_int2id(@header.struct, LibHTS2::BCF_DT_ID, i))
+        when 2
+          # FIXME note tested yet and may contain bugs
+          StaticArray(String, 2).new do |i|
+            j = d.flt[i]
+            String.new(LibHTS2.bcf_hdr_int2id(@header.struct, LibHTS2::BCF_DT_ID, j))
+          end
+        else
+          raise "unexpectd number of filters. n_flt: #{n_flt}"
+        end
+      end
+
       def qual
         @bcf1.value.qual
       end

@@ -178,12 +178,12 @@ module HTS
       bcf_get_format_values(hdr, line, "GT", dst, ndst, BCF_HT_INT)
     end
 
-    # def bcf_hdr_int2id(hdr, type, int_id)
-    #   LibHTS::BcfIdpair.new(
-    #     hdr[:id][type].to_ptr +
-    #     LibHTS::BcfIdpair.size * int_id # offsets
-    #   )[:key]
-    # end
+    def bcf_hdr_int2id(hdr, type, int_id)
+      Pointer(LibHTS::BcfIdpairT).new(
+        (hdr.value.id[type]).address +
+        sizeof(LibHTS::BcfIdpairT) * int_id
+      ).value.key
+    end
 
     # def bcf_hdr_name2id(hdr, id)
     #   bcf_hdr_id2int(hdr, BCF_DT_CTG, id)
