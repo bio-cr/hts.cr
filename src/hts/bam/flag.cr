@@ -5,7 +5,7 @@ module HTS
         @value = flag_value
       end
 
-      getter :value
+      getter :value # FIXME: naming.
 
       # BAM_FPAIRED        =    1
       # BAM_FPROPER_PAIR   =    2
@@ -31,55 +31,55 @@ module HTS
       # proc `==`*(o: uint16, f: Flag): bool {. borrow, inline .}
 
       def paired?
-        has_flag? LibHTS::BAM_FPAIRED
+        has_flag? LibHTS2::BAM_FPAIRED
       end
 
       def proper_pair?
-        has_flag? LibHTS::BAM_FPROPER_PAIR
+        has_flag? LibHTS2::BAM_FPROPER_PAIR
       end
 
       def unmapped?
-        has_flag? LibHTS::BAM_FUNMAP
+        has_flag? LibHTS2::BAM_FUNMAP
       end
 
       def mate_unmapped?
-        has_flag? LibHTS::BAM_FMUNMAP
+        has_flag? LibHTS2::BAM_FMUNMAP
       end
 
       def reverse?
-        has_flag? LibHTS::BAM_FREVERSE
+        has_flag? LibHTS2::BAM_FREVERSE
       end
 
       def mate_reverse?
-        has_flag? LibHTS::BAM_FMREVERSE
+        has_flag? LibHTS2::BAM_FMREVERSE
       end
 
       def read1?
-        has_flag? LibHTS::BAM_FREAD1
+        has_flag? LibHTS2::BAM_FREAD1
       end
 
       def read2?
-        has_flag? LibHTS::BAM_FREAD2
+        has_flag? LibHTS2::BAM_FREAD2
       end
 
       def secondary?
-        has_flag? LibHTS::BAM_FSECONDARY
+        has_flag? LibHTS2::BAM_FSECONDARY
       end
 
       def qcfail?
-        has_flag? LibHTS::BAM_FQCFAIL
+        has_flag? LibHTS2::BAM_FQCFAIL
       end
 
       def dup?
-        has_flag? LibHTS::BAM_FDUP
+        has_flag? LibHTS2::BAM_FDUP
       end
 
       def supplementary?
-        has_flag? LibHTS::BAM_FSUPPLEMENTARY
+        has_flag? LibHTS2::BAM_FSUPPLEMENTARY
       end
 
-      def has_flag?(o)
-        @value[o] != 0
+      def has_flag?(offset)
+        @value.bit(offset) != 0
       end
     end
   end

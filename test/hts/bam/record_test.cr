@@ -82,13 +82,28 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_base_at
-    assert_equal 'G', aln1.base_at(0)
-    assert_equal 'C', aln1.base_at(4)
-    assert_equal 'A', aln1.base_at(5)
-    assert_equal '.', aln1.base_at(70)
-    assert_equal 'C', aln1.base_at(-1)
-    assert_equal 'G', aln1.base_at(-2)
-    assert_equal 'G', aln1.base_at(-70)
-    assert_equal '.', aln1.base_at(-71)
+    aln = aln1
+    assert_equal 'G', aln.base_at(0)
+    assert_equal 'C', aln.base_at(4)
+    assert_equal 'A', aln.base_at(5)
+    assert_equal '.', aln.base_at(70)
+    assert_equal 'C', aln.base_at(-1)
+    assert_equal 'G', aln.base_at(-2)
+    assert_equal 'G', aln.base_at(-70)
+    assert_equal '.', aln.base_at(-71)
+  end
+
+  def test_base_qualities
+    assert_equal ([17] * 70), aln1.base_qualities
+  end
+  
+  def test_flag_str
+    assert_equal "PAIRED,UNMAP,READ2", aln1.flag_str
+  end
+
+  def test_flag
+    aln = aln1
+    assert_instance_of HTS::Bam::Flag, aln.flag
+    assert_equal 133, aln.flag.value
   end
 end
