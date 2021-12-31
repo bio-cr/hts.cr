@@ -70,7 +70,7 @@ module HTS
       end
 
       def strand
-        LibHTS.bam_is_rev(@bam1) ? "-" : "+"
+        LibHTS2.bam_is_rev(@bam1) ? "-" : "+"
       end
 
       # def start=(v)
