@@ -10,8 +10,10 @@ bcf.each do |r|
     stop: r.stop,
     id: r.id,
     qual: r.qual,
+    filter: r.filter,
     ref: r.ref,
-    alt: r.alt
+    alt: r.alt,
+    alleles: r.alleles
 end
 
 bcf.close

@@ -57,9 +57,16 @@ module HTS
       def alt
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
         n = @bcf1.value.n_info_allele.bits(16..31)
-
         Array(String).new(n - 1) do |i|
           String.new(@bcf1.value.d.allele[i + 1])
+        end
+      end
+
+      def alleles
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
+        n = @bcf1.value.n_info_allele.bits(16..31)
+        Array(String).new(n) do |i|
+          String.new(@bcf1.value.d.allele[i])
         end
       end
 
