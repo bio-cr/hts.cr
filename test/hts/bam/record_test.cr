@@ -72,4 +72,10 @@ class BamRecordTest < Minitest::Test
   def test_qlen
     assert_equal 0, aln1.qlen
   end
+
+  def test_rlen
+    assert_equal 0, aln1.rlen
+  end
+
+  
 end
