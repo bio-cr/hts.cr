@@ -152,19 +152,21 @@ module HTS
       end
 
       def tag(str)
-        aux = LibHTS.bam_aux_get(@bam1, str)
+        b = str.bytes
+        str2 = StaticArray(UInt8, 2).new { |i| b[i] }
+        aux = LibHTS.bam_aux_get(@bam1, str2)
         return nil if aux.null?
 
-        t = aux.read_string(1)
+        t = aux.value
         case t
-        when "i", "I", "c", "C", "s", "S"
+        when 'i', 'I', 'c', 'C', 's', 'S'
           LibHTS.bam_aux2i(aux)
-        when "f", "d"
+        when 'f', 'd'
           LibHTS.bam_aux2f(aux)
-        when "Z", "H"
-          LibHTS.bam_aux2Z(aux)
-        when "A"
-          LibHTS.bam_aux2A(aux)
+        when 'Z', 'H'
+          String.new(LibHTS.bam_aux2_z(aux))
+        when 'A'
+          LibHTS.bam_aux2_a(aux).chr
         end
       end
 

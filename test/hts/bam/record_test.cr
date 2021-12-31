@@ -96,7 +96,7 @@ class BamRecordTest < Minitest::Test
   def test_base_qualities
     assert_equal ([17] * 70), aln1.base_qualities
   end
-  
+
   def test_flag_str
     assert_equal "PAIRED,UNMAP,READ2", aln1.flag_str
   end
@@ -105,5 +105,18 @@ class BamRecordTest < Minitest::Test
     aln = aln1
     assert_instance_of HTS::Bam::Flag, aln.flag
     assert_equal 133, aln.flag.value
+  end
+
+  def test_tag
+    aln = aln1
+    assert_equal "70M", aln.tag("MC")
+    assert_equal 0, aln.tag("AS")
+    assert_equal 0, aln.tag("XS")
+    assert_nil aln.tag("Tanuki")
+  end
+
+  def test_to_s
+    assert_equal "poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0",
+      aln1.to_s
   end
 end
