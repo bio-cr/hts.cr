@@ -185,9 +185,9 @@ module HTS
       ).value.key
     end
 
-    # def bcf_hdr_name2id(hdr, id)
-    #   bcf_hdr_id2int(hdr, BCF_DT_CTG, id)
-    # end
+    def bcf_hdr_name2id(hdr, id)
+      bcf_hdr_id2int(hdr, BCF_DT_CTG, id)
+    end
 
     # def bcf_hdr_id2name(hdr, rid)
     #   return nil if hdr.null? || rid < 0 || rid >= hdr[:n][LibHTS::BCF_DT_CTG]
