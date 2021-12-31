@@ -54,6 +54,15 @@ module HTS
         String.new(@bcf1.value.d.allele[0])
       end
 
+      def alt
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
+        n = @bcf1.value.n_info_allele.bits(16..31)
+
+        Array(String).new(n - 1) do |i|
+          String.new(@bcf1.value.d.allele[i + 1])
+        end
+      end
+
       def to_s
         ksr = LibHTS::KstringT.new
         raise "Failed to format record" if LibHTS.vcf_format(@header.struct, @bcf1, pointerof(ksr)) == -1

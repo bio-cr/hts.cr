@@ -10,7 +10,8 @@ bcf.each do |r|
     stop: r.stop,
     id: r.id,
     qual: r.qual,
-    ref: r.ref
+    ref: r.ref,
+    alt: r.alt
 end
 
 bcf.close
