@@ -16,8 +16,8 @@ module HTS
         end
       end
 
-      def text
-        LibHTS.sam_hdr_str(@sam_hdr)
+      def to_s
+        String.new(LibHTS.sam_hdr_str(@sam_hdr))
       end
     end
   end
