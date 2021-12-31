@@ -94,8 +94,8 @@ module HTS
 
       def qlen
         LibHTS.bam_cigar2qlen(
-          @bam1[:core][:n_cigar],
-          LibHTS.bam_get_cigar(@bam1)
+          @bam1.value.core.n_cigar,
+          LibHTS2.bam_get_cigar(@bam1)
         )
       end
 

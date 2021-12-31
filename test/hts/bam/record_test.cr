@@ -52,4 +52,24 @@ class BamRecordTest < Minitest::Test
   def test_strand
     assert_equal "+", aln1.strand
   end
+  
+  def test_isize
+    assert_equal 0, aln1.isize
+  end
+
+  def test_mapping_quality
+    assert_equal 0, aln1.mapping_quality
+  end
+
+  def test_chrom
+    assert_equal "poo", aln1.chrom
+  end
+
+  def test_cigar
+    assert_instance_of HTS::Bam::Cigar, aln1.cigar
+  end
+
+  def test_qlen
+    assert_equal 0, aln1.qlen
+  end
 end
