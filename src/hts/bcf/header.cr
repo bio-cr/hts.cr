@@ -8,6 +8,14 @@ module HTS
       def struct
         @bcf_hdr
       end
+
+      def to_s
+        kstr = LibHTS::KstringT.new
+        unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
+          raise "Failed to format header"
+        end
+        String.new(kstr.s)
+      end
     end
   end
 end
