@@ -6,6 +6,12 @@ module HTS
         @header = header
       end
 
+      def struct
+        @bcf1
+      end
+
+      getter :header
+
       def pos
         @bcf1.value.pos + 1
       end
@@ -78,7 +84,7 @@ module HTS
       def format
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FMT)
         Format.new(self)
-      end   
+      end
 
       def to_s
         ksr = LibHTS::KstringT.new
