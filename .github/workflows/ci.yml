@@ -21,7 +21,7 @@ jobs:
       - name: Install HTSLib (macos)
         if: ${{ matrix.os == 'macos' }}
         run: |
-          brew install libhts
+          brew install htslib
       - name: Run tests
         run: |
           shards install
