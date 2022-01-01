@@ -1,21 +1,27 @@
-name: CI
-on:
-  push:
-  pull_request:
+name: test
+on: [push, pull_request]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} Crystal ${{ matrix.crystal }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os:   [ 'ubuntu', 'macos' ]
+        crystal: [ '1.1', '1.2' ]
     steps:
-      - name: Download source
-        uses: actions/checkout@v2
-      - name: Install Crystal
-        uses: oprypin/install-crystal@v1
+      - uses: actions/checkout@v2
+      - uses: crystal-lang/install-crystal@v1
         with:
-          crystal: 1.2
-      - name: Install HTSlib
+          crystal: ${{ matrix.crystal }}
+      - name: Install HTSLib (ubuntu)
+        if: ${{ matrix.os == 'ubuntu' }}
         run: |
           sudo apt update
           sudo apt install libhts-dev
+      - name: Install HTSLib (macos)
+        if: ${{ matrix.os == 'macos' }}
+        run: |
+          brew install libhts
       - name: Run tests
         run: |
           shards install
