@@ -17,6 +17,5 @@ class BcfInfoTest < Minitest::Test
     assert_equal([31], info.get_int("DP"))
     assert_equal([0.673439_f32], info.get_float("VDB"))
     assert_equal([0, 0, 14, 17], info.get_int("DP4"))
-    assert_equal 3, info.get_string("STR")
   end
 end
