@@ -56,4 +56,10 @@ class BamFlagTest < Minitest::Test
     dup?
     supplementary?
   ]
+
+  def test_to_s
+    assert_equal "0xfff	4095	PAIRED,PROPER_PAIR,UNMAP,MUNMAP,REVERSE,MREVERSE,READ1,READ2,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY",
+      flag.to_s
+    assert_equal "0x0	0	", flag_zero.to_s
+  end
 end

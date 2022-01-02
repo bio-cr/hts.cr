@@ -81,6 +81,9 @@ module HTS
       def has_flag?(m)
         @value & m != 0
       end
+
+      def to_s
+        "#{"0x%x" % @value}\t#{@value}\t#{String.new(LibHTS.bam_flag2str(@value))}"
       end
     end
   end
