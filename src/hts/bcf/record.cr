@@ -92,6 +92,10 @@ module HTS
 
         String.new(ksr.s)
       end
+
+      def finalize
+        LibHTS.bcf_destroy(@bcf1)
+      end
     end
   end
 end

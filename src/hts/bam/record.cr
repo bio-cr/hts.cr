@@ -180,6 +180,10 @@ module HTS
       # TODO:
       # def eql?
       # def hash
+
+      def finalize
+        LibHTS.bam_destroy1 @bam1
+      end
     end
   end
 end
