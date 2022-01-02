@@ -78,8 +78,9 @@ module HTS
         has_flag? LibHTS2::BAM_FSUPPLEMENTARY
       end
 
-      def has_flag?(offset)
-        @value.bit(offset) != 0
+      def has_flag?(m)
+        @value & m != 0
+      end
       end
     end
   end
