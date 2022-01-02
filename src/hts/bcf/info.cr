@@ -6,7 +6,6 @@ module HTS
 
       # FIXME: API This API is tentative and needs to be modified to be consistent with Ruby.
 
-
       def get_int(tag)
         ndst = Pointer(Int32).malloc
         p1 = Pointer(Void).null
