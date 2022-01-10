@@ -94,7 +94,7 @@ module HTS
       end
 
       def finalize
-        LibHTS.bcf_destroy(@bcf1)
+        LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
       end
     end
   end

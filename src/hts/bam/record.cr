@@ -182,7 +182,7 @@ module HTS
       # def hash
 
       def finalize
-        LibHTS.bam_destroy1 @bam1
+        LibHTS.bam_destroy1 @bam1 unless @bam1.null?
       end
     end
   end
