@@ -24,6 +24,7 @@ module HTS
       ensure
         file.close
       end
+      file
     end
 
     def initialize(filename : Path | String)
@@ -40,6 +41,7 @@ module HTS
     # Close the current file.
     def close
       LibHTS.hts_close(@hts_file)
+      @hts_file = @hts_file.class.null
     end
 
     def closed?

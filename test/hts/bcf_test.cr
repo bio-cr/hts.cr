@@ -18,6 +18,7 @@ class BcfTest < Minitest::Test
     b = HTS::Bcf.new(test_bcf_path)
     assert_instance_of HTS::Bcf, b
     b.close
+    assert_equal true, b.closed?
   end
 
   def test_open_with_block
@@ -30,12 +31,14 @@ class BcfTest < Minitest::Test
     b = HTS::Bcf.open(test_bcf_path)
     assert_instance_of HTS::Bcf, b
     b.close
+    assert_equal true, b.closed?
   end
 
   def test_open_with_block
-    HTS::Bcf.open(test_bcf_path) do |b|
+    f = HTS::Bcf.open(test_bcf_path) do |b|
       assert_instance_of HTS::Bcf, b
     end
+    assert_equal true, f.closed?
   end
 
   def test_file_path

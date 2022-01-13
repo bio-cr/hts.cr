@@ -18,6 +18,7 @@ class BamTest < Minitest::Test
     b = HTS::Bam.new(test_bam_path)
     assert_instance_of HTS::Bam, b
     b.close
+    assert_equal true, b.closed?
   end
 
   def test_open_with_block
@@ -30,12 +31,14 @@ class BamTest < Minitest::Test
     b = HTS::Bam.open(test_bam_path)
     assert_instance_of HTS::Bam, b
     b.close
+    assert_equal true, b.closed?
   end
 
   def test_open_with_block
-    HTS::Bam.open(test_bam_path) do |b|
+    f = HTS::Bam.open(test_bam_path) do |b|
       assert_instance_of HTS::Bam, b
     end
+    assert_equal true, f.closed?
   end
 
   def test_file_path
