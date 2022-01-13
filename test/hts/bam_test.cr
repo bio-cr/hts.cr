@@ -14,8 +14,28 @@ class BamTest < Minitest::Test
     @bam ||= HTS::Bam.new(test_bam_path)
   end
 
-  def test_initialize
-    assert_instance_of HTS::Bam, bam
+  def test_new
+    b = HTS::Bam.new(test_bam_path)
+    assert_instance_of HTS::Bam, b
+    b.close
+  end
+
+  def test_open_with_block
+    assert_raise do
+      HTS::Bam.open(test_bam_path)
+    end
+  end
+
+  def test_open
+    b = HTS::Bam.open(test_bam_path)
+    assert_instance_of HTS::Bam, b
+    b.close
+  end
+
+  def test_open_with_block
+    HTS::Bam.open(test_bam_path) do |b|
+      assert_instance_of HTS::Bam, b
+    end
   end
 
   def test_file_path

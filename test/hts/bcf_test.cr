@@ -14,8 +14,28 @@ class BcfTest < Minitest::Test
     @bcf ||= HTS::Bcf.new(test_bcf_path)
   end
 
-  def test_initialize
-    assert_instance_of HTS::Bcf, bcf
+  def test_new
+    b = HTS::Bcf.new(test_bcf_path)
+    assert_instance_of HTS::Bcf, b
+    b.close
+  end
+
+  def test_open_with_block
+    assert_raise do
+      HTS::Bcf.open(test_bcf_path)
+    end
+  end
+
+  def test_open
+    b = HTS::Bcf.open(test_bcf_path)
+    assert_instance_of HTS::Bcf, b
+    b.close
+  end
+
+  def test_open_with_block
+    HTS::Bcf.open(test_bcf_path) do |b|
+      assert_instance_of HTS::Bcf, b
+    end
   end
 
   def test_file_path

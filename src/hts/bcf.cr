@@ -14,6 +14,19 @@ module HTS
     getter :header
     getter :htf_file
 
+    def self.open(filename : Path | String)
+      new(filename)
+    end
+
+    def self.open(filename : Path | String)
+      file = new(filename)
+      begin
+        yield file
+      ensure
+        file.close
+      end
+    end
+
     def initialize(filename : Path | String)
       @file_path = File.expand_path(filename)
 
