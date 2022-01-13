@@ -12,7 +12,6 @@ module HTS
 
     getter :file_path
     getter :header
-    getter :hts_file
 
     def self.open(filename : Path | String)
       new(filename)
@@ -35,16 +34,16 @@ module HTS
       end
 
       @hts_file = LibHTS.hts_open(file_path, "r")
-      @header = Bcf::Header.new(LibHTS.bcf_hdr_read(hts_file))
+      @header = Bcf::Header.new(LibHTS.bcf_hdr_read(@hts_file))
     end
 
     # Close the current file.
     def close
-      LibHTS.hts_close(hts_file)
+      LibHTS.hts_close(@hts_file)
     end
 
     def each
-      while LibHTS.bcf_read(hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
+      while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
       end
     end
