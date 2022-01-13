@@ -12,7 +12,7 @@ module HTS
 
     getter :file_path
     getter :header
-    getter :htf_file
+    getter :hts_file
 
     def self.open(filename : Path | String)
       new(filename)
@@ -34,17 +34,21 @@ module HTS
         raise "File not found: #{file_path}"
       end
 
-      @htf_file = LibHTS.hts_open(file_path, "r")
-      @header = Bam::Header.new(LibHTS.sam_hdr_read(htf_file))
+      @hts_file = LibHTS.hts_open(file_path, "r")
+      @header = Bam::Header.new(LibHTS.sam_hdr_read(hts_file))
     end
 
     # Close the current file.
     def close
-      LibHTS.hts_close(htf_file)
+      LibHTS.hts_close(hts_file)
+    end
+
+    def closed?
+      hts_file.null?
     end
 
     def each
-      while LibHTS.sam_read1(htf_file, header.struct, bam1 = LibHTS.bam_init1) > 0
+      while LibHTS.sam_read1(hts_file, header.struct, bam1 = LibHTS.bam_init1) > 0
         yield Record.new(bam1, header)
       end
     end
