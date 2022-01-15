@@ -929,6 +929,34 @@ module HTS
     fun bcf_dec_int1(p : Uint8T*, type : LibC::Int, q : Uint8T**) : Int64T
     fun bcf_dec_typed_int1(p : Uint8T*, q : Uint8T**) : Int64T
     fun bcf_dec_size(p : Uint8T*, q : Uint8T**, type : LibC::Int*) : Int32T
+    alias HtsTpoolProcess = Void
+    alias HtsTpoolResult = Void
+    fun hts_tpool_init(n : LibC::Int) : HtsTpool*
+    fun hts_tpool_size(p : HtsTpool*) : LibC::Int
+    fun hts_tpool_dispatch(p : HtsTpool*, q : HtsTpoolProcess*, func : (Void* -> Void*), arg : Void*) : LibC::Int
+    fun hts_tpool_dispatch2(p : HtsTpool*, q : HtsTpoolProcess*, func : (Void* -> Void*), arg : Void*, nonblock : LibC::Int) : LibC::Int
+    fun hts_tpool_dispatch3(p : HtsTpool*, q : HtsTpoolProcess*, exec_func : (Void* -> Void*), arg : Void*, job_cleanup : (Void* -> Void*), result_cleanup : (Void* -> Void*), nonblock : LibC::Int) : LibC::Int
+    fun hts_tpool_wake_dispatch(q : HtsTpoolProcess*)
+    fun hts_tpool_process_flush(q : HtsTpoolProcess*) : LibC::Int
+    fun hts_tpool_process_reset(q : HtsTpoolProcess*, free_results : LibC::Int) : LibC::Int
+    fun hts_tpool_process_qsize(q : HtsTpoolProcess*) : LibC::Int
+    fun hts_tpool_destroy(p : HtsTpool*)
+    fun hts_tpool_kill(p : HtsTpool*)
+    fun hts_tpool_next_result(q : HtsTpoolProcess*) : HtsTpoolResult*
+    fun hts_tpool_next_result_wait(q : HtsTpoolProcess*) : HtsTpoolResult*
+    fun hts_tpool_delete_result(r : HtsTpoolResult*, free_data : LibC::Int)
+    fun hts_tpool_result_data(r : HtsTpoolResult*) : Void*
+    fun hts_tpool_process_init(p : HtsTpool*, qsize : LibC::Int, in_only : LibC::Int) : HtsTpoolProcess
+    fun hts_tpool_process_destroy(q : HtsTpoolProcess*)
+    fun hts_tpool_process_empty(q : HtsTpoolProcess*) : LibC::Int
+    fun hts_tpool_process_len(q : HtsTpoolProcess*) : LibC::Int
+    fun hts_tpool_process_sz(q : HtsTpoolProcess*) : LibC::Int
+    fun hts_tpool_process_shutdown(q : HtsTpoolProcess*)
+    fun hts_tpool_process_is_shutdown(q : HtsTpoolProcess*) : LibC::Int
+    fun hts_tpool_process_attach(p : HtsTpool*, q : HtsTpoolProcess*)
+    fun hts_tpool_process_detach(p : HtsTpool*, q : HtsTpoolProcess*)
+    fun hts_tpool_process_ref_incr(q : HtsTpoolProcess*)
+    fun hts_tpool_process_ref_decr(q : HtsTpoolProcess*)
     $hts_verbose : LibC::Int
     $bam_cigar_table : Int8T[256]
     $tbx_conf_gff : TbxConfT
