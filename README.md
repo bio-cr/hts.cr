@@ -47,8 +47,8 @@ bam = HTS::Bam.new(bam_path)
 bam.each do |r|
   p name:  r.qname,
     flag:  r.flag.value,
-    start: r.start + 1,
-    mpos:  r.mate_pos + 1,
+    pos:   r.start + 1,
+    mpos:  r.mate_start + 1,
     mqual: r.mapping_quality,
     seq:   r.sequence,
     cigar: r.cigar,
