@@ -78,7 +78,7 @@ module HTS
       # end
 
       # insert size
-      def isize
+      def insert_size
         @bam1.value.core.isize
       end
 
