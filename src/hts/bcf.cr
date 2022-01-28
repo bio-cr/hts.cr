@@ -35,7 +35,7 @@ module HTS
       end
 
       @hts_file = LibHTS.hts_open(file_path, "r")
-      @header = Bcf::Header.new(LibHTS.bcf_hdr_read(@hts_file))
+      @header = Bcf::Header.new(@hts_file)
     end
 
     # Close the current file.

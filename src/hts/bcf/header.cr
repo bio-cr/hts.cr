@@ -1,8 +1,8 @@
 module HTS
   class Bcf
     class Header
-      def initialize(bcf_hdr : Pointer(HTS::LibHTS::BcfHdrT))
-        @bcf_hdr = bcf_hdr
+      def initialize(bcf_hdr : Pointer(HTS::LibHTS::HtsFile))
+        @bcf_hdr = LibHTS.bcf_hdr_read(bcf_hdr)
       end
 
       def struct

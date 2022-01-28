@@ -35,7 +35,7 @@ module HTS
       end
 
       @hts_file = LibHTS.hts_open(file_path, "r")
-      @header = Bam::Header.new(LibHTS.sam_hdr_read(@hts_file))
+      @header = Bam::Header.new(@hts_file)
     end
 
     # Close the current file.
