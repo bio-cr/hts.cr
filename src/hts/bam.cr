@@ -14,12 +14,12 @@ module HTS
     getter :mode
     getter :header
 
-    def self.open(*args)
-      new(*args)
+    def self.open(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
+      new(filename, mode, fai, threads, index)
     end
 
-    def self.open(*args)
-      file = new(*args)
+    def self.open(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
+      file = new(filename, mode, fai, threads, index)
       begin
         yield file
       ensure
