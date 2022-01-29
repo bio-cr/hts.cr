@@ -41,12 +41,12 @@ module HTS
       if fai != ""
         fai_path = File.expand_path(fai)
         r = LibHTS.hts_set_fai_filename(@hts_file, fai_path)
-        raise "Failed to load fasta index: #{fai_path}" if r < 0
+        r < 0 && raise "Failed to load fasta index: #{fai_path}"
       end
 
       if threads > 0
         r = LibHTS.hts_set_threads(@hts_file, threads)
-        raise "Failed to set number of threads: #{threads}" if r < 0
+        r < 0 && raise "Failed to set number of threads: #{threads}"
       end
 
       return if mode[0] == "w"
@@ -90,7 +90,8 @@ module HTS
 
     def write(record)
       new_record = record.clone
-      LibHTS.sam_write1(@hts_file, header.struct, new_record.struct) > 0 || raise
+      r = LibHTS.sam_write1(@hts_file, header.struct, new_record.struct)
+      r < 0 && raise "Failed to write record: #{record}"
     end
 
     def each
