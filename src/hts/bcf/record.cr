@@ -93,6 +93,7 @@ module HTS
         String.new(ksr.s)
       end
 
+      # garbage collection
       def finalize
         LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
       end

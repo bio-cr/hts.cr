@@ -119,4 +119,10 @@ class BamRecordTest < Minitest::Test
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0",
       aln1.to_s
   end
+
+  def test_clone
+    aln = aln1
+    aln2 = aln.clone
+    assert_equal aln.to_s, aln2.to_s
+  end
 end

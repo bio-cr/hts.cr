@@ -181,6 +181,13 @@ module HTS
       # def eql?
       # def hash
 
+      def clone
+        # Duplicate bam1 and use references for header.
+        bam1 = LibHTS.bam_dup1(@bam1)
+        self.class.new(bam1, @header)
+      end
+
+      # garbagew collection
       def finalize
         LibHTS.bam_destroy1 @bam1 unless @bam1.null?
       end
