@@ -68,6 +68,10 @@ module HTS
       LibHTS.sam_index_build(file_path, -1)
     end
 
+    def struct
+      @hts_file
+    end
+
     # Close the current file.
     def close
       LibHTS.hts_close(@hts_file)
@@ -76,6 +80,17 @@ module HTS
 
     def closed?
       @hts_file.null?
+    end
+
+    def write_header(header)
+      @header = header.clone
+      LibHTS.hts_set_fai_filename(@hts_file, @file_path)
+      LibHTS.sam_hdr_write(@hts_file, header.struct)
+    end
+
+    def write(recored)
+      new_record = record.clone
+      LibHTS.sam_write1(@hts_file, header.struct, new_recored) > 0 || raise
     end
 
     def each
