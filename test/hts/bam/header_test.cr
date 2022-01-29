@@ -14,6 +14,10 @@ class BamHeaderTest < Minitest::Test
     @bam ||= HTS::Bam.new(test_bam_path)
   end
 
+  def test_target_count
+    assert_equal(1, bam.header.target_count)
+  end
+
   def test_to_s
     header_text = <<-TEXT
     @HD	VN:1.3	SO:coordinate
@@ -23,5 +27,10 @@ class BamHeaderTest < Minitest::Test
 
     TEXT
     assert_equal header_text, bam.header.to_s
+  end
+
+  def test_clone
+    hdr2 = bam.header.clone
+    assert_instance_of HTS::Bam::Header, hdr2
   end
 end

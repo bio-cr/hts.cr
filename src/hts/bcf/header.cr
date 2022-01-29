@@ -1,8 +1,13 @@
 module HTS
   class Bcf
     class Header
-      def initialize(bcf_hdr : Pointer(HTS::LibHTS::HtsFile))
-        @bcf_hdr = LibHTS.bcf_hdr_read(bcf_hdr)
+      def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
+        @bcf_hdr = LibHTS.bcf_hdr_read(hts_file)
+      end
+
+      # for clone
+      def initialize(bcf_hdr : Pointer(HTS::LibHTS::BcfHdrT))
+        @bcf_hdr = bcf_hdr
       end
 
       def struct
@@ -15,6 +20,10 @@ module HTS
           raise "Failed to format header"
         end
         String.new(kstr.s)
+      end
+
+      def clone
+        self.class.new(LibHTS.bcf_hdr_dup(@bcf_hdr))
       end
     end
   end

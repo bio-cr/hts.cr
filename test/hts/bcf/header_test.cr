@@ -21,4 +21,8 @@ class BcfHeaderTest < Minitest::Test
     # exp = "ca7d2c7ac2a51e4f2b2b88004615e98b"
     # assert_equal exp, md5
   end
+
+  def test_clone
+    assert_instance_of HTS::Bcf::Header, bcf.header.clone
+  end
 end
