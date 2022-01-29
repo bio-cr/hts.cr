@@ -36,7 +36,7 @@ module HTS
       end
 
       @mode = mode
-      @hts_file = LibHTS.hts_open(file_path, "r")
+      @hts_file = LibHTS.hts_open(file_path, mode)
 
       if fai != ""
         fai_path = File.expand_path(fai)
