@@ -31,7 +31,7 @@ module HTS
     def initialize(filename : Path | String, mode = "r", threads = 0)
       @file_path = filename == "-" ? "-" : File.expand_path(filename)
 
-      if mode[0] == "r" && !File.exists?(file_path)
+      if mode[0] == 'r' && !File.exists?(file_path)
         raise "File not found: #{file_path}"
       end
 

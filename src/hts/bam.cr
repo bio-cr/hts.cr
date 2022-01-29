@@ -31,7 +31,7 @@ module HTS
     def initialize(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
       @file_path = filename == "-" ? "-" : File.expand_path(filename)
 
-      if mode[0] == "r" && !File.exists?(file_path)
+      if mode[0] == 'r' && !File.exists?(file_path)
         raise "File not found: #{file_path}"
       end
 
@@ -49,7 +49,7 @@ module HTS
         r < 0 && raise "Failed to set number of threads: #{threads}"
       end
 
-      return if mode[0] == "w"
+      return if mode[0] == 'w'
 
       @header = Bam::Header.new(@hts_file)
 
