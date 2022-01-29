@@ -88,5 +88,12 @@ module HTS
     def bam_seqi(s, i)
       s[(i) >> 1] >> ((~i & 1) << 2) & 0xf
     end
+
+    def sam_itr_next(htsfp, itr, r)
+      # FIXME: check if htsfp is compressed BGZF
+      raise "Null iterator" if itr.null?
+      # FIXME: check multi
+      LibHTS.hts_itr_next(htsfp.value.fp.bgzf, itr, r, htsfp)
+    end
   end
 end

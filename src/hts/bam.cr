@@ -11,6 +11,7 @@ module HTS
     include Enumerable(Record)
 
     getter :file_path
+    getter :mode
     getter :header
 
     def self.open(filename : Path | String)
@@ -26,8 +27,6 @@ module HTS
       end
       file
     end
-
-     @idx : Nil | Pointer(Void)
 
     def initialize(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
       @file_path = File.expand_path(filename)
@@ -55,22 +54,18 @@ module HTS
       @header = Bam::Header.new(@hts_file)
 
       # load index
-      idx = LibHTS.sam_index_load(@hts_file, file_path)
+      @idx = LibHTS.sam_index_load(@hts_file, file_path)
 
       # create index
-      if index || idx.null?
+      if index || @idx.null?
         create_index
-      else
-        @idx = idx
+        @idx = LibHTS.sam_index_load(@hts_file, file_path)
       end
     end
 
     def create_index
       STDERR.puts "Create index for #{file_path}"
       LibHTS.sam_index_build(file_path, -1)
-      idx = LibHTS.sam_index_load(@hts_file, file_path)
-      raise "Failed to create index" if idx.null?
-      @idx = idx
     end
 
     # Close the current file.
@@ -86,6 +81,21 @@ module HTS
     def each
       while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) > 0
         yield Record.new(bam1, header)
+      end
+    end
+
+    def query(region)
+      qiter = LibHTS.sam_itr_querys(@idx, header.struct, region)
+      begin
+        bam1 = LibHTS.bam_init1
+        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+        while slen > 0
+          yield Record.new(bam1, header)
+          bam1 = LibHTS.bam_init1
+          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+        end
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
       end
     end
   end
