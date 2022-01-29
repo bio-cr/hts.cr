@@ -88,9 +88,9 @@ module HTS
       LibHTS.sam_hdr_write(@hts_file, header.struct)
     end
 
-    def write(recored)
+    def write(record)
       new_record = record.clone
-      LibHTS.sam_write1(@hts_file, header.struct, new_recored) > 0 || raise
+      LibHTS.sam_write1(@hts_file, header.struct, new_record.struct) > 0 || raise
     end
 
     def each
