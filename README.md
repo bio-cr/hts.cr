@@ -1,6 +1,8 @@
 # htslib.cr
 
 [![CI](https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml)
+[![Slack](http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&logo=slack)](https://bio-crystal.slack.com/)
+[![Get invite to BioCrystal Slack](http://img.shields.io/badge/Get_invite_to_BioCrystal_Slack-purple?labelColor=000000&logo=slack)](https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g)
 
 htslib.cr is the Crystal bindings to HTSlib, a C library for processing high throughput sequencing (HTS) data. 
 It will provide APIs to read and write file formats such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/).
