@@ -88,17 +88,13 @@ bcf.close
 ```
     ┌───────────────────────────────────────────────────────────────┐
     │                              HTS                              │
-    │                                                               │
     │   ┌─────────────┬─────────────┬─────────────┬─────────────┐   │
     │   │ SAM/BAM     │ VCF/BCF     │ CRAM        │ Tabix       │   │
-    │   │             │             │             │             │   │
-    │   │             │             │             │             │   │
     │   ├─────────────┴─────────────┴─────────────┴─────────────┤   │
     │   │ LibHTS                                                │   │
     │   │   Native C bindings                                   │   │
     │   │ LibHTS2 : macro functions                             │   │
     │   └───────────────────────────────────────────────────────┘   │
-    │                                                               │
     └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -110,5 +106,7 @@ bcf.close
 ## Contributing
 
 htslib.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.
-If you are interested in becoming a committer or project owner, please contact  by creating pull requests.
-Or you can simply fork it and start a project with a different name than htslib.cr.
+
+    Do you need commit rights to my repository?
+    Do you want to get admin rights and take over the project?
+    If so, please feel free to contact us @kojix2.
