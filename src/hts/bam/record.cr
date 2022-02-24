@@ -61,6 +61,11 @@ module HTS
         String.new(LibHTS.sam_hdr_tid2name(@header.struct, tid))
       end
 
+      # returns the mate chromosome or '' if not mapped.
+      def contig
+        chrom
+      end
+
       # returns the chromosome of the mate or '' if not mapped.
       def mate_chrom
         mtid = mate_tid

@@ -45,6 +45,10 @@ class BamRecordTest < Minitest::Test
     assert_equal "poo", aln1.chrom
   end
 
+  def test_contig
+    assert_equal "poo", aln1.contig
+  end
+
   def test_mate_chrom
     assert_equal "poo", aln1.mate_chrom
   end
