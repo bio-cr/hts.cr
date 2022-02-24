@@ -53,14 +53,10 @@ module HTS
 
       @header = Bam::Header.new(@hts_file)
 
+      create_index if index
+
       # load index
       @idx = LibHTS.sam_index_load(@hts_file, file_path)
-
-      # create index
-      if index || @idx.null?
-        create_index
-        @idx = LibHTS.sam_index_load(@hts_file, file_path)
-      end
     end
 
     def create_index
