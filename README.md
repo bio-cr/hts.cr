@@ -32,7 +32,7 @@ Add htslib to your `shard.yml`:
    ```yaml
    dependencies:
      htslib:
-       github: bio-crystal/htslib
+       github: bio-crystal/htslib.cr
    ```
 
 Run `shards install`
