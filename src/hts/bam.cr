@@ -70,6 +70,8 @@ module HTS
 
     # Close the current file.
     def close
+      LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      @idx = @idx.class.null
       LibHTS.hts_close(@hts_file)
       @hts_file = @hts_file.class.null
     end
