@@ -24,12 +24,22 @@ fname = ARGV[0]
 
 bam = HTS::Bam.open(fname, threads: nthreads, index: false)
 
-chroms = bam.map do |r|
-  chr = r.chrom
-  chr == "" ? "*" : chr
-end
+# Simple way
 
-puts chroms.tally
-           .map { |i| i.join("\t") }
-           .join("\n")
+# puts bam.map { |r|
+#        chr = r.chrom
+#        chr == "" ? "*" : chr
+#      }.tally
+#       .map { |i| i.join("\t") }
+#       .join("\n")\
 
+# Want to make it even faster?
+# Use tid instead of chrom to make it even faster.
+
+puts bam.map { |r| r.tid }
+        .tally
+        .map { |tid, num|
+          ptr = HTS::LibHTS.sam_hdr_tid2name(bam.header.struct, tid)
+          chrom = ptr.null? ? "*" : String.new(ptr)
+          "#{chrom}\t#{num}"
+        }.join("\n")
