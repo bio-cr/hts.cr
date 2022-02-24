@@ -1,4 +1,4 @@
-require "htslib/hts/bam"
+require "../src/hts/bam"
 require "option_parser"
 
 nthreads = 0
