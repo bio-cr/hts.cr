@@ -58,9 +58,17 @@ module HTS
       @hts_file.null?
     end
 
-    def each
+    def each_copy
       while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
+      end
+    end
+
+    def each
+      bcf1 = LibHTS.bcf_init
+      record = Bcf::Record.new(bcf1, header)
+      while LibHTS.bcf_read(@hts_file, header.struct, bcf1) != -1
+        yield record
       end
     end
 
