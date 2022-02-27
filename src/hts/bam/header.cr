@@ -18,10 +18,9 @@ module HTS
         @sam_hdr.value.n_targets
       end
 
-      # FIXME: better name?
-      def seqs
-        Array.new(@sam_hdr[:n_targets]) do |i|
-          LibHTS.sam_hdr_tid2name(@sam_hdr, i)
+      def target_names
+        Array.new(target_count) do |i|
+          String.new(LibHTS.sam_hdr_tid2name(@sam_hdr, i))
         end
       end
 
