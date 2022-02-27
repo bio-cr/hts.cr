@@ -4,14 +4,6 @@ version: 0.0.0
 authors:
   - kojix2 <2xijok@gmail.com>
 
-# description: |
-#   Short description of htslib-cr
-
-dependencies:
-  bitfields:
-    github: kojix2/bitfields
-    branch: v1.0.0
-
 development_dependencies:
   minitest:
     github: ysbaddaden/minitest.cr
