@@ -182,10 +182,6 @@ module HTS
         String.new(kstr.value.s)
       end
 
-      # TODO:
-      # def eql?
-      # def hash
-
       def clone
         # Duplicate bam1 and use references for header.
         bam1 = LibHTS.bam_dup1(@bam1)

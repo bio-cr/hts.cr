@@ -61,4 +61,10 @@ class BcfRecordTest < Minitest::Test
     assert_equal "poo\t2126\t.\tT\tC\t142.416\t.\tDP=31;VDB=0.673439;SGB=-0.69311;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,14,17;MQ=60\tGT:PL\t1/1:172,93,0\n",
       var1.to_s
   end
+
+  def test_clone
+    var = var1
+    var2 = var.clone
+    assert_equal var.to_s, var2.to_s
+  end
 end

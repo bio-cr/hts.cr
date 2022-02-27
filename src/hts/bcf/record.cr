@@ -93,6 +93,12 @@ module HTS
         String.new(ksr.s)
       end
 
+      def clone
+        # Duplicate bcf1 and use reference for header.
+        bcf1 = LibHTS.bcf_dup(@bcf1)
+        self.class.new(bcf1, @header)
+      end
+
       # garbage collection
       def finalize
         LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
