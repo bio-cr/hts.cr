@@ -22,6 +22,10 @@ class BamHeaderTest < Minitest::Test
     assert_equal(["poo"], bam.header.target_names)
   end
 
+  def test_target_lengths
+    assert_equal([5000], bam.header.target_lengths)
+  end
+
   def test_to_s
     header_text = <<-TEXT
     @HD	VN:1.3	SO:coordinate

@@ -24,6 +24,12 @@ module HTS
         end
       end
 
+      def target_lengths
+        Array.new(target_count) do |i|
+          LibHTS.sam_hdr_tid2len(@sam_hdr, i)
+        end
+      end
+
       def to_s
         String.new(LibHTS.sam_hdr_str(@sam_hdr))
       end
