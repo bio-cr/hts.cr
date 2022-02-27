@@ -98,7 +98,6 @@ bcf.close
     └───────────────────────────────────────────────────────────────┘
 ```
 
-
 ## Related Work
 
 * [ruby-htslib](https://github.com/kojix2/ruby-htslib)
@@ -110,3 +109,11 @@ htslib.cr is an immature, work-in-progress library, and pull requests such as sm
     Do you need commit rights to my repository?
     Do you want to get admin rights and take over the project?
     If so, please feel free to contact us @kojix2.
+
+## Benchmark
+
+https://github.com/brentp/vcf-bench
+
+code: https://github.com/kojix2/vcf-bench/blob/kojix2/crystal-htslib/read.cr
+
+![image](https://user-images.githubusercontent.com/5798442/155878129-92f25b51-4b17-4b30-8b77-616ada93c0b4.png)
