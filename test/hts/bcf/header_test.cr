@@ -16,6 +16,14 @@ class BcfHeaderTest < Minitest::Test
     @bcf ||= HTS::Bcf.new(test_bcf_path)
   end
 
+  def hdr
+    bcf.header
+  end
+
+  def test_get_version
+    assert_equal "VCFv4.2", hdr.get_version
+  end
+
   def test_to_s
     # md5 = Digest::MD5.hexdigest(bcf.header.to_s)
     # exp = "ca7d2c7ac2a51e4f2b2b88004615e98b"
@@ -23,6 +31,6 @@ class BcfHeaderTest < Minitest::Test
   end
 
   def test_clone
-    assert_instance_of HTS::Bcf::Header, bcf.header.clone
+    assert_instance_of HTS::Bcf::Header, hdr.clone
   end
 end
