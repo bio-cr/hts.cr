@@ -75,5 +75,9 @@ module HTS
     def sample_count
       header.sample_count
     end
+
+    def sample_names
+      header.sample_names
+    end
   end
 end

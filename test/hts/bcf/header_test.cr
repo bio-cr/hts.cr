@@ -28,6 +28,10 @@ class BcfHeaderTest < Minitest::Test
     assert_equal 1, hdr.sample_count
   end
 
+  def test_sample_names
+    assert_equal ["poo.sort.bam"], hdr.sample_names
+  end
+
   def test_to_s
     # md5 = Digest::MD5.hexdigest(bcf.header.to_s)
     # exp = "ca7d2c7ac2a51e4f2b2b88004615e98b"

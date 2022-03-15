@@ -22,6 +22,13 @@ module HTS
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
 
+      def sample_names
+        # bcf_hdr_id2name is macro function
+        Array.new(sample_count) do |i|
+          String.new(@bcf_hdr.value.samples[i])
+        end
+      end
+
       def to_s
         kstr = LibHTS::KstringT.new
         unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))

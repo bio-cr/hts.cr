@@ -52,4 +52,8 @@ class BcfTest < Minitest::Test
   def test_sample_count
     assert_equal 1, bcf.sample_count
   end
+
+  def test_sample_names
+    assert_equal ["poo.sort.bam"], bcf.sample_names
+  end
 end
