@@ -21,11 +21,11 @@ class BamTest < Minitest::Test
     assert_equal true, b.closed?
   end
 
-  def test_open_with_block
-    assert_raise do
-      HTS::Bam.open(test_bam_path)
-    end
-  end
+  # def test_new_with_block
+  #   assert_raises do
+  #     HTS::Bam.new(test_bam_path){}
+  #   end
+  # end
 
   def test_open
     b = HTS::Bam.open(test_bam_path)

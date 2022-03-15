@@ -21,11 +21,11 @@ class BcfTest < Minitest::Test
     assert_equal true, b.closed?
   end
 
-  def test_open_with_block
-    assert_raise do
-      HTS::Bcf.open(test_bcf_path)
-    end
-  end
+  # def test_new_with_block
+  #   assert_raises do
+  #     HTS::Bcf.new(test_bcf_path) {}
+  #   end
+  # end
 
   def test_open
     b = HTS::Bcf.open(test_bcf_path)
