@@ -18,6 +18,10 @@ module HTS
         String.new(LibHTS.bcf_hdr_get_version(@bcf_hdr))
       end
 
+      def sample_count
+        LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
+      end
+
       def to_s
         kstr = LibHTS::KstringT.new
         unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
