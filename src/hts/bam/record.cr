@@ -156,10 +156,14 @@ module HTS
         Flag.new(@bam1.value.core.flag)
       end
 
-      def tag(str)
+      private def get_aux_pointer(str)
         b = str.bytes
         str2 = StaticArray(UInt8, 2).new { |i| b[i] }
-        aux = LibHTS.bam_aux_get(@bam1, str2)
+        LibHTS.bam_aux_get(@bam1, str2)
+      end
+
+      def tag(str)
+        aux = get_aux_pointer(str)
         return nil if aux.null?
 
         t = aux.value
@@ -173,6 +177,27 @@ module HTS
         when 'A'
           LibHTS.bam_aux2_a(aux).chr
         end
+      end
+
+      # Retrun Int64
+      def tag_int(str)
+        aux = get_aux_pointer(str)
+        LibHTS.bam_aux2i(aux)
+      end
+
+      def tag_float(str)
+        aux = get_aux_pointer(str)
+        LibHTS.bam_aux2f(aux)
+      end
+
+      def tag_string(str)
+        aux = get_aux_pointer(str)
+        String.new(LibHTS.bam_aux2_z(aux))
+      end
+
+      def tag_char(str)
+        aux = get_aux_pointer(str)
+        LibHTS.bam_aux2_a(aux).chr
       end
 
       def to_s

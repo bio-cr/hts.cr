@@ -119,6 +119,15 @@ class BamRecordTest < Minitest::Test
     assert_nil aln.tag("Tanuki")
   end
 
+  def test_tag_int
+    aln = aln1
+    assert_equal "70M", aln.tag_string("MC")
+    assert_equal 0, aln.tag_int("AS")
+    assert_equal 0, aln.tag_int("XS")
+    a = [] of Int64
+    assert_equal [0], (a << aln.tag_int("AS"))
+  end
+
   def test_to_s
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0",
       aln1.to_s
