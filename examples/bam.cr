@@ -1,4 +1,4 @@
-require "../src/hts/bam"
+require "../src/hts"
 
 bam_path = File.expand_path("../../test/fixtures/poo.sort.bam", __FILE__)
 

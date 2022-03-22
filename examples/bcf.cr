@@ -1,4 +1,4 @@
-require "../src/hts/bcf"
+require "../src/hts"
 
 bcf_path = File.expand_path("../../test/fixtures/test.bcf", __FILE__)
 

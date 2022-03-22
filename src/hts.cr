@@ -1,5 +1,6 @@
 require "./hts/version"
-
-module HTS
-  # Your code goes here...
-end
+require "./hts/libhts"
+require "./hts/bam"
+require "./hts/bcf"
+require "./hts/faidx"
+require "./hts/tabix"
