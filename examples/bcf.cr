@@ -4,7 +4,8 @@ bcf_path = File.expand_path("../../test/fixtures/test.bcf", __FILE__)
 
 HTS::Bcf.open(bcf_path) do |bcf|
   bcf.each do |r|
-    p pos: r.pos,
+    p chrom: r.chrom,
+      pos: r.pos,
       start: r.start,
       stop: r.stop,
       id: r.id,

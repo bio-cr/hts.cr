@@ -68,7 +68,8 @@ require "htslib/hts/bcf"
 bcf = HTS::Bcf.new(bcf_path)
 
 bcf.each do |r|
-  p start:  r.start,
+  p chrom:  r.chrom,
+    start:  r.start,
     stop:   r.stop,
     id:     r.id,
     qual:   r.qual,
