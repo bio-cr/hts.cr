@@ -16,7 +16,7 @@ module HTS
 
       # returns the query name.
       def qname
-        String.new(LibHTS2.bam_get_qname(@bam1))
+        String.new LibHTS2.bam_get_qname(@bam1)
       end
 
       # Set (query) name.
@@ -58,7 +58,7 @@ module HTS
         typeof(@bam1)
         return "" if tid == -1
 
-        String.new(LibHTS.sam_hdr_tid2name(@header.struct, tid))
+        String.new LibHTS.sam_hdr_tid2name(@header.struct, tid)
       end
 
       # returns the mate chromosome or '' if not mapped.
@@ -71,7 +71,7 @@ module HTS
         mtid = mate_tid
         return "" if mtid == -1
 
-        String.new(LibHTS.sam_hdr_tid2name(@header.struct, mtid))
+        String.new LibHTS.sam_hdr_tid2name(@header.struct, mtid)
       end
 
       def strand
@@ -148,12 +148,12 @@ module HTS
       end
 
       def flag_str
-        String.new(LibHTS.bam_flag2str(@bam1.value.core.flag))
+        String.new LibHTS.bam_flag2str(@bam1.value.core.flag)
       end
 
       # returns a `Flag` object.
       def flag
-        Flag.new(@bam1.value.core.flag)
+        Flag.new @bam1.value.core.flag
       end
 
       private def get_aux_pointer(str)
@@ -173,7 +173,7 @@ module HTS
         when 'f', 'd'
           LibHTS.bam_aux2f(aux)
         when 'Z', 'H'
-          String.new(LibHTS.bam_aux2_z(aux))
+          String.new LibHTS.bam_aux2_z(aux)
         when 'A'
           LibHTS.bam_aux2_a(aux).chr
         end
@@ -192,7 +192,7 @@ module HTS
 
       def tag_string(str)
         aux = get_aux_pointer(str)
-        String.new(LibHTS.bam_aux2_z(aux))
+        String.new LibHTS.bam_aux2_z(aux)
       end
 
       def tag_char(str)
@@ -204,7 +204,7 @@ module HTS
         kstr = Pointer(LibHTS::KstringT).malloc
         raise "Failed to format bam record" if LibHTS.sam_format1(@header.struct, @bam1, kstr) == -1
 
-        String.new(kstr.value.s)
+        String.new kstr.value.s
       end
 
       def clone

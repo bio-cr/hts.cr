@@ -20,7 +20,7 @@ module HTS
 
       def target_names
         Array.new(target_count) do |i|
-          String.new(LibHTS.sam_hdr_tid2name(@sam_hdr, i))
+          String.new LibHTS.sam_hdr_tid2name(@sam_hdr, i)
         end
       end
 
@@ -31,11 +31,11 @@ module HTS
       end
 
       def to_s
-        String.new(LibHTS.sam_hdr_str(@sam_hdr))
+        String.new LibHTS.sam_hdr_str(@sam_hdr)
       end
 
       def clone
-        self.class.new(LibHTS.sam_hdr_dup(@sam_hdr))
+        self.class.new LibHTS.sam_hdr_dup(@sam_hdr)
       end
     end
   end

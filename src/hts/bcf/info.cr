@@ -39,7 +39,7 @@ module HTS
         if LibHTS2.bcf_get_info_string(hdr, r, tag, dst, ndst) < 0
           return nil
         end
-        String.new(Pointer(UInt8).new(@p1.address))
+        String.new Pointer(UInt8).new(@p1.address)
       end
 
       def get_flag(tag)
