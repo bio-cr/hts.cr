@@ -12,6 +12,11 @@ module HTS
 
       getter :header
 
+      def chrom
+        rid = @bcf1.value.rid
+        String.new(LibHTS2.bcf_hdr_id2name(@header.struct, rid))
+      end
+
       def pos
         @bcf1.value.pos + 1
       end

@@ -13,6 +13,10 @@ class BcfRecordTest < Minitest::Test
     v
   end
 
+  def test_chrom
+    assert_equal "poo", var1.chrom
+  end
+
   def test_pos
     assert_equal 2126, var1.pos
   end

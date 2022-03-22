@@ -190,14 +190,14 @@ module HTS
       LibHTS.bcf_hdr_id2int(hdr, BCF_DT_CTG, id)
     end
 
-    # def bcf_hdr_id2name(hdr, rid)
-    #   return nil if hdr.null? || rid < 0 || rid >= hdr[:n][LibHTS::BCF_DT_CTG]
+    def bcf_hdr_id2name(hdr, rid)
+      raise "invalid rid" if hdr.null? || rid < 0 || rid >= hdr.value.n[LibHTS2::BCF_DT_CTG]
 
-    #   LibHTS::BcfIdpair.new(
-    #     hdr[:id][LibHTS::BCF_DT_CTG].to_ptr +
-    #     LibHTS::BcfIdpair.size * rid # offset
-    #   )[:key]
-    # end
+      Pointer(LibHTS::BcfIdpairT).new(
+        (hdr.value.id[LibHTS2::BCF_DT_CTG]).address +
+        sizeof(LibHTS::BcfIdpairT) * rid # offset
+      ).value.key
+    end
 
     # def bcf_hdr_id2length(hdr, type, int_id)
     #   LibHTS::BcfIdpair.new(
