@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.4.0-dev">
+<meta name="crystal_docs.project_version" content="develop">
+<meta name="crystal_docs.project_name" content="htslib">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="htslib">
+  <title>HTS::Bam::Record - htslib develop</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          htslib
+        </a>
+      </h1>
+
+      <span class="project-version">
+        develop
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="htslib/HTS" data-name="hts">
+      <a href="../../HTS.html">HTS</a>
+      
+        <ul>
+  
+  <li class="parent open current" data-id="htslib/HTS/Bam" data-name="hts::bam">
+      <a href="../../HTS/Bam.html">Bam</a>
+      
+        <ul>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Cigar" data-name="hts::bam::cigar">
+      <a href="../../HTS/Bam/Cigar.html">Cigar</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Flag" data-name="hts::bam::flag">
+      <a href="../../HTS/Bam/Flag.html">Flag</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Header" data-name="hts::bam::header">
+      <a href="../../HTS/Bam/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" current" data-id="htslib/HTS/Bam/Record" data-name="hts::bam::record">
+      <a href="../../HTS/Bam/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="htslib/HTS/Bcf" data-name="hts::bcf">
+      <a href="../../HTS/Bcf.html">Bcf</a>
+      
+        <ul>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Format" data-name="hts::bcf::format">
+      <a href="../../HTS/Bcf/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Header" data-name="hts::bcf::header">
+      <a href="../../HTS/Bcf/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Info" data-name="hts::bcf::info">
+      <a href="../../HTS/Bcf/Info.html">Info</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Record" data-name="hts::bcf::record">
+      <a href="../../HTS/Bcf/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Faidx" data-name="hts::faidx">
+      <a href="../../HTS/Faidx.html">Faidx</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/LibHTS2" data-name="hts::libhts2">
+      <a href="../../HTS/LibHTS2.html">LibHTS2</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Tabix" data-name="hts::tabix">
+      <a href="../../HTS/Tabix.html">Tabix</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> HTS::Bam::Record
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/Record.html">HTS::Bam::Record</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L3" target="_blank">
+        hts/bam/record.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="SEQ_NT16_STR">
+        <strong>SEQ_NT16_STR</strong> = <code><span class="s">&quot;=ACMGRSVTWYHKDBN&quot;</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28bam1_t%3APointer%28HTS%3A%3ALibHTS%3A%3ABam1T%29%2Cheader%3ABam%3A%3AHeader%29-class-method" class="signature"><strong>.new</strong>(bam1_t : Pointer(HTS::LibHTS::Bam1T), header : Bam::Header)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#base_at%28n%29-instance-method" class="signature"><strong>#base_at</strong>(n)</a>
+        
+          <div class="summary"><p>return only the base of the requested index &quot;i&quot; of the query sequence.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#base_qualities-instance-method" class="signature"><strong>#base_qualities</strong></a>
+        
+          <div class="summary"><p>return the base qualities</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#base_quality_at%28n%29-instance-method" class="signature"><strong>#base_quality_at</strong>(n)</a>
+        
+          <div class="summary"><p>return only the base quality of the requested index &quot;i&quot; of the query sequence.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#chrom-instance-method" class="signature"><strong>#chrom</strong></a>
+        
+          <div class="summary"><p>returns the chromosome or '' if not mapped.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cigar-instance-method" class="signature"><strong>#cigar</strong></a>
+        
+          <div class="summary"><p>returns a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#contig-instance-method" class="signature"><strong>#contig</strong></a>
+        
+          <div class="summary"><p>returns the mate chromosome or '' if not mapped.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+          <div class="summary"><p>garbagew collection</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flag-instance-method" class="signature"><strong>#flag</strong></a>
+        
+          <div class="summary"><p>returns a <code><a href="../../HTS/Bam/Flag.html">Flag</a></code> object.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flag_str-instance-method" class="signature"><strong>#flag_str</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#header%3AHTS%3A%3ABam%3A%3AHeader-instance-method" class="signature"><strong>#header</strong> : HTS::Bam::Header</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert_size-instance-method" class="signature"><strong>#insert_size</strong></a>
+        
+          <div class="summary"><p>insert size</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mapping_quality-instance-method" class="signature"><strong>#mapping_quality</strong></a>
+        
+          <div class="summary"><p>mapping quality</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate_chrom-instance-method" class="signature"><strong>#mate_chrom</strong></a>
+        
+          <div class="summary"><p>returns the chromosome of the mate or '' if not mapped.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate_pos-instance-method" class="signature"><strong>#mate_pos</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate_start-instance-method" class="signature"><strong>#mate_start</strong></a>
+        
+          <div class="summary"><p>returns 0-based mate position</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate_tid-instance-method" class="signature"><strong>#mate_tid</strong></a>
+        
+          <div class="summary"><p>returns the tid of the mate or -1 if not mapped.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#qlen-instance-method" class="signature"><strong>#qlen</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#qname-instance-method" class="signature"><strong>#qname</strong></a>
+        
+          <div class="summary"><p>returns the query name.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rlen-instance-method" class="signature"><strong>#rlen</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sequence-instance-method" class="signature"><strong>#sequence</strong></a>
+        
+          <div class="summary"><p>return the read sequence</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#start-instance-method" class="signature"><strong>#start</strong></a>
+        
+          <div class="summary"><p>returns 0-based start position.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stop-instance-method" class="signature"><strong>#stop</strong></a>
+        
+          <div class="summary"><p>returns end position of the read.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#strand-instance-method" class="signature"><strong>#strand</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ABam1T%29-instance-method" class="signature"><strong>#struct</strong> : Pointer(HTS::LibHTS::Bam1T)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tag%28str%29-instance-method" class="signature"><strong>#tag</strong>(str)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tag_char%28str%29-instance-method" class="signature"><strong>#tag_char</strong>(str)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tag_float%28str%29-instance-method" class="signature"><strong>#tag_float</strong>(str)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tag_int%28str%29-instance-method" class="signature"><strong>#tag_int</strong>(str)</a>
+        
+          <div class="summary"><p>Retrun Int64</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tag_string%28str%29-instance-method" class="signature"><strong>#tag_string</strong>(str)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tid-instance-method" class="signature"><strong>#tid</strong></a>
+        
+          <div class="summary"><p>returns the tid of the record or -1 if not mapped.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s-instance-method" class="signature"><strong>#to_s</strong></a>
+        
+          <div class="summary"><p>Returns a string representation of this object.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(bam1_t:Pointer(HTS::LibHTS::Bam1T),header:Bam::Header)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(bam1_t : Pointer(HTS::LibHTS::Bam1T), header : <a href="../../HTS/Bam/Header.html">Bam::Header</a>)
+
+        <a class="method-permalink" href="#new%28bam1_t%3APointer%28HTS%3A%3ALibHTS%3A%3ABam1T%29%2Cheader%3ABam%3A%3AHeader%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="base_at(n)-instance-method">
+      <div class="signature">
+        
+        def <strong>base_at</strong>(n)
+
+        <a class="method-permalink" href="#base_at%28n%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>return only the base of the requested index &quot;i&quot; of the query sequence.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L125" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="base_qualities-instance-method">
+      <div class="signature">
+        
+        def <strong>base_qualities</strong>
+
+        <a class="method-permalink" href="#base_qualities-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>return the base qualities</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L134" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="base_quality_at(n)-instance-method">
+      <div class="signature">
+        
+        def <strong>base_quality_at</strong>(n)
+
+        <a class="method-permalink" href="#base_quality_at%28n%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>return only the base quality of the requested index &quot;i&quot; of the query sequence.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L142" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="chrom-instance-method">
+      <div class="signature">
+        
+        def <strong>chrom</strong>
+
+        <a class="method-permalink" href="#chrom-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns the chromosome or '' if not mapped.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L57" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cigar-instance-method">
+      <div class="signature">
+        
+        def <strong>cigar</strong>
+
+        <a class="method-permalink" href="#cigar-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L96" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="clone-instance-method">
+      <div class="signature">
+        
+        def <strong>clone</strong>
+
+        <a class="method-permalink" href="#clone-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L210" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="contig-instance-method">
+      <div class="signature">
+        
+        def <strong>contig</strong>
+
+        <a class="method-permalink" href="#contig-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns the mate chromosome or '' if not mapped.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L65" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>garbagew collection</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L217" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flag-instance-method">
+      <div class="signature">
+        
+        def <strong>flag</strong>
+
+        <a class="method-permalink" href="#flag-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns a <code><a href="../../HTS/Bam/Flag.html">Flag</a></code> object.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L155" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flag_str-instance-method">
+      <div class="signature">
+        
+        def <strong>flag_str</strong>
+
+        <a class="method-permalink" href="#flag_str-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L150" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="header:HTS::Bam::Header-instance-method">
+      <div class="signature">
+        
+        def <strong>header</strong> : <a href="../../HTS/Bam/Header.html">HTS::Bam::Header</a>
+
+        <a class="method-permalink" href="#header%3AHTS%3A%3ABam%3A%3AHeader-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L15" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert_size-instance-method">
+      <div class="signature">
+        
+        def <strong>insert_size</strong>
+
+        <a class="method-permalink" href="#insert_size-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>insert size</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L86" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mapping_quality-instance-method">
+      <div class="signature">
+        
+        def <strong>mapping_quality</strong>
+
+        <a class="method-permalink" href="#mapping_quality-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>mapping quality</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L91" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate_chrom-instance-method">
+      <div class="signature">
+        
+        def <strong>mate_chrom</strong>
+
+        <a class="method-permalink" href="#mate_chrom-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns the chromosome of the mate or '' if not mapped.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L70" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate_pos-instance-method">
+      <div class="signature">
+        
+        def <strong>mate_pos</strong>
+
+        <a class="method-permalink" href="#mate_pos-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L52" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate_start-instance-method">
+      <div class="signature">
+        
+        def <strong>mate_start</strong>
+
+        <a class="method-permalink" href="#mate_start-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns 0-based mate position</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate_tid-instance-method">
+      <div class="signature">
+        
+        def <strong>mate_tid</strong>
+
+        <a class="method-permalink" href="#mate_tid-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns the tid of the mate or -1 if not mapped.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L33" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="qlen-instance-method">
+      <div class="signature">
+        
+        def <strong>qlen</strong>
+
+        <a class="method-permalink" href="#qlen-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L100" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="qname-instance-method">
+      <div class="signature">
+        
+        def <strong>qname</strong>
+
+        <a class="method-permalink" href="#qname-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns the query name.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rlen-instance-method">
+      <div class="signature">
+        
+        def <strong>rlen</strong>
+
+        <a class="method-permalink" href="#rlen-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L107" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sequence-instance-method">
+      <div class="signature">
+        
+        def <strong>sequence</strong>
+
+        <a class="method-permalink" href="#sequence-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>return the read sequence</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L115" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="start-instance-method">
+      <div class="signature">
+        
+        def <strong>start</strong>
+
+        <a class="method-permalink" href="#start-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns 0-based start position.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L38" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stop-instance-method">
+      <div class="signature">
+        
+        def <strong>stop</strong>
+
+        <a class="method-permalink" href="#stop-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns end position of the read.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="strand-instance-method">
+      <div class="signature">
+        
+        def <strong>strand</strong>
+
+        <a class="method-permalink" href="#strand-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L77" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="struct:Pointer(HTS::LibHTS::Bam1T)-instance-method">
+      <div class="signature">
+        
+        def <strong>struct</strong> : Pointer(HTS::LibHTS::Bam1T)
+
+        <a class="method-permalink" href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ABam1T%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L11" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tag(str)-instance-method">
+      <div class="signature">
+        
+        def <strong>tag</strong>(str)
+
+        <a class="method-permalink" href="#tag%28str%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L165" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tag_char(str)-instance-method">
+      <div class="signature">
+        
+        def <strong>tag_char</strong>(str)
+
+        <a class="method-permalink" href="#tag_char%28str%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L198" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tag_float(str)-instance-method">
+      <div class="signature">
+        
+        def <strong>tag_float</strong>(str)
+
+        <a class="method-permalink" href="#tag_float%28str%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L188" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tag_int(str)-instance-method">
+      <div class="signature">
+        
+        def <strong>tag_int</strong>(str)
+
+        <a class="method-permalink" href="#tag_int%28str%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Retrun Int64</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L183" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tag_string(str)-instance-method">
+      <div class="signature">
+        
+        def <strong>tag_string</strong>(str)
+
+        <a class="method-permalink" href="#tag_string%28str%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L193" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tid-instance-method">
+      <div class="signature">
+        
+        def <strong>tid</strong>
+
+        <a class="method-permalink" href="#tid-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>returns the tid of the record or -1 if not mapped.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong>
+
+        <a class="method-permalink" href="#to_s-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Object
+            </div>
+          
+          <p>Returns a string representation of this object.</p>
+<p>Descendants must usually <strong>not</strong> override this method. Instead,
+they must override <code>to_s(io)</code>, which must append to the given
+IO object.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/record.cr#L203" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.4.0-dev">
+<meta name="crystal_docs.project_version" content="develop">
+<meta name="crystal_docs.project_name" content="htslib">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="htslib">
+  <title>HTS::Bcf::Record - htslib develop</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          htslib
+        </a>
+      </h1>
+
+      <span class="project-version">
+        develop
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="htslib/HTS" data-name="hts">
+      <a href="../../HTS.html">HTS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="htslib/HTS/Bam" data-name="hts::bam">
+      <a href="../../HTS/Bam.html">Bam</a>
+      
+        <ul>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Cigar" data-name="hts::bam::cigar">
+      <a href="../../HTS/Bam/Cigar.html">Cigar</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Flag" data-name="hts::bam::flag">
+      <a href="../../HTS/Bam/Flag.html">Flag</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Header" data-name="hts::bam::header">
+      <a href="../../HTS/Bam/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Record" data-name="hts::bam::record">
+      <a href="../../HTS/Bam/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="htslib/HTS/Bcf" data-name="hts::bcf">
+      <a href="../../HTS/Bcf.html">Bcf</a>
+      
+        <ul>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Format" data-name="hts::bcf::format">
+      <a href="../../HTS/Bcf/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Header" data-name="hts::bcf::header">
+      <a href="../../HTS/Bcf/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Info" data-name="hts::bcf::info">
+      <a href="../../HTS/Bcf/Info.html">Info</a>
+      
+    </li>
+  
+  <li class=" current" data-id="htslib/HTS/Bcf/Record" data-name="hts::bcf::record">
+      <a href="../../HTS/Bcf/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Faidx" data-name="hts::faidx">
+      <a href="../../HTS/Faidx.html">Faidx</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/LibHTS2" data-name="hts::libhts2">
+      <a href="../../HTS/LibHTS2.html">LibHTS2</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Tabix" data-name="hts::tabix">
+      <a href="../../HTS/Tabix.html">Tabix</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> HTS::Bcf::Record
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bcf/Record.html">HTS::Bcf::Record</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L3" target="_blank">
+        hts/bcf/record.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28bcf_t%3APointer%28HTS%3A%3ALibHTS%3A%3ABcf1T%29%2Cheader%3ABcf%3A%3AHeader%29-class-method" class="signature"><strong>.new</strong>(bcf_t : Pointer(HTS::LibHTS::Bcf1T), header : Bcf::Header)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#alleles-instance-method" class="signature"><strong>#alleles</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#alt-instance-method" class="signature"><strong>#alt</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#chrom-instance-method" class="signature"><strong>#chrom</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#filter-instance-method" class="signature"><strong>#filter</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+          <div class="summary"><p>garbage collection</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#format-instance-method" class="signature"><strong>#format</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#header%3AHTS%3A%3ABcf%3A%3AHeader-instance-method" class="signature"><strong>#header</strong> : HTS::Bcf::Header</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#id-instance-method" class="signature"><strong>#id</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info-instance-method" class="signature"><strong>#info</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pos-instance-method" class="signature"><strong>#pos</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#qual-instance-method" class="signature"><strong>#qual</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ref-instance-method" class="signature"><strong>#ref</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#start-instance-method" class="signature"><strong>#start</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stop-instance-method" class="signature"><strong>#stop</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ABcf1T%29-instance-method" class="signature"><strong>#struct</strong> : Pointer(HTS::LibHTS::Bcf1T)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s-instance-method" class="signature"><strong>#to_s</strong></a>
+        
+          <div class="summary"><p>Returns a string representation of this object.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(bcf_t:Pointer(HTS::LibHTS::Bcf1T),header:Bcf::Header)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(bcf_t : Pointer(HTS::LibHTS::Bcf1T), header : <a href="../../HTS/Bcf/Header.html">Bcf::Header</a>)
+
+        <a class="method-permalink" href="#new%28bcf_t%3APointer%28HTS%3A%3ALibHTS%3A%3ABcf1T%29%2Cheader%3ABcf%3A%3AHeader%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="alleles-instance-method">
+      <div class="signature">
+        
+        def <strong>alleles</strong>
+
+        <a class="method-permalink" href="#alleles-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L76" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="alt-instance-method">
+      <div class="signature">
+        
+        def <strong>alt</strong>
+
+        <a class="method-permalink" href="#alt-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L68" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="chrom-instance-method">
+      <div class="signature">
+        
+        def <strong>chrom</strong>
+
+        <a class="method-permalink" href="#chrom-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L15" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="clone-instance-method">
+      <div class="signature">
+        
+        def <strong>clone</strong>
+
+        <a class="method-permalink" href="#clone-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L101" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="filter-instance-method">
+      <div class="signature">
+        
+        def <strong>filter</strong>
+
+        <a class="method-permalink" href="#filter-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L37" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>garbage collection</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L108" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="format-instance-method">
+      <div class="signature">
+        
+        def <strong>format</strong>
+
+        <a class="method-permalink" href="#format-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L89" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="header:HTS::Bcf::Header-instance-method">
+      <div class="signature">
+        
+        def <strong>header</strong> : <a href="../../HTS/Bcf/Header.html">HTS::Bcf::Header</a>
+
+        <a class="method-permalink" href="#header%3AHTS%3A%3ABcf%3A%3AHeader-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="id-instance-method">
+      <div class="signature">
+        
+        def <strong>id</strong>
+
+        <a class="method-permalink" href="#id-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info-instance-method">
+      <div class="signature">
+        
+        def <strong>info</strong>
+
+        <a class="method-permalink" href="#info-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L84" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pos-instance-method">
+      <div class="signature">
+        
+        def <strong>pos</strong>
+
+        <a class="method-permalink" href="#pos-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L20" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="qual-instance-method">
+      <div class="signature">
+        
+        def <strong>qual</strong>
+
+        <a class="method-permalink" href="#qual-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L59" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ref-instance-method">
+      <div class="signature">
+        
+        def <strong>ref</strong>
+
+        <a class="method-permalink" href="#ref-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L63" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="start-instance-method">
+      <div class="signature">
+        
+        def <strong>start</strong>
+
+        <a class="method-permalink" href="#start-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stop-instance-method">
+      <div class="signature">
+        
+        def <strong>stop</strong>
+
+        <a class="method-permalink" href="#stop-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="struct:Pointer(HTS::LibHTS::Bcf1T)-instance-method">
+      <div class="signature">
+        
+        def <strong>struct</strong> : Pointer(HTS::LibHTS::Bcf1T)
+
+        <a class="method-permalink" href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ABcf1T%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong>
+
+        <a class="method-permalink" href="#to_s-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Object
+            </div>
+          
+          <p>Returns a string representation of this object.</p>
+<p>Descendants must usually <strong>not</strong> override this method. Instead,
+they must override <code>to_s(io)</code>, which must append to the given
+IO object.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bcf/record.cr#L94" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>

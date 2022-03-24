@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.4.0-dev">
+<meta name="crystal_docs.project_version" content="develop">
+<meta name="crystal_docs.project_name" content="htslib">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="htslib">
+  <title>htslib develop</title>
+  <script type="text/javascript">
+  CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          htslib
+        </a>
+      </h1>
+
+      <span class="project-version">
+        develop
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent " data-id="htslib/HTS" data-name="hts">
+      <a href="HTS.html">HTS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="htslib/HTS/Bam" data-name="hts::bam">
+      <a href="HTS/Bam.html">Bam</a>
+      
+        <ul>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Cigar" data-name="hts::bam::cigar">
+      <a href="HTS/Bam/Cigar.html">Cigar</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Flag" data-name="hts::bam::flag">
+      <a href="HTS/Bam/Flag.html">Flag</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Header" data-name="hts::bam::header">
+      <a href="HTS/Bam/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bam/Record" data-name="hts::bam::record">
+      <a href="HTS/Bam/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="htslib/HTS/Bcf" data-name="hts::bcf">
+      <a href="HTS/Bcf.html">Bcf</a>
+      
+        <ul>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Format" data-name="hts::bcf::format">
+      <a href="HTS/Bcf/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Header" data-name="hts::bcf::header">
+      <a href="HTS/Bcf/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Info" data-name="hts::bcf::info">
+      <a href="HTS/Bcf/Info.html">Info</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Bcf/Record" data-name="hts::bcf::record">
+      <a href="HTS/Bcf/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Faidx" data-name="hts::faidx">
+      <a href="HTS/Faidx.html">Faidx</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/LibHTS2" data-name="hts::libhts2">
+      <a href="HTS/LibHTS2.html">LibHTS2</a>
+      
+    </li>
+  
+  <li class=" " data-id="htslib/HTS/Tabix" data-name="hts::tabix">
+      <a href="HTS/Tabix.html">Tabix</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1><a id="htslib.cr" class="anchor" href="#htslib.cr">  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>htslib.cr</h1>
+<p><a href="https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml"><img src="https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+<a href="https://bio-crystal.slack.com/"><img src="http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&amp;logo=slack" alt="Slack" /></a>
+<a href="https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g"><img src="http://img.shields.io/badge/Get_invite_to_BioCrystal-purple?labelColor=000000&amp;logo=slack" alt="Get invite to BioCrystal" /></a></p>
+<p>htslib.cr is the Crystal bindings to HTSlib, a C library for processing high throughput sequencing (HTS) data.
+It will provide APIs to read and write file formats such as <a href="http://samtools.github.io/hts-specs/">SAM, BAM, VCF, and BCF</a>.</p>
+<p>:fire: Feel free to fork it out if you can develop it!</p>
+<p>:hatching_chick: alpha stage.</p>
+<h2><a id="requirements" class="anchor" href="#requirements">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Requirements</h2>
+<ul>
+<li><a href="https://crystal-lang.org">Crystal</a></li>
+<li><a href="https://github.com/samtools/htslib">HTSlib</a>
+<ul>
+<li>Ubuntu : <code>apt install libhts-dev</code></li>
+<li>macOS : <code>brew install htslib</code></li>
+<li>Build from source code</li>
+</ul>
+</li>
+</ul>
+<p>Make sure that <code>pkg-config</code> can detect htslib.</p>
+<pre><code class="language-sh">pkg-config --libs htslib</code></pre>
+<h3><a id="installation" class="anchor" href="#installation">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Installation</h3>
+<p>Add htslib to your <code>shard.yml</code>:</p>
+<pre><code class="language-yaml">dependencies:
+  htslib:
+    github: bio-crystal/htslib.cr</code></pre>
+<p>Run <code>shards install</code></p>
+<h2><a id="usage" class="anchor" href="#usage">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Usage</h2>
+<p>SAM / BAM</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;htslib/hts/bam&quot;</span>
+
+bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bam</span>.<span class="k">new</span>(bam_path)
+
+bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
+  p name:  r.qname,
+    flag:  r.flag.value,
+    pos:   r.start <span class="o">+</span> <span class="n">1</span>,
+    mpos:  r.mate_start <span class="o">+</span> <span class="n">1</span>,
+    mqual: r.mapping_quality,
+    seq:   r.sequence,
+    cigar: r.cigar,
+    qual:  r.base_qualities.map { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">+</span> <span class="n">33</span>).chr }.join
+<span class="k">end</span>
+
+bam.close</code></pre>
+<p>VCF / BCF</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;htslib/hts/bcf&quot;</span>
+
+bcf <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bcf</span>.<span class="k">new</span>(bcf_path)
+
+bcf.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
+  p chrom:  r.chrom,
+    start:  r.start,
+    stop:   r.stop,
+    id:     r.id,
+    qual:   r.qual,
+    filter: r.filter,
+    ref:    r.ref,
+    alt:    r.alt
+<span class="k">end</span>
+
+bcf.close</code></pre>
+<h2><a id="api-overview-plan" class="anchor" href="#api-overview-plan">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>API Overview (Plan)</h2>
+<ul>
+<li>High level API - Create as needed. But don't overdo it.</li>
+<li>Low level API - Native C bindings to HTSLib generated by <a href="https://github.com/crystal-lang/crystal_lib">crystal_lib</a>.</li>
+</ul>
+<pre><code class="language-crystal">
+ ┌──────────────────── <span class="t">HTS</span> ────────────────────┐
+ │                                             │
+ │ ┌─ <span class="t">Bam</span> ────────┬─ <span class="t">Bcf</span> ───────┬─ <span class="t">Tabix</span> ────┐ │
+ │ │ <span class="t">SAM</span> <span class="t">BAM</span> <span class="t">CRAM</span> │ <span class="t">VCF</span> <span class="t">BCF</span>     │ <span class="t">TABIX</span>      │ │
+ │ └──────────────┴─────────────┴────────────┘ │
+ │                     ┌─LibHTS2───────────┐   │
+ │ ┌─LibHTS────────────┤ <span class="t">Macro</span> functions   ├─┐ │
+ │ │ <span class="t">Native</span> <span class="t">C</span> bindings └───────────────────┘ │ │
+ │ └─────────────────────────────────────────┘ │
+ └─────────────────────────────────────────────┘</code></pre>
+<h2><a id="related-work" class="anchor" href="#related-work">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Related Work</h2>
+<ul>
+<li><a href="https://github.com/kojix2/ruby-htslib">ruby-htslib</a></li>
+</ul>
+<h2><a id="contributing" class="anchor" href="#contributing">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Contributing</h2>
+<p>htslib.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.</p>
+<pre><code class="language-crystal"><span class="t">Do</span> you need commit rights to my repository?
+<span class="t">Do</span> you want to get admin rights and take over the project?
+<span class="t">If</span> so, please feel free to contact us @kojix2.</code></pre>
+<h2><a id="benchmark" class="anchor" href="#benchmark">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Benchmark</h2>
+<p>https://github.com/brentp/vcf-bench</p>
+<p>code: https://github.com/kojix2/vcf-bench/blob/kojix2/crystal-htslib/read.cr</p>
+<p><img src="https://user-images.githubusercontent.com/5798442/155878129-92f25b51-4b17-4b30-8b77-616ada93c0b4.png" alt="image" /></p>
+</div>
+</body>
+</html>
