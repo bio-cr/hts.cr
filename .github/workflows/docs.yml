@@ -14,13 +14,8 @@ jobs:
       - uses: crystal-lang/install-crystal@v1
       - name: Generate document
         run: crystal docs
-      - name: Upload document
-        uses: actions/upload-artifact@v2
-        with:
-          name: document
-          path: ${{ github.workspace }}/docs
       - name: Publish Documentation on GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs
+          publish_dir: ./docs
