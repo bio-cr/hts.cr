@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Crystal Docs 1.4.0-dev">
-<meta name="crystal_docs.project_version" content="develop">
+<meta name="generator" content="Crystal Docs 1.2.2">
+<meta name="crystal_docs.project_version" content="docs">
 <meta name="crystal_docs.project_name" content="htslib">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="htslib">
-  <title>HTS::Bam::Header - htslib develop</title>
+  <title>HTS::Bcf::Header - htslib docs</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        develop
+        docs
       </span>
     </div>
   </div>
@@ -56,7 +56,7 @@
       
         <ul>
   
-  <li class="parent open current" data-id="htslib/HTS/Bam" data-name="hts::bam">
+  <li class="parent " data-id="htslib/HTS/Bam" data-name="hts::bam">
       <a href="../../HTS/Bam.html">Bam</a>
       
         <ul>
@@ -71,7 +71,7 @@
       
     </li>
   
-  <li class=" current" data-id="htslib/HTS/Bam/Header" data-name="hts::bam::header">
+  <li class=" " data-id="htslib/HTS/Bam/Header" data-name="hts::bam::header">
       <a href="../../HTS/Bam/Header.html">Header</a>
       
     </li>
@@ -86,7 +86,7 @@
       
     </li>
   
-  <li class="parent " data-id="htslib/HTS/Bcf" data-name="hts::bcf">
+  <li class="parent open current" data-id="htslib/HTS/Bcf" data-name="hts::bcf">
       <a href="../../HTS/Bcf.html">Bcf</a>
       
         <ul>
@@ -96,7 +96,7 @@
       
     </li>
   
-  <li class=" " data-id="htslib/HTS/Bcf/Header" data-name="hts::bcf::header">
+  <li class=" current" data-id="htslib/HTS/Bcf/Header" data-name="hts::bcf::header">
       <a href="../../HTS/Bcf/Header.html">Header</a>
       
     </li>
@@ -145,12 +145,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> HTS::Bam::Header
+  <span class="kind">class</span> HTS::Bcf::Header
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/Header.html">HTS::Bam::Header</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bcf/Header.html">HTS::Bcf::Header</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -178,8 +178,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L3" target="_blank">
-        hts/bam/header.cr
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L3" target="_blank">
+        hts/bcf/header.cr
       </a>
     
     <br/>
@@ -205,7 +205,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28sam_hdr%3APointer%28HTS%3A%3ALibHTS%3A%3ASamHdrT%29%29-class-method" class="signature"><strong>.new</strong>(sam_hdr : Pointer(HTS::LibHTS::SamHdrT))</a>
+        <a href="#new%28bcf_hdr%3APointer%28HTS%3A%3ALibHTS%3A%3ABcfHdrT%29%29-class-method" class="signature"><strong>.new</strong>(bcf_hdr : Pointer(HTS::LibHTS::BcfHdrT))</a>
         
           <div class="summary"><p>for clone</p></div>
         
@@ -233,22 +233,22 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ASamHdrT%29-instance-method" class="signature"><strong>#struct</strong> : Pointer(HTS::LibHTS::SamHdrT)</a>
+        <a href="#get_version-instance-method" class="signature"><strong>#get_version</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#target_count-instance-method" class="signature"><strong>#target_count</strong></a>
+        <a href="#sample_count-instance-method" class="signature"><strong>#sample_count</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#target_lengths-instance-method" class="signature"><strong>#target_lengths</strong></a>
+        <a href="#sample_names-instance-method" class="signature"><strong>#sample_names</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#target_names-instance-method" class="signature"><strong>#target_names</strong></a>
+        <a href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ABcfHdrT%29-instance-method" class="signature"><strong>#struct</strong> : Pointer(HTS::LibHTS::BcfHdrT)</a>
         
       </li>
     
@@ -310,17 +310,17 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(sam_hdr:Pointer(HTS::LibHTS::SamHdrT))-class-method">
+    <div class="entry-detail" id="new(bcf_hdr:Pointer(HTS::LibHTS::BcfHdrT))-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(sam_hdr : Pointer(HTS::LibHTS::SamHdrT))
+        def self.<strong>new</strong>(bcf_hdr : Pointer(HTS::LibHTS::BcfHdrT))
 
-        <a class="method-permalink" href="#new%28sam_hdr%3APointer%28HTS%3A%3ALibHTS%3A%3ASamHdrT%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28bcf_hdr%3APointer%28HTS%3A%3ALibHTS%3A%3ABcfHdrT%29%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -331,7 +331,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -361,71 +361,71 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L37" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="struct:Pointer(HTS::LibHTS::SamHdrT)-instance-method">
+    <div class="entry-detail" id="get_version-instance-method">
       <div class="signature">
         
-        def <strong>struct</strong> : Pointer(HTS::LibHTS::SamHdrT)
+        def <strong>get_version</strong>
 
-        <a class="method-permalink" href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ASamHdrT%29-instance-method">#</a>
+        <a class="method-permalink" href="#get_version-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="target_count-instance-method">
+    <div class="entry-detail" id="sample_count-instance-method">
       <div class="signature">
         
-        def <strong>target_count</strong>
+        def <strong>sample_count</strong>
 
-        <a class="method-permalink" href="#target_count-instance-method">#</a>
+        <a class="method-permalink" href="#sample_count-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="target_lengths-instance-method">
+    <div class="entry-detail" id="sample_names-instance-method">
       <div class="signature">
         
-        def <strong>target_lengths</strong>
+        def <strong>sample_names</strong>
 
-        <a class="method-permalink" href="#target_lengths-instance-method">#</a>
+        <a class="method-permalink" href="#sample_names-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="target_names-instance-method">
+    <div class="entry-detail" id="struct:Pointer(HTS::LibHTS::BcfHdrT)-instance-method">
       <div class="signature">
         
-        def <strong>target_names</strong>
+        def <strong>struct</strong> : Pointer(HTS::LibHTS::BcfHdrT)
 
-        <a class="method-permalink" href="#target_names-instance-method">#</a>
+        <a class="method-permalink" href="#struct%3APointer%28HTS%3A%3ALibHTS%3A%3ABcfHdrT%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -453,7 +453,7 @@ IO object.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/42f51d75cb86821450096cff9db18fbc739c04d2/src/hts/bam/header.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ee12a7e8c88ad54dd167e91c50267ded282f1d1e/src/hts/bcf/header.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
