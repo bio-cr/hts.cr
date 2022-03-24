@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: crystal-lang/install-crystal@v1
       - name: Generate document
         run: crystal docs
       - name: Upload document
