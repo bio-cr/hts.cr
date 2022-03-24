@@ -30,8 +30,8 @@ module HTS
         end
       end
 
-      def to_s
-        String.new LibHTS.sam_hdr_str(@sam_hdr)
+      def to_s(io : IO)
+        io << String.new LibHTS.sam_hdr_str(@sam_hdr)
       end
 
       def clone

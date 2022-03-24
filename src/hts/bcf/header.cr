@@ -29,12 +29,12 @@ module HTS
         end
       end
 
-      def to_s
+      def to_s(io : IO)
         kstr = LibHTS::KstringT.new
         unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
           raise "Failed to format header"
         end
-        String.new kstr.s
+        io << (String.new kstr.s)
       end
 
       def clone

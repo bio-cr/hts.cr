@@ -82,8 +82,8 @@ module HTS
         @value & m != 0
       end
 
-      def to_s
-        "#{"0x%x" % @value}\t#{@value}\t#{String.new LibHTS.bam_flag2str(@value)}"
+      def to_s(io : IO)
+        io << "#{"0x%x" % @value}\t#{@value}\t#{String.new LibHTS.bam_flag2str(@value)}"
       end
     end
   end

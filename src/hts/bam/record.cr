@@ -200,11 +200,11 @@ module HTS
         LibHTS.bam_aux2_a(aux).chr
       end
 
-      def to_s
+      def to_s(io : IO)
         kstr = Pointer(LibHTS::KstringT).malloc
         raise "Failed to format bam record" if LibHTS.sam_format1(@header.struct, @bam1, kstr) == -1
 
-        String.new kstr.value.s
+        io << (String.new kstr.value.s)
       end
 
       def clone

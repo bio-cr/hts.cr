@@ -91,11 +91,11 @@ module HTS
         Format.new(self)
       end
 
-      def to_s
+      def to_s(io : IO)
         ksr = LibHTS::KstringT.new
         raise "Failed to format record" if LibHTS.vcf_format(@header.struct, @bcf1, pointerof(ksr)) == -1
 
-        String.new ksr.s
+        io << (String.new ksr.s)
       end
 
       def clone

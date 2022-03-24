@@ -12,8 +12,8 @@ module HTS
         @pointer
       end
 
-      def to_s
-        # to_a.flatten.join
+      def to_s(io : IO)
+        # io << to_a.flatten.join
       end
 
       # def each
