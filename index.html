@@ -150,9 +150,8 @@
 <p><a href="https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml"><img src="https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
 <a href="https://bio-crystal.slack.com/"><img src="http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&amp;logo=slack" alt="Slack" /></a>
 <a href="https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g"><img src="http://img.shields.io/badge/Get_invite_to_BioCrystal-purple?labelColor=000000&amp;logo=slack" alt="Get invite to BioCrystal" /></a></p>
-<p>htslib.cr is the Crystal bindings to HTSlib, a C library for processing high throughput sequencing (HTS) data.
-It will provide APIs to read and write file formats such as <a href="http://samtools.github.io/hts-specs/">SAM, BAM, VCF, and BCF</a>.</p>
-<p>:fire: Feel free to fork it out if you can develop it!</p>
+<p>htslib.cr is the <a href="https://github.com/crystal-lang/crystal">Crystal</a> bindings to <a href="https://github.com/samtools/htslib">HTSlib</a>, a C library for for high-throughput sequencing data formats. It allows you to read and write file formats commonly used in genomics, such as <a href="http://samtools.github.io/hts-specs/">SAM, BAM, VCF, and BCF</a> in the Crystal language.</p>
+<p>:rocket: Feel free to fork it out!</p>
 <p>:hatching_chick: alpha stage.</p>
 <h2><a id="requirements" class="anchor" href="#requirements">
   <svg class="octicon-link" aria-hidden="true">
@@ -164,18 +163,17 @@ It will provide APIs to read and write file formats such as <a href="http://samt
 <li><a href="https://github.com/samtools/htslib">HTSlib</a>
 <ul>
 <li>Ubuntu : <code>apt install libhts-dev</code></li>
-<li>macOS : <code>brew install htslib</code></li>
-<li>Build from source code</li>
+<li>macOS  : <code>brew install htslib</code></li>
+<li>Any OS : Build from <a href="https://github.com/samtools/htslib">source code</a></li>
+<li>Make sure that <code>pkg-config</code> can detect htslib: <code>pkg-config --libs htslib</code></li>
 </ul>
 </li>
 </ul>
-<p>Make sure that <code>pkg-config</code> can detect htslib.</p>
-<pre><code class="language-sh">pkg-config --libs htslib</code></pre>
-<h3><a id="installation" class="anchor" href="#installation">
+<h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Installation</h3>
+</a>Installation</h2>
 <p>Add htslib to your <code>shard.yml</code>:</p>
 <pre><code class="language-yaml">dependencies:
   htslib:
@@ -186,10 +184,10 @@ It will provide APIs to read and write file formats such as <a href="http://samt
     <use href="#octicon-link"/>
   </svg>
 </a>Usage</h2>
-<p>SAM / BAM</p>
+<p>SAM / BAM / CRAM</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;htslib/hts/bam&quot;</span>
 
-bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bam</span>.<span class="k">new</span>(bam_path)
+bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bam</span>.open(bam_path)
 
 bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
   p name:  r.qname,
@@ -200,13 +198,14 @@ bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</s
     seq:   r.sequence,
     cigar: r.cigar,
     qual:  r.base_qualities.map { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">+</span> <span class="n">33</span>).chr }.join
+  <span class="c"># tag:   r.tag(&quot;MC&quot;)</span>
 <span class="k">end</span>
 
 bam.close</code></pre>
 <p>VCF / BCF</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;htslib/hts/bcf&quot;</span>
 
-bcf <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bcf</span>.<span class="k">new</span>(bcf_path)
+bcf <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bcf</span>.open(bcf_path)
 
 bcf.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
   p chrom:  r.chrom,
@@ -216,21 +215,24 @@ bcf.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</s
     qual:   r.qual,
     filter: r.filter,
     ref:    r.ref,
-    alt:    r.alt
+    alt:    r.alt,
+  <span class="c"># alleles r.alleles</span>
+  <span class="c"># info:   r.info,</span>
+  <span class="c"># format  r.format</span>
 <span class="k">end</span>
 
 bcf.close</code></pre>
-<h2><a id="api-overview-plan" class="anchor" href="#api-overview-plan">
+<h2><a id="api-overview" class="anchor" href="#api-overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>API Overview (Plan)</h2>
+</a>API Overview</h2>
 <ul>
 <li>High level API - Create as needed. But don't overdo it.</li>
 <li>Low level API - Native C bindings to HTSLib generated by <a href="https://github.com/crystal-lang/crystal_lib">crystal_lib</a>.</li>
+<li>See <a href="https://bio-crystal.github.io/htslib.cr/">API documentation</a>.</li>
 </ul>
-<pre><code class="language-crystal">
- ┌──────────────────── <span class="t">HTS</span> ────────────────────┐
+<pre><code class="language-crystal"> ┌──────────────────── <span class="t">HTS</span> ────────────────────┐
  │                                             │
  │ ┌─ <span class="t">Bam</span> ────────┬─ <span class="t">Bcf</span> ───────┬─ <span class="t">Tabix</span> ────┐ │
  │ │ <span class="t">SAM</span> <span class="t">BAM</span> <span class="t">CRAM</span> │ <span class="t">VCF</span> <span class="t">BCF</span>     │ <span class="t">TABIX</span>      │ │
@@ -254,7 +256,7 @@ bcf.close</code></pre>
   </svg>
 </a>Contributing</h2>
 <p>htslib.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.</p>
-<pre><code class="language-crystal"><span class="t">Do</span> you need commit rights to my repository?
+<pre><code class="language-crystal"><span class="t">Do</span> you need commit rights to htslib.cr?
 <span class="t">Do</span> you want to get admin rights and take over the project?
 <span class="t">If</span> so, please feel free to contact us @kojix2.</code></pre>
 <h2><a id="benchmark" class="anchor" href="#benchmark">
