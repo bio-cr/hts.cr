@@ -1,7 +1,7 @@
 module HTS
   class Bam
     class Cigar
-      # include Enumerable
+      include Enumerable(Tuple(Char, UInt32))
 
       def initialize(pointer : Pointer(UInt32), n_cigar : UInt32)
         @pointer = pointer
@@ -13,16 +13,20 @@ module HTS
       end
 
       def to_s(io : IO)
-        # io << to_a.flatten.join
+        each do |op, len|
+          io << len
+          io << op
+        end
       end
 
-      # def each
-      #   @n_cigar.times do |i|
-      #     c = @pointer[i].read_uint32
-      #     yield [LibHTS.bam_cigar_oplen(c),
-      #            LibHTS.bam_cigar_opchr(c)]
-      #   end
-      # end
+      def each
+        @n_cigar.times do |i|
+          c = @pointer[i]
+          op  = LibHTS2.bam_cigar_opchr(c) 
+          len = LibHTS2.bam_cigar_oplen(c)
+          yield({op, len})
+        end
+      end
     end
   end
 end
