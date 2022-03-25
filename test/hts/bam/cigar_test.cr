@@ -7,9 +7,8 @@ class BamCigarTest < Minitest::Test
   end
 
   def cigar9 : HTS::Bam::Cigar
-    bam = HTS::Bam.new(test_bam_path)
-    8.times { bam.first }
-    r = bam.first
+    bam = HTS::Bam.open(test_bam_path)
+    r = bam.first(8).last
     bam.close
     r.cigar
   end
