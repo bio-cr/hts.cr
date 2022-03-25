@@ -3,7 +3,7 @@ require "../../../src/hts/bam"
 
 class BamCigarTest < Minitest::Test
   def test_bam_path
-    File.expand_path("../../fixtures/moo.cram", __DIR__)
+    File.expand_path("../../fixtures/moo.bam", __DIR__)
   end
 
   def cigar9 : HTS::Bam::Cigar
