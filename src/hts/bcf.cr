@@ -45,6 +45,8 @@ module HTS
 
       return if mode == "w"
 
+      # FIXME: Loading index needed for query
+
       @header = Bcf::Header.new(@hts_file)
     end
 
