@@ -116,4 +116,3 @@ https://github.com/brentp/vcf-bench
 
 code: https://github.com/kojix2/vcf-bench/blob/kojix2/crystal-htslib/read.cr
 
-![image](https://user-images.githubusercontent.com/5798442/155878129-92f25b51-4b17-4b30-8b77-616ada93c0b4.png)
