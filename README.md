@@ -4,7 +4,7 @@
 [![Slack](http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&logo=slack)](https://bio-crystal.slack.com/)
 [![Get invite to BioCrystal](http://img.shields.io/badge/Get_invite_to_BioCrystal-purple?labelColor=000000&logo=slack)](https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g)
 
-htslib.cr is the [Crystal](https://github.com/crystal-lang/crystal) bindings to [HTSlib](https://github.com/samtools/htslib), a C library for for high-throughput sequencing data formats. It allows you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/) in the Crystal language.
+htslib.cr is the [Crystal](https://github.com/crystal-lang/crystal) bindings to [HTSlib](https://github.com/samtools/htslib), a C library for high-throughput sequencing data formats. It allows you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/) in the Crystal language.
 
 :rocket: Feel free to fork it out! 
 
