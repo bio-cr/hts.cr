@@ -2,8 +2,8 @@ name: docker
 
 on:
   push:
-    branch:
-      - ci-docker
+    tags:
+      - "v*.*.*"
 
 jobs:
   docker:
