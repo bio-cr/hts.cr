@@ -1,5 +1,5 @@
 module HTS
-  class Bcf
+  class Bcf < Hts
     class Format
       def initialize(@record : Bcf::Record)
         @p1 = Pointer(Void).null

@@ -1,5 +1,5 @@
 module HTS
-  class Bcf
+  class Bcf < Hts
     class Record
       def initialize(bcf_t : Pointer(HTS::LibHTS::Bcf1T), header : Bcf::Header)
         @bcf1 = bcf_t

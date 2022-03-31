@@ -1,5 +1,5 @@
 module HTS
-  class Bam
+  class Bam < Hts
     class Header
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @sam_hdr = LibHTS.sam_hdr_read(hts_file)

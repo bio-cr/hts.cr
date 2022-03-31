@@ -1,5 +1,5 @@
 module HTS
-  class Bcf
+  class Bcf < Hts
     class Header
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @bcf_hdr = LibHTS.bcf_hdr_read(hts_file)

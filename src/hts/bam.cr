@@ -1,13 +1,14 @@
 require "./libhts"
 require "./version"
 
+require "./hts"
 require "./bam/header"
 require "./bam/cigar"
 require "./bam/flag"
 require "./bam/record"
 
 module HTS
-  class Bam
+  class Bam < Hts
     include Enumerable(Record)
 
     getter :file_path
@@ -78,21 +79,6 @@ module HTS
 
     def closed?
       @hts_file.null?
-    end
-
-    def format
-      LibHTS.hts_get_format(@hts_file).value.format.to_s
-    end
-
-    def format_version
-      v = LibHTS.hts_get_format(@hts_file).value.version
-      major = v.major
-      minor = v.minor
-      if minor == -1
-        "#{major}"
-      else
-        "#{major}.#{minor}"
-      end
     end
 
     def write_header(header)

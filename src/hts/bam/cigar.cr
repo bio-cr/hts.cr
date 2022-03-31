@@ -1,5 +1,5 @@
 module HTS
-  class Bam
+  class Bam < Hts
     class Cigar
       include Enumerable(Tuple(Char, UInt32))
 

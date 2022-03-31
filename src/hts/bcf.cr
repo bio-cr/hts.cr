@@ -1,13 +1,14 @@
 require "./libhts"
 require "./version"
 
+require "./hts"
 require "./bcf/header"
 require "./bcf/info"
 require "./bcf/format"
 require "./bcf/record"
 
 module HTS
-  class Bcf
+  class Bcf < Hts
     include Enumerable(Bcf::Record)
 
     getter :file_path

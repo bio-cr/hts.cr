@@ -1,5 +1,5 @@
 module HTS
-  class Bam
+  class Bam < Hts
     class Flag
       def initialize(flag_value : UInt16)
         @value = flag_value
