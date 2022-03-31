@@ -53,6 +53,14 @@ class BamTest < Minitest::Test
     assert_instance_of HTS::Bam::Header, bam.header
   end
 
+  def test_format
+    assert_equal "Bam", bam.format
+  end
+
+  def test_format_version
+    assert_equal "1", bam.format_version
+  end
+
   def test_each
     bam.each do |aln|
       assert_instance_of HTS::Bam::Record, aln
