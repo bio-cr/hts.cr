@@ -6,63 +6,66 @@ class BamTest < Minitest::Test
     @bam.try &.close
   end
 
-  def sam_path_string
+  def path_sam_string
     File.expand_path("../fixtures/moo.sam", __DIR__)
   end
 
-  def bam_path_string
-    File.expand_path("../fixtures/poo.sort.bam", __DIR__)
+  def path_bam_string
+    File.expand_path("../fixtures/moo.bam", __DIR__)
   end
 
-  def sam_path_path
-    Path[sam_path_string]
+  def path_sam_path
+    Path[path_sam_string]
   end
 
-  def bam_path_path
-    Path[bam_path_string]
+  def path_bam_path
+    Path[path_bam_string]
   end
 
-  def sam_path_uri
-    "https://raw.githubusercontent.com/kojix2/ruby-htslib/develop/test/fixtures/moo.sam"
+  def path_sam_uri
+    "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.sam"
   end
 
-  def bam_path_uri
-    "https://raw.githubusercontent.com/kojix2/ruby-htslib/develop/test/fixtures/poo.sort.bam"
+  def path_bam_uri
+    "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.bam"
   end
 
   def bam
-    @bam ||= HTS::Bam.new(bam_path_string)
+    @bam ||= HTS::Bam.new(path_bam_string)
   end
 
   {% for format, index in ["bam", "sam"] %}
     {% for type, index in ["string", "path", "uri"] %}
-
-      def test_new_{{format.id}}_path_{{type.id}}
-        b = HTS::Bam.new({{format.id}}_path_{{type.id}})
+      def test_new_{{format.id}}_{{type.id}}
+        b = HTS::Bam.new(path_{{format.id}}_{{type.id}})
         assert_instance_of HTS::Bam, b
         b.close
         assert_equal true, b.closed?
       end
 
-      def test_open_{{format.id}}_path_{{type.id}}
-        b = HTS::Bam.open({{format.id}}_path_{{type.id}})
+      def test_open_{{format.id}}_{{type.id}}
+        b = HTS::Bam.open(path_{{format.id}}_{{type.id}})
         assert_instance_of HTS::Bam, b
         b.close
         assert_equal true, b.closed?
       end
 
-      def test_open_{{format.id}}_path_{{type.id}}_with_block
-        f = HTS::Bam.open({{format.id}}_path_{{type.id}}) do |b|
+      def test_open_{{format.id}}_{{type.id}}_with_block
+        f = HTS::Bam.open(path_{{format.id}}_{{type.id}}) do |b|
           assert_instance_of HTS::Bam, b
         end
         assert_equal true, f.closed?
+      end
+
+      def {{format.id}}_{{type.id}}
+        @{{format.id}}_{{type.id}} ||= HTS::Bam.open({{format.id}}_{{type.id}})
       end
 
     {% end %}
   {% end %}
 
   def test_file_name
-    assert_equal bam_path_string, bam.file_name
+    assert_equal path_bam_string, bam.file_name
   end
 
   def test_mode
@@ -89,9 +92,9 @@ class BamTest < Minitest::Test
 
   def test_query
     arr = [] of Int64
-    bam.query("poo:3200-3300") do |aln|
+    bam.query("chr2:350-700") do |aln|
       arr << aln.start
     end
-    assert_equal [3289, 3292, 3293, 3298], arr
+    assert_equal [341, 658], arr
   end
 end
