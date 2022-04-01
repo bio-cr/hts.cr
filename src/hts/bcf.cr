@@ -61,12 +61,18 @@ module HTS
       @hts_file.null?
     end
 
+    # Iterate over each record.
+    # Generate a new Record object each time.
+    # Slower than each.
     def each_copy
       while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
       end
     end
 
+    # Iterate over each record.
+    # Record object is reused.
+    # Faster than each_copy.
     def each
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(bcf1, header)
@@ -75,11 +81,11 @@ module HTS
       end
     end
 
-    def sample_count
+    def nsamples
       header.sample_count
     end
 
-    def sample_names
+    def samples
       header.sample_names
     end
   end

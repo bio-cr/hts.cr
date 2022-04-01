@@ -107,12 +107,18 @@ module HTS
       r < 0 && raise "Failed to write record: #{record}"
     end
 
+    # Iterate over each record.
+    # Generate a new Record object each time.
+    # Slower than each.
     def each_copy
       while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
         yield Record.new(bam1, header)
       end
     end
 
+    # Iterate over each record.
+    # Record object is reused.
+    # Faster than each_copy.
     def each
       bam1 = LibHTS.bam_init1
       record = Record.new(bam1, header)
@@ -123,7 +129,7 @@ module HTS
 
     def query(region)
       raise "Index file is required to call the query method." unless index_loaded?
-      
+
       qiter = LibHTS.sam_itr_querys(@idx, header.struct, region)
       begin
         bam1 = LibHTS.bam_init1
