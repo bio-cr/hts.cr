@@ -93,7 +93,7 @@ module HTS
 
     def write_header(header)
       @header = header.clone
-      LibHTS.hts_set_fai_file_name(@hts_file, @file_name)
+      LibHTS.hts_set_fai_filename(@hts_file, @file_name)
       LibHTS.sam_hdr_write(@hts_file, header.struct)
     end
 
