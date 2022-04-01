@@ -6,65 +6,63 @@ class BamTest < Minitest::Test
     @bam.try &.close
   end
 
-  def test_bam_path
-    File.expand_path("../fixtures/poo.sort.bam", __DIR__)
-  end
-
-  def test_sam_path
+  def sam_path_string
     File.expand_path("../fixtures/moo.sam", __DIR__)
   end
 
-  def test_sam_path_remote
+  def bam_path_string
+    File.expand_path("../fixtures/poo.sort.bam", __DIR__)
+  end
+
+  def sam_path_path
+    Path[sam_path_string]
+  end
+
+  def bam_path_path
+    Path[bam_path_string]
+  end
+
+  def sam_path_uri
     "https://raw.githubusercontent.com/kojix2/ruby-htslib/develop/test/fixtures/moo.sam"
   end
 
+  def bam_path_uri
+    "https://raw.githubusercontent.com/kojix2/ruby-htslib/develop/test/fixtures/poo.sort.bam"
+  end
+
   def bam
-    @bam ||= HTS::Bam.new(test_bam_path)
+    @bam ||= HTS::Bam.new(bam_path_string)
   end
 
-  def test_new
-    b = HTS::Bam.new(test_bam_path)
-    assert_instance_of HTS::Bam, b
-    b.close
-    assert_equal true, b.closed?
-  end
 
-  # def test_new_with_block
-  #   assert_raises do
-  #     HTS::Bam.new(test_bam_path){}
-  #   end
-  # end
 
-  def test_open_bam
-    b = HTS::Bam.open(test_bam_path)
-    assert_instance_of HTS::Bam, b
-    b.close
-    assert_equal true, b.closed?
-  end
+  {% for format, index in ["bam", "sam"] %}
+    {% for type, index in ["string", "path", "uri"] %}
+      def test_new_{{format.id}}_path_{{type.id}}
+        b = HTS::Bam.new({{format.id}}_path_{{type.id}})
+        assert_instance_of HTS::Bam, b
+        b.close
+        assert_equal true, b.closed?
+      end
 
-  def test_open_sam
-    b = HTS::Bam.open(test_sam_path)
-    assert_instance_of HTS::Bam, b
-    b.close
-    assert_equal true, b.closed?
-  end
+      def test_open_{{format.id}}_path_{{type.id}}
+        b = HTS::Bam.open({{format.id}}_path_{{type.id}})
+        assert_instance_of HTS::Bam, b
+        b.close
+        assert_equal true, b.closed?
+      end
 
-  def test_open_sam_remote
-    b = HTS::Bam.open(test_sam_path_remote)
-    assert_instance_of HTS::Bam, b
-    b.close
-    assert_equal true, b.closed?
-  end
-
-  def test_open_with_block
-    f = HTS::Bam.open(test_bam_path) do |b|
-      assert_instance_of HTS::Bam, b
-    end
-    assert_equal true, f.closed?
-  end
+      def test_open_{{format.id}}_path_{{type.id}}_with_block
+        f = HTS::Bam.open({{format.id}}_path_{{type.id}}) do |b|
+          assert_instance_of HTS::Bam, b
+        end
+        assert_equal true, f.closed?
+      end
+    {% end %}
+  {% end %}
 
   def test_file_name
-    assert_equal test_bam_path, bam.file_name
+    assert_equal bam_path_string, bam.file_name
   end
 
   def test_mode

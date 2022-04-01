@@ -30,7 +30,7 @@ module HTS
       file
     end
 
-    def initialize(file_name : Path | String, mode = "r", index = "", fai = "",
+    def initialize(file_name : Path | String, @mode = "r", index = "", fai = "",
                    threads = 0, create_index = false)
       @file_name = file_name.to_s || ""
 
@@ -39,7 +39,7 @@ module HTS
       # end
 
       @mode = mode
-      @hts_file = LibHTS.hts_open(file_name, mode)
+      @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       if fai != ""
         fai_path = File.expand_path(fai)
@@ -59,12 +59,12 @@ module HTS
       create_index() if create_index
 
       # load index
-      @idx = LibHTS.sam_index_load(@hts_file, file_name)
+      @idx = LibHTS.sam_index_load(@hts_file, @file_name)
     end
 
     def create_index
-      STDERR.puts "Create index for #{file_name}"
-      LibHTS.sam_index_build(file_name, -1)
+      STDERR.puts "Create index for #{@file_name}"
+      LibHTS.sam_index_build(@file_name, -1)
     end
 
     # Close the current file.
