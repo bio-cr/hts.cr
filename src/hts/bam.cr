@@ -34,9 +34,9 @@ module HTS
                    threads = 0, create_index = false)
       @file_name = file_name.to_s || ""
 
-      if mode[0] == 'r' && !File.exists?(file_name)
-        raise "File not found: #{file_name}"
-      end
+      # if mode[0] == 'r' && !File.exists?(file_name)
+      #   raise "File not found: #{file_name}"
+      # end
 
       @mode = mode
       @hts_file = LibHTS.hts_open(file_name, mode)

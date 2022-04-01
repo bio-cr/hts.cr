@@ -14,6 +14,10 @@ class BamTest < Minitest::Test
     File.expand_path("../fixtures/moo.sam", __DIR__)
   end
 
+  def test_sam_path_remote
+    "https://raw.githubusercontent.com/kojix2/ruby-htslib/develop/test/fixtures/moo.sam"
+  end
+
   def bam
     @bam ||= HTS::Bam.new(test_bam_path)
   end
@@ -40,6 +44,13 @@ class BamTest < Minitest::Test
 
   def test_open_sam
     b = HTS::Bam.open(test_sam_path)
+    assert_instance_of HTS::Bam, b
+    b.close
+    assert_equal true, b.closed?
+  end
+
+  def test_open_sam_remote
+    b = HTS::Bam.open(test_sam_path_remote)
     assert_instance_of HTS::Bam, b
     b.close
     assert_equal true, b.closed?
