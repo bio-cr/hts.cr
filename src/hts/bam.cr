@@ -14,12 +14,14 @@ module HTS
     getter :mode
     getter :header
 
-    def self.open(file_name : Path | String, mode = "r", fai = "", threads = 0, index = false)
-      new(file_name, mode, fai, threads, index)
+    def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
+                  threads = 0, create_index = false)
+      new(file_name, mode, index, fai, threads, create_index)
     end
 
-    def self.open(file_name : Path | String, mode = "r", fai = "", threads = 0, index = false)
-      file = new(file_name, mode, fai, threads, index)
+    def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
+                  threads = 0, create_index = false)
+      file = new(file_name, mode, index, fai, threads, create_index)
       begin
         yield file
       ensure
@@ -28,7 +30,8 @@ module HTS
       file
     end
 
-    def initialize(file_name : Path | String, mode = "r", fai = "", threads = 0, index = false)
+    def initialize(file_name : Path | String, mode = "r", index = "", fai = "",
+                   threads = 0, create_index = false)
       @file_name = file_name.to_s || ""
 
       if mode[0] == 'r' && !File.exists?(file_name)
@@ -53,7 +56,7 @@ module HTS
 
       @header = Bam::Header.new(@hts_file)
 
-      create_index if index
+      create_index() if create_index
 
       # load index
       @idx = LibHTS.sam_index_load(@hts_file, file_name)
