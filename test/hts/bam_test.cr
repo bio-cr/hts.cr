@@ -10,6 +10,10 @@ class BamTest < Minitest::Test
     File.expand_path("../fixtures/poo.sort.bam", __DIR__)
   end
 
+  def test_sam_path
+    File.expand_path("../fixtures/moo.sam", __DIR__)
+  end
+
   def bam
     @bam ||= HTS::Bam.new(test_bam_path)
   end
@@ -27,8 +31,15 @@ class BamTest < Minitest::Test
   #   end
   # end
 
-  def test_open
+  def test_open_bam
     b = HTS::Bam.open(test_bam_path)
+    assert_instance_of HTS::Bam, b
+    b.close
+    assert_equal true, b.closed?
+  end
+
+  def test_open_sam
+    b = HTS::Bam.open(test_sam_path)
     assert_instance_of HTS::Bam, b
     b.close
     assert_equal true, b.closed?
