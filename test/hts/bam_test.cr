@@ -30,9 +30,6 @@ class BamTest < Minitest::Test
     "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.bam"
   end
 
-  def bam
-    @bam ||= HTS::Bam.new(path_bam_string)
-  end
 
   {% for format, index in ["bam", "sam"] %}
     {% for type, index in ["string", "path", "uri"] %}
@@ -58,36 +55,43 @@ class BamTest < Minitest::Test
       end
 
       def {{format.id}}_{{type.id}}
-        @{{format.id}}_{{type.id}} ||= HTS::Bam.open({{format.id}}_{{type.id}})
+        @{{format.id}}_{{type.id}} ||= HTS::Bam.open(path_{{format.id}}_{{type.id}})
       end
 
+      def test_file_name_{{format.id}}_{{type.id}}
+        assert_equal path_{{format.id}}_{{type.id}}.to_s, {{format.id}}_{{type.id}}.file_name
+      end
+
+      def test_mode_{{format.id}}_{{type.id}}
+        assert_equal "r", {{format.id}}_{{type.id}}.mode
+      end
+
+      def test_header_{{format.id}}_{{type.id}}
+        assert_instance_of HTS::Bam::Header, {{format.id}}_{{type.id}}.header
+      end
+
+      def test_format_{{format.id}}_{{type.id}}
+        assert_equal {{format}}.capitalize, {{format.id}}_{{type.id}}.format
+      end
+
+      def test_each_{{format.id}}_{{type.id}}
+        c = 0
+        {{format.id}}_{{type.id}}.each do |aln|
+          c += 1
+          assert_instance_of HTS::Bam::Record, aln
+        end
+        assert_equal 10, c
+      end
     {% end %}
   {% end %}
 
-  def test_file_name
-    assert_equal path_bam_string, bam.file_name
-  end
 
-  def test_mode
-    assert_equal "r", bam.mode
-  end
-
-  def test_header
-    assert_instance_of HTS::Bam::Header, bam.header
-  end
-
-  def test_format
-    assert_equal "Bam", bam.format
+  def bam
+    @bam ||= HTS::Bam.new(path_bam_string)
   end
 
   def test_format_version
     assert_equal "1", bam.format_version
-  end
-
-  def test_each
-    bam.each do |aln|
-      assert_instance_of HTS::Bam::Record, aln
-    end
   end
 
   def test_query

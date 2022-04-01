@@ -104,7 +104,7 @@ module HTS
     end
 
     def each_copy
-      while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) > 0
+      while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
         yield Record.new(bam1, header)
       end
     end
@@ -112,7 +112,7 @@ module HTS
     def each
       bam1 = LibHTS.bam_init1
       record = Record.new(bam1, header)
-      while LibHTS.sam_read1(@hts_file, header.struct, bam1) > 0
+      while LibHTS.sam_read1(@hts_file, header.struct, bam1) != -1
         yield record
       end
     end
