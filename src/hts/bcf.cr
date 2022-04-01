@@ -37,6 +37,8 @@ module HTS
       @mode = mode
       @hts_file = LibHTS.hts_open(file_name, mode)
 
+      raise "Failed to open file #{@file_name}" if @hts_file.null?
+
       if threads > 0
         r = LibHTS.hts_set_threads(@hts_file, threads)
         r < 0 && raise "Failed to set number threads: #{r}"

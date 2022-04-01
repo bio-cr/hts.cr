@@ -39,6 +39,8 @@ module HTS
       @mode = mode
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
+      raise "Failed to open file #{@file_name}" if @hts_file.null?
+
       if fai != ""
         fai_path = File.expand_path(fai)
         r = LibHTS.hts_set_fai_filename(@hts_file, fai_path)
