@@ -3,7 +3,12 @@ require "../../src/hts/bam"
 
 class BamTest < Minitest::Test
   def teardown
-    @bam.try &.close
+    # close files
+    {% for format, index in ["bam", "sam"] %}
+      {% for type, index in ["string", "path", "uri"] %}
+        @{{format.id}}_{{type.id}}.try &.close
+      {% end %}
+    {% end %}
   end
 
   {% for format, index in ["bam", "sam"] %}
@@ -69,21 +74,25 @@ class BamTest < Minitest::Test
         end
         assert_equal 10, c
       end
+
+      def test_format_version_{{format.id}}_{{type.id}}
+        assert_includes ["1", "1.6"], {{format.id}}_{{type.id}}.format_version
+      end
+
+      def test_query_{{format.id}}_{{type.id}}
+        arr = [] of Int64
+        {{format.id}}_{{type.id}}.query("chr2:350-700") do |aln|
+          arr << aln.start
+        end
+        assert_equal [341, 658], arr
+      end
     {% end %}
   {% end %}
 
 
-  def bam
-    @bam ||= HTS::Bam.new(path_bam_string)
-  end
-
-  def test_format_version
-    assert_equal "1", bam.format_version
-  end
-
   def test_query
     arr = [] of Int64
-    bam.query("chr2:350-700") do |aln|
+    bam_string.query("chr2:350-700") do |aln|
       arr << aln.start
     end
     assert_equal [341, 658], arr
