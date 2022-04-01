@@ -36,6 +36,7 @@ class BamTest < Minitest::Test
 
   {% for format, index in ["bam", "sam"] %}
     {% for type, index in ["string", "path", "uri"] %}
+
       def test_new_{{format.id}}_path_{{type.id}}
         b = HTS::Bam.new({{format.id}}_path_{{type.id}})
         assert_instance_of HTS::Bam, b
@@ -56,6 +57,7 @@ class BamTest < Minitest::Test
         end
         assert_equal true, f.closed?
       end
+
     {% end %}
   {% end %}
 
