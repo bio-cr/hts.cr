@@ -4,14 +4,14 @@ require "../../src/hts/bam"
 class BamTest < Minitest::Test
   def teardown
     # close files
-    {% for format in ["bam", "sam"] %}
+    {% for format in ["bam", "sam", "cram"] %}
       {% for type in ["string", "path", "uri"] %}
         @{{format.id}}_{{type.id}}.try &.close
       {% end %}
     {% end %}
   end
 
-  {% for format in ["bam", "sam"] %}
+  {% for format in ["bam", "sam", "cram"] %}
     def path_{{format.id}}_string
       File.expand_path("../fixtures/moo.{{format.id}}", __DIR__)
     end
@@ -76,7 +76,7 @@ class BamTest < Minitest::Test
       end
 
       def test_format_version_{{format.id}}_{{type.id}}
-        assert_includes ["1", "1.6"], {{format.id}}_{{type.id}}.format_version
+        assert_includes ["1", "1.6", "3.0"], {{format.id}}_{{type.id}}.format_version
       end
 
       {% if format != "sam" %}
