@@ -4,14 +4,14 @@ require "../../src/hts/bam"
 class BamTest < Minitest::Test
   def teardown
     # close files
-    {% for format, index in ["bam", "sam"] %}
-      {% for type, index in ["string", "path", "uri"] %}
+    {% for format in ["bam", "sam"] %}
+      {% for type in ["string", "path", "uri"] %}
         @{{format.id}}_{{type.id}}.try &.close
       {% end %}
     {% end %}
   end
 
-  {% for format, index in ["bam", "sam"] %}
+  {% for format in ["bam", "sam"] %}
     def path_{{format.id}}_string
       File.expand_path("../fixtures/moo.{{format.id}}", __DIR__)
     end
@@ -24,7 +24,7 @@ class BamTest < Minitest::Test
       "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.{{format.id}}"
     end
 
-    {% for type, index in ["string", "path", "uri"] %}
+    {% for type in ["string", "path", "uri"] %}
       def test_new_{{format.id}}_{{type.id}}
         b = HTS::Bam.new(path_{{format.id}}_{{type.id}})
         assert_instance_of HTS::Bam, b
@@ -79,22 +79,16 @@ class BamTest < Minitest::Test
         assert_includes ["1", "1.6"], {{format.id}}_{{type.id}}.format_version
       end
 
-      def test_query_{{format.id}}_{{type.id}}
-        arr = [] of Int64
-        {{format.id}}_{{type.id}}.query("chr2:350-700") do |aln|
-          arr << aln.start
+      {% if format != "sam" %}
+        def test_query_{{format.id}}_{{type.id}}
+          arr = [] of Int64
+          {{format.id}}_{{type.id}}.query("chr2:350-700") do |aln|
+            arr << aln.start
+          end
+          assert_equal [341, 658], arr
         end
-        assert_equal [341, 658], arr
-      end
+      {% end %}
+
     {% end %}
   {% end %}
-
-
-  def test_query
-    arr = [] of Int64
-    bam_string.query("chr2:350-700") do |aln|
-      arr << aln.start
-    end
-    assert_equal [341, 658], arr
-  end
 end
