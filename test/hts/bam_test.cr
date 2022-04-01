@@ -34,8 +34,6 @@ class BamTest < Minitest::Test
     @bam ||= HTS::Bam.new(bam_path_string)
   end
 
-
-
   {% for format, index in ["bam", "sam"] %}
     {% for type, index in ["string", "path", "uri"] %}
       def test_new_{{format.id}}_path_{{type.id}}
