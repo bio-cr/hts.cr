@@ -22,9 +22,7 @@ module HTS
 
     def initialize(@file_name : Path | String, mode = "r", threads = 0)
 
-      if mode[0] == 'r' && !File.exists?(file_name)
-        raise "File not found: #{file_name}"
-      end
+      # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
       @mode = mode
       @hts_file = LibHTS.hts_open(file_name, mode)
