@@ -2,6 +2,10 @@ require "./libhts"
 
 module HTS
   class Hts
+    def struct
+      @hts_file
+    end
+    
     def format
       LibHTS.hts_get_format(@hts_file).value.format.to_s
     end

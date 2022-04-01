@@ -65,10 +65,6 @@ module HTS
       LibHTS.sam_index_build(file_path, -1)
     end
 
-    def struct
-      @hts_file
-    end
-
     # Close the current file.
     def close
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
