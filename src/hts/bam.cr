@@ -56,15 +56,27 @@ module HTS
 
       @header = Bam::Header.new(@hts_file)
 
-      create_index() if create_index
+      create_index(index) if create_index
 
-      # load index
-      @idx = LibHTS.sam_index_load(@hts_file, @file_name)
+      @idx = load_index(index)
     end
 
-    def create_index
-      STDERR.puts "Create index for #{@file_name}"
-      LibHTS.sam_index_build(@file_name, -1)
+    def create_index(index_name)
+      if index_name == ""
+        STDERR.puts "Create index for #{@file_name}"
+        LibHTS.sam_index_build(@file_name, -1)
+      else
+        STDERR.puts "Create index for #{@file_name} to #{index_name}"
+        LibHTS.sam_index_build2(@file_name, index_name, -1)
+      end
+    end
+
+    def load_index(index_name)
+      if index_name == ""
+        @idx = LibHTS.sam_index_load3(@hts_file, @file_name, nil, 2) # should be 3 ? (copy remote file to local?)
+      else
+        @idx = LibHTS.sam_index_load2(@hts_file, @file_name, index_name)
+      end
     end
 
     # Close the current file.
