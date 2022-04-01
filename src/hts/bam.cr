@@ -123,6 +123,7 @@ module HTS
 
     def query(region)
       raise "Index file is required to call the query method." unless index_loaded?
+      
       qiter = LibHTS.sam_itr_querys(@idx, header.struct, region)
       begin
         bam1 = LibHTS.bam_init1
