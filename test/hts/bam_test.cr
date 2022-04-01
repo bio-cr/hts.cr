@@ -6,32 +6,19 @@ class BamTest < Minitest::Test
     @bam.try &.close
   end
 
-  def path_sam_string
-    File.expand_path("../fixtures/moo.sam", __DIR__)
-  end
-
-  def path_bam_string
-    File.expand_path("../fixtures/moo.bam", __DIR__)
-  end
-
-  def path_sam_path
-    Path[path_sam_string]
-  end
-
-  def path_bam_path
-    Path[path_bam_string]
-  end
-
-  def path_sam_uri
-    "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.sam"
-  end
-
-  def path_bam_uri
-    "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.bam"
-  end
-
-
   {% for format, index in ["bam", "sam"] %}
+    def path_{{format.id}}_string
+      File.expand_path("../fixtures/moo.{{format.id}}", __DIR__)
+    end
+
+    def path_{{format.id}}_path
+      Path[path_{{format.id}}_string]
+    end
+
+    def path_{{format.id}}_uri
+      "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.{{format.id}}"
+    end
+
     {% for type, index in ["string", "path", "uri"] %}
       def test_new_{{format.id}}_{{type.id}}
         b = HTS::Bam.new(path_{{format.id}}_{{type.id}})
