@@ -10,17 +10,16 @@ require "./bam/record"
 module HTS
   class Bam < Hts
     include Enumerable(Record)
-
-    getter :file_path
+    getter :file_name
     getter :mode
     getter :header
 
-    def self.open(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
-      new(filename, mode, fai, threads, index)
+    def self.open(file_name : Path | String, mode = "r", fai = "", threads = 0, index = false)
+      new(file_name, mode, fai, threads, index)
     end
 
-    def self.open(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
-      file = new(filename, mode, fai, threads, index)
+    def self.open(file_name : Path | String, mode = "r", fai = "", threads = 0, index = false)
+      file = new(file_name, mode, fai, threads, index)
       begin
         yield file
       ensure
@@ -29,15 +28,15 @@ module HTS
       file
     end
 
-    def initialize(filename : Path | String, mode = "r", fai = "", threads = 0, index = false)
-      @file_path = filename == "-" ? "-" : File.expand_path(filename)
+    def initialize(file_name : Path | String, mode = "r", fai = "", threads = 0, index = false)
+      @file_name = file_name.to_s || ""
 
-      if mode[0] == 'r' && !File.exists?(file_path)
-        raise "File not found: #{file_path}"
+      if mode[0] == 'r' && !File.exists?(file_name)
+        raise "File not found: #{file_name}"
       end
 
       @mode = mode
-      @hts_file = LibHTS.hts_open(file_path, mode)
+      @hts_file = LibHTS.hts_open(file_name, mode)
 
       if fai != ""
         fai_path = File.expand_path(fai)
@@ -57,12 +56,12 @@ module HTS
       create_index if index
 
       # load index
-      @idx = LibHTS.sam_index_load(@hts_file, file_path)
+      @idx = LibHTS.sam_index_load(@hts_file, file_name)
     end
 
     def create_index
-      STDERR.puts "Create index for #{file_path}"
-      LibHTS.sam_index_build(file_path, -1)
+      STDERR.puts "Create index for #{file_name}"
+      LibHTS.sam_index_build(file_name, -1)
     end
 
     # Close the current file.
@@ -79,7 +78,7 @@ module HTS
 
     def write_header(header)
       @header = header.clone
-      LibHTS.hts_set_fai_filename(@hts_file, @file_path)
+      LibHTS.hts_set_fai_file_name(@hts_file, @file_name)
       LibHTS.sam_hdr_write(@hts_file, header.struct)
     end
 

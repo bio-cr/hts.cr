@@ -52,8 +52,8 @@ class BamTest < Minitest::Test
     assert_equal true, f.closed?
   end
 
-  def test_file_path
-    assert_equal test_bam_path, bam.file_path
+  def test_file_name
+    assert_equal test_bam_path, bam.file_name
   end
 
   def test_mode

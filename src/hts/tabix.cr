@@ -3,15 +3,15 @@ require "./version"
 
 module HTS
   class Tabix
-    getter :file_path
+    getter :file_name
     getter :mode
 
-    def self.open(filename : Path | String, mode = "r", threads = 0)
-      new(filename, mode, threads)
+    def self.open(file_name : Path | String, mode = "r", threads = 0)
+      new(file_name, mode, threads)
     end
 
-    def self.open(filename : Path | String, mode = "r", threads = 0)
-      file = new(filename, mode, threads)
+    def self.open(file_name : Path | String, mode = "r", threads = 0)
+      file = new(file_name, mode, threads)
       begin
         yield file
       ensure
@@ -20,15 +20,14 @@ module HTS
       file
     end
 
-    def initialize(filename : Path | String, mode = "r", threads = 0)
-      @file_path = filename == "-" ? "-" : File.expand_path(filename)
+    def initialize(@file_name : Path | String, mode = "r", threads = 0)
 
-      if mode[0] == 'r' && !File.exists?(file_path)
-        raise "File not found: #{file_path}"
+      if mode[0] == 'r' && !File.exists?(file_name)
+        raise "File not found: #{file_name}"
       end
 
       @mode = mode
-      @hts_file = LibHTS.hts_open(file_path, mode)
+      @hts_file = LibHTS.hts_open(file_name, mode)
 
       if threads > 0
         r = LibHTS.hts_set_threads(@hts_file, threads)
