@@ -183,7 +183,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/tabix.cr#L5" target="_blank">
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/tabix.cr#L5" target="_blank">
         hts/tabix.cr
       </a>
     
@@ -205,7 +205,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method" class="signature"><strong>.new</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</a>
+        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</a>
         
       </li>
     
@@ -224,12 +224,12 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method" class="signature"><strong>.open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</a>
+        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%2C%26%29-class-method" class="signature"><strong>.open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>, &)</a>
+        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>, &)</a>
         
       </li>
     
@@ -248,7 +248,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#file_path%3AString-instance-method" class="signature"><strong>#file_path</strong> : String</a>
+        <a href="#file_name%3APath%7CString-instance-method" class="signature"><strong>#file_name</strong> : Path | String</a>
         
       </li>
     
@@ -297,18 +297,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(filename:Path|String,mode=&quot;r&quot;,threads=0)-class-method">
+    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,threads=0)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)
+        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)
 
-        <a class="method-permalink" href="#new%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/tabix.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/tabix.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -325,34 +325,34 @@
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="open(filename:Path|String,mode=&quot;r&quot;,threads=0)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,threads=0)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)
+        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)
 
-        <a class="method-permalink" href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/tabix.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/tabix.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(filename:Path|String,mode=&quot;r&quot;,threads=0,&amp;)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,threads=0,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>, &)
+        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>, &)
 
-        <a class="method-permalink" href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%2C%26%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/tabix.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/tabix.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -369,18 +369,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="file_path:String-instance-method">
+    <div class="entry-detail" id="file_name:Path|String-instance-method">
       <div class="signature">
         
-        def <strong>file_path</strong> : String
+        def <strong>file_name</strong> : Path | String
 
-        <a class="method-permalink" href="#file_path%3AString-instance-method">#</a>
+        <a class="method-permalink" href="#file_name%3APath%7CString-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/tabix.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/tabix.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -396,7 +396,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/tabix.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/tabix.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>

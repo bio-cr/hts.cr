@@ -197,35 +197,35 @@
   </h2>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L11" target="_blank">
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L11" target="_blank">
         hts/bam.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam/cigar.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam/cigar.cr#L2" target="_blank">
         hts/bam/cigar.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam/flag.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam/flag.cr#L2" target="_blank">
         hts/bam/flag.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam/header.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam/header.cr#L2" target="_blank">
         hts/bam/header.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam/record.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam/record.cr#L2" target="_blank">
         hts/bam/record.cr
       </a>
     
@@ -247,7 +247,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)</a>
+        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)</a>
         
       </li>
     
@@ -266,12 +266,12 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method" class="signature"><strong>.open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)</a>
+        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%2C%26%29-class-method" class="signature"><strong>.open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>, &)</a>
+        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>, &)</a>
         
       </li>
     
@@ -319,7 +319,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#file_path%3AString-instance-method" class="signature"><strong>#file_path</strong> : String</a>
+        <a href="#file_name%3AString-instance-method" class="signature"><strong>#file_name</strong> : String</a>
         
       </li>
     
@@ -427,18 +427,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(filename:Path|String,mode=&quot;r&quot;,fai=&quot;&quot;,threads=0,index=false)-class-method">
+    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,fai=&quot;&quot;,threads=0,index=false)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)
+        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)
 
-        <a class="method-permalink" href="#new%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -455,34 +455,34 @@
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="open(filename:Path|String,mode=&quot;r&quot;,fai=&quot;&quot;,threads=0,index=false)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,fai=&quot;&quot;,threads=0,index=false)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)
+        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>)
 
-        <a class="method-permalink" href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(filename:Path|String,mode=&quot;r&quot;,fai=&quot;&quot;,threads=0,index=false,&amp;)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,fai=&quot;&quot;,threads=0,index=false,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(filename : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>, &)
+        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, fai = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, index = <span class="n">false</span>, &)
 
-        <a class="method-permalink" href="#open%28filename%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cfai%3D%22%22%2Cthreads%3D0%2Cindex%3Dfalse%2C%26%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -515,7 +515,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L68" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -531,7 +531,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L76" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L75" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -547,7 +547,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -572,7 +572,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L98" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L97" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -588,23 +588,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L92" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="file_path:String-instance-method">
+    <div class="entry-detail" id="file_name:String-instance-method">
       <div class="signature">
         
-        def <strong>file_path</strong> : String
+        def <strong>file_name</strong> : String
 
-        <a class="method-permalink" href="#file_path%3AString-instance-method">#</a>
+        <a class="method-permalink" href="#file_name%3AString-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -620,7 +620,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -636,7 +636,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -652,7 +652,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L106" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L105" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -668,7 +668,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L86" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -684,7 +684,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/htslib.cr/blob/d54776f7fc00e89840399f4581fb46d16a95c2ec/src/hts/bam.cr#L80" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/htslib.cr/blob/ac31ab124013d3ce0735133da20a10b66534039e/src/hts/bam.cr#L79" target="_blank">View source</a>]
         
       </div>
     </div>
