@@ -1,0 +1,37 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftoolsVersion=1.14+htslib-1.14
+##bcftoolsCommand=mpileup -f poo.fa poo.sort.bam
+##reference=file://poo.fa
+##contig=<ID=poo,length=5000>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of raw reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of raw reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Read Position Bias (closer to 0 is better)">
+##INFO=<ID=MQBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Mapping Quality Bias (closer to 0 is better)">
+##INFO=<ID=BQBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Base Quality Bias (closer to 0 is better)">
+##INFO=<ID=MQSBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Mapping Quality vs Strand Bias (closer to 0 is better)">
+##INFO=<ID=SCBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Soft-Clip Length Bias (closer to 0 is better)">
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric.">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.14+htslib-1.14
+##bcftools_callCommand=call -mv -Ob -o test.bcf; Date=Thu Dec 30 15:56:30 2021
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	poo.sort.bam
+poo	2126	.	T	C	142.416	.	DP=31;VDB=0.673439;SGB=-0.69311;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,14,17;MQ=60	GT:PL	1/1:172,93,0
+poo	2583	.	A	C	27.3726	.	DP=21;VDB=0.372756;SGB=-0.670168;RPBZ=-0.846666;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=0;FS=0;MQ0F=0;AC=1;AN=2;DP4=4,7,6,4;MQ=60	GT:PL	0/1:60,0,79
+poo	2899	.	A	G	11.1619	.	DP=29;VDB=0.698224;SGB=-0.670168;RPBZ=-0.987339;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=0;FS=0;MQ0F=0;AC=1;AN=2;DP4=9,10,3,7;MQ=60	GT:PL	0/1:44,0,106
+poo	3334	.	T	C	51.3802	.	DP=38;VDB=0.126035;SGB=-0.691153;RPBZ=-0.438986;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=1.05409;FS=0;MQ0F=0;AC=1;AN=2;DP4=11,9,11,7;MQ=60	GT:PL	0/1:84,0,99
+poo	4021	.	G	T	50.3961	.	DP=23;VDB=0.00423321;SGB=-0.680642;RPBZ=-1.75579;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=0;FS=0;MQ0F=0;AC=1;AN=2;DP4=5,6,6,6;MQ=60	GT:PL	0/1:83,0,77
+poo	4310	.	A	T	9.49017	.	DP=26;VDB=0.133454;SGB=-0.662043;RPBZ=-2.26522;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=0;FS=0;MQ0F=0;AC=1;AN=2;DP4=6,11,7,2;MQ=60	GT:PL	0/1:42,0,104
+poo	4337	.	A	C	125.416	.	DP=25;VDB=0.637035;SGB=-0.692914;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,15,10;MQ=60	GT:PL	1/1:155,75,0
+poo	4538	.	A	T	69.3324	.	DP=20;VDB=0.623724;SGB=-0.688148;RPBZ=0.131079;MQBZ=0;MQSBZ=0;BQBZ=0;SCBZ=0;FS=0;MQ0F=0;AC=1;AN=2;DP4=2,3,7,8;MQ=60	GT:PL	0/1:103,0,20
