@@ -14,11 +14,13 @@ jobs:
       - uses: crystal-lang/install-crystal@v1
         with:
           crystal: ${{ matrix.crystal }}
-      - name: Install HTSLib (ubuntu)
+      - name: Install latest HTSLib (ubuntu)
         if: ${{ matrix.os == 'ubuntu' }}
         run: |
-          sudo apt update
-          sudo apt install libhts-dev
+          sudo apt update -y
+          sudo apt install -yq libcurl4-openssl-dev liblzma-dev libbz2-dev libdeflate-dev
+          git clone --recurse-submodules https://github.com/samtools/htslib
+          cd htslib && autoreconf -i && make -j4 && sudo make install
       - name: Install HTSLib (macos)
         if: ${{ matrix.os == 'macos' }}
         run: |
@@ -26,4 +28,5 @@ jobs:
       - name: Run tests
         run: |
           shards install
+          export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
           crystal test/run_all.cr -- --chaos --paralel 4 --verbose
