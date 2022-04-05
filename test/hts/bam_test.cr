@@ -50,6 +50,20 @@ class BamTest < Minitest::Test
         assert_equal true, f.closed?
       end
 
+      {% if format == "bam" %}
+      # FIXME: Cram dose not have cram_tell
+      def test_tell_{{format.id}}_{{type.id}}
+        assert_equal 21889024, {{format.id}}_{{type.id}}.tell
+      end
+      {% end %}
+
+      {% if format == "sam" %}
+      # FIXME: Cram dose not have cram_tell
+      def test_tell_{{format.id}}_{{type.id}}
+        assert_equal 134, {{format.id}}_{{type.id}}.tell
+      end
+      {% end %}
+
       def test_file_name_{{format.id}}_{{type.id}}
         assert_equal path_{{format.id}}_{{type.id}}.to_s, {{format.id}}_{{type.id}}.file_name
       end

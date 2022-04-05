@@ -2,8 +2,41 @@ require "./libhts"
 
 module HTS
   class Hts
+
+    @start_position : (Int64 | Nil)
+
     def struct
       @hts_file
+    end
+
+    def seek(offset)
+      # FIXME: Use bit fields
+      flags = @hts_file.value.flags
+      if (flags & "1000".to_i(2) != 0) # cram
+        LibHTS.cram_seek(@hts_file.value.fp.cram, offset, IO::SEEK_SET)
+      elsif (flags & "10000".to_i(2) != 0) # bgzf
+        LibHTS.bgzf_seek(@hts_file.value.fp.bgzf, offset, IO::SEEK_SET)
+      else # hfile
+        LibHTS.hseek(@hts_file.value.fp.hfile, offset, IO::SEEK_SET)
+      end
+    end
+
+    def tell
+      flags = @hts_file.value.flags
+      if (flags & "1000".to_i(2) != 0) # cram
+        # LibHTS.cram_tell(@hts_file.value.fp.cram)
+        # "cram_tell is not implemented"
+        nil
+      elsif (flags & "10000".to_i(2) != 0) # bgzf
+        LibHTS2.bgzf_tell(@hts_file.value.fp.bgzf)
+      else # hfile
+        LibHTS2.htell(@hts_file.value.fp.hfile)
+      end
+    end
+
+    def rewind
+      seek(@start_position) if @start_position
+      # raise error unless @start_position
     end
     
     def format

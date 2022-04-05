@@ -5,6 +5,46 @@ module HTS
     BCF_STR_VECTOR_END = 0
     BCF_STR_MISSING    = 7
     alias HtsTpool = Void
+    alias HFileBackend = Void
+    struct HFile
+      buffer : LibC::Char*
+      _begin : LibC::Char*
+      _end : LibC::Char*
+      limit : LibC::Char*
+      backend : HFileBackend*
+      offset : OffT
+      at_eof : LibC::UInt
+      mobile : LibC::UInt
+      readonly : LibC::UInt
+      has_errno : LibC::Int
+    end
+
+    fun hopen(filename : LibC::Char*, mode : LibC::Char*, ...) : HFile*
+    fun hdopen(fd : LibC::Int, mode : LibC::Char*) : HFile*
+    fun hisremote(filename : LibC::Char*) : LibC::Int
+    fun haddextension(buffer : KstringT*, filename : LibC::Char*, replace : LibC::Int, extension : LibC::Char*) : LibC::Char*
+    fun hclose(fp : HFile*) : LibC::Int
+    fun hclose_abruptly(fp : HFile*)
+    fun herrno(fp : HFile*) : LibC::Int
+    fun hclearerr(fp : HFile*)
+    fun hseek(fp : HFile*, offset : OffT, whence : LibC::Int) : OffT
+    fun htell(fp : HFile*) : OffT
+    fun hgetc(fp : HFile*) : LibC::Int
+    fun hgetdelim(buffer : LibC::Char*, size : LibC::SizeT, delim : LibC::Int, fp : HFile*) : SsizeT
+    fun hgetln(buffer : LibC::Char*, size : LibC::SizeT, fp : HFile*) : SsizeT
+    fun hgets(buffer : LibC::Char*, size : LibC::Int, fp : HFile*) : LibC::Char*
+    fun hpeek(fp : HFile*, buffer : Void*, nbytes : LibC::SizeT) : SsizeT
+    fun hread(fp : HFile*, buffer : Void*, nbytes : LibC::SizeT) : SsizeT
+    fun hputc(c : LibC::Int, fp : HFile*) : LibC::Int
+    fun hputs(text : LibC::Char*, fp : HFile*) : LibC::Int
+    fun hwrite(fp : HFile*, buffer : Void*, nbytes : LibC::SizeT) : SsizeT
+    fun hflush(fp : HFile*) : LibC::Int
+    fun hfile_mem_get_buffer(file : HFile*, length : LibC::SizeT*) : LibC::Char*
+    fun hfile_mem_steal_buffer(file : HFile*, length : LibC::SizeT*) : LibC::Char*
+    fun hfile_list_schemes(plugin : LibC::Char*, sc_list : LibC::Char**, nschemes : LibC::Int*) : LibC::Int
+    fun hfile_list_plugins(plist : LibC::Char**, nplugins : LibC::Int*) : LibC::Int
+    fun hfile_has_plugin(name : LibC::Char*) : LibC::Int
+
     alias BgzfMtauxT = Void
     alias BgzfCacheT = Void*
     fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
@@ -39,7 +79,6 @@ module HTS
 
     alias X__Int64T = LibC::Long
     alias Int64T = X__Int64T
-    alias HFile = Void
     type BgzidxT = Void*
     alias ZStreamS = Void
     fun bgzf_open(path : LibC::Char*, mode : LibC::Char*) : Bgzf*
@@ -179,7 +218,7 @@ module HTS
     fun hts_opt_apply(fp : HtsFile*, opts : HtsOpt*) : LibC::Int
 
     struct HtsFile
-      bitfields : Uint32T # FIXME
+      flags : Uint32T # FIXME
       # is_bin : Uint32T
       # is_write : Uint32T
       # is_be : Uint32T

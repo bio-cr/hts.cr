@@ -10,5 +10,7 @@ module HTS
   end
 end
 
+require "./libhts/hfile"
+require "./libhts/bgzf"
 require "./libhts/sam"
 require "./libhts/vcf"
