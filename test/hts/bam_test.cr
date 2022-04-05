@@ -25,6 +25,10 @@ class BamTest < Minitest::Test
     end
 
     {% for type in ["string", "path", "uri"] %}
+      def {{format.id}}_{{type.id}}
+        @{{format.id}}_{{type.id}} ||= HTS::Bam.open(path_{{format.id}}_{{type.id}})
+      end
+      
       def test_new_{{format.id}}_{{type.id}}
         b = HTS::Bam.new(path_{{format.id}}_{{type.id}})
         assert_instance_of HTS::Bam, b
@@ -44,10 +48,6 @@ class BamTest < Minitest::Test
           assert_instance_of HTS::Bam, b
         end
         assert_equal true, f.closed?
-      end
-
-      def {{format.id}}_{{type.id}}
-        @{{format.id}}_{{type.id}} ||= HTS::Bam.open(path_{{format.id}}_{{type.id}})
       end
 
       def test_file_name_{{format.id}}_{{type.id}}
