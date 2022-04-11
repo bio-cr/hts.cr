@@ -18,13 +18,13 @@ module HTS
         String.new LibHTS.bcf_hdr_get_version(@bcf_hdr)
       end
 
-      def sample_count
+      def nsamples
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
 
-      def sample_names
+      def samples
         # bcf_hdr_id2name is macro function
-        Array.new(sample_count) do |i|
+        Array.new(nsamples) do |i|
           String.new @bcf_hdr.value.samples[i]
         end
       end

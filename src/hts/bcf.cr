@@ -82,11 +82,11 @@ module HTS
     end
 
     def nsamples
-      header.sample_count
+      header.nsamples
     end
 
     def samples
-      header.sample_names
+      header.samples
     end
   end
 end

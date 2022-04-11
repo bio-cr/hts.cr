@@ -24,12 +24,12 @@ class BcfHeaderTest < Minitest::Test
     assert_equal "VCFv4.2", hdr.get_version
   end
 
-  def test_sample_count
-    assert_equal 1, hdr.sample_count
+  def test_nsamples
+    assert_equal 1, hdr.nsamples
   end
 
-  def test_sample_names
-    assert_equal ["poo.sort.bam"], hdr.sample_names
+  def test_samples
+    assert_equal ["poo.sort.bam"], hdr.samples
   end
 
   def test_to_s
