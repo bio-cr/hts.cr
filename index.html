@@ -148,16 +148,14 @@
 
 
 <div class="main-content">
-<h1><a id="htslib.cr" class="anchor" href="#htslib.cr">  <svg class="octicon-link" aria-hidden="true">
+<h1><a id="hts" class="anchor" href="#hts">  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>htslib.cr</h1>
+</a>HTS</h1>
 <p><a href="https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml"><img src="https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
 <a href="https://bio-crystal.slack.com/"><img src="http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&amp;logo=slack" alt="Slack" /></a>
 <a href="https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g"><img src="http://img.shields.io/badge/Get_invite_to_BioCrystal-purple?labelColor=000000&amp;logo=slack" alt="Get invite to BioCrystal" /></a></p>
-<p>htslib.cr is the <a href="https://github.com/crystal-lang/crystal">Crystal</a> bindings to <a href="https://github.com/samtools/htslib">HTSlib</a>, a C library for high-throughput sequencing data formats. It allows you to read and write file formats commonly used in genomics, such as <a href="http://samtools.github.io/hts-specs/">SAM, BAM, VCF, and BCF</a> in the Crystal language.</p>
-<p>:rocket: Feel free to fork it out!</p>
-<p>:hatching_chick: alpha stage.</p>
+<p><a href="https://github.com/crystal-lang/crystal">Crystal</a> bindings for <a href="https://github.com/samtools/htslib">HTSlib</a> that allows you to read and write file formats commonly used in genomics, such as <a href="http://samtools.github.io/hts-specs/">SAM, BAM, VCF, and BCF</a>.</p>
 <h2><a id="requirements" class="anchor" href="#requirements">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -182,7 +180,7 @@
 <p>Add htslib to your <code>shard.yml</code>:</p>
 <pre><code class="language-yaml">dependencies:
   htslib:
-    github: bio-crystal/htslib.cr</code></pre>
+    github: bio-crystal/hts</code></pre>
 <p>Run <code>shards install</code></p>
 <h2><a id="usage" class="anchor" href="#usage">
   <svg class="octicon-link" aria-hidden="true">
@@ -190,7 +188,7 @@
   </svg>
 </a>Usage</h2>
 <p>SAM / BAM / CRAM</p>
-<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;htslib/hts/bam&quot;</span>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;hts/bam&quot;</span>
 
 bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bam</span>.open(bam_path)
 
@@ -208,7 +206,7 @@ bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</s
 
 bam.close</code></pre>
 <p>VCF / BCF</p>
-<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;htslib/hts/bcf&quot;</span>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;hts/bcf&quot;</span>
 
 bcf <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bcf</span>.open(bcf_path)
 
@@ -260,10 +258,12 @@ bcf.close</code></pre>
     <use href="#octicon-link"/>
   </svg>
 </a>Contributing</h2>
+<p>:rocket: Feel free to fork it out!
+:hatching_chick: alpha stage.</p>
 <p>htslib.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.</p>
 <pre><code class="language-crystal"><span class="t">Do</span> you need commit rights to htslib.cr?
 <span class="t">Do</span> you want to get admin rights and take over the project?
-<span class="t">If</span> so, please feel free to contact us @kojix2.</code></pre>
+<span class="t">Please</span> feel free to contact us @kojix2.</code></pre>
 <h2><a id="benchmark" class="anchor" href="#benchmark">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
