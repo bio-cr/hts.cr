@@ -7,7 +7,7 @@
 
 [Crystal](https://github.com/crystal-lang/crystal) bindings for [HTSlib](https://github.com/samtools/htslib) that allows you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/).
 
-:information_source: Method names will be changed to ruby-htslib style in the next version.
+:information_source: Method names will be changed to rust-htslib style in the next version.
 
 ## Requirements
 
