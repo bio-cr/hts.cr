@@ -1,14 +1,10 @@
-# htslib.cr
+# HTS
 
 [![CI](https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-crystal/htslib.cr/actions/workflows/ci.yml)
 [![Slack](http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&logo=slack)](https://bio-crystal.slack.com/)
 [![Get invite to BioCrystal](http://img.shields.io/badge/Get_invite_to_BioCrystal-purple?labelColor=000000&logo=slack)](https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g)
 
-htslib.cr is the [Crystal](https://github.com/crystal-lang/crystal) bindings to [HTSlib](https://github.com/samtools/htslib), a C library for high-throughput sequencing data formats. It allows you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/) in the Crystal language.
-
-:rocket: Feel free to fork it out! 
-
-:hatching_chick: alpha stage.
+[Crystal](https://github.com/crystal-lang/crystal) bindings for [HTSlib](https://github.com/samtools/htslib) that allows you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/).
 
 ## Requirements
 
@@ -26,7 +22,7 @@ Add htslib to your `shard.yml`:
    ```yaml
    dependencies:
      htslib:
-       github: bio-crystal/htslib.cr
+       github: bio-crystal/hts
    ```
 
 Run `shards install`
@@ -36,7 +32,7 @@ Run `shards install`
 SAM / BAM / CRAM
 
 ```crystal
-require "htslib/hts/bam"
+require "hts/bam"
 
 bam = HTS::Bam.open(bam_path)
 
@@ -58,7 +54,7 @@ bam.close
 VCF / BCF
 
 ```crystal
-require "htslib/hts/bcf"
+require "hts/bcf"
 
 bcf = HTS::Bcf.open(bcf_path)
 
@@ -104,11 +100,14 @@ bcf.close
 
 ## Contributing
 
+:rocket: Feel free to fork it out! 
+:hatching_chick: alpha stage.
+
 htslib.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.
 
     Do you need commit rights to htslib.cr?
     Do you want to get admin rights and take over the project?
-    If so, please feel free to contact us @kojix2.
+    Please feel free to contact us @kojix2.
 
 ## Benchmark
 
