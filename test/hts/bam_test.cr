@@ -21,7 +21,7 @@ class BamTest < Minitest::Test
     end
 
     def path_{{format.id}}_uri
-      "https://raw.githubusercontent.com/bio-crystal/htslib.cr/develop/test/fixtures/moo.{{format.id}}"
+      "https://raw.githubusercontent.com/bio-crystal/hts/develop/test/fixtures/moo.{{format.id}}"
     end
 
     {% for type in ["string", "path", "uri"] %}

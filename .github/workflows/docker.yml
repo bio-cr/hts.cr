@@ -30,4 +30,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: kojix2/htslib.cr:latest
+          tags: kojix2/hts:latest

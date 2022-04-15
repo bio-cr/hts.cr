@@ -14,6 +14,6 @@ crystal build src/main.cr -o crystal_lib
 (2) generate bindings
 
 ```
-crystal_lib crystal_lib/htslib.cr > src/hts/libhts/libhts.cr
+crystal_lib crystal_lib/hts > src/hts/libhts/libhts.cr
 crystal tool format src/hts/libhts/libhts.cr
 ```
