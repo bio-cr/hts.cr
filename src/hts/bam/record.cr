@@ -34,7 +34,7 @@ module HTS
       end
 
       # returns the tid of the mate or -1 if not mapped.
-      def mate_tid
+      def mtid
         @bam1.value.core.mtid
       end
 
@@ -72,7 +72,6 @@ module HTS
 
       # returns the chromosome of the mate or '' if not mapped.
       def mate_chrom
-        mtid = mate_tid
         return "" if mtid == -1
 
         String.new LibHTS.sam_hdr_tid2name(@header.struct, mtid)
