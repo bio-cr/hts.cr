@@ -6,6 +6,7 @@ HTS::Bam.open(bam_path) do |b|
   b.each do |r|
     p name: r.qname,
       flag: r.flag.value,
+      chrm: r.chrom,
       strt: r.pos + 1,
       mapq: r.mapq,
       cigr: r.cigar.to_s,

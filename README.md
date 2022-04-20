@@ -40,17 +40,18 @@ require "hts/bam"
 bam = HTS::Bam.open(bam_path)
 
 bam.each do |r|
-  p name:  r.qname,
-    flag:  r.flag.value,
-    strt:  r.pos + 1,
-    mapq:  r.mapq,
-    cigr:  r.cigar.to_s,
-    mchr:  r.mate_chrom,
-    mpos:  r.mpos + 1,
-    isiz:  r.isize,
-    seqs:  r.seq,
-    qual:  r.qual.map { |i| (i + 33).chr }.join,
-    axMC:  r.aux("MC")
+  p name: r.qname,
+    flag: r.flag.value,
+    chrm: r.chrom,
+    strt: r.pos + 1,
+    mapq: r.mapq,
+    cigr: r.cigar.to_s,
+    mchr: r.mate_chrom,
+    mpos: r.mpos + 1,
+    isiz: r.isize,
+    seqs: r.seq,
+    qual: r.qual.map { |i| (i + 33).chr }.join,
+    axMC: r.aux("MC")
 end
 
 bam.close
