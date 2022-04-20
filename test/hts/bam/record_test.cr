@@ -22,12 +22,12 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_tid_set
-    a = aln1
-    assert_equal 0, a.tid
-    a.tid = 1
-    assert_equal 1, a.tid
-    a.tid = 0
-    assert_equal 0, a.tid
+    aln= aln1
+    assert_equal 0, aln.tid
+    aln.tid = 1
+    assert_equal 1, aln.tid
+    aln.tid = 0
+    assert_equal 0, aln.tid
   end
 
   def test_mtid
@@ -35,12 +35,12 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_mtid_set
-    a = aln1
-    assert_equal 0, a.mtid
-    a.mtid = 1
-    assert_equal 1, a.mtid
-    a.mtid = 0
-    assert_equal 0, a.mtid
+    aln= aln1
+    assert_equal 0, aln.mtid
+    aln.mtid = 1
+    assert_equal 1, aln.mtid
+    aln.mtid = 0
+    assert_equal 0, aln.mtid
   end
 
   def test_pos
@@ -48,12 +48,12 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_pos_set
-    a = aln1
-    assert_equal 3289, a.pos
-    a.pos = 3290
-    assert_equal 3290, a.pos
-    a.pos = 3289
-    assert_equal 3289, a.pos
+    aln= aln1
+    assert_equal 3289, aln.pos
+    aln.pos = 3290
+    assert_equal 3290, aln.pos
+    aln.pos = 3289
+    assert_equal 3289, aln.pos
   end
 
   def test_mpos
@@ -61,12 +61,12 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_mpos_set
-    a = aln1
-    assert_equal 3289, a.mpos
-    a.mpos = 3290
-    assert_equal 3290, a.mpos
-    a.mpos = 3289
-    assert_equal 3289, a.mpos
+    aln= aln1
+    assert_equal 3289, aln.mpos
+    aln.mpos = 3290
+    assert_equal 3290, aln.mpos
+    aln.mpos = 3289
+    assert_equal 3289, aln.mpos
   end
 
   def test_bin
@@ -74,12 +74,12 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_bin_set
-    a = aln1
-    assert_equal 4681, a.bin
-    a.bin = 4682
-    assert_equal 4682, a.bin
-    a.bin = 4681
-    assert_equal 4681, a.bin
+    aln= aln1
+    assert_equal 4681, aln.bin
+    aln.bin = 4682
+    assert_equal 4682, aln.bin
+    aln.bin = 4681
+    assert_equal 4681, aln.bin
   end
 
   def test_endpos
@@ -111,21 +111,21 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_insert_size_set
-    a = aln1
-    assert_equal 0, a.insert_size
-    a.insert_size = 1
-    assert_equal 1, a.insert_size
-    a.insert_size = 0
-    assert_equal 0, a.insert_size
+    aln= aln1
+    assert_equal 0, aln.insert_size
+    aln.insert_size = 1
+    assert_equal 1, aln.insert_size
+    aln.insert_size = 0
+    assert_equal 0, aln.insert_size
   end
 
   def test_isize_set
-    a = aln1
-    assert_equal 0, a.isize
-    a.isize = 1
-    assert_equal 1, a.isize
-    a.isize = 0
-    assert_equal 0, a.isize
+    aln= aln1
+    assert_equal 0, aln.isize
+    aln.isize = 1
+    assert_equal 1, aln.isize
+    aln.isize = 0
+    assert_equal 0, aln.isize
   end
 
   def test_mapq
@@ -133,12 +133,12 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_mapq_set
-    a = aln1
-    assert_equal 0, a.mapq
-    a.mapq = 1
-    assert_equal 1, a.mapq
-    a.mapq = 0
-    assert_equal 0, a.mapq
+    aln= aln1
+    assert_equal 0, aln.mapq
+    aln.mapq = 1
+    assert_equal 1, aln.mapq
+    aln.mapq = 0
+    assert_equal 0, aln.mapq
   end
 
   def test_chrom
@@ -199,13 +199,13 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_flag_set
-    a = aln1
-    assert_equal 133, a.flag.value
-    a.flag = 0
-    assert_equal 0, a.flag.value
+    aln= aln1
+    assert_equal 133, aln.flag.value
+    aln.flag = 0
+    assert_equal 0, aln.flag.value
     f = HTS::Bam::Flag.new(133)
-    a.flag = f
-    assert_equal 133, a.flag.value
+    aln.flag = f
+    assert_equal 133, aln.flag.value
   end
 
   def test_tag
