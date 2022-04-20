@@ -178,12 +178,12 @@ module HTS
       end
 
       # return only the base quality of the requested index "i" of the query sequence.
-      def base_quality_at(n)
-        n += @bam1[:core][:l_qseq] if n < 0
-        return 0 if (n >= @bam1[:core][:l_qseq]) || (n < 0) # eg. base_quality_at(-1000)
+      def base_qual(n)
+        n += @bam1.value.core.l_qseq if n < 0
+        return 0 if (n >= @bam1.value.core.l_qseq) || (n < 0) # eg. base_qual(-1000)
 
-        q_ptr = LibHTS.bam_get_qual(@bam1)
-        q_ptr.get_uint8(n)
+        q_ptr = LibHTS2.bam_get_qual(@bam1)
+        q_ptr[n]
       end
 
       def flag_str

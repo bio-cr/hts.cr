@@ -185,6 +185,13 @@ class BamRecordTest < Minitest::Test
     assert_equal ([17] * 70), aln1.qual
   end
 
+  def test_base_qual
+    assert_equal 17, aln1.base_qual(0)
+    assert_equal 17, aln1.base_qual(-1)
+    assert_equal 17, aln1.base_qual(69)
+    assert_equal 17, aln1.base_qual(-70)
+  end
+
   def test_flag_str
     assert_equal "PAIRED,UNMAP,READ2", aln1.flag_str
   end
