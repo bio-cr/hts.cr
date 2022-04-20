@@ -169,16 +169,16 @@ class BamRecordTest < Minitest::Test
     assert_equal 70, aln1.len
   end
 
-  def test_base_at
+  def test_base
     aln = aln1
-    assert_equal 'G', aln.base_at(0)
-    assert_equal 'C', aln.base_at(4)
-    assert_equal 'A', aln.base_at(5)
-    assert_equal '.', aln.base_at(70)
-    assert_equal 'C', aln.base_at(-1)
-    assert_equal 'G', aln.base_at(-2)
-    assert_equal 'G', aln.base_at(-70)
-    assert_equal '.', aln.base_at(-71)
+    assert_equal 'G', aln.base(0)
+    assert_equal 'C', aln.base(4)
+    assert_equal 'A', aln.base(5)
+    assert_equal '.', aln.base(70)
+    assert_equal 'C', aln.base(-1)
+    assert_equal 'G', aln.base(-2)
+    assert_equal 'G', aln.base(-70)
+    assert_equal '.', aln.base(-71)
   end
 
   def test_base_qualities
