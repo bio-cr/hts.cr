@@ -1,4 +1,4 @@
-# HTS
+# HTS.cr
 
 [![CI](https://github.com/bio-crystal/hts/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-crystal/hts/actions/workflows/ci.yml)
 [![Slack](http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&logo=slack)](https://bio-crystal.slack.com/)
