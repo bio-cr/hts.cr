@@ -143,13 +143,17 @@ module HTS
       end
 
       # return the read sequence
-      def sequence
+      def seq
         r = LibHTS2.bam_get_seq(@bam1)
         String.build do |seq|
           (@bam1.value.core.l_qseq).times do |i|
             seq << SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
           end
         end
+      end
+
+      def sequence
+        seq
       end
 
       # return only the base of the requested index "i" of the query sequence.

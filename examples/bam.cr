@@ -9,7 +9,7 @@ HTS::Bam.open(bam_path) do |b|
       pos: r.pos + 1,
       mpos: r.mpos + 1,
       mqual: r.mapq,
-      seq: r.sequence,
+      seq: r.seq,
       cigar: r.cigar,
       qual: r.base_qualities.map { |i| (i + 33).chr }.join
   end
