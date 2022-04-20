@@ -197,8 +197,8 @@ bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span>
 bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
   p name:  r.qname,
     flag:  r.flag.value,
-    pos:   r.start <span class="o">+</span> <span class="n">1</span>,
-    mpos:  r.mate_start <span class="o">+</span> <span class="n">1</span>,
+    pos:   r.pos <span class="o">+</span> <span class="n">1</span>,
+    mpos:  r.mpos <span class="o">+</span> <span class="n">1</span>,
     mqual: r.mapping_quality,
     seq:   r.sequence,
     cigar: r.cigar,
