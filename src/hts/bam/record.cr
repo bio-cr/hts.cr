@@ -119,6 +119,10 @@ module HTS
         @bam1.value.core.qual
       end
 
+      def mapq=(mapq)
+        @bam1.value.core.qual = mapq
+      end
+
       # returns a `Cigar` object.
       def cigar
         Cigar.new(LibHTS2.bam_get_cigar(@bam1), @bam1.value.core.n_cigar)

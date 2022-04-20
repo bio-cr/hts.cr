@@ -132,6 +132,15 @@ class BamRecordTest < Minitest::Test
     assert_equal 0, aln1.mapq
   end
 
+  def test_mapq_set
+    a = aln1
+    assert_equal 0, a.mapq
+    a.mapq = 1
+    assert_equal 1, a.mapq
+    a.mapq = 0
+    assert_equal 0, a.mapq
+  end
+
   def test_chrom
     assert_equal "poo", aln1.chrom
   end
