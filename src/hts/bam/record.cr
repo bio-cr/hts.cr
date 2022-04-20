@@ -93,6 +93,10 @@ module HTS
         String.new LibHTS.sam_hdr_tid2name(@header.struct, mtid)
       end
 
+      def mate_contig
+        mate_chrom
+      end
+
       def strand
         LibHTS2.bam_is_rev(@bam1) ? "-" : "+"
       end
