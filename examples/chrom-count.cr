@@ -22,7 +22,7 @@ end
 
 fname = ARGV[0]
 
-bam = HTS::Bam.open(fname, threads: nthreads, index: false)
+bam = HTS::Bam.open(fname, threads: nthreads)
 
 # Simple way
 
