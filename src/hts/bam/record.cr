@@ -69,7 +69,7 @@ module HTS
       end
 
       # returns end position of the read.
-      def stop
+      def endpos
         LibHTS.bam_endpos @bam1
       end
 

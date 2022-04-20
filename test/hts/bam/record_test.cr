@@ -82,8 +82,8 @@ class BamRecordTest < Minitest::Test
     assert_equal 4681, a.bin
   end
 
-  def test_stop
-    assert_equal 3290, aln1.stop
+  def test_endpos
+    assert_equal 3290, aln1.endpos
   end
 
   def test_chrom
