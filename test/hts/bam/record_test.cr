@@ -165,6 +165,10 @@ class BamRecordTest < Minitest::Test
     assert_equal "GGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC", aln1.sequence
   end
 
+  def test_len
+    assert_equal 70, aln1.len
+  end
+
   def test_base_at
     aln = aln1
     assert_equal 'G', aln.base_at(0)
