@@ -60,6 +60,14 @@ module HTS
         @bam1.value.core.mpos = mpos
       end
 
+      def bin
+        @bam1.value.core.bin
+      end
+
+      def bin=(bin)
+        @bam1.value.core.bin = bin
+      end
+
       # returns end position of the read.
       def stop
         LibHTS.bam_endpos @bam1

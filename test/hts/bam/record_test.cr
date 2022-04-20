@@ -69,6 +69,19 @@ class BamRecordTest < Minitest::Test
     assert_equal 3289, a.mpos
   end
 
+  def test_bin
+    assert_equal 4681, aln1.bin
+  end
+
+  def test_bin_set
+    a = aln1
+    assert_equal 4681, a.bin
+    a.bin = 4682
+    assert_equal 4682, a.bin
+    a.bin = 4681
+    assert_equal 4681, a.bin
+  end
+
   def test_stop
     assert_equal 3290, aln1.stop
   end
