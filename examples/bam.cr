@@ -11,6 +11,6 @@ HTS::Bam.open(bam_path) do |b|
       mqual: r.mapq,
       seq: r.seq,
       cigar: r.cigar,
-      qual: r.base_qualities.map { |i| (i + 33).chr }.join
+      qual: r.qual.map { |i| (i + 33).chr }.join
   end
 end

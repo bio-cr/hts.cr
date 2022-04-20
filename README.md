@@ -47,7 +47,7 @@ bam.each do |r|
     mqual: r.mapq,
     seq:   r.seq,
     cigar: r.cigar,
-    qual:  r.base_qualities.map { |i| (i + 33).chr }.join
+    qual:  r.qual.map { |i| (i + 33).chr }.join
   # tag:   r.tag("MC")
 end
 

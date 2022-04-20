@@ -170,7 +170,7 @@ module HTS
       end
 
       # return the base qualities
-      def base_qualities
+      def qual
         q_ptr = LibHTS2.bam_get_qual(@bam1)
         Array.new(@bam1.value.core.l_qseq) do |i|
           q_ptr[i]

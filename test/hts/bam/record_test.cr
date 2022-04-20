@@ -181,8 +181,8 @@ class BamRecordTest < Minitest::Test
     assert_equal '.', aln.base(-71)
   end
 
-  def test_base_qualities
-    assert_equal ([17] * 70), aln1.base_qualities
+  def test_qual
+    assert_equal ([17] * 70), aln1.qual
   end
 
   def test_flag_str
