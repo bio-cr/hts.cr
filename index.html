@@ -197,13 +197,15 @@ bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span>
 bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
   p name:  r.qname,
     flag:  r.flag.value,
-    pos:   r.pos <span class="o">+</span> <span class="n">1</span>,
+    strt:  r.pos <span class="o">+</span> <span class="n">1</span>,
+    mapq:  r.mapq,
+    cigr:  r.cigar.to_s,
+    mchr:  r.mate_chrom,
     mpos:  r.mpos <span class="o">+</span> <span class="n">1</span>,
-    mqual: r.mapq,
-    seq:   r.seq,
-    cigar: r.cigar,
-    qual:  r.qual.map { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">+</span> <span class="n">33</span>).chr }.join
-  <span class="c"># tag:   r.tag(&quot;MC&quot;)</span>
+    isiz:  r.isize,
+    seqs:  r.seq,
+    qual:  r.qual.map { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">+</span> <span class="n">33</span>).chr }.join,
+    axMC:  r.aux(<span class="s">&quot;MC&quot;</span>)
 <span class="k">end</span>
 
 bam.close</code></pre>
