@@ -186,10 +186,6 @@ module HTS
         q_ptr[n]
       end
 
-      def flag_str
-        String.new LibHTS.bam_flag2str(@bam1.value.core.flag)
-      end
-
       # returns a `Flag` object.
       def flag
         Flag.new @bam1.value.core.flag
