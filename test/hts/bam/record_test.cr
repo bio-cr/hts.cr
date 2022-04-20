@@ -82,10 +82,6 @@ class BamRecordTest < Minitest::Test
     assert_equal 4681, aln.bin
   end
 
-  def test_endpos
-    assert_equal 3290, aln1.endpos
-  end
-
   def test_chrom
     assert_equal "poo", aln1.chrom
   end
@@ -96,6 +92,14 @@ class BamRecordTest < Minitest::Test
 
   def test_mate_chrom
     assert_equal "poo", aln1.mate_chrom
+  end
+
+  def test_mate_contig
+    assert_equal "poo", aln1.mate_contig
+  end
+
+  def test_endpos
+    assert_equal 3290, aln1.endpos
   end
 
   def test_strand
@@ -139,10 +143,6 @@ class BamRecordTest < Minitest::Test
     assert_equal 1, aln.mapq
     aln.mapq = 0
     assert_equal 0, aln.mapq
-  end
-
-  def test_chrom
-    assert_equal "poo", aln1.chrom
   end
 
   def test_cigar
