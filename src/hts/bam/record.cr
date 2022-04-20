@@ -205,42 +205,46 @@ module HTS
         LibHTS.bam_aux_get(@bam1, str2)
       end
 
-      def tag(str)
-        aux = get_aux_pointer(str)
-        return nil if aux.null?
+      def aux(str)
+        ax = get_aux_pointer(str)
+        return nil if ax.null?
 
-        t = aux.value
+        # A (character), B (general array),
+        # f (real number), H (hexadecimal array),
+        # i (integer), or Z (string).
+
+        t = ax.value
         case t
         when 'i', 'I', 'c', 'C', 's', 'S'
-          LibHTS.bam_aux2i(aux)
+          LibHTS.bam_aux2i(ax)
         when 'f', 'd'
-          LibHTS.bam_aux2f(aux)
+          LibHTS.bam_aux2f(ax)
         when 'Z', 'H'
-          String.new LibHTS.bam_aux2_z(aux)
+          String.new LibHTS.bam_aux2_z(ax)
         when 'A'
-          LibHTS.bam_aux2_a(aux).chr
+          LibHTS.bam_aux2_a(ax).chr
         end
       end
 
       # Retrun Int64
-      def tag_int(str)
-        aux = get_aux_pointer(str)
-        LibHTS.bam_aux2i(aux)
+      def aux_int(str)
+        ax = get_aux_pointer(str)
+        LibHTS.bam_aux2i(ax)
       end
 
-      def tag_float(str)
-        aux = get_aux_pointer(str)
-        LibHTS.bam_aux2f(aux)
+      def aux_float(str)
+        ax = get_aux_pointer(str)
+        LibHTS.bam_aux2f(ax)
       end
 
-      def tag_string(str)
-        aux = get_aux_pointer(str)
-        String.new LibHTS.bam_aux2_z(aux)
+      def aux_string(str)
+        ax = get_aux_pointer(str)
+        String.new LibHTS.bam_aux2_z(ax)
       end
 
-      def tag_char(str)
-        aux = get_aux_pointer(str)
-        LibHTS.bam_aux2_a(aux).chr
+      def aux_char(str)
+        ax = get_aux_pointer(str)
+        LibHTS.bam_aux2_a(ax).chr
       end
 
       def to_s(io : IO)
