@@ -17,6 +17,15 @@ class BamRecordTest < Minitest::Test
     assert_equal 0, aln1.tid
   end
 
+  def test_tid_set
+    a = aln1
+    assert_equal 0, a.tid
+    a.tid = 1
+    assert_equal 1, a.tid
+    a.tid = 0
+    assert_equal 0, a.tid
+  end
+
   def test_mate_tid
     assert_equal 0, aln1.mate_tid
   end
