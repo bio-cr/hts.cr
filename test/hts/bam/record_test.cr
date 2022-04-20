@@ -39,8 +39,8 @@ class BamRecordTest < Minitest::Test
     assert_equal 0, a.mtid
   end
 
-  def test_start
-    assert_equal 3289, aln1.start
+  def test_pos
+    assert_equal 3289, aln1.pos
   end
 
   def test_stop
@@ -51,12 +51,8 @@ class BamRecordTest < Minitest::Test
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119", aln1.qname
   end
 
-  def test_mate_start
-    assert_equal 3289, aln1.mate_start
-  end
-
-  def test_mate_pos
-    assert_equal 3289, aln1.mate_pos
+  def test_mpos
+    assert_equal 3289, aln1.mpos
   end
 
   def test_chrom

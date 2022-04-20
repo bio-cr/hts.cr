@@ -97,7 +97,7 @@ class BamTest < Minitest::Test
         def test_query_{{format.id}}_{{type.id}}
           arr = [] of Int64
           {{format.id}}_{{type.id}}.query("chr2:350-700") do |aln|
-            arr << aln.start
+            arr << aln.pos
           end
           assert_equal [341, 658], arr
         end

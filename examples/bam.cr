@@ -6,8 +6,8 @@ HTS::Bam.open(bam_path) do |b|
   b.each do |r|
     p name: r.qname,
       flag: r.flag.value,
-      pos: r.start + 1,
-      mpos: r.mate_start + 1,
+      pos: r.pos + 1,
+      mpos: r.mpos + 1,
       mqual: r.mapping_quality,
       seq: r.sequence,
       cigar: r.cigar,
