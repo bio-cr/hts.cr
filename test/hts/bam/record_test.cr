@@ -198,6 +198,16 @@ class BamRecordTest < Minitest::Test
     assert_equal 133, aln.flag.value
   end
 
+  def test_flag_set
+    a = aln1
+    assert_equal 133, a.flag.value
+    a.flag = 0
+    assert_equal 0, a.flag.value
+    f = HTS::Bam::Flag.new(133)
+    a.flag = f
+    assert_equal 133, a.flag.value
+  end
+
   def test_tag
     aln = aln1
     assert_equal "70M", aln.tag("MC")

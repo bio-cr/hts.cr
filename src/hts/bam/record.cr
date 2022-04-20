@@ -191,6 +191,14 @@ module HTS
         Flag.new @bam1.value.core.flag
       end
 
+      def flag=(flag)
+        @bam1.value.core.flag = flag
+      end
+
+      def flag=(flag : Flag)
+        @bam1.value.core.flag = flag.value
+      end
+
       private def get_aux_pointer(str)
         b = str.bytes
         str2 = StaticArray(UInt8, 2).new { |i| b[i] }
