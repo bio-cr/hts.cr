@@ -128,8 +128,8 @@ class BamRecordTest < Minitest::Test
     assert_equal 0, a.isize
   end
 
-  def test_mapping_quality
-    assert_equal 0, aln1.mapping_quality
+  def test_mapq
+    assert_equal 0, aln1.mapq
   end
 
   def test_chrom

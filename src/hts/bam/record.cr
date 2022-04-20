@@ -115,7 +115,7 @@ module HTS
       end
 
       # mapping quality
-      def mapping_quality
+      def mapq
         @bam1.value.core.qual
       end
 
