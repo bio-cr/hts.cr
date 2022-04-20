@@ -199,7 +199,7 @@ bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</s
     flag:  r.flag.value,
     pos:   r.pos <span class="o">+</span> <span class="n">1</span>,
     mpos:  r.mpos <span class="o">+</span> <span class="n">1</span>,
-    mqual: r.mapping_quality,
+    mqual: r.mapq,
     seq:   r.sequence,
     cigar: r.cigar,
     qual:  r.base_qualities.map { <span class="o">|</span>i<span class="o">|</span> (i <span class="o">+</span> <span class="n">33</span>).chr }.join
