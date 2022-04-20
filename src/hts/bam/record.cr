@@ -97,13 +97,21 @@ module HTS
         LibHTS2.bam_is_rev(@bam1) ? "-" : "+"
       end
 
-      # def start=(v)
-      #   raise 'Not Implemented'
-      # end
-
       # insert size
       def insert_size
         @bam1.value.core.isize
+      end
+
+      def isize
+        insert_size
+      end
+
+      def insert_size=(isize)
+        @bam1.value.core.isize = isize
+      end
+
+      def isize=(isize)
+        @bam1.value.core.isize = isize # FIXME
       end
 
       # mapping quality
