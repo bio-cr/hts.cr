@@ -38,6 +38,10 @@ module HTS
         @bam1.value.core.mtid
       end
 
+      def mtid=(mtid)
+        @bam1.value.core.mtid = mtid
+      end
+
       # returns 0-based start position.
       def start
         @bam1.value.core.pos
