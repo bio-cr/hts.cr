@@ -1,3 +1,6 @@
+require "./flag"
+require "./cigar"
+
 module HTS
   class Bam < Hts
     class Record
@@ -250,6 +253,12 @@ module HTS
         ax = get_aux_pointer(str)
         LibHTS.bam_aux2_a(ax).chr
       end
+
+      {% for name, _ in Flag::TABLE %}
+      def {{ name.id }}
+        flag.{{ name.id }}
+      end
+      {% end %}
 
       def to_s(io : IO)
         kstr = Pointer(LibHTS::KstringT).malloc

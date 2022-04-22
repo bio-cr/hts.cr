@@ -21,62 +21,25 @@ module HTS
       # BAM_FSUPPLEMENTARY = 2048
 
       # TODO: Enabling bitwise operations
-      # hts-nim
-      # proc `and`*(f: Flag, o: uint16): uint16 {. borrow, inline .}
-      # proc `and`*(f: Flag, o: Flag): uint16 {. borrow, inline .}
-      # proc `or`*(f: Flag, o: uint16): uint16 {. borrow .}
-      # proc `or`*(o: uint16, f: Flag): uint16 {. borrow .}
-      # proc `==`*(f: Flag, o: Flag): bool {. borrow, inline .}
-      # proc `==`*(f: Flag, o: uint16): bool {. borrow, inline .}
-      # proc `==`*(o: uint16, f: Flag): bool {. borrow, inline .}
 
-      def paired?
-        has_flag? LibHTS2::BAM_FPAIRED
-      end
+      TABLE = {paired?:        LibHTS2::BAM_FPAIRED,
+               proper_pair?:   LibHTS2::BAM_FPROPER_PAIR,
+               unmapped?:      LibHTS2::BAM_FUNMAP,
+               mate_unmapped?: LibHTS2::BAM_FMUNMAP,
+               reverse?:       LibHTS2::BAM_FREVERSE,
+               mate_reverse?:  LibHTS2::BAM_FMREVERSE,
+               read1?:         LibHTS2::BAM_FREAD1,
+               read2?:         LibHTS2::BAM_FREAD2,
+               secondary?:     LibHTS2::BAM_FSECONDARY,
+               qcfail?:        LibHTS2::BAM_FQCFAIL,
+               duplicate?:     LibHTS2::BAM_FDUP,
+               supplementary?: LibHTS2::BAM_FSUPPLEMENTARY}
 
-      def proper_pair?
-        has_flag? LibHTS2::BAM_FPROPER_PAIR
+      {% for name, flg in TABLE %}
+      def {{ name.id }}
+        has_flag? {{ flg.id }}
       end
-
-      def unmapped?
-        has_flag? LibHTS2::BAM_FUNMAP
-      end
-
-      def mate_unmapped?
-        has_flag? LibHTS2::BAM_FMUNMAP
-      end
-
-      def reverse?
-        has_flag? LibHTS2::BAM_FREVERSE
-      end
-
-      def mate_reverse?
-        has_flag? LibHTS2::BAM_FMREVERSE
-      end
-
-      def read1?
-        has_flag? LibHTS2::BAM_FREAD1
-      end
-
-      def read2?
-        has_flag? LibHTS2::BAM_FREAD2
-      end
-
-      def secondary?
-        has_flag? LibHTS2::BAM_FSECONDARY
-      end
-
-      def qcfail?
-        has_flag? LibHTS2::BAM_FQCFAIL
-      end
-
-      def duplicate?
-        has_flag? LibHTS2::BAM_FDUP
-      end
-
-      def supplementary?
-        has_flag? LibHTS2::BAM_FSUPPLEMENTARY
-      end
+      {% end %}
 
       def has_flag?(m)
         @value & m != 0
@@ -84,7 +47,7 @@ module HTS
 
       def to_s(io : IO)
         io << String.new(LibHTS.bam_flag2str(@value))
-        #io << "#{"0x%x" % @value}\t#{@value}\t#{String.new LibHTS.bam_flag2str(@value)}"
+        # io << "#{"0x%x" % @value}\t#{@value}\t#{String.new LibHTS.bam_flag2str(@value)}"
       end
     end
   end

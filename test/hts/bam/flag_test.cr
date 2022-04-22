@@ -33,16 +33,7 @@ class BamFlagTest < Minitest::Test
     assert_equal(0, flag_zero.value)
   end
 
-  macro define_flag_test_methods(names)
-    {% for name in names %}
-      def test_{{name.id}}
-        assert_equal true, flag.{{name.id}}
-        assert_equal false, flag_zero.{{name.id}}
-      end
-    {% end %}
-  end
-
-  define_flag_test_methods %w[
+  FLAG_METHODS = %w[
     paired?
     proper_pair?
     unmapped?
@@ -56,6 +47,13 @@ class BamFlagTest < Minitest::Test
     duplicate?
     supplementary?
   ]
+
+  {% for name in FLAG_METHODS %}
+    def test_{{name.id}}
+      assert_equal true, flag.{{name.id}}
+      assert_equal false, flag_zero.{{name.id}}
+    end
+  {% end %}
 
   def test_to_s
     assert_equal "PAIRED,PROPER_PAIR,UNMAP,MUNMAP,REVERSE,MREVERSE,READ1,READ2,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY",

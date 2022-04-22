@@ -1,5 +1,6 @@
 require "minitest/autorun"
 require "../../../src/hts/bam"
+require "./flag_test" # Required for automatic generation of test methods related to Flag
 
 class BamRecordTest < Minitest::Test
   def test_bam_path
@@ -234,6 +235,13 @@ class BamRecordTest < Minitest::Test
   # TODO: def test_aux_flag
 
   # TODO: def test_aux_char
+
+  {% for name in BamFlagTest::FLAG_METHODS %}
+    def test_{{name.id}}
+      assert_equal aln1.flag.{{name.id}}, aln1.{{name.id}}
+    end
+  {% end %}
+
 
   def test_to_s
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0",
