@@ -53,7 +53,7 @@ class BamFlagTest < Minitest::Test
     read2?
     secondary?
     qcfail?
-    dup?
+    duplicate?
     supplementary?
   ]
 
