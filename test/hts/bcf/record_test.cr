@@ -13,6 +13,19 @@ class BcfRecordTest < Minitest::Test
     v
   end
 
+  def test_rid
+    assert_equal 0, var1.rid
+  end
+
+  def test_rid_set
+    var = var1.clone
+    assert_equal 0, var.rid
+    var.rid = 1
+    assert_equal 1, var.rid
+    var.rid = 0
+    assert_equal 0, var.rid
+  end
+
   def test_chrom
     assert_equal "poo", var1.chrom
   end

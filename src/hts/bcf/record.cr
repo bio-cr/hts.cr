@@ -6,14 +6,21 @@ module HTS
         @header = header
       end
 
+      getter :header
+
       def struct
         @bcf1
       end
 
-      getter :header
+      def rid
+        @bcf1.value.rid
+      end
+
+      def rid=(rid)
+        @bcf1.value.rid = rid
+      end
 
       def chrom
-        rid = @bcf1.value.rid
         String.new LibHTS2.bcf_hdr_id2name(@header.struct, rid)
       end
 
