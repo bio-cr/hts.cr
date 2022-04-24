@@ -45,6 +45,10 @@ module HTS
         LibHTS.bcf_update_id(@header.struct, @bcf1, id)
       end
 
+      def clear_id
+        LibHTS.bcf_update_id(@header.struct, @bcf1, ".")
+      end
+
       def filter
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FLT)
         d = @bcf1.value.d
