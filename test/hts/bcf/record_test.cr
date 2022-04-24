@@ -77,6 +77,15 @@ class BcfRecordTest < Minitest::Test
     assert_equal 142.41574_f32, var1.qual
   end
 
+  def test_qual_set
+    var = var1.clone
+    assert_equal 142.41574_f32, var.qual
+    var.qual = 100
+    assert_equal 100, var.qual
+    var.qual = 142.41574_f32
+    assert_equal 142.41574_f32, var.qual
+  end
+
   def test_ref
     assert_equal "T", var1.ref
   end
