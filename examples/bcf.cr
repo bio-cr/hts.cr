@@ -6,8 +6,6 @@ HTS::Bcf.open(bcf_path) do |bcf|
   bcf.each do |r|
     p chrom: r.chrom,
       pos: r.pos,
-      start: r.start,
-      stop: r.stop,
       id: r.id,
       qual: r.qual,
       filter: r.filter,

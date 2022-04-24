@@ -43,8 +43,8 @@ class BcfRecordTest < Minitest::Test
     assert_equal 2125, var.pos
   end
 
-  def test_stop
-    assert_equal 2126, var1.stop
+  def test_endpos
+    assert_equal 2126, var1.endpos
   end
 
   def test_id

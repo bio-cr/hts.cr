@@ -32,7 +32,7 @@ module HTS
         @bcf1.value.pos = pos
       end
 
-      def stop
+      def endpos
         @bcf1.value.pos + @bcf1.value.rlen
       end
 
