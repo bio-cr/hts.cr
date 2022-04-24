@@ -25,11 +25,11 @@ module HTS
       end
 
       def pos
-        @bcf1.value.pos + 1
+        @bcf1.value.pos
       end
 
-      def start
-        @bcf1.value.pos
+      def pos=(pos)
+        @bcf1.value.pos = pos
       end
 
       def stop

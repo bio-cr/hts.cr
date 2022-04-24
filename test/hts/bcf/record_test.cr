@@ -31,11 +31,16 @@ class BcfRecordTest < Minitest::Test
   end
 
   def test_pos
-    assert_equal 2126, var1.pos
+    assert_equal 2125, var1.pos
   end
 
-  def test_start
-    assert_equal 2125, var1.start
+  def test_pos_set
+    var = var1.clone
+    assert_equal 2125, var.pos
+    var.pos = 2126
+    assert_equal 2126, var.pos
+    var.pos = 2125 
+    assert_equal 2125, var.pos
   end
 
   def test_stop
