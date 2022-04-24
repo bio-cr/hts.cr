@@ -217,8 +217,7 @@ bcf <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span>
 
 bcf.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
   p chrom:  r.chrom,
-    start:  r.start,
-    stop:   r.stop,
+    pos:    r.pos,
     id:     r.id,
     qual:   r.qual,
     filter: r.filter,
