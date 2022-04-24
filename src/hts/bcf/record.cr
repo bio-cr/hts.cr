@@ -33,12 +33,16 @@ module HTS
       end
 
       def endpos
-        @bcf1.value.pos + @bcf1.value.rlen
+        pos + @bcf1.value.rlen
       end
 
       def id
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_INFO)
         String.new @bcf1.value.d.id
+      end
+
+      def id=(id)
+        LibHTS.bcf_update_id(@header.struct, @bcf1, id)
       end
 
       def filter

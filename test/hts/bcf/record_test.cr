@@ -51,6 +51,15 @@ class BcfRecordTest < Minitest::Test
     assert_equal ".", var1.id
   end
 
+  def test_id_set
+    var = var1.clone
+    assert_equal ".", var.id
+    var.id = "asterite"
+    assert_equal "asterite", var.id
+    var.id = "."
+    assert_equal ".", var.id
+  end
+
   def test_filter
     assert_equal "PASS", var1.filter
   end
