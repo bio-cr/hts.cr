@@ -60,9 +60,9 @@ module HTS
         when 1
           i = d.flt.value
           String.new LibHTS2.bcf_hdr_int2id(@header.struct, LibHTS2::BCF_DT_ID, i)
-        when 2
+        when 2..
           # FIXME note tested yet and may contain bugs
-          StaticArray(String, 2).new do |i|
+          Array(String).new(n_flt) do |i|
             j = d.flt[i]
             String.new LibHTS2.bcf_hdr_int2id(@header.struct, LibHTS2::BCF_DT_ID, j)
           end
