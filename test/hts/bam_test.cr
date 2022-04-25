@@ -39,8 +39,10 @@ class BamTest < Minitest::Test
       def test_open_{{format.id}}_{{type.id}}
         b = HTS::Bam.open(path_{{format.id}}_{{type.id}})
         assert_instance_of HTS::Bam, b
+        assert_equal false, b.closed?
         b.close
         assert_equal true, b.closed?
+        assert_nil b.close
       end
 
       def test_open_{{format.id}}_{{type.id}}_with_block

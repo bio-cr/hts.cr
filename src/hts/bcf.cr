@@ -51,16 +51,6 @@ module HTS
       @header = Bcf::Header.new(@hts_file)
     end
 
-    # Close the current file.
-    def close
-      LibHTS.hts_close(@hts_file)
-      @hts_file = @hts_file.class.null
-    end
-
-    def closed?
-      @hts_file.null?
-    end
-
     # Iterate over each record.
     # Generate a new Record object each time.
     # Slower than each.

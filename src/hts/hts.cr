@@ -9,6 +9,16 @@ module HTS
       @hts_file
     end
 
+    def close
+      return if closed?
+      LibHTS.hts_close(@hts_file)
+      @hts_file = @hts_file.class.null
+    end
+
+    def closed?
+      @hts_file.null?
+    end
+
     def seek(offset)
       # FIXME: Use bit fields
       flags = @hts_file.value.flags
