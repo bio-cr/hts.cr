@@ -2,7 +2,7 @@ require "./libhts"
 require "./version"
 
 module HTS
-  class Tabix
+  class Tbx
     getter :file_name
     getter :mode
 
