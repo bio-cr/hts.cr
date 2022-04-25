@@ -1,8 +1,10 @@
 require "./libhts"
 require "./version"
 
+require "./tbx/record"
+
 module HTS
-  class Tbx
+  class Tbx < Hts
     getter :file_name
     getter :mode
 
