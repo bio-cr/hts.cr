@@ -10,6 +10,7 @@ require "./bam/record"
 module HTS
   class Bam < Hts
     include Enumerable(Record)
+
     getter :file_name
     getter :mode
     getter :header
@@ -36,7 +37,6 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @mode = mode
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
