@@ -20,12 +20,12 @@ module HTS
       file
     end
 
-    def initialize(@file_name : Path | String, mode = "r", threads = 0)
+    def initialize(@file_name : Path | String, @mode = "r", threads = 0)
+      @file_name = file_name.to_s || ""
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @mode = mode
-      @hts_file = LibHTS.hts_open(file_name, mode)
+      @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
 
