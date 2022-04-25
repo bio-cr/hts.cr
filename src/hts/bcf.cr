@@ -43,7 +43,7 @@ module HTS
 
       if threads > 0
         r = LibHTS.hts_set_threads(@hts_file, threads)
-        r < 0 && raise "Failed to set number threads: #{threads}"
+        r < 0 && raise "Failed to set number threads: #{r}"
       end
 
       return if mode[0] == "w"
