@@ -9,6 +9,21 @@ module HTS
       @hts_file
     end
 
+    def format
+      LibHTS.hts_get_format(@hts_file).value.format.to_s
+    end
+
+    def format_version
+      v = LibHTS.hts_get_format(@hts_file).value.version
+      major = v.major
+      minor = v.minor
+      if minor == -1
+        "#{major}"
+      else
+        "#{major}.#{minor}"
+      end
+    end
+
     def close
       return if closed?
       LibHTS.hts_close(@hts_file)
@@ -45,22 +60,13 @@ module HTS
     end
 
     def rewind
-      seek(@start_position) if @start_position
-      # raise error unless @start_position
-    end
-    
-    def format
-      LibHTS.hts_get_format(@hts_file).value.format.to_s
-    end
-
-    def format_version
-      v = LibHTS.hts_get_format(@hts_file).value.version
-      major = v.major
-      minor = v.minor
-      if minor == -1
-        "#{major}"
+      if @start_position
+        r = seek(@start_position)
+        raise "Failed to rewind: #{r}" if r < 0
+        
+        tell
       else
-        "#{major}.#{minor}"
+        raise "Cannot rewind: no start position"
       end
     end
   end

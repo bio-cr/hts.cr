@@ -54,7 +54,7 @@ module HTS
 
       # @idx = load_index(index)
 
-      # @start_position = tell
+      @start_position = tell
     end
 
     # def create_index
