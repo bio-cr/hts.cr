@@ -80,6 +80,21 @@ module HTS
       !@idx.null?
     end
 
+    def write_header
+      raise IO::Error, "Closed stream" if closed?
+
+      @header = header.clone
+      LibHTS.hts_set_fai_filename(header.struct, @file_name)
+      LibHTS.bcf_hdr_write(@hts_file, header.struct)
+    end
+
+    def write(var)
+      raise IO::Error, "Closed stream" if closed?
+
+      var_dup = var.clone
+      LibHTS.bcf_write(@hts_file, header.struct, var_dup.struct)
+    end
+
     # Iterate over each record.
     # Generate a new Record object each time.
     # Slower than each.
