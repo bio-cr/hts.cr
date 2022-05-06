@@ -81,7 +81,7 @@ module HTS
     end
 
     def write_header
-      raise IO::Error, "Closed stream" if closed?
+      raise IO::Error.new("Closed stream") if closed?
 
       @header = header.clone
       LibHTS.hts_set_fai_filename(header.struct, @file_name)
@@ -89,16 +89,30 @@ module HTS
     end
 
     def write(var)
-      raise IO::Error, "Closed stream" if closed?
+      raise IO::Error.new("Closed stream") if closed?
 
       var_dup = var.clone
       LibHTS.bcf_write(@hts_file, header.struct, var_dup.struct)
+    end
+
+    def nsamples
+      raise IO::Error.new("Closed stream") if closed?
+
+      header.nsamples
+    end
+
+    def samples
+      raise IO::Error.new("Closed stream") if closed?
+
+      header.samples
     end
 
     # Iterate over each record.
     # Generate a new Record object each time.
     # Slower than each.
     def each_copy
+      raise IO::Error.new("Closed stream") if closed?
+
       while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
       end
@@ -108,19 +122,13 @@ module HTS
     # Record object is reused.
     # Faster than each_copy.
     def each
+      raise IO::Error.new("Closed stream") if closed?
+
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(bcf1, header)
       while LibHTS.bcf_read(@hts_file, header.struct, bcf1) != -1
         yield record
       end
-    end
-
-    def nsamples
-      header.nsamples
-    end
-
-    def samples
-      header.samples
     end
   end
 end

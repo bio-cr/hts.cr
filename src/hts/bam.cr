@@ -65,6 +65,8 @@ module HTS
     end
 
     def create_index(index_name)
+      raise IO::Error.new("Closed stream") if closed?
+
       if index_name == ""
         STDERR.puts "Create index for #{@file_name}"
         LibHTS.sam_index_build(@file_name, -1)
@@ -75,6 +77,8 @@ module HTS
     end
 
     def load_index(index_name)
+      raise IO::Error.new("Closed stream") if closed?
+
       if index_name == ""
         LibHTS.sam_index_load3(@hts_file, @file_name, nil, 2) # should be 3 ? (copy remote file to local?)
       else
@@ -83,6 +87,8 @@ module HTS
     end
 
     def index_loaded?
+      raise IO::Error.new("Closed stream") if closed?
+
       !@idx.null?
     end
 
@@ -94,12 +100,16 @@ module HTS
     end
 
     def write_header(header)
+      raise IO::Error.new("Closed stream") if closed?
+
       @header = header.clone
       LibHTS.hts_set_fai_filename(@hts_file, @file_name)
       LibHTS.sam_hdr_write(@hts_file, header.struct)
     end
 
     def write(record)
+      raise IO::Error.new("Closed stream") if closed?
+
       new_record = record.clone
       r = LibHTS.sam_write1(@hts_file, header.struct, new_record.struct)
       r < 0 && raise "Failed to write record: #{record}"
@@ -109,6 +119,8 @@ module HTS
     # Generate a new Record object each time.
     # Slower than each.
     def each_copy
+      raise IO::Error.new("Closed stream") if closed?
+
       while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
         yield Record.new(bam1, header)
       end
@@ -118,6 +130,8 @@ module HTS
     # Record object is reused.
     # Faster than each_copy.
     def each
+      raise IO::Error.new("Closed stream") if closed?
+
       bam1 = LibHTS.bam_init1
       record = Record.new(bam1, header)
       while LibHTS.sam_read1(@hts_file, header.struct, bam1) != -1
@@ -126,6 +140,7 @@ module HTS
     end
 
     def query(region)
+      raise IO::Error.new("Closed stream") if closed?
       raise "Index file is required to call the query method." unless index_loaded?
 
       qiter = LibHTS.sam_itr_querys(@idx, header.struct, region)
