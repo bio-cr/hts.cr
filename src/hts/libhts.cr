@@ -1,4 +1,8 @@
+# LibHTS
+
 require "./libhts/libhts"
+
+# LibHTS2
 
 module HTS
   module LibHTS2
@@ -10,7 +14,7 @@ module HTS
   end
 end
 
-require "./libhts/hfile"
-require "./libhts/bgzf"
-require "./libhts/sam"
-require "./libhts/vcf"
+require "./libhts2/hfile"
+require "./libhts2/bgzf"
+require "./libhts2/sam"
+require "./libhts2/vcf"
