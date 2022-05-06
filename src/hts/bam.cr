@@ -11,6 +11,8 @@ module HTS
   class Bam < Hts
     include Enumerable(Record)
 
+    @idx : LibHTS::HtsIdxT
+
     getter :file_name
     getter :mode
     getter :header
@@ -74,9 +76,9 @@ module HTS
 
     def load_index(index_name)
       if index_name == ""
-        @idx = LibHTS.sam_index_load3(@hts_file, @file_name, nil, 2) # should be 3 ? (copy remote file to local?)
+        LibHTS.sam_index_load3(@hts_file, @file_name, nil, 2) # should be 3 ? (copy remote file to local?)
       else
-        @idx = LibHTS.sam_index_load2(@hts_file, @file_name, index_name)
+        LibHTS.sam_index_load2(@hts_file, @file_name, index_name)
       end
     end
 

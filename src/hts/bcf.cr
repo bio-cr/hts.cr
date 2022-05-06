@@ -11,6 +11,8 @@ module HTS
   class Bcf < Hts
     include Enumerable(Bcf::Record)
 
+    @idx : LibHTS::HtsIdxT
+
     getter :file_name
     getter :mode
     getter :header
@@ -50,16 +52,33 @@ module HTS
 
       @header = Bcf::Header.new(@hts_file)
 
-      # create_index(index) if create_index
+      create_index(index) if create_index
 
-      # @idx = load_index(index)
+      @idx = load_index(index)
 
       @start_position = tell
     end
 
-    # def create_index
+    def create_index(index_name = "")
+      STDERR.puts "Creating index for #{@file_name} to #{index_name}"
+      if index_name != ""
+        LibHTS.bcf_index_build2(@file_name, index_name, -1)
+      else
+        LibHTS.bcf_index_build(@file_name, -1)
+      end
+    end
 
-    # def load_index
+    def load_index(index_name = "")
+      if index_name != ""
+        LibHTS.bcf_index_load2(@file_name, index_name)
+      else
+        LibHTS.bcf_index_load3(@file_name, nil, 2)
+      end
+    end
+
+    def index_loaded?
+      !@idx.null?
+    end
 
     # Iterate over each record.
     # Generate a new Record object each time.
