@@ -1,6 +1,10 @@
 require "../src/hts"
 
-bam_path = File.expand_path("../../test/fixtures/poo.sort.bam", __FILE__)
+if ARGV.empty?
+  bam_path = File.expand_path("../test/fixtures/poo.sort.bam", __DIR__)
+else
+  bam_path = ARGV[0]
+end
 
 HTS::Bam.open(bam_path) do |b|
   b.each do |r|
