@@ -53,12 +53,12 @@ class BcfTest < Minitest::Test
     assert_equal "r", bcf.mode
   end
 
-  def test_format
-    assert_equal "Bcf", bcf.format
+  def test_file_format
+    assert_equal "Bcf", bcf.file_format
   end
 
-  def test_format_version
-    assert_equal "2.2", bcf.format_version
+  def test_file_format_version
+    assert_equal "2.2", bcf.file_format_version
   end
 
   def test_nsamples

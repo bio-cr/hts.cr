@@ -78,8 +78,8 @@ class BamTest < Minitest::Test
         assert_instance_of HTS::Bam::Header, {{format.id}}_{{type.id}}.header
       end
 
-      def test_format_{{format.id}}_{{type.id}}
-        assert_equal {{format}}.capitalize, {{format.id}}_{{type.id}}.format
+      def test_file_format_{{format.id}}_{{type.id}}
+        assert_equal {{format}}.capitalize, {{format.id}}_{{type.id}}.file_format
       end
 
       def test_each_{{format.id}}_{{type.id}}
@@ -91,8 +91,8 @@ class BamTest < Minitest::Test
         assert_equal 10, c
       end
 
-      def test_format_version_{{format.id}}_{{type.id}}
-        assert_includes ["1", "1.6", "3.0"], {{format.id}}_{{type.id}}.format_version
+      def test_file_format_version_{{format.id}}_{{type.id}}
+        assert_includes ["1", "1.6", "3.0"], {{format.id}}_{{type.id}}.file_format_version
       end
 
       {% if format != "sam" %}
