@@ -6,6 +6,7 @@ module HTS
     BCF_STR_MISSING    = 7
     alias HtsTpool = Void
     alias HFileBackend = Void
+
     struct HFile
       buffer : LibC::Char*
       _begin : LibC::Char*

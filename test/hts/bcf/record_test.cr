@@ -39,7 +39,7 @@ class BcfRecordTest < Minitest::Test
     assert_equal 2125, var.pos
     var.pos = 2126
     assert_equal 2126, var.pos
-    var.pos = 2125 
+    var.pos = 2125
     assert_equal 2125, var.pos
   end
 
@@ -64,7 +64,7 @@ class BcfRecordTest < Minitest::Test
     var = var1.clone
     assert_equal ".", var.id
     var.id = "Ary"
-    assert_equal "Ary", var.id    
+    assert_equal "Ary", var.id
     var.clear_id
     assert_equal ".", var.id
   end

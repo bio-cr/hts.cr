@@ -60,7 +60,7 @@ module HTS
       create_index(index) if create_index
 
       @idx = load_index(index)
-    
+
       @start_position = tell
     end
 

@@ -74,7 +74,7 @@ module HTS
       def qual
         @bcf1.value.qual
       end
-      
+
       def qual=(qual)
         @bcf1.value.qual = qual
       end

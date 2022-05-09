@@ -6,7 +6,7 @@ module HTS
       end
 
       {% for type in [["int", "Int32", "BCF_HT_INT"],
-                      ["float", "Float32", "BCF_HT_REAL"]]%}
+                      ["float", "Float32", "BCF_HT_REAL"]] %}
         def get_{{type[0].id}}(key)
           n = Pointer(Int32).malloc
           p1 = pointerof(@p1)

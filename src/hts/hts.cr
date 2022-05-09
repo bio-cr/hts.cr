@@ -2,7 +2,6 @@ require "./libhts"
 
 module HTS
   class Hts
-
     @start_position : (Int64 | Nil)
 
     def struct
@@ -63,7 +62,7 @@ module HTS
       if @start_position
         r = seek(@start_position)
         raise "Failed to rewind: #{r}" if r < 0
-        
+
         tell
       else
         raise "Cannot rewind: no start position"

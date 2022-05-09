@@ -1,6 +1,7 @@
 module HTS
   module LibHTS2 # FIXME
     extend self
+
     # constants
 
     def htell(fp)

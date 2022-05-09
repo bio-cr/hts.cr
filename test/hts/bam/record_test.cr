@@ -23,7 +23,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_tid_set
-    aln= aln1
+    aln = aln1
     assert_equal 0, aln.tid
     aln.tid = 1
     assert_equal 1, aln.tid
@@ -36,7 +36,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_mtid_set
-    aln= aln1
+    aln = aln1
     assert_equal 0, aln.mtid
     aln.mtid = 1
     assert_equal 1, aln.mtid
@@ -49,7 +49,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_pos_set
-    aln= aln1
+    aln = aln1
     assert_equal 3289, aln.pos
     aln.pos = 3290
     assert_equal 3290, aln.pos
@@ -62,7 +62,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_mpos_set
-    aln= aln1
+    aln = aln1
     assert_equal 3289, aln.mpos
     aln.mpos = 3290
     assert_equal 3290, aln.mpos
@@ -75,7 +75,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_bin_set
-    aln= aln1
+    aln = aln1
     assert_equal 4681, aln.bin
     aln.bin = 4682
     assert_equal 4682, aln.bin
@@ -116,7 +116,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_insert_size_set
-    aln= aln1
+    aln = aln1
     assert_equal 0, aln.insert_size
     aln.insert_size = 1
     assert_equal 1, aln.insert_size
@@ -125,7 +125,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_isize_set
-    aln= aln1
+    aln = aln1
     assert_equal 0, aln.isize
     aln.isize = 1
     assert_equal 1, aln.isize
@@ -138,7 +138,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_mapq_set
-    aln= aln1
+    aln = aln1
     assert_equal 0, aln.mapq
     aln.mapq = 1
     assert_equal 1, aln.mapq
@@ -200,7 +200,7 @@ class BamRecordTest < Minitest::Test
   end
 
   def test_flag_set
-    aln= aln1
+    aln = aln1
     assert_equal 133, aln.flag.value
     aln.flag = 0
     assert_equal 0, aln.flag.value
@@ -241,7 +241,6 @@ class BamRecordTest < Minitest::Test
       assert_equal aln1.flag.{{name.id}}, aln1.{{name.id}}
     end
   {% end %}
-
 
   def test_to_s
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0",
