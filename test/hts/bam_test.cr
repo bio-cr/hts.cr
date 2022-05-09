@@ -23,7 +23,9 @@ class BamTest < Minitest::Test
     def path_{{format.id}}_uri
       "https://raw.githubusercontent.com/bio-crystal/hts/develop/test/fixtures/moo.{{format.id}}"
     end
+  {% end %}
 
+  {% for format in ["bam", "sam", "cram"] %}
     {% for type in ["string", "path", "uri"] %}
       def {{format.id}}_{{type.id}}
         @{{format.id}}_{{type.id}} ||= HTS::Bam.open(path_{{format.id}}_{{type.id}})
@@ -107,4 +109,8 @@ class BamTest < Minitest::Test
 
     {% end %}
   {% end %}
+
+  def test_initialize_no_file_bam
+    assert_raises { HTS::Bam.new("/tmp/no_such_file") }
+  end
 end

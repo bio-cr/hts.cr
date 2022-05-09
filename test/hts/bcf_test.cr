@@ -68,4 +68,8 @@ class BcfTest < Minitest::Test
   def test_samples
     assert_equal ["poo.sort.bam"], bcf.samples
   end
+
+  def test_initialize_no_file_bcf
+    assert_raises { HTS::Bam.new("/tmp/no_such_file") }
+  end
 end
