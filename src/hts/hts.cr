@@ -33,6 +33,10 @@ module HTS
       @hts_file.null?
     end
 
+    private def check_closed
+      raise IO::Error.new("Closed stream") if closed?
+    end
+
     def seek(offset)
       # FIXME: Use bit fields
       flags = @hts_file.value.flags

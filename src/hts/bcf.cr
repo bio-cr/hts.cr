@@ -60,7 +60,9 @@ module HTS
     end
 
     def create_index(index_name = "")
+      check_closed
       STDERR.puts "Creating index for #{@file_name} to #{index_name}"
+
       if index_name != ""
         LibHTS.bcf_index_build2(@file_name, index_name, -1)
       else
@@ -69,6 +71,7 @@ module HTS
     end
 
     def load_index(index_name = "")
+      check_closed
       if index_name != ""
         LibHTS.bcf_index_load2(@file_name, index_name)
       else
@@ -77,33 +80,30 @@ module HTS
     end
 
     def index_loaded?
+      check_closed
       !@idx.null?
     end
 
     def write_header
-      raise IO::Error.new("Closed stream") if closed?
-
+      check_closed
       @header = header.clone
       LibHTS.hts_set_fai_filename(header.struct, @file_name)
       LibHTS.bcf_hdr_write(@hts_file, header.struct)
     end
 
     def write(var)
-      raise IO::Error.new("Closed stream") if closed?
-
+      check_closed
       var_dup = var.clone
       LibHTS.bcf_write(@hts_file, header.struct, var_dup.struct)
     end
 
     def nsamples
-      raise IO::Error.new("Closed stream") if closed?
-
+      check_closed
       header.nsamples
     end
 
     def samples
-      raise IO::Error.new("Closed stream") if closed?
-
+      check_closed
       header.samples
     end
 
@@ -111,8 +111,7 @@ module HTS
     # Generate a new Record object each time.
     # Slower than each.
     def each_copy
-      raise IO::Error.new("Closed stream") if closed?
-
+      check_closed
       while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
       end
@@ -122,8 +121,7 @@ module HTS
     # Record object is reused.
     # Faster than each_copy.
     def each
-      raise IO::Error.new("Closed stream") if closed?
-
+      check_closed
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(bcf1, header)
       while LibHTS.bcf_read(@hts_file, header.struct, bcf1) != -1
