@@ -36,13 +36,17 @@ module HTS
                supplementary?: LibHTS2::BAM_FSUPPLEMENTARY}
 
       {% for name, flg in TABLE %}
-      def {{ name.id }}
-        has_flag? {{ flg.id }}
-      end
+        def {{ name.id }}
+          has_flag? {{ flg.id }}
+        end
       {% end %}
 
       def has_flag?(m)
         @value & m != 0
+      end
+
+      def to_i
+        @value
       end
 
       def to_s(io : IO)
