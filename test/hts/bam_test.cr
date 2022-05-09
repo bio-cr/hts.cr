@@ -27,19 +27,20 @@ class BamTest < Minitest::Test
 
   {% for format in ["bam", "sam", "cram"] %}
     {% for type in ["string", "path", "uri"] %}
-      def {{format.id}}_{{type.id}}
-        @{{format.id}}_{{type.id}} ||= HTS::Bam.open(path_{{format.id}}_{{type.id}})
+      {% ft = ("#{format.id}_#{type.id}").id %}
+      def {{ft}}
+        @{{ft}} ||= HTS::Bam.open(path_{{ft}})
       end
       
-      def test_new_{{format.id}}_{{type.id}}
-        b = HTS::Bam.new(path_{{format.id}}_{{type.id}})
+      def test_new_{{ft}}
+        b = HTS::Bam.new(path_{{ft}})
         assert_instance_of HTS::Bam, b
         b.close
         assert_equal true, b.closed?
       end
 
-      def test_open_{{format.id}}_{{type.id}}
-        b = HTS::Bam.open(path_{{format.id}}_{{type.id}})
+      def test_open_{{ft}}
+        b = HTS::Bam.open(path_{{ft}})
         assert_instance_of HTS::Bam, b
         assert_equal false, b.closed?
         b.close
@@ -47,8 +48,8 @@ class BamTest < Minitest::Test
         assert_nil b.close
       end
 
-      def test_open_{{format.id}}_{{type.id}}_with_block
-        f = HTS::Bam.open(path_{{format.id}}_{{type.id}}) do |b|
+      def test_open_{{ft}}_with_block
+        f = HTS::Bam.open(path_{{ft}}) do |b|
           assert_instance_of HTS::Bam, b
         end
         assert_equal true, f.closed?
@@ -56,51 +57,51 @@ class BamTest < Minitest::Test
 
       {% if format == "bam" %}
       # FIXME: Cram dose not have cram_tell
-      def test_tell_{{format.id}}_{{type.id}}
-        assert_equal 21889024, {{format.id}}_{{type.id}}.tell
+      def test_tell_{{ft}}
+        assert_equal 21889024, {{ft}}.tell
       end
       {% end %}
 
       {% if format == "sam" %}
       # FIXME: Cram dose not have cram_tell
-      def test_tell_{{format.id}}_{{type.id}}
-        assert_equal 134, {{format.id}}_{{type.id}}.tell
+      def test_tell_{{ft}}
+        assert_equal 134, {{ft}}.tell
       end
       {% end %}
 
-      def test_file_name_{{format.id}}_{{type.id}}
-        assert_equal path_{{format.id}}_{{type.id}}.to_s, {{format.id}}_{{type.id}}.file_name
+      def test_file_name_{{ft}}
+        assert_equal path_{{ft}}.to_s, {{ft}}.file_name
       end
 
-      def test_mode_{{format.id}}_{{type.id}}
-        assert_equal "r", {{format.id}}_{{type.id}}.mode
+      def test_mode_{{ft}}
+        assert_equal "r", {{ft}}.mode
       end
 
-      def test_header_{{format.id}}_{{type.id}}
-        assert_instance_of HTS::Bam::Header, {{format.id}}_{{type.id}}.header
+      def test_header_{{ft}}
+        assert_instance_of HTS::Bam::Header, {{ft}}.header
       end
 
-      def test_file_format_{{format.id}}_{{type.id}}
-        assert_equal {{format}}.capitalize, {{format.id}}_{{type.id}}.file_format
+      def test_file_format_{{ft}}
+        assert_equal {{format}}.capitalize, {{ft}}.file_format
       end
 
-      def test_each_{{format.id}}_{{type.id}}
+      def test_each_{{ft}}
         c = 0
-        {{format.id}}_{{type.id}}.each do |aln|
+        {{ft}}.each do |aln|
           c += 1
           assert_instance_of HTS::Bam::Record, aln
         end
         assert_equal 10, c
       end
 
-      def test_file_format_version_{{format.id}}_{{type.id}}
-        assert_includes ["1", "1.6", "3.0"], {{format.id}}_{{type.id}}.file_format_version
+      def test_file_format_version_{{ft}}
+        assert_includes ["1", "1.6", "3.0"], {{ft}}.file_format_version
       end
 
       {% if format != "sam" %}
-        def test_query_{{format.id}}_{{type.id}}
+        def test_query_{{ft}}
           arr = [] of Int64
-          {{format.id}}_{{type.id}}.query("chr2:350-700") do |aln|
+          {{ft}}.query("chr2:350-700") do |aln|
             arr << aln.pos
           end
           assert_equal [341, 658], arr
