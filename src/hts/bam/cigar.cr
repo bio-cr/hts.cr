@@ -4,8 +4,11 @@ module HTS
       include Enumerable(Tuple(Char, UInt32))
 
       def initialize(pointer : Pointer(UInt32), n_cigar : UInt32)
-        @pointer = pointer
+        # Read the pointer before the memory is changed.
         @n_cigar = n_cigar
+        @c = Array(UInt32).new(n_cigar) do |i|
+          pointer[i]
+        end
       end
 
       def to_ptr
@@ -20,8 +23,7 @@ module HTS
       end
 
       def each
-        @n_cigar.times do |i|
-          c = @pointer[i]
+        @c.each do |c|
           op  = LibHTS2.bam_cigar_opchr(c) 
           len = LibHTS2.bam_cigar_oplen(c)
           yield({op, len})
