@@ -11,10 +11,6 @@ module HTS
         end
       end
 
-      def to_ptr
-        @pointer
-      end
-
       def to_s(io : IO)
         each do |op, len|
           io << len
