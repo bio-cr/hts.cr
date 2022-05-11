@@ -162,7 +162,6 @@ module HTS
     define_getter :pos
     define_getter :mapq
     define_getter :cigar
-    define_getter :mate
     define_getter :mate_chrom
     define_getter :mate_pos
     define_getter :insert_size
