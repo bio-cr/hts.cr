@@ -156,22 +156,6 @@ module HTS
       end
     end
 
-    macro define_getter(name)
-      def {{name.id}}
-        check_closed
-        position = tell
-        ary = map do |record|
-          record.{{name.id}}
-        end
-        if position.nil?
-          STDERR.puts "Warning: #{@file_name} is not seekable"
-        else
-          seek(position)
-        end
-        ary
-      end
-    end
-
     define_getter :qname
     define_getter :flag
     define_getter :chrom
