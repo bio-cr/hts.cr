@@ -207,35 +207,35 @@
   </h2>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L11" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L11" target="_blank">
         hts/bam.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam/cigar.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam/cigar.cr#L2" target="_blank">
         hts/bam/cigar.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam/flag.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam/flag.cr#L2" target="_blank">
         hts/bam/flag.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam/header.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam/header.cr#L2" target="_blank">
         hts/bam/header.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam/record.cr#L5" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam/record.cr#L5" target="_blank">
         hts/bam/record.cr
       </a>
     
@@ -300,6 +300,16 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#chrom-instance-method" class="signature"><strong>#chrom</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cigar-instance-method" class="signature"><strong>#cigar</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
         
           <div class="summary"><p>Close the current file.</p></div>
@@ -324,6 +334,11 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#flag-instance-method" class="signature"><strong>#flag</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#header%3AHTS%3A%3ABam%3A%3AHeader-instance-method" class="signature"><strong>#header</strong> : HTS::Bam::Header</a>
         
       </li>
@@ -334,7 +349,37 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#insert_size-instance-method" class="signature"><strong>#insert_size</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#isize-instance-method" class="signature"><strong>#isize</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#load_index%28index_name%29-instance-method" class="signature"><strong>#load_index</strong>(index_name)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mapq-instance-method" class="signature"><strong>#mapq</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate-instance-method" class="signature"><strong>#mate</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate_chrom-instance-method" class="signature"><strong>#mate_chrom</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mate_pos-instance-method" class="signature"><strong>#mate_pos</strong></a>
         
       </li>
     
@@ -344,7 +389,32 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#mpos-instance-method" class="signature"><strong>#mpos</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pos-instance-method" class="signature"><strong>#pos</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#qname-instance-method" class="signature"><strong>#qname</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#qual-instance-method" class="signature"><strong>#qual</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#query%28region%2C%26%29-instance-method" class="signature"><strong>#query</strong>(region, &)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#seq-instance-method" class="signature"><strong>#seq</strong></a>
         
       </li>
     
@@ -361,6 +431,23 @@
   </ul>
 
 
+
+  <h2>
+    <a id="macro-summary" class="anchor" href="#macro-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Macro Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#define_getter%28name%29-macro" class="signature"><strong>define_getter</strong>(name)</a>
+        
+      </li>
+    
+  </ul>
 
 
 
@@ -473,7 +560,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L36" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -501,7 +588,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L20" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -517,7 +604,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -533,6 +620,38 @@
 </a>
     Instance Method Detail
   </h2>
+  
+    <div class="entry-detail" id="chrom-instance-method">
+      <div class="signature">
+        
+        def <strong>chrom</strong>
+
+        <a class="method-permalink" href="#chrom-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L177" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cigar-instance-method">
+      <div class="signature">
+        
+        def <strong>cigar</strong>
+
+        <a class="method-permalink" href="#cigar-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L180" target="_blank">View source</a>]
+        
+      </div>
+    </div>
   
     <div class="entry-detail" id="close-instance-method">
       <div class="signature">
@@ -550,7 +669,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L93" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -566,7 +685,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -591,7 +710,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -607,7 +726,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L16" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flag-instance-method">
+      <div class="signature">
+        
+        def <strong>flag</strong>
+
+        <a class="method-permalink" href="#flag-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L176" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -623,7 +758,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -639,7 +774,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L87" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert_size-instance-method">
+      <div class="signature">
+        
+        def <strong>insert_size</strong>
+
+        <a class="method-permalink" href="#insert_size-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L184" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="isize-instance-method">
+      <div class="signature">
+        
+        def <strong>isize</strong>
+
+        <a class="method-permalink" href="#isize-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L188" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -655,7 +822,71 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L78" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L78" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mapq-instance-method">
+      <div class="signature">
+        
+        def <strong>mapq</strong>
+
+        <a class="method-permalink" href="#mapq-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L179" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate-instance-method">
+      <div class="signature">
+        
+        def <strong>mate</strong>
+
+        <a class="method-permalink" href="#mate-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L181" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate_chrom-instance-method">
+      <div class="signature">
+        
+        def <strong>mate_chrom</strong>
+
+        <a class="method-permalink" href="#mate_chrom-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L182" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mate_pos-instance-method">
+      <div class="signature">
+        
+        def <strong>mate_pos</strong>
+
+        <a class="method-permalink" href="#mate_pos-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -671,7 +902,71 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L17" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mpos-instance-method">
+      <div class="signature">
+        
+        def <strong>mpos</strong>
+
+        <a class="method-permalink" href="#mpos-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L192" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pos-instance-method">
+      <div class="signature">
+        
+        def <strong>pos</strong>
+
+        <a class="method-permalink" href="#pos-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L178" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="qname-instance-method">
+      <div class="signature">
+        
+        def <strong>qname</strong>
+
+        <a class="method-permalink" href="#qname-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L175" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="qual-instance-method">
+      <div class="signature">
+        
+        def <strong>qual</strong>
+
+        <a class="method-permalink" href="#qual-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L186" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -687,7 +982,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L141" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L141" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="seq-instance-method">
+      <div class="signature">
+        
+        def <strong>seq</strong>
+
+        <a class="method-permalink" href="#seq-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L185" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -703,7 +1014,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L106" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L106" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -719,13 +1030,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/f61fd4856a6e98016b916bd7eff055933c438706/src/hts/bam.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L99" target="_blank">View source</a>]
         
       </div>
     </div>
   
 
 
+
+  <h2>
+    <a id="macro-detail" class="anchor" href="#macro-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Macro Detail
+  </h2>
+  
+    <div class="entry-detail" id="define_getter(name)-macro">
+      <div class="signature">
+        
+        macro <strong>define_getter</strong>(name)
+
+        <a class="method-permalink" href="#define_getter%28name%29-macro">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/7e6221b58c1efcbb879c74161185a4597cfffb85/src/hts/bam.cr#L159" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
 
 
 </div>
