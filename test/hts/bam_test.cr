@@ -85,6 +85,20 @@ class BamTest < Minitest::Test
         assert_equal {{format}}.capitalize, {{ft}}.file_format
       end
 
+      def test_file_format_version_{{ft}}
+        assert_includes ["1", "1.6", "3.0"], {{ft}}.file_format_version
+      end
+
+      {% if format != "sam" %}
+        def test_query_{{ft}}
+          arr = [] of Int64
+          {{ft}}.query("chr2:350-700") do |aln|
+            arr << aln.pos
+          end
+          assert_equal [341, 658], arr
+        end
+      {% end %}
+
       def test_each_{{ft}}
         c = 0
         {{ft}}.each do |aln|
@@ -103,19 +117,11 @@ class BamTest < Minitest::Test
         assert_equal 10, c
       end
 
-      def test_file_format_version_{{ft}}
-        assert_includes ["1", "1.6", "3.0"], {{ft}}.file_format_version
+      def test_qname_{{ft}}
+        b = HTS::Bam.new(path_{{ft}})
+        assert_equal 10, b.qname.size
+        b.close
       end
-
-      {% if format != "sam" %}
-        def test_query_{{ft}}
-          arr = [] of Int64
-          {{ft}}.query("chr2:350-700") do |aln|
-            arr << aln.pos
-          end
-          assert_equal [341, 658], arr
-        end
-      {% end %}
 
     {% end %}
   {% end %}
