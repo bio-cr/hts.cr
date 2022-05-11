@@ -111,18 +111,30 @@ module HTS
     end
 
     def each(copy = false)
-      check_closed
-
       if copy
-        while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
-          yield Record.new(bam1, header)
-        end
-      else
-        bam1 = LibHTS.bam_init1
-        record = Record.new(bam1, header)
-        while LibHTS.sam_read1(@hts_file, header.struct, bam1) != -1
+        each_record_copy do |record|
           yield record
         end
+      else
+        each_record_reuse do |record|
+          yield record
+        end
+      end
+    end
+
+    private def each_record_copy
+      check_closed
+      while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
+        yield Record.new(bam1, header)
+      end
+    end
+
+    private def each_record_reuse
+      check_closed
+      bam1 = LibHTS.bam_init1
+      record = Record.new(bam1, header)
+      while LibHTS.sam_read1(@hts_file, header.struct, bam1) != -1
+        yield record
       end
     end
 

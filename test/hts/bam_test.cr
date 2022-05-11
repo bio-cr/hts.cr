@@ -94,6 +94,15 @@ class BamTest < Minitest::Test
         assert_equal 10, c
       end
 
+      def test_each_copy_{{ft}}
+        c = 0
+        {{ft}}.each(copy: true) do |aln|
+          c += 1
+          assert_instance_of HTS::Bam::Record, aln
+        end
+        assert_equal 10, c
+      end
+
       def test_file_format_version_{{ft}}
         assert_includes ["1", "1.6", "3.0"], {{ft}}.file_format_version
       end

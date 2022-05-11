@@ -72,4 +72,16 @@ class BcfTest < Minitest::Test
   def test_initialize_no_file_bcf
     assert_raises { HTS::Bam.new("/tmp/no_such_file") }
   end
+
+  def test_each
+    bcf.each do |record|
+      assert_instance_of HTS::Bcf::Record, record
+    end
+  end
+
+  def test_each_copy
+    bcf.each(copy: true) do |record|
+      assert_instance_of HTS::Bcf::Record, record
+    end
+  end
 end

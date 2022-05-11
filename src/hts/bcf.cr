@@ -108,18 +108,30 @@ module HTS
     end
 
     def each(copy = false)
-      check_closed
-
       if copy
-        while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
-          yield Bcf::Record.new(bcf1, header)
-        end
-      else
-        bcf1 = LibHTS.bcf_init
-        record = Bcf::Record.new(bcf1, header)
-        while LibHTS.bcf_read(@hts_file, header.struct, bcf1) != -1
+        each_record_copy do |record|
           yield record
         end
+      else
+        each_record_reuse do |record|
+          yield record
+        end
+      end
+    end
+
+    private def each_record_copy
+      check_closed
+      while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
+        yield Bcf::Record.new(bcf1, header)
+      end
+    end
+
+    private def each_record_reuse
+      check_closed
+      bcf1 = LibHTS.bcf_init
+      record = Bcf::Record.new(bcf1, header)
+      while LibHTS.bcf_read(@hts_file, header.struct, bcf1) != -1
+        yield record
       end
     end
   end
