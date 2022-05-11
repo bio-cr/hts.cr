@@ -207,35 +207,35 @@
   </h2>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L11" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L11" target="_blank">
         hts/bam.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam/cigar.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam/cigar.cr#L2" target="_blank">
         hts/bam/cigar.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam/flag.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam/flag.cr#L2" target="_blank">
         hts/bam/flag.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam/header.cr#L2" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam/header.cr#L2" target="_blank">
         hts/bam/header.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam/record.cr#L5" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam/record.cr#L5" target="_blank">
         hts/bam/record.cr
       </a>
     
@@ -312,16 +312,9 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
+        <a href="#each%28copy%3Dfalse%2C%26%29-instance-method" class="signature"><strong>#each</strong>(copy = <span class="n">false</span>, &)</a>
         
-          <div class="summary"><p>Iterate over each record.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#each_copy%28%26%29-instance-method" class="signature"><strong>#each_copy</strong>(&)</a>
-        
-          <div class="summary"><p>Iterate over each record.</p></div>
+          <div class="summary"><p>Must yield this collection's elements to the block.</p></div>
         
       </li>
     
@@ -480,7 +473,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L36" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -508,7 +501,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L20" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -524,7 +517,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -557,7 +550,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L93" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -573,53 +566,32 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each(&amp;)-instance-method">
+    <div class="entry-detail" id="each(copy=false,&amp;)-instance-method">
       <div class="signature">
         
-        def <strong>each</strong>(&)
+        def <strong>each</strong>(copy = <span class="n">false</span>, &)
 
-        <a class="method-permalink" href="#each%28%26%29-instance-method">#</a>
+        <a class="method-permalink" href="#each%28copy%3Dfalse%2C%26%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Iterate over each record.
-Record object is reused.
-Faster than each_copy.</p>
+            <div class="doc-inherited">
+              Description copied from module Enumerable(<a href="../HTS/Bam/Record.html">HTS::Bam::Record</a>)
+            </div>
+          
+          <p>Must yield this collection's elements to the block.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L126" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="each_copy(&amp;)-instance-method">
-      <div class="signature">
-        
-        def <strong>each_copy</strong>(&)
-
-        <a class="method-permalink" href="#each_copy%28%26%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Iterate over each record.
-Generate a new Record object each time.
-Slower than each.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -635,7 +607,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -651,7 +623,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -667,7 +639,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L87" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -683,7 +655,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L78" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L78" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -699,7 +671,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -715,7 +687,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L129" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -731,7 +703,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L106" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L106" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -747,7 +719,7 @@ Slower than each.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-crystal/hts/blob/3fae47294b0bdbf2d4194f80dcae28fe8eae81ae/src/hts/bam.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-crystal/hts/blob/6cd5f08ab47c9ab163365cb87194b0506b95647d/src/hts/bam.cr#L99" target="_blank">View source</a>]
         
       </div>
     </div>
