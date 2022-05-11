@@ -155,5 +155,42 @@ module HTS
         LibHTS.hts_itr_destroy(qiter)
       end
     end
+
+    macro define_getter(name)
+      def {{name.id}}
+        check_closed
+        position = tell
+        ary = map do |record|
+          record.{{name.id}}
+        end
+        if position.nil?
+          STDERR.puts "Warning: #{@file_name} is not seekable"
+        else
+          seek(position)
+        end
+        ary
+      end
+    end
+
+    define_getter :qname
+    define_getter :flag
+    define_getter :chrom
+    define_getter :pos
+    define_getter :mapq
+    define_getter :cigar
+    define_getter :mate
+    define_getter :mate_chrom
+    define_getter :mate_pos
+    define_getter :insert_size
+    define_getter :seq
+    define_getter :qual
+   
+    def isize
+      insert_size
+    end
+
+    def mpos
+      mate_pos
+    end
   end
 end

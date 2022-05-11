@@ -55,12 +55,20 @@ module HTS
       end
 
       # returns 0-based mate position
-      def mpos
+      def mate_pos
         @bam1.value.core.mpos
       end
 
-      def mpos=(mpos)
+      def mate_pos=(mpos)
         @bam1.value.core.mpos = mpos
+      end
+
+      def mpos
+        mate_pos
+      end
+
+      def mpos=(mpos)
+        @bam1.value.core.mpos = mpos # FIXME
       end
 
       def bin
@@ -109,12 +117,12 @@ module HTS
         @bam1.value.core.isize
       end
 
-      def isize
-        insert_size
-      end
-
       def insert_size=(isize)
         @bam1.value.core.isize = isize
+      end
+
+      def isize
+        insert_size
       end
 
       def isize=(isize)

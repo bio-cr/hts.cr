@@ -4,6 +4,22 @@ module HTS
   class Hts
     @start_position : (Int64 | Nil)
 
+    macro define_getter(name)
+      def {{name.id}}
+        check_closed
+        position = tell
+        ary = map do |record|
+          record.{{name.id}}
+        end
+        if position.nil?
+          STDERR.puts "Warning: #{@file_name} is not seekable"
+        else
+          seek(position)
+        end
+        ary
+      end
+    end
+
     def struct
       @hts_file
     end
@@ -41,11 +57,11 @@ module HTS
       # FIXME: Use bit fields
       flags = @hts_file.value.flags
       if (flags & "1000".to_i(2) != 0) # cram
-        LibHTS.cram_seek(@hts_file.value.fp.cram, offset, IO::SEEK_SET)
+        LibHTS.cram_seek(@hts_file.value.fp.cram, offset, IO::Seek::Set)
       elsif (flags & "10000".to_i(2) != 0) # bgzf
-        LibHTS.bgzf_seek(@hts_file.value.fp.bgzf, offset, IO::SEEK_SET)
+        LibHTS.bgzf_seek(@hts_file.value.fp.bgzf, offset, IO::Seek::Set)
       else # hfile
-        LibHTS.hseek(@hts_file.value.fp.hfile, offset, IO::SEEK_SET)
+        LibHTS.hseek(@hts_file.value.fp.hfile, offset, IO::Seek::Set)
       end
     end
 
