@@ -84,4 +84,52 @@ class BcfTest < Minitest::Test
       assert_instance_of HTS::Bcf::Record, record
     end
   end
+
+  def test_chrom
+    act = bcf.chrom
+    exp = bcf.map(&.chrom)
+    assert_equal exp, act
+  end
+
+  def test_pos
+    act = bcf.pos
+    exp = bcf.map(&.pos)
+    assert_equal exp, act
+  end
+
+  def test_endpos
+    act = bcf.endpos
+    exp = bcf.map(&.endpos)
+    assert_equal exp, act
+  end
+
+  def test_id
+    act = bcf.id
+    exp = bcf.map(&.id)
+    assert_equal exp, act
+  end
+
+  def test_ref
+    act = bcf.ref
+    exp = bcf.map(&.ref)
+    assert_equal exp, act
+  end
+
+  def test_alt
+    act = bcf.alt
+    exp = bcf.map(&.alt)
+    assert_equal exp, act
+  end
+
+  def test_qual
+    act = bcf.qual
+    exp = bcf.map(&.qual)
+    assert_equal exp, act
+  end
+
+  def test_filter
+    act = bcf.filter
+    exp = bcf.map(&.filter)
+    assert_equal exp, act
+  end
 end

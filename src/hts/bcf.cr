@@ -134,5 +134,22 @@ module HTS
         yield record
       end
     end
+
+    define_getter :chrom
+    define_getter :pos
+    define_getter :endpos
+    define_getter :id
+    define_getter :ref
+    define_getter :alt
+    define_getter :qual
+    define_getter :filter
+
+    def info
+      raise NotImplementedError.new
+    end
+
+    def format
+      raise NotImplementedError.new
+    end
   end
 end
