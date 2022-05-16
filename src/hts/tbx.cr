@@ -31,10 +31,7 @@ module HTS
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
 
-      if threads > 0
-        r = LibHTS.hts_set_threads(@hts_file, threads)
-        r < 0 && raise "Failed to set number threads: #{r}"
-      end
+      set_threads(threads) if threads > 0
 
       # FIXME: Loading index needed for query
     end

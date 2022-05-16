@@ -49,6 +49,14 @@ module HTS
       @hts_file.null?
     end
 
+    def set_threads(n)
+      if n > 0
+        r = LibHTS.hts_set_threads(@hts_file, n)
+        raise "Failed to set number of threads: #{threads}" if r < 0
+      end
+      self
+    end
+
     private def check_closed
       raise IO::Error.new("Closed stream") if closed?
     end
