@@ -20,6 +20,16 @@ module HTS
       end
     end
 
+    macro define_iterator(name)
+      def each_{{name.id}}
+        check_closed
+        each do |record|
+          yield record.{{name.id}}
+        end
+        self
+      end
+    end
+
     def struct
       @hts_file
     end

@@ -172,5 +172,17 @@ module HTS
     def mpos
       mate_pos
     end
+
+    define_iterator :qname
+    define_iterator :flag
+    define_iterator :chrom
+    define_iterator :pos
+    define_iterator :mapq
+    define_iterator :cigar
+    define_iterator :mate_chrom
+    define_iterator :mate_pos
+    define_iterator :insert_size
+    define_iterator :seq
+    define_iterator :qual
   end
 end

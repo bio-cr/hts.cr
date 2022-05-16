@@ -148,5 +148,14 @@ module HTS
     def format
       raise NotImplementedError.new
     end
+
+    define_iterator :chrom
+    define_iterator :pos
+    define_iterator :endpos
+    define_iterator :id
+    define_iterator :ref
+    define_iterator :alt
+    define_iterator :qual
+    define_iterator :filter
   end
 end
