@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Crystal Docs 1.3.2">
+<meta name="generator" content="Crystal Docs 1.4.1">
 <meta name="crystal_docs.project_version" content="develop">
 <meta name="crystal_docs.project_name" content="hts">
 
@@ -193,7 +193,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-crystal/hts/blob/1242f4260b69eebc45c38359a41a8ceaf75fdaea/src/hts/faidx.cr#L5" target="_blank">
+      <a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L5" target="_blank">
         hts/faidx.cr
       </a>
     
@@ -204,9 +204,110 @@
 
 
 
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28file_name%3APath%7CString%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String)</a>
+        
+      </li>
+    
+  </ul>
 
 
 
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#open%28file_name%3APath%7CString%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#open%28file_name%3APath%7CString%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, &)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#chrom_names-instance-method" class="signature"><strong>#chrom_names</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#chrom_size%28chrom%3AString%7CSymbol%29-instance-method" class="signature"><strong>#chrom_size</strong>(chrom : String | Symbol)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#closed%3F-instance-method" class="signature"><strong>#closed?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#file_name%3AString-instance-method" class="signature"><strong>#file_name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#length-instance-method" class="signature"><strong>#length</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#seq%28name%3AString%7CSymbol%2Cstart%3ANumber%2Cstop%3ANumber%29-instance-method" class="signature"><strong>#seq</strong>(name : String | Symbol, start : Number, stop : Number)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#seq%28name%3AString%7CSymbol%29-instance-method" class="signature"><strong>#seq</strong>(name : String | Symbol)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size-instance-method" class="signature"><strong>#size</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#struct%3AHTS%3A%3ALibHTS%3A%3AFaidxT-instance-method" class="signature"><strong>#struct</strong> : HTS::LibHTS::FaidxT</a>
+        
+      </li>
+    
+  </ul>
 
 
 
@@ -237,9 +338,247 @@
 </div>
 
 
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(file_name:Path|String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(file_name : Path | String)
+
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L22" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
 
 
 
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="open(file_name:Path|String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>open</strong>(file_name : Path | String)
+
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="open(file_name:Path|String,&amp;)-class-method">
+      <div class="signature">
+        
+        def self.<strong>open</strong>(file_name : Path | String, &)
+
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2C%26%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="chrom_names-instance-method">
+      <div class="signature">
+        
+        def <strong>chrom_names</strong>
+
+        <a class="method-permalink" href="#chrom_names-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="chrom_size(chrom:String|Symbol)-instance-method">
+      <div class="signature">
+        
+        def <strong>chrom_size</strong>(chrom : String | Symbol)
+
+        <a class="method-permalink" href="#chrom_size%28chrom%3AString%7CSymbol%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="close-instance-method">
+      <div class="signature">
+        
+        def <strong>close</strong>
+
+        <a class="method-permalink" href="#close-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="closed?-instance-method">
+      <div class="signature">
+        
+        def <strong>closed?</strong>
+
+        <a class="method-permalink" href="#closed%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L36" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="file_name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>file_name</strong> : String
+
+        <a class="method-permalink" href="#file_name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="length-instance-method">
+      <div class="signature">
+        
+        def <strong>length</strong>
+
+        <a class="method-permalink" href="#length-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L40" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="seq(name:String|Symbol,start:Number,stop:Number)-instance-method">
+      <div class="signature">
+        
+        def <strong>seq</strong>(name : String | Symbol, start : Number, stop : Number)
+
+        <a class="method-permalink" href="#seq%28name%3AString%7CSymbol%2Cstart%3ANumber%2Cstop%3ANumber%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L59" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="seq(name:String|Symbol)-instance-method">
+      <div class="signature">
+        
+        def <strong>seq</strong>(name : String | Symbol)
+
+        <a class="method-permalink" href="#seq%28name%3AString%7CSymbol%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L70" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong>
+
+        <a class="method-permalink" href="#size-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L44" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="struct:HTS::LibHTS::FaidxT-instance-method">
+      <div class="signature">
+        
+        def <strong>struct</strong> : HTS::LibHTS::FaidxT
+
+        <a class="method-permalink" href="#struct%3AHTS%3A%3ALibHTS%3A%3AFaidxT-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-crystal/hts/blob/78252391aeefb06f49fda55702c13e66f82b2974/src/hts/faidx.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
 
 
 
