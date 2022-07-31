@@ -715,7 +715,23 @@ module HTS
     fun sam_hdr_free(hdr : SamHdr*)
     fun cram_get_refs(fd : HtsFile*) : RefsT
     type RefsT = Void*
-    alias FaidxT = Void*
+    fun fai_build3(fn : LibC::Char*, fnfai : LibC::Char*, fngzi : LibC::Char*) : LibC::Int
+    fun fai_build(fn : LibC::Char*) : LibC::Int
+    fun fai_destroy(fai : FaidxT)
+    type FaidxT = Void*
+    fun fai_load3(fn : LibC::Char*, fnfai : LibC::Char*, fngzi : LibC::Char*, flags : LibC::Int) : FaidxT
+    fun fai_load(fn : LibC::Char*) : FaidxT
+    fun fai_load3_format(fn : LibC::Char*, fnfai : LibC::Char*, fngzi : LibC::Char*, flags : LibC::Int, format : FaiFormatOptions) : FaidxT
+    enum FaiFormatOptions
+      FaiNone = 0
+      FaiFasta = 1
+      FaiFastq = 2
+    end
+    fun fai_load_format(fn : LibC::Char*, format : FaiFormatOptions) : FaidxT
+    fun fai_fetch(fai : FaidxT, reg : LibC::Char*, len : LibC::Int*) : LibC::Char*
+    fun fai_fetch64(fai : FaidxT, reg : LibC::Char*, len : HtsPosT*) : LibC::Char*
+    fun fai_fetchqual(fai : FaidxT, reg : LibC::Char*, len : LibC::Int*) : LibC::Char*
+    fun fai_fetchqual64(fai : FaidxT, reg : LibC::Char*, len : HtsPosT*) : LibC::Char*
     fun faidx_fetch_nseq(fai : FaidxT) : LibC::Int
     fun faidx_fetch_seq(fai : FaidxT, c_name : LibC::Char*, p_beg_i : LibC::Int, p_end_i : LibC::Int, len : LibC::Int*) : LibC::Char*
     fun faidx_fetch_seq64(fai : FaidxT, c_name : LibC::Char*, p_beg_i : HtsPosT, p_end_i : HtsPosT, len : HtsPosT*) : LibC::Char*
@@ -725,7 +741,9 @@ module HTS
     fun faidx_nseq(fai : FaidxT) : LibC::Int
     fun faidx_iseq(fai : FaidxT, i : LibC::Int) : LibC::Char*
     fun faidx_seq_len(fai : FaidxT, seq : LibC::Char*) : LibC::Int
-
+    fun fai_parse_region(fai : FaidxT, s : LibC::Char*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*, flags : LibC::Int) : LibC::Char*
+    fun fai_set_cache_size(fai : FaidxT, cache_size : LibC::Int)
+    fun fai_path(fa : LibC::Char*) : LibC::Char*
     struct TbxConfT
       preset : Int32T
       sc : Int32T

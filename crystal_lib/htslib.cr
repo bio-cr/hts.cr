@@ -9,7 +9,7 @@ module HTS
     "htslib/tbx.h",
     "htslib/vcf.h",
     "htslib/thread_pool.h",
-    prefix: %w(hts_ sam_ bam_ vcf_ bcf_ tbx_ cram_ h bgzf_ faidx_),
+    prefix: %w(hts_ sam_ bam_ vcf_ bcf_ tbx_ cram_ h bgzf_ faidx_ fai_),
     import_docstrings: "brief",
     remove_prefix: false,
   )]
