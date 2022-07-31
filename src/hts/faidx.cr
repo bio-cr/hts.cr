@@ -33,9 +33,10 @@ module HTS
       LibHTS.fai_destroy(@fai)
     end
 
-    def closed?
-      @fai.null?
-    end
+    # FIXME: This doesn't seem to work as expected
+    # def closed?
+    #   @fai.null?
+    # end
 
     def length
       LibHTS.faidx_nseq(@fai)
