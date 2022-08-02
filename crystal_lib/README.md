@@ -1,4 +1,4 @@
-Automatic binding generator
+## Automatic binding generator
 
 https://github.com/crystal-lang/crystal_lib
 
@@ -17,3 +17,5 @@ crystal build src/main.cr -o crystal_lib
 crystal_lib crystal_lib/hts > src/hts/libhts/libhts.cr
 crystal tool format src/hts/libhts/libhts.cr
 ```
+
+(3) The generated file will not work as is and must be modified manually.
