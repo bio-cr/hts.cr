@@ -16,6 +16,7 @@ module HTS
     getter :file_name
     getter :mode
     getter :header
+    getter :nthreads
 
     def self.open(file_name : Path | String, mode = "r", index = "",
                   threads = 0, create_index = false)
@@ -36,6 +37,7 @@ module HTS
     def initialize(file_name : Path | String, @mode = "r", index = "",
                    threads = 0, create_index = false)
       @file_name = file_name.to_s || ""
+      @nthreads = threads
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
