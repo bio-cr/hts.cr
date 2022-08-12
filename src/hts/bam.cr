@@ -63,15 +63,14 @@ module HTS
       @start_position = tell
     end
 
-    def create_index(index_name)
+    def create_index(index_name, min_shift = 0)
       check_closed
       if index_name == ""
         STDERR.puts "Create index for #{@file_name}"
-        LibHTS.sam_index_build(@file_name, -1)
       else
         STDERR.puts "Create index for #{@file_name} to #{index_name}"
-        LibHTS.sam_index_build2(@file_name, index_name, -1)
       end
+      LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
     end
 
     def load_index(index_name)
