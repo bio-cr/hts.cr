@@ -19,13 +19,13 @@ module HTS
     getter :nthreads
 
     def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
-                  threads = 0, create_index = false)
-      new(file_name, mode, index, fai, threads, create_index)
+                  threads = 0, build_index = false)
+      new(file_name, mode, index, fai, threads, build_index)
     end
 
     def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
-                  threads = 0, create_index = false)
-      file = new(file_name, mode, index, fai, threads, create_index)
+                  threads = 0, build_index = false)
+      file = new(file_name, mode, index, fai, threads, build_index)
       begin
         yield file
       ensure
@@ -35,7 +35,7 @@ module HTS
     end
 
     def initialize(file_name : Path | String, @mode = "r", index = "", fai = "",
-                   threads = 0, create_index = false)
+                   threads = 0, build_index = false)
       @file_name = file_name.to_s || ""
       @nthreads = threads
 
@@ -56,14 +56,14 @@ module HTS
 
       @header = Bam::Header.new(@hts_file)
 
-      create_index(index) if create_index
+      build_index(index) if build_index
 
       @idx = load_index(index)
 
       @start_position = tell
     end
 
-    def create_index(index_name, min_shift = 0)
+    def build_index(index_name, min_shift = 0)
       check_closed
       if index_name == ""
         STDERR.puts "Create index for #{@file_name}"
