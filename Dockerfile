@@ -1,8 +1,21 @@
 FROM crystallang/crystal:latest
 
-RUN apt update -y && apt upgrade -y && \
-    apt install -y libhts-dev
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install apt-utils automake -y
+
+RUN apt-get install -y libcurl4-openssl-dev liblzma-dev libbz2-dev libdeflate-dev
+
+RUN git clone --depth 1 --recursive https://github.com/samtools/htslib && \
+    cd htslib && \
+    autoreconf -i && \
+    ./configure && \
+    make -j2 && \
+    make install 
+
+ENV LD_LIBRARY_PATH="/usr/local/lib"
 
 RUN git clone --depth 1 --recursive https://github.com/bio-crystal/hts && \
     cd hts && \
-    shards install
+    shards install && \
+    crystal run test/run_all.cr
