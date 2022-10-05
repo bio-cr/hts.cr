@@ -9,7 +9,7 @@ class BamTest < Minitest::Test
         @{{format.id}}_{{type.id}}.try &.close
       {% end %}
     {% end %}
-  end
+hts  end
 
   {% for format in ["bam", "sam", "cram"] %}
     def path_{{format.id}}_string
@@ -21,7 +21,7 @@ class BamTest < Minitest::Test
     end
 
     def path_{{format.id}}_uri
-      "https://raw.githubusercontent.com/bio-crystal/hts/develop/test/fixtures/moo.{{format.id}}"
+      "https://raw.githubusercontent.com/bio-cr/hts.cr/develop/test/fixtures/moo.{{format.id}}"
     end
   {% end %}
 
