@@ -100,20 +100,22 @@ bcf.close
  └─────────────────────────────────────────────┘
 ```
 
-## Alternatives
+## Looking for flexibility?
 
 The Crystal language is suited for creating efficient command-line tools. The Ruby language, on the other hand, is suited for exploratory analysis.
 
 * [ruby-htslib](https://github.com/kojix2/ruby-htslib)
 
-And, as you know, there are many other great product-level htslib binding libraries out there, such as Python, R, Rust, etc. 
-
 ## Contributing
 
 :rocket: Feel free to fork it out! 
-:hatching_chick: alpha stage.
 
-hts is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.
+    git clone https://github.com/bio-cr/hts.cr
+    cd hts.cr
+    crystal run test/run_all.cr
+
+
+HTS.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.
 
     Do you need commit rights to hts?
     Do you want to get admin rights and take over the project?
