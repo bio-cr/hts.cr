@@ -26,6 +26,7 @@ Add htslib to your `shard.yml`:
    dependencies:
      htslib:
        github: bio-cr/hts.cr
+       branch: develop
    ```
 
 Run `shards install`
