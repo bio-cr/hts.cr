@@ -16,6 +16,6 @@ RUN git clone --depth 1 --recursive https://github.com/samtools/htslib && \
 ENV LD_LIBRARY_PATH="/usr/local/lib"
 
 RUN git clone https://github.com/bio-cr/hts.cr && \
-    cd hts && \
+    cd hts.cr && \
     shards install && \
     crystal run test/run_all.cr
