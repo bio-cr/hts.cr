@@ -723,7 +723,7 @@ module HTS
     fun fai_load(fn : LibC::Char*) : FaidxT
     fun fai_load3_format(fn : LibC::Char*, fnfai : LibC::Char*, fngzi : LibC::Char*, flags : LibC::Int, format : FaiFormatOptions) : FaidxT
     enum FaiFormatOptions
-      FaiNone = 0
+      FaiNone  = 0
       FaiFasta = 1
       FaiFastq = 2
     end
@@ -744,6 +744,7 @@ module HTS
     fun fai_parse_region(fai : FaidxT, s : LibC::Char*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*, flags : LibC::Int) : LibC::Char*
     fun fai_set_cache_size(fai : FaidxT, cache_size : LibC::Int)
     fun fai_path(fa : LibC::Char*) : LibC::Char*
+
     struct TbxConfT
       preset : Int32T
       sc : Int32T
