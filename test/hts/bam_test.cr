@@ -9,7 +9,7 @@ class BamTest < Minitest::Test
         @{{format.id}}_{{type.id}}.try &.close
       {% end %}
     {% end %}
-hts  end
+  end
 
   {% for format in ["bam", "sam", "cram"] %}
     def path_{{format.id}}_string
