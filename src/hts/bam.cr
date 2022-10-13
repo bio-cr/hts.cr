@@ -169,7 +169,7 @@ module HTS
     define_getter :insert_size
     define_getter :seq
     define_getter :qual
-   
+
     def isize
       insert_size
     end
