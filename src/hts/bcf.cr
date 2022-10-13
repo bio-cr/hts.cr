@@ -83,6 +83,12 @@ module HTS
       !@idx.null?
     end
 
+    def close
+      LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      @idx = @idx.class.null
+      super
+    end
+
     def write_header
       check_closed
       @header = header.clone
