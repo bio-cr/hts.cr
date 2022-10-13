@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Crystal Docs 1.4.1">
+<meta name="generator" content="Crystal Docs 1.5.0">
 <meta name="crystal_docs.project_version" content="develop">
 <meta name="crystal_docs.project_name" content="hts">
 
@@ -193,7 +193,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L3" target="_blank">
         hts/bcf/header.cr
       </a>
     
@@ -244,6 +244,11 @@
     
       <li class="entry-summary">
         <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
         
       </li>
     
@@ -325,7 +330,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -346,7 +351,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -376,7 +381,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L40" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L40" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L44" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -392,7 +413,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -408,7 +429,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -424,7 +445,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -440,7 +461,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -466,13 +487,13 @@ which includes its class name and its object address.</p>
   <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="t">Person</span>.<span class="k">new</span>(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).to_s <span class="c"># =&gt; #&lt;Person:0x10a199f20&gt;</span></code></pre>
+<span class="t">Person</span>.new(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).to_s <span class="c"># =&gt; #&lt;Person:0x10a199f20&gt;</span></code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/c1cea6c952c433912831a586b9e20976e182ec1a/src/hts/bcf/header.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/f4cf9ea911aae6da40be9e8b1b7efa8030ef16d8/src/hts/bcf/header.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
