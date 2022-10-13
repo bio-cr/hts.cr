@@ -79,5 +79,8 @@ module HTS
       String.new(result)
     end
 
+    def finalize
+      close
+    end
   end
 end

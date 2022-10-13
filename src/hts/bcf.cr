@@ -89,6 +89,10 @@ module HTS
       super
     end
 
+    def finalize
+      close
+    end
+
     def write_header
       check_closed
       @header = header.clone

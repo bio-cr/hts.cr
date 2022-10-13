@@ -37,6 +37,10 @@ module HTS
       def clone
         self.class.new LibHTS.sam_hdr_dup(@sam_hdr)
       end
+
+      def finalize
+        LibHTS.sam_hdr_destroy @sam_hdr unless @sam_hdr.null?
+      end
     end
   end
 end

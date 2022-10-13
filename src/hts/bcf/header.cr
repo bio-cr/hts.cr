@@ -40,6 +40,10 @@ module HTS
       def clone
         self.class.new(LibHTS.bcf_hdr_dup(@bcf_hdr))
       end
+
+      def finalize
+        LibHTS.bcf_hdr_destroy(@bcf_hdr) unless @bcf_hdr.null?
+      end
     end
   end
 end
