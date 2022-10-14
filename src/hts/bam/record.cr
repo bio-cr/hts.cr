@@ -86,7 +86,6 @@ module HTS
 
       # returns the chromosome or '' if not mapped.
       def chrom
-        typeof(@bam1)
         return "" if tid == -1
 
         String.new LibHTS.sam_hdr_tid2name(@header.struct, tid)
