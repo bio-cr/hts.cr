@@ -30,6 +30,10 @@ module HTS
         end
       end
 
+      def add_pg(name, *args)
+        LibHTS.sam_hdr_add_pg(@sam_hdr, name, *args, nil)
+      end
+
       def to_s(io : IO)
         io << String.new LibHTS.sam_hdr_str(@sam_hdr)
       end
