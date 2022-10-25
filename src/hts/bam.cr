@@ -98,10 +98,15 @@ module HTS
       close
     end
 
+    def fai=(fai)
+      check_closed
+      r = LibHTS.hts_set_fai_filename(@hts_file, fai)
+      r < 0 && raise "Failed to load fasta: #{fai}"
+    end
+
     def write_header(header)
       check_closed
       @header = header.clone
-      LibHTS.hts_set_fai_filename(@hts_file, @file_name)
       LibHTS.sam_hdr_write(@hts_file, header.struct)
     end
 
