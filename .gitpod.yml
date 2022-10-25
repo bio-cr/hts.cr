@@ -1,0 +1,7 @@
+# Please adjust to your needs (see https://www.gitpod.io/docs/config-gitpod-file)
+
+image:
+  file: Dockerfile
+
+tasks:
+  - init: shards
