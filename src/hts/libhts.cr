@@ -1,5 +1,6 @@
-# LibHTS
+require "./version"
 
+# LibHTS
 require "./libhts/libhts"
 
 # LibHTS2

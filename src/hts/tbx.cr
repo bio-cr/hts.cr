@@ -1,6 +1,7 @@
 require "./libhts"
 require "./version"
 
+require "./hts"
 require "./tbx/record"
 
 module HTS
