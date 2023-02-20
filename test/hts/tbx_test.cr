@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require "../../src/hts/tbx"
+require "../../src/hts/tabix"
 
-class TbxTest < Minitest::Test
+class TabixTest < Minitest::Test
 end

@@ -1,5 +1,5 @@
 module HTS
-  class Tbx < Hts
+  class Tabix < Hts
     class Record
     end
   end

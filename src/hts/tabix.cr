@@ -2,10 +2,10 @@ require "./libhts"
 require "./version"
 
 require "./hts"
-require "./tbx/record"
+require "./tabix/record"
 
 module HTS
-  class Tbx < Hts
+  class Tabix < Hts
     getter :file_name
     getter :mode
 
