@@ -18,7 +18,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu' }}
         run: |
           sudo apt update -y
-          sudo apt install -yq libcurl4-openssl-dev liblzma-dev libbz2-dev libdeflate-dev
+          sudo apt install -yq libcurl4-openssl-dev liblzma-dev libbz2-dev libdeflate-dev pkg-config
           git clone --recurse-submodules https://github.com/samtools/htslib
           cd htslib && autoreconf -i && make -j4 && sudo make install
       - name: Install HTSLib (macos)
