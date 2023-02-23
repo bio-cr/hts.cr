@@ -1,0 +1,3 @@
+*           text=auto
+*.fa        text eol=lf
+*.fastq     test eol=lf
