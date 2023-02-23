@@ -65,6 +65,7 @@ module HTS
 
     def build_index(index_name, min_shift = 0)
       check_closed
+
       if index_name == ""
         STDERR.puts "Create index for #{@file_name}"
       else
@@ -73,8 +74,9 @@ module HTS
       LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
     end
 
-    def load_index(index_name)
+    def load_index(index_name = "")
       check_closed
+
       if index_name == ""
         LibHTS.sam_index_load3(@hts_file, @file_name, nil, 2) # should be 3 ? (copy remote file to local?)
       else
@@ -84,10 +86,10 @@ module HTS
 
     def index_loaded?
       check_closed
+
       !@idx.null?
     end
 
-    # Close the current file.
     def close
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
       @idx = @idx.class.null
@@ -106,16 +108,64 @@ module HTS
 
     def write_header(header)
       check_closed
+
       @header = header.clone
       LibHTS.sam_hdr_write(@hts_file, header.struct)
     end
 
+    def header=(header)
+      write_header(header)
+    end
+
     def write(record)
       check_closed
-      new_record = record.clone
+
       r = LibHTS.sam_write1(@hts_file, header.struct, new_record.struct)
-      r < 0 && raise "Failed to write record: #{record}"
+      raise "Failed to write record: #{record}" if r < 0
     end
+
+    def <<(record)
+      write(record)
+    end
+
+    define_getter :qname
+    define_getter :flag
+    define_getter :chrom
+    define_getter :pos
+    define_getter :mapq
+    define_getter :cigar
+    define_getter :mate_chrom
+    define_getter :mate_pos
+    define_getter :insert_size
+    define_getter :seq
+    define_getter :qual
+
+    def isize
+      insert_size
+    end
+
+    def mpos
+      mate_pos
+    end
+
+    # def aux(tag)
+
+    define_iterator :qname
+    define_iterator :flag
+    define_iterator :chrom
+    define_iterator :pos
+    define_iterator :mapq
+    define_iterator :cigar
+    define_iterator :mate_chrom
+    define_iterator :mate_pos
+    define_iterator :insert_size
+    define_iterator :seq
+    define_iterator :qual
+
+    # each_isize
+    # each_mpos
+
+    # each_aux(tag)
 
     def each(copy = false)
       if copy
@@ -131,6 +181,7 @@ module HTS
 
     private def each_record_copy
       check_closed
+
       while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
         yield Record.new(bam1, header)
       end
@@ -138,6 +189,7 @@ module HTS
 
     private def each_record_reuse
       check_closed
+      
       bam1 = LibHTS.bam_init1
       record = Record.new(bam1, header)
       while LibHTS.sam_read1(@hts_file, header.struct, bam1) != -1
@@ -162,37 +214,5 @@ module HTS
         LibHTS.hts_itr_destroy(qiter)
       end
     end
-
-    define_getter :qname
-    define_getter :flag
-    define_getter :chrom
-    define_getter :pos
-    define_getter :mapq
-    define_getter :cigar
-    define_getter :mate_chrom
-    define_getter :mate_pos
-    define_getter :insert_size
-    define_getter :seq
-    define_getter :qual
-
-    def isize
-      insert_size
-    end
-
-    def mpos
-      mate_pos
-    end
-
-    define_iterator :qname
-    define_iterator :flag
-    define_iterator :chrom
-    define_iterator :pos
-    define_iterator :mapq
-    define_iterator :cigar
-    define_iterator :mate_chrom
-    define_iterator :mate_pos
-    define_iterator :insert_size
-    define_iterator :seq
-    define_iterator :qual
   end
 end
