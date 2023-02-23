@@ -71,6 +71,7 @@ module HTS
 
     def load_index(index_name = "")
       check_closed
+
       if index_name != ""
         LibHTS.bcf_index_load2(@file_name, index_name)
       else
@@ -80,6 +81,7 @@ module HTS
 
     def index_loaded?
       check_closed
+
       !@idx.null?
     end
 
@@ -93,26 +95,38 @@ module HTS
       close
     end
 
-    def write_header
+    def write_header(header)
       check_closed
-      @header = header.clone
-      LibHTS.hts_set_fai_filename(header.struct, @file_name)
+
+      # @header = header.clone
       LibHTS.bcf_hdr_write(@hts_file, header.struct)
+    end
+
+    def header=(header)
+      write_header(header)
     end
 
     def write(var)
       check_closed
-      var_dup = var.clone
-      LibHTS.bcf_write(@hts_file, header.struct, var_dup.struct)
+
+      # var_dup = var.clone
+      r = LibHTS.bcf_write(@hts_file, header.struct, var_dup.struct)
+      raise "Failed to write record" if r < 0
+    end
+
+    def <<(var)
+      write(var)
     end
 
     def nsamples
       check_closed
+
       header.nsamples
     end
 
     def samples
       check_closed
+      
       header.samples
     end
 
