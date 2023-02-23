@@ -2,7 +2,6 @@ require "./libhts"
 require "./version"
 
 require "./hts"
-require "./tabix/record"
 
 module HTS
   class Tabix < Hts
