@@ -1,3 +1,2 @@
-*           text=auto
-*.fa        text eol=lf
-*.fastq     test eol=lf
+*               text=auto
+test/fixtures/* text eol=lf

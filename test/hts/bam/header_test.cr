@@ -39,6 +39,7 @@ class BamHeaderTest < Minitest::Test
     @PG	ID:samtools	PN:samtools	PP:bwa	VN:1.10-96-gcc4e1a6	CL:samtools sort -o poo.sort.bam b.bam
 
     TEXT
+    header_text = header_text.gsub(/\r\n/, "\n") # for Windows
     assert_equal header_text, bam.header.to_s
   end
 
