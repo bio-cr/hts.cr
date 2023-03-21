@@ -110,7 +110,7 @@ module HTS
       check_closed
 
       # @header = header.clone
-      LibHTS.sam_hdr_write(@hts_file, header.struct)
+      LibHTS.sam_hdr_write(@hts_file, header)
     end
 
     def header=(header)
@@ -120,7 +120,7 @@ module HTS
     def write(record)
       check_closed
 
-      r = LibHTS.sam_write1(@hts_file, header.struct, new_record.struct)
+      r = LibHTS.sam_write1(@hts_file, header, new_record)
       raise "Failed to write record: #{record}" if r < 0
     end
 
@@ -182,7 +182,7 @@ module HTS
     private def each_record_copy
       check_closed
 
-      while LibHTS.sam_read1(@hts_file, header.struct, bam1 = LibHTS.bam_init1) != -1
+      while LibHTS.sam_read1(@hts_file, header, bam1 = LibHTS.bam_init1) != -1
         yield Record.new(bam1, header)
       end
     end
@@ -192,7 +192,7 @@ module HTS
       
       bam1 = LibHTS.bam_init1
       record = Record.new(bam1, header)
-      while LibHTS.sam_read1(@hts_file, header.struct, bam1) != -1
+      while LibHTS.sam_read1(@hts_file, header, bam1) != -1
         yield record
       end
     end
@@ -201,7 +201,7 @@ module HTS
       check_closed
       raise "Index file is required to call the query method." unless index_loaded?
 
-      qiter = LibHTS.sam_itr_querys(@idx, header.struct, region)
+      qiter = LibHTS.sam_itr_querys(@idx, header, region)
       begin
         bam1 = LibHTS.bam_init1
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)

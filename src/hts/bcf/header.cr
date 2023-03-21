@@ -10,7 +10,7 @@ module HTS
         @bcf_hdr = bcf_hdr
       end
 
-      def struct
+      def to_unsafe
         @bcf_hdr
       end
 

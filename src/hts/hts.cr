@@ -30,7 +30,7 @@ module HTS
       end
     end
 
-    def struct
+    def to_unsafe
       @hts_file
     end
 

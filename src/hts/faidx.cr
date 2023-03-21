@@ -25,7 +25,7 @@ module HTS
       raise "Failed to load fai file: #{file_name}" if @fai.null?
     end
 
-    def struct
+    def to_unsafe
       @fai
     end
 

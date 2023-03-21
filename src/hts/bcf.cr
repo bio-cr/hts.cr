@@ -99,7 +99,7 @@ module HTS
       check_closed
 
       # @header = header.clone
-      LibHTS.bcf_hdr_write(@hts_file, header.struct)
+      LibHTS.bcf_hdr_write(@hts_file, header)
     end
 
     def header=(header)
@@ -110,7 +110,7 @@ module HTS
       check_closed
 
       # var_dup = var.clone
-      r = LibHTS.bcf_write(@hts_file, header.struct, var_dup.struct)
+      r = LibHTS.bcf_write(@hts_file, header, var_dup)
       raise "Failed to write record" if r < 0
     end
 
@@ -144,7 +144,7 @@ module HTS
 
     private def each_record_copy
       check_closed
-      while LibHTS.bcf_read(@hts_file, header.struct, bcf1 = LibHTS.bcf_init) != -1
+      while LibHTS.bcf_read(@hts_file, header, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(bcf1, header)
       end
     end
@@ -153,7 +153,7 @@ module HTS
       check_closed
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(bcf1, header)
-      while LibHTS.bcf_read(@hts_file, header.struct, bcf1) != -1
+      while LibHTS.bcf_read(@hts_file, header, bcf1) != -1
         yield record
       end
     end

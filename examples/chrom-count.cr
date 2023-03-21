@@ -39,7 +39,7 @@ bam = HTS::Bam.open(fname, threads: nthreads)
 puts bam.map { |r| r.tid }
   .tally
   .map { |tid, num|
-    ptr = HTS::LibHTS.sam_hdr_tid2name(bam.header.struct, tid)
+    ptr = HTS::LibHTS.sam_hdr_tid2name(bam.header, tid)
     chrom = ptr.null? ? "*" : String.new(ptr)
     "#{chrom}\t#{num}"
   }.join("\n")

@@ -10,8 +10,8 @@ module HTS
       def get_int(tag)
         ndst = Pointer(Int32).malloc
         dst = pointerof(@p1)
-        hdr = @record.header.struct
-        r = @record.struct
+        hdr = @record.header
+        r = @record
         if LibHTS2.bcf_get_info_int32(hdr, r, tag, dst, ndst) < 0
           return nil
         end
@@ -22,8 +22,8 @@ module HTS
       def get_float(tag)
         ndst = Pointer(Int32).malloc
         dst = pointerof(@p1)
-        hdr = @record.header.struct
-        r = @record.struct
+        hdr = @record.header
+        r = @record
         if LibHTS2.bcf_get_info_float(hdr, r, tag, dst, ndst) < 0
           return nil
         end
@@ -34,8 +34,8 @@ module HTS
       def get_string(tag)
         ndst = Pointer(Int32).malloc
         dst = pointerof(@p1)
-        hdr = @record.header.struct
-        r = @record.struct
+        hdr = @record.header
+        r = @record
         if LibHTS2.bcf_get_info_string(hdr, r, tag, dst, ndst) < 0
           return nil
         end
@@ -45,8 +45,8 @@ module HTS
       def get_flag(tag)
         ndst = Pointer(Int32).malloc
         dst = pointerof(@p1)
-        hdr = @record.header.struct
-        r = @record.struct
+        hdr = @record.header
+        r = @record
         case LibHTS2.bcf_get_info_flag(hdr, r, tag, dst, ndst)
         when 1
           return true

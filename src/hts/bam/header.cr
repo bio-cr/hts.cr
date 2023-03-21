@@ -10,7 +10,7 @@ module HTS
         @sam_hdr = sam_hdr
       end
 
-      def struct
+      def to_unsafe
         @sam_hdr
       end
 

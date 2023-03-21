@@ -8,7 +8,7 @@ module HTS
 
       getter :header
 
-      def struct
+      def to_unsafe
         @bcf1
       end
 
@@ -21,7 +21,7 @@ module HTS
       end
 
       def chrom
-        String.new LibHTS2.bcf_hdr_id2name(@header.struct, rid)
+        String.new LibHTS2.bcf_hdr_id2name(@header, rid)
       end
 
       def pos
@@ -42,11 +42,11 @@ module HTS
       end
 
       def id=(id)
-        LibHTS.bcf_update_id(@header.struct, @bcf1, id)
+        LibHTS.bcf_update_id(@header, @bcf1, id)
       end
 
       def clear_id
-        LibHTS.bcf_update_id(@header.struct, @bcf1, ".")
+        LibHTS.bcf_update_id(@header, @bcf1, ".")
       end
 
       def filter
@@ -59,12 +59,12 @@ module HTS
           "PASS"
         when 1
           i = d.flt.value
-          String.new LibHTS2.bcf_hdr_int2id(@header.struct, LibHTS2::BCF_DT_ID, i)
+          String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, i)
         when 2..
           # FIXME note tested yet and may contain bugs
           Array(String).new(n_flt) do |i|
             j = d.flt[i]
-            String.new LibHTS2.bcf_hdr_int2id(@header.struct, LibHTS2::BCF_DT_ID, j)
+            String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, j)
           end
         else
           raise "unexpectd number of filters. n_flt: #{n_flt}"
@@ -112,7 +112,7 @@ module HTS
 
       def to_s(io : IO)
         ksr = LibHTS::KstringT.new
-        raise "Failed to format record" if LibHTS.vcf_format(@header.struct, @bcf1, pointerof(ksr)) == -1
+        raise "Failed to format record" if LibHTS.vcf_format(@header, @bcf1, pointerof(ksr)) == -1
 
         io << (String.new ksr.s)
       end

@@ -11,7 +11,7 @@ module HTS
         @header = header
       end
 
-      def struct
+      def to_unsafe
         @bam1
       end
 
@@ -88,7 +88,7 @@ module HTS
       def chrom
         return "" if tid == -1
 
-        String.new LibHTS.sam_hdr_tid2name(@header.struct, tid)
+        String.new LibHTS.sam_hdr_tid2name(@header, tid)
       end
 
       # returns the mate chromosome or '' if not mapped.
@@ -100,7 +100,7 @@ module HTS
       def mate_chrom
         return "" if mtid == -1
 
-        String.new LibHTS.sam_hdr_tid2name(@header.struct, mtid)
+        String.new LibHTS.sam_hdr_tid2name(@header, mtid)
       end
 
       def mate_contig
@@ -269,7 +269,7 @@ module HTS
 
       def to_s(io : IO)
         kstr = Pointer(LibHTS::KstringT).malloc
-        raise "Failed to format bam record" if LibHTS.sam_format1(@header.struct, @bam1, kstr) == -1
+        raise "Failed to format bam record" if LibHTS.sam_format1(@header, @bam1, kstr) == -1
 
         io << (String.new kstr.value.s)
       end

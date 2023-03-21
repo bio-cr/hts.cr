@@ -181,7 +181,7 @@ module HTS
 
     def bcf_hdr_int2id(hdr, type, int_id)
       Pointer(LibHTS::BcfIdpairT).new(
-        (hdr.value.id[type]).address +
+        (hdr.to_unsafe.value.id[type]).address +
         sizeof(LibHTS::BcfIdpairT) * int_id
       ).value.key
     end
@@ -191,10 +191,10 @@ module HTS
     end
 
     def bcf_hdr_id2name(hdr, rid)
-      raise "invalid rid" if hdr.null? || rid < 0 || rid >= hdr.value.n[LibHTS2::BCF_DT_CTG]
+      raise "invalid rid" if hdr.to_unsafe.null? || rid < 0 || rid >= hdr.to_unsafe.value.n[LibHTS2::BCF_DT_CTG]
 
       Pointer(LibHTS::BcfIdpairT).new(
-        (hdr.value.id[LibHTS2::BCF_DT_CTG]).address +
+        (hdr.to_unsafe.value.id[LibHTS2::BCF_DT_CTG]).address +
         sizeof(LibHTS::BcfIdpairT) * rid # offset
       ).value.key
     end

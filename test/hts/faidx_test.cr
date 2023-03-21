@@ -36,10 +36,6 @@ class FaidxTest < Minitest::Test
     assert_equal test_faidx_path, faidx.file_name
   end
 
-  def test_struct
-    assert_instance_of HTS::LibHTS::FaidxT, faidx.struct
-  end
-
   def test_size
     assert_equal 5, faidx.size
   end
