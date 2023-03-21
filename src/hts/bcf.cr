@@ -126,7 +126,7 @@ module HTS
 
     def samples
       check_closed
-      
+
       header.samples
     end
 

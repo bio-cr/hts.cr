@@ -189,7 +189,7 @@ module HTS
 
     private def each_record_reuse
       check_closed
-      
+
       bam1 = LibHTS.bam_init1
       record = Record.new(bam1, header)
       while LibHTS.sam_read1(@hts_file, header, bam1) != -1
