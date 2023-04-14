@@ -120,7 +120,7 @@ module HTS
     def write(record)
       check_closed
 
-      r = LibHTS.sam_write1(@hts_file, header, new_record)
+      r = LibHTS.sam_write1(@hts_file, header, record)
       raise "Failed to write record: #{record}" if r < 0
     end
 
