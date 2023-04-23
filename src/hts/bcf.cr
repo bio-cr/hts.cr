@@ -98,7 +98,7 @@ module HTS
     def write_header(header)
       check_closed
 
-      # @header = header.clone
+      @header = header.clone # Necessary. If not, it will cause segfault.
       LibHTS.bcf_hdr_write(@hts_file, header)
     end
 
