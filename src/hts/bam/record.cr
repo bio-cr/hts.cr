@@ -159,7 +159,7 @@ module HTS
       def seq
         r = LibHTS2.bam_get_seq(@bam1)
         String.build do |seq|
-          (@bam1.value.core.l_qseq).times do |i|
+          (self.len).times do |i|
             seq << SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
           end
         end
@@ -175,8 +175,8 @@ module HTS
 
       # return only the base of the requested index "i" of the query sequence.
       def base(n)
-        n += @bam1.value.core.l_qseq if n < 0
-        return '.' if (n >= @bam1.value.core.l_qseq) || (n < 0) # eg. base(-1000)
+        n += self.len if n < 0
+        return '.' if (n >= self.len) || (n < 0) # eg. base(-1000)
 
         r = LibHTS2.bam_get_seq(@bam1)
         SEQ_NT16_STR[LibHTS2.bam_seqi(r, n)]
@@ -185,15 +185,15 @@ module HTS
       # return the base qualities
       def qual
         q_ptr = LibHTS2.bam_get_qual(@bam1)
-        Array.new(@bam1.value.core.l_qseq) do |i|
+        Array.new(self.len) do |i|
           q_ptr[i]
         end
       end
 
       # return only the base quality of the requested index "i" of the query sequence.
       def base_qual(n)
-        n += @bam1.value.core.l_qseq if n < 0
-        return 0 if (n >= @bam1.value.core.l_qseq) || (n < 0) # eg. base_qual(-1000)
+        n += self.len if n < 0
+        return 0 if (n >= self.len) || (n < 0) # eg. base_qual(-1000)
 
         q_ptr = LibHTS2.bam_get_qual(@bam1)
         q_ptr[n]
