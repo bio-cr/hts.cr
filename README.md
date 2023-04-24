@@ -100,6 +100,8 @@ bcf.close
  └─────────────────────────────────────────────┘
 ```
 
+LibHTS2: Since methods cannot be added to `Lib` in the Crystal language, macro functions are implemented in the LibHTS2 module. This is different from Ruby-htslib.
+
 ## Looking for flexibility?
 
 The Crystal language is suited for creating efficient command-line tools. The Ruby language, on the other hand, is suited for exploratory analysis.
