@@ -34,6 +34,14 @@ module HTS
         LibHTS.sam_hdr_add_pg(@sam_hdr, name, *args, nil)
       end
 
+      def name2tid(name)
+        LibHTS.sam_hdr_name2tid(@sam_hdr, name)
+      end
+
+      def tid2name(tid)
+        String.new LibHTS.sam_hdr_tid2name(@sam_hdr, tid)
+      end
+
       def to_s(io : IO)
         io << String.new LibHTS.sam_hdr_str(@sam_hdr)
       end

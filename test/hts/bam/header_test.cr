@@ -31,6 +31,14 @@ class BamHeaderTest < Minitest::Test
     # FIXME
   end
 
+  def test_name2tid
+    assert_equal 0, bam.header.name2tid("poo")
+  end
+
+  def test_tid2name
+    assert_equal "poo", bam.header.tid2name(0)
+  end
+
   def test_to_s
     header_text = <<-TEXT
     @HD	VN:1.3	SO:coordinate
