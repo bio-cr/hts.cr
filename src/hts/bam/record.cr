@@ -68,7 +68,7 @@ module HTS
       end
 
       def mpos=(mpos)
-        @bam1.value.core.mpos = mpos # FIXME
+        self.mate_pos=(mpos) # self is necessary
       end
 
       def bin
