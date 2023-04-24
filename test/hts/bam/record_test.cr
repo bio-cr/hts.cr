@@ -195,6 +195,10 @@ class BamRecordTest < Minitest::Test
     assert_equal ([17] * 70), aln1.qual
   end
 
+  def test_qual_string
+    assert_equal "2" * 70, aln1.qual_string
+  end
+
   def test_base_qual
     assert_equal 17, aln1.base_qual(0)
     assert_equal 17, aln1.base_qual(-1)

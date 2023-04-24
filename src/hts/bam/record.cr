@@ -190,6 +190,18 @@ module HTS
         end
       end
 
+      def qual_string
+        q_ptr = LibHTS2.bam_get_qual(@bam1)
+        lqseq = self.len
+        str = String.new(lqseq) do |buffer|
+          lqseq.times do |i|
+            buffer[i] = q_ptr[i] + 33
+          end
+          {lqseq, 2}
+        end
+        str
+      end
+
       # return only the base quality of the requested index "i" of the query sequence.
       def base_qual(n)
         n += self.len if n < 0
