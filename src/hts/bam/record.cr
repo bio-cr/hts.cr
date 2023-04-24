@@ -110,6 +110,10 @@ module HTS
         LibHTS2.bam_is_rev(@bam1) ? "-" : "+"
       end
 
+      def mate_strand
+        LibHTS2.bam_is_mrev(@bam1) ? "-" : "+"
+      end
+
       # insert size
       def insert_size
         @bam1.value.core.isize
