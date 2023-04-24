@@ -18,6 +18,15 @@ class BamRecordTest < Minitest::Test
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119", aln1.qname
   end
 
+  def test_qname_set
+    aln = aln1
+    assert_equal "poo_3290_3833_2:0:0_2:0:0_119", aln.qname
+    aln.qname = "test_qname_01"
+    assert_equal "test_qname_01", aln.qname
+    aln.qname = "poo_3290_3833_2:0:0_2:0:0_119"
+    assert_equal "poo_3290_3833_2:0:0_2:0:0_119", aln.qname
+  end
+
   def test_tid
     assert_equal 0, aln1.tid
   end

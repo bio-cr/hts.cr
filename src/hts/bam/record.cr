@@ -22,10 +22,9 @@ module HTS
         String.new LibHTS2.bam_get_qname(@bam1)
       end
 
-      # Set (query) name.
-      # def qname=(name)
-      #   raise 'Not Implemented'
-      # end
+      def qname=(name)
+        LibHTS.bam_set_qname(@bam1, name)
+      end
 
       # returns the tid of the record or -1 if not mapped.
       def tid
