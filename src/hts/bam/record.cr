@@ -68,7 +68,7 @@ module HTS
       end
 
       def mpos=(mpos)
-        self.mate_pos=(mpos) # self is necessary
+        self.mate_pos = mpos
       end
 
       def bin
@@ -125,7 +125,7 @@ module HTS
       end
 
       def isize=(isize)
-        @bam1.value.core.isize = isize # FIXME
+        self.insert_size = isize
       end
 
       # mapping quality
