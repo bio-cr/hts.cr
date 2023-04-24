@@ -1,5 +1,5 @@
 module HTS
-  module LibHTS2 # FIXME
+  module LibHTS2
     extend self
     # constants
     BCF_HL_FLT  = 0 # header line

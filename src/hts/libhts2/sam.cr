@@ -1,5 +1,5 @@
 module HTS
-  module LibHTS2 # FIXME
+  module LibHTS2
     extend self
 
     # constants
