@@ -7,8 +7,13 @@ module HTS
       SEQ_NT16_STR = "=ACMGRSVTWYHKDBN"
 
       def initialize(header : Bam::Header, bam1_t : Pointer(HTS::LibHTS::Bam1T))
-        @bam1 = bam1_t
         @header = header
+        @bam1 = bam1_t
+      end
+
+      def initialize(header : Bam::Header)
+        @header = header
+        @bam1 = LibHTS.bam_init1
       end
 
       def to_unsafe
