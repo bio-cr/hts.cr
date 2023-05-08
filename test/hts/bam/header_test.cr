@@ -14,6 +14,10 @@ class BamHeaderTest < Minitest::Test
     @bam ||= HTS::Bam.new(test_bam_path)
   end
 
+  def test_initialize
+    assert_instance_of HTS::Bam::Header, HTS::Bam::Header.new
+  end
+
   def test_target_count
     assert_equal(1, bam.header.target_count)
   end

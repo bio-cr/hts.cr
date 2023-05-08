@@ -10,6 +10,10 @@ module HTS
         @bcf_hdr = bcf_hdr
       end
 
+      def initialize
+        @bcf_hdr = LibHTS.bcf_hdr_init("w")
+      end
+
       def to_unsafe
         @bcf_hdr
       end

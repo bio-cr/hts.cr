@@ -10,6 +10,10 @@ module HTS
         @sam_hdr = sam_hdr
       end
 
+      def initialize
+        @sam_hdr = LibHTS.sam_hdr_init
+      end
+
       def to_unsafe
         @sam_hdr
       end

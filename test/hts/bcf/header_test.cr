@@ -20,6 +20,10 @@ class BcfHeaderTest < Minitest::Test
     bcf.header
   end
 
+  def test_initialize
+    assert_instance_of HTS::Bcf::Header, HTS::Bcf::Header.new
+  end
+
   def test_get_version
     assert_equal "VCFv4.2", hdr.get_version
   end
