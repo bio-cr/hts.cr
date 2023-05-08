@@ -1,7 +1,7 @@
 module HTS
   class Bcf < Hts
     class Record
-      def initialize(bcf_t : Pointer(HTS::LibHTS::Bcf1T), header : Bcf::Header)
+      def initialize(header : Bcf::Header, bcf_t : Pointer(HTS::LibHTS::Bcf1T))
         @bcf1 = bcf_t
         @header = header
       end
@@ -120,7 +120,7 @@ module HTS
       def clone
         # Duplicate bcf1 and use reference for header.
         bcf1 = LibHTS.bcf_dup(@bcf1)
-        self.class.new(bcf1, @header)
+        self.class.new(@header, bcf1)
       end
 
       # garbage collection

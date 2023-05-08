@@ -6,7 +6,7 @@ module HTS
     class Record
       SEQ_NT16_STR = "=ACMGRSVTWYHKDBN"
 
-      def initialize(bam1_t : Pointer(HTS::LibHTS::Bam1T), header : Bam::Header)
+      def initialize(header : Bam::Header, bam1_t : Pointer(HTS::LibHTS::Bam1T))
         @bam1 = bam1_t
         @header = header
       end
@@ -292,7 +292,7 @@ module HTS
       def clone
         # Duplicate bam1 and use references for header.
         bam1 = LibHTS.bam_dup1(@bam1)
-        self.class.new(bam1, @header)
+        self.class.new(@header, bam1)
       end
 
       # garbagew collection

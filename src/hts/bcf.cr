@@ -145,14 +145,14 @@ module HTS
     private def each_record_copy
       check_closed
       while LibHTS.bcf_read(@hts_file, header, bcf1 = LibHTS.bcf_init) != -1
-        yield Bcf::Record.new(bcf1, header)
+        yield Bcf::Record.new(header, bcf1)
       end
     end
 
     private def each_record_reuse
       check_closed
       bcf1 = LibHTS.bcf_init
-      record = Bcf::Record.new(bcf1, header)
+      record = Bcf::Record.new(header, bcf1)
       while LibHTS.bcf_read(@hts_file, header, bcf1) != -1
         yield record
       end

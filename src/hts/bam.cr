@@ -183,7 +183,7 @@ module HTS
       check_closed
 
       while LibHTS.sam_read1(@hts_file, header, bam1 = LibHTS.bam_init1) != -1
-        yield Record.new(bam1, header)
+        yield Record.new(header, bam1)
       end
     end
 
@@ -191,7 +191,7 @@ module HTS
       check_closed
 
       bam1 = LibHTS.bam_init1
-      record = Record.new(bam1, header)
+      record = Record.new(header, bam1)
       while LibHTS.sam_read1(@hts_file, header, bam1) != -1
         yield record
       end
@@ -206,7 +206,7 @@ module HTS
         bam1 = LibHTS.bam_init1
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         while slen > 0
-          yield Record.new(bam1, header)
+          yield Record.new(header, bam1)
           bam1 = LibHTS.bam_init1
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         end
