@@ -1,6 +1,10 @@
 module HTS
   class Bam < Hts
     class Header
+      def self.parse(text)
+        self.new LibHTS.sam_hdr_parse(text.size, text)
+      end
+
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @sam_hdr = LibHTS.sam_hdr_read(hts_file)
       end
