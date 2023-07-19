@@ -29,6 +29,10 @@ class BamHeaderTest < Minitest::Test
     assert_equal(1, bam.header.target_count)
   end
 
+  def test_target_name
+    assert_equal("poo", bam.header.target_name(0))
+  end
+
   def test_target_names
     assert_equal(["poo"], bam.header.target_names)
   end
@@ -37,17 +41,13 @@ class BamHeaderTest < Minitest::Test
     assert_equal([5000], bam.header.target_len)
   end
 
+  def test_get_tid
+    assert_equal 0, bam.header.get_tid("poo")
+  end
+
   def test_add_pg
     bam.header.add_pg("meowtools", "CL", "meow -n 3")
     # FIXME
-  end
-
-  def test_name2tid
-    assert_equal 0, bam.header.name2tid("poo")
-  end
-
-  def test_tid2name
-    assert_equal "poo", bam.header.tid2name(0)
   end
 
   def test_to_s

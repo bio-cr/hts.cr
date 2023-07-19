@@ -26,6 +26,10 @@ module HTS
         @sam_hdr.value.n_targets
       end
 
+      def target_name(tid)
+        tid2name(tid)
+      end
+
       def target_names
         Array.new(target_count) do |i|
           String.new LibHTS.sam_hdr_tid2name(@sam_hdr, i)
@@ -42,16 +46,21 @@ module HTS
         LibHTS.sam_hdr_add_pg(@sam_hdr, name, *args, nil)
       end
 
-      def name2tid(name)
+      private def name2tid(name)
         LibHTS.sam_hdr_name2tid(@sam_hdr, name)
       end
 
-      def tid2name(tid)
+      private def tid2name(tid)
         String.new LibHTS.sam_hdr_tid2name(@sam_hdr, tid)
       end
 
       def to_s(io : IO)
         io << String.new LibHTS.sam_hdr_str(@sam_hdr)
+      end
+
+      # experimental
+      def get_tid(name)
+        name2tid(name)
       end
 
       def clone
