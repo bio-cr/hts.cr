@@ -58,6 +58,11 @@ module HTS
       end
 
       def ~
+        # All bits are flipped.
+        # But only the lower 12 bits are used for FLAG values.
+        # According to the SAM specification, 
+        # > reserved FLAG bits should be written as zero and ignored on reading by current software.
+        # Parhaps, we should ignore the upper 4 bits.
         self.class.new(~@value)
       end
 
