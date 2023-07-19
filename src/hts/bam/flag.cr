@@ -41,8 +41,8 @@ module HTS
         end
       {% end %}
 
-      def has_flag?(other)
-        @value & other.to_i != 0
+      def has_flag?(m)
+        (@value & m) != 0
       end
 
       def &(other)
