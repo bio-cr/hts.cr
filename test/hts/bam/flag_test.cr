@@ -55,6 +55,41 @@ class BamFlagTest < Minitest::Test
     end
   {% end %}
 
+  def test_bitwise_and
+    assert_equal 1024, (flag & 1024).value
+    assert_equal 0, (flag_zero & 1024).value
+  end
+
+  def test_bitwise_or
+    assert_equal 4095, (flag | 1024).value
+    assert_equal 1024, (flag_zero | 1024).value
+  end
+
+  def test_bitwise_xor
+    assert_equal 3071, (flag ^ 1024).value
+    assert_equal 1024, (flag_zero ^ 1024).value
+  end
+
+  def test_bitwise_not
+    assert_equal -4096, (~flag).value
+    assert_equal -1, (~flag_zero).value
+  end
+
+  def test_bitwise_shift_left
+    assert_equal 8190, (flag << 1).value
+    assert_equal 0, (flag_zero << 1).value
+  end
+
+  def test_bitwise_shift_right
+    assert_equal 2047, (flag >> 1).value
+    assert_equal 0, (flag_zero >> 1).value
+  end
+
+  def test_to_i
+    assert_equal 4095, flag.to_i
+    assert_equal 0, flag_zero.to_i
+  end
+
   def test_to_s
     assert_equal "PAIRED,PROPER_PAIR,UNMAP,MUNMAP,REVERSE,MREVERSE,READ1,READ2,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY",
       flag.to_s

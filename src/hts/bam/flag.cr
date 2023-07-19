@@ -41,8 +41,32 @@ module HTS
         end
       {% end %}
 
-      def has_flag?(m)
-        @value & m != 0
+      def has_flag?(other)
+        @value & other.to_i != 0
+      end
+
+      def &(other)
+        self.class.new(@value & other.to_i)
+      end
+
+      def |(other)
+        self.class.new(@value | other.to_i)
+      end
+
+      def ^(other)
+        self.class.new(@value ^ other.to_i)
+      end
+
+      def ~
+        self.class.new(~@value)
+      end
+
+      def <<(other)
+        self.class.new(@value << other.to_i)
+      end
+
+      def >>(other)
+        self.class.new(@value >> other.to_i)
       end
 
       def to_i
