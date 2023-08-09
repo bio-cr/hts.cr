@@ -1,3 +1,3 @@
 module HTS
-  VERSION = "0.0.3"
+  VERSION = {{ `shards version #{__DIR__}`.chomp.stringify }}
 end
