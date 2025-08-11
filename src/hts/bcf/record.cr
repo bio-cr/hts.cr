@@ -72,7 +72,7 @@ module HTS
             String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, j)
           end
         else
-          raise "unexpectd number of filters. n_flt: #{n_flt}"
+          raise "unexpected number of filters. n_flt: #{n_flt}"
         end
       end
 

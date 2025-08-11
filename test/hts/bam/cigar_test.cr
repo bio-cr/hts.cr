@@ -13,7 +13,7 @@ class BamCigarTest < Minitest::Test
     r.cigar
   end
 
-  def test_initalize
+  def test_initialize
     assert_instance_of HTS::Bam::Cigar, cigar9
   end
 

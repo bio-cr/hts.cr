@@ -254,7 +254,7 @@ module HTS
         end
       end
 
-      # Retrun Int64
+      # Return Int64
       def aux_int(str)
         ax = get_aux_pointer(str)
         LibHTS.bam_aux2i(ax)
