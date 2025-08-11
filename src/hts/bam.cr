@@ -24,7 +24,7 @@ module HTS
     end
 
     def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
-                  threads = 0, build_index = false)
+                  threads = 0, build_index = false, &)
       file = new(file_name, mode, index, fai, threads, build_index)
       begin
         yield file
@@ -167,7 +167,7 @@ module HTS
 
     # each_aux(tag)
 
-    def each(copy = false)
+    def each(copy = false, &)
       if copy
         each_record_copy do |record|
           yield record
@@ -179,7 +179,7 @@ module HTS
       end
     end
 
-    private def each_record_copy
+    private def each_record_copy(&)
       check_closed
 
       while LibHTS.sam_read1(@hts_file, header, bam1 = LibHTS.bam_init1) != -1
@@ -187,7 +187,7 @@ module HTS
       end
     end
 
-    private def each_record_reuse
+    private def each_record_reuse(&)
       check_closed
 
       bam1 = LibHTS.bam_init1
@@ -197,7 +197,7 @@ module HTS
       end
     end
 
-    def query(region)
+    def query(region, &)
       check_closed
       raise "Index file is required to call the query method." unless index_loaded?
 

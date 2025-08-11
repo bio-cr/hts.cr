@@ -12,7 +12,7 @@ module HTS
       new(file_name, mode, threads)
     end
 
-    def self.open(file_name : Path | String, mode = "r", threads = 0)
+    def self.open(file_name : Path | String, mode = "r", threads = 0, &)
       file = new(file_name, mode, threads)
       begin
         yield file

@@ -9,7 +9,7 @@ module HTS
       new(file_name)
     end
 
-    def self.open(file_name : Path | String)
+    def self.open(file_name : Path | String, &)
       file = new(file_name)
       begin
         yield file

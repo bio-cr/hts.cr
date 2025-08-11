@@ -49,7 +49,7 @@ module HTS
       def sync
         LibHTS.bcf_hdr_sync(@bcf_hdr)
       end
-      
+
       def read_bcf(fname)
         LibHTS.bcf_hdr_set(@bcf_hdr, fname)
       end

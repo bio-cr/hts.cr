@@ -18,7 +18,7 @@ module HTS
         end
       end
 
-      def each
+      def each(&)
         @c.each do |c|
           op = LibHTS2.bam_cigar_opchr(c)
           len = LibHTS2.bam_cigar_oplen(c)

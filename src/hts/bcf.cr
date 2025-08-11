@@ -24,7 +24,7 @@ module HTS
     end
 
     def self.open(file_name : Path | String, mode = "r", index = "",
-                  threads = 0, build_index = false)
+                  threads = 0, build_index = false, &)
       file = new(file_name, mode, index, threads, build_index)
       begin
         yield file
@@ -130,7 +130,7 @@ module HTS
       header.samples
     end
 
-    def each(copy = false)
+    def each(copy = false, &)
       if copy
         each_record_copy do |record|
           yield record
@@ -142,14 +142,14 @@ module HTS
       end
     end
 
-    private def each_record_copy
+    private def each_record_copy(&)
       check_closed
       while LibHTS.bcf_read(@hts_file, header, bcf1 = LibHTS.bcf_init) != -1
         yield Bcf::Record.new(header, bcf1)
       end
     end
 
-    private def each_record_reuse
+    private def each_record_reuse(&)
       check_closed
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(header, bcf1)
