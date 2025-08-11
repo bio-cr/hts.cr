@@ -6,9 +6,7 @@
 [![DOI](https://zenodo.org/badge/351622305.svg)](https://zenodo.org/badge/latestdoi/351622305)
 [![Docs Latest](https://img.shields.io/badge/docs-latest-blue.svg)](https://bio-cr.github.io/hts.cr/)
 
-HTS.cr provides [Crystal](https://github.com/crystal-lang/crystal) bindings for [HTSlib](https://github.com/samtools/htslib) that allows you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/).
-
-:information_source: Method names will be changed to rust-htslib style in the next version.
+HTS.cr provides [Crystal](https://github.com/crystal-lang/crystal) bindings for [HTSlib](https://github.com/samtools/htslib) that allow you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/).
 
 ## Requirements
 
@@ -111,14 +109,14 @@ The Crystal language is suited for creating efficient command-line tools. The Ru
 
 ## Contributing
 
-:rocket: Feel free to fork it out! 
+:rocket: Feel free to fork it!
 
     git clone https://github.com/bio-cr/hts.cr
     cd hts.cr
     crystal run test/run_all.cr
 
 
-HTS.cr is an immature, work-in-progress library, and pull requests such as small typo fixes are welcome.
+HTS.cr is a work-in-progress library, and pull requests such as small typo fixes are welcome.
 
     Do you need commit rights to hts?
     Do you want to get admin rights and take over the project?
@@ -129,4 +127,3 @@ HTS.cr is an immature, work-in-progress library, and pull requests such as small
 https://github.com/brentp/vcf-bench
 
 code: https://github.com/kojix2/vcf-bench/blob/kojix2/crystal-htslib/read.cr
-
