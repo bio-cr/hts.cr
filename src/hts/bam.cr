@@ -45,6 +45,17 @@ module HTS
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
 
+      # Auto-detect and set reference for CRAM files
+      if fai == "" && @file_name.ends_with?(".cram")
+        # Try to find reference file in the same directory
+        base_name = File.basename(@file_name, ".cram")
+        dir_name = File.dirname(@file_name)
+        potential_ref = File.join(dir_name, "#{base_name}.fa")
+
+        # For remote URLs, assume reference exists; for local files, check existence
+        fai = potential_ref if @file_name.starts_with?("http") || File.exists?(potential_ref)
+      end
+
       if fai != ""
         r = LibHTS.hts_set_fai_filename(@hts_file, fai)
         r < 0 && raise "Failed to load fasta index: #{fai}"
@@ -52,13 +63,16 @@ module HTS
 
       set_threads(threads) if threads > 0
 
-      return if mode[0] == 'w'
+      if mode[0] == 'w'
+        @idx = LibHTS::HtsIdxT.null
+        return
+      end
 
       @header = Bam::Header.new(@hts_file)
 
-      build_index(index) if build_index
-
       @idx = load_index(index)
+
+      build_index(index) if build_index
 
       @start_position = tell
     end
@@ -71,7 +85,16 @@ module HTS
       else
         STDERR.puts "Create index for #{@file_name} to #{index_name}"
       end
-      LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
+
+      case LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
+      when 0 # successful
+      when -1 then raise "indexing failed"
+      when -2 then raise "opening #{@file_name} failed"
+      when -3 then raise "format not indexable"
+      when -4 then raise "failed to create and/or save the index"
+      else         raise "unknown error"
+      end
+      self # for method chaining
     end
 
     def load_index(index_name = "")
@@ -80,7 +103,7 @@ module HTS
       if index_name != ""
         LibHTS.sam_index_load2(@hts_file, @file_name, index_name)
       else
-        LibHTS.sam_index_load3(@hts_file, @file_name, nil, 2)
+        LibHTS.sam_index_load3(@hts_file, @file_name, nil, 3) # Changed from 2 to 3 for remote file support
       end
     end
 
