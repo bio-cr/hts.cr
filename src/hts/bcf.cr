@@ -92,7 +92,7 @@ module HTS
     end
 
     def finalize
-      close
+      close unless closed?
     end
 
     def write_header(header)

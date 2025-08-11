@@ -97,7 +97,7 @@ module HTS
     end
 
     def finalize
-      close
+      close unless closed?
     end
 
     def fai=(fai)

@@ -22,6 +22,7 @@ module HTS
     def initialize(file_name : Path | String)
       @file_name = file_name.to_s || ""
       @fai = LibHTS.fai_load(file_name)
+      @closed = false
       raise "Failed to load fai file: #{file_name}" if @fai.null?
     end
 
@@ -30,7 +31,9 @@ module HTS
     end
 
     def close
+      return if @closed
       LibHTS.fai_destroy(@fai)
+      @closed = true
     end
 
     # FIXME: This doesn't seem to work as expected
@@ -80,7 +83,7 @@ module HTS
     end
 
     def finalize
-      close
+      close unless @closed
     end
   end
 end
