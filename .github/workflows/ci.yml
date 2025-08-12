@@ -9,7 +9,7 @@ jobs:
       matrix:
         os:   [ 'ubuntu', 'macos' ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: crystal-lang/install-crystal@v1
       - name: Install latest HTSLib (ubuntu)
         if: ${{ matrix.os == 'ubuntu' }}
