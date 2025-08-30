@@ -72,8 +72,6 @@ module HTS
 
       @idx = load_index(index)
 
-      build_index(index) if build_index
-
       # Set start position to 0 for CRAM files
       flags = @hts_file.value.flags
       if (flags & "1000".to_i(2) != 0) # cram
@@ -81,6 +79,8 @@ module HTS
       else
         @start_position = tell
       end
+
+      build_index(index) if build_index
     end
 
     def build_index(index_name, min_shift = 0)

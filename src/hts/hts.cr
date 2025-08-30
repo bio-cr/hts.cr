@@ -105,8 +105,8 @@ module HTS
         nil # Return nil as tell is not available
       else
         # bam / sam
-        if @start_position
-          r = seek(@start_position)
+        if start_position = @start_position
+          r = seek(start_position)
           raise "Failed to rewind: #{r}" if r < 0
           tell
         else

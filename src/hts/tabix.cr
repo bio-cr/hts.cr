@@ -33,6 +33,7 @@ module HTS
 
       set_threads(threads) if threads > 0
 
+      @start_position = tell
       # FIXME: Loading index needed for query
     end
   end
