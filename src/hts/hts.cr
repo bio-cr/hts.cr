@@ -97,13 +97,21 @@ module HTS
     end
 
     def rewind
-      if @start_position
-        r = seek(@start_position)
-        raise "Failed to rewind: #{r}" if r < 0
-
-        tell
+      flags = @hts_file.value.flags
+      if (flags & "1000".to_i(2) != 0) # cram
+        # For CRAM files, seek directly to the beginning (tell is not available)
+        r = LibHTS.cram_seek(@hts_file.value.fp.cram, 0, IO::Seek::Set)
+        raise "Failed to rewind CRAM file: #{r}" if r < 0
+        nil # Return nil as tell is not available
       else
-        raise "Cannot rewind: no start position"
+        # bam / sam
+        if @start_position
+          r = seek(@start_position)
+          raise "Failed to rewind: #{r}" if r < 0
+          tell
+        else
+          raise "Cannot rewind: no start position"
+        end
       end
     end
   end
