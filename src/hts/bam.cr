@@ -226,18 +226,28 @@ module HTS
       end
     end
 
-    def query(region, &)
+    def query(region, copy = false, &)
       check_closed
       raise "Index file is required to call the query method." unless index_loaded?
 
       qiter = LibHTS.sam_itr_querys(@idx, header, region)
       begin
-        bam1 = LibHTS.bam_init1
-        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-        while slen > 0
-          yield Record.new(header, bam1)
+        if copy
           bam1 = LibHTS.bam_init1
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+          while slen > 0
+            yield Record.new(header, bam1)
+            bam1 = LibHTS.bam_init1
+            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+          end
+        else
+          bam1 = LibHTS.bam_init1
+          record = Record.new(header, bam1)
+          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+          while slen > 0
+            yield record
+            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+          end
         end
       ensure
         LibHTS.hts_itr_destroy(qiter)

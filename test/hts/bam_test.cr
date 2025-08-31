@@ -97,6 +97,14 @@ class BamTest < Minitest::Test
           end
           assert_equal [341, 658], arr
         end
+
+        def test_query_copy_{{ft}}
+          arr = [] of Int64
+          {{ft}}.query("chr2:350-700", copy: true) do |aln|
+            arr << aln.pos
+          end
+          assert_equal [341, 658], arr
+        end
       {% end %}
 
       def test_each_{{ft}}
