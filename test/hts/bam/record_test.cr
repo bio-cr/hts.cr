@@ -291,6 +291,12 @@ class BamRecordTest < Minitest::Test
     assert_equal "70M", aln.aux_string("MC")
   end
 
+  def test_aux_to_s
+    aln = aln1
+    expected = "MC:Z:70M\nAS:i:0\nXS:i:0\n"
+    assert_equal expected, aln.aux.to_s
+  end
+
   # TODO: def test_aux_float
 
   # TODO: def test_aux_flag
