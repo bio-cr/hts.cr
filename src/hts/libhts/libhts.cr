@@ -158,7 +158,7 @@ module HTS
     fun hts_lib_shutdown
     fun hts_free(ptr : Void*)
     alias HtsIdxT = Void*
-    alias HtsFilterT = Void
+    alias HtsFilterT = Void*
 
     struct HtsOpt
       arg : LibC::Char*
@@ -1078,5 +1078,24 @@ module HTS
     $bcf_type_shift : Uint8T*
     $bcf_float_vector_end : Uint32T
     $bcf_float_missing : Uint32T
+
+    # HTS Expression/Filter functions (hts_expr.h)
+    struct HtsExprValT
+      is_str : UInt8
+      is_true : UInt8
+      s : LibC::SizeT
+      d : LibC::Double
+    end
+
+    alias HtsExprSymFunc = (Void*, LibC::Char*, LibC::Char**, Void* -> LibC::Int)
+
+    fun hts_expr_val_exists(v : HtsExprValT*) : LibC::Int
+    fun hts_expr_val_exists_t = hts_expr_val_existsT(v : HtsExprValT*) : LibC::Int
+    fun hts_expr_val_undef(v : HtsExprValT*)
+    fun hts_expr_val_free(f : HtsExprValT*)
+    fun hts_filter_init(str : LibC::Char*) : HtsFilterT*
+    fun hts_filter_free(filt : HtsFilterT*)
+    fun hts_filter_eval2(filt : HtsFilterT*, data : Void*, sym_func : HtsExprSymFunc, res : HtsExprValT*) : LibC::Int
+    fun hts_filter_eval(filt : HtsFilterT*, data : Void*, sym_func : HtsExprSymFunc, res : HtsExprValT*) : LibC::Int
   end
 end
