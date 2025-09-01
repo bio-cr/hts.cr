@@ -313,6 +313,7 @@ module HTS
     fun hts_test_feature(id : LibC::UInt) : LibC::Char*
     fun hts_feature_string : LibC::Char*
     fun hts_detect_format(fp : HFile*, fmt : HtsFormat*) : LibC::Int
+    fun hts_detect_format2(fp : HFile*, fname : LibC::Char*, fmt : HtsFormat*) : LibC::Int
     fun hts_format_description(format : HtsFormat*) : LibC::Char*
     fun hts_open(fn : LibC::Char*, mode : LibC::Char*) : HtsFile*
     fun hts_open_format(fn : LibC::Char*, mode : LibC::Char*, fmt : HtsFormat*) : HtsFile*
@@ -554,6 +555,8 @@ module HTS
     fun sam_write1(fp : SamFile*, h : SamHdrT*, b : Bam1T*) : LibC::Int
     fun sam_passes_filter(h : SamHdrT*, b : Bam1T*, filt : HtsFilterT*) : LibC::Int
     fun sam_format_aux1(key : Uint8T*, type : Uint8T, tag : Uint8T*, _end : Uint8T*, ks : KstringT*) : Uint8T*
+    fun bam_aux_first(b : Bam1T*) : Uint8T*
+    fun bam_aux_next(b : Bam1T*, s : Uint8T*) : Uint8T*
     fun bam_aux_get(b : Bam1T*, tag : LibC::Char[2]) : Uint8T*
     fun bam_aux_get_str(b : Bam1T*, tag : LibC::Char[2], s : KstringT*) : LibC::Int
     fun bam_aux2i(s : Uint8T*) : Int64T
@@ -565,6 +568,7 @@ module HTS
     fun bam_aux_b2f = bam_auxB2f(s : Uint8T*, idx : Uint32T) : LibC::Double
     fun bam_aux_append(b : Bam1T*, tag : LibC::Char[2], type : LibC::Char, len : LibC::Int, data : Uint8T*) : LibC::Int
     fun bam_aux_del(b : Bam1T*, s : Uint8T*) : LibC::Int
+    fun bam_aux_remove(b : Bam1T*, s : Uint8T*) : Uint8T*
     fun bam_aux_update_str(b : Bam1T*, tag : LibC::Char[2], len : LibC::Int, data : LibC::Char*) : LibC::Int
     fun bam_aux_update_int(b : Bam1T*, tag : LibC::Char[2], val : Int64T) : LibC::Int
     fun bam_aux_update_float(b : Bam1T*, tag : LibC::Char[2], val : LibC::Float) : LibC::Int
@@ -633,9 +637,13 @@ module HTS
     fun hts_base_mod_state_alloc : HtsBaseModState
     fun hts_base_mod_state_free(state : HtsBaseModState)
     fun bam_parse_basemod(b : Bam1T*, state : HtsBaseModState) : LibC::Int
+    fun bam_parse_basemod2(b : Bam1T*, state : HtsBaseModState, flags : Uint32T) : LibC::Int
     fun bam_mods_at_next_pos(b : Bam1T*, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int) : LibC::Int
     fun bam_next_basemod(b : Bam1T*, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int, pos : LibC::Int*) : LibC::Int
     fun bam_mods_at_qpos(b : Bam1T*, qpos : LibC::Int, state : HtsBaseModState, mods : HtsBaseMod*, n_mods : LibC::Int) : LibC::Int
+    fun bam_mods_query_type(state : HtsBaseModState, code : LibC::Int, strand : LibC::Int*, implicit : LibC::Int*, canonical : LibC::Char*) : LibC::Int
+    fun bam_mods_queryi(state : HtsBaseModState, i : LibC::Int, strand : LibC::Int*, implicit : LibC::Int*, canonical : LibC::Char*) : LibC::Int
+    fun bam_mods_recorded(state : HtsBaseModState, ntype : LibC::Int*) : LibC::Int*
     alias CramFileDef = Void
     alias CramContainer = Void*
     alias CramBlock = Void*
@@ -643,6 +651,20 @@ module HTS
     alias CramMetrics = Void*
     alias CramBlockSliceHdr = Void
     alias CramBlockCompressionHdr = Void
+    alias CramCodec = Void*
+    alias CramCid2dsT = Void*
+    enum CramBlockMethod
+      CramCompUnknown = -1
+      CramCompRaw     =  0
+      CramCompGzip    =  1
+      CramCompBzip2   =  2
+      CramCompLzma    =  3
+      CramCompRans4x8 =  4
+      CramCompRansNx16 = 5
+      CramCompArith   =  6
+      CramCompFqz     =  7
+      CramCompTok3    =  8
+    end
     fun cram_fd_get_header(fd : CramFd) : SamHdrT*
     fun cram_fd_set_header(fd : CramFd, hdr : SamHdrT*)
     fun cram_fd_get_version(fd : CramFd) : LibC::Int
@@ -657,6 +679,8 @@ module HTS
     fun cram_container_set_num_blocks(c : CramContainer, num_blocks : Int32T)
     fun cram_container_get_landmarks(c : CramContainer, num_landmarks : Int32T*) : Int32T*
     fun cram_container_set_landmarks(c : CramContainer, num_landmarks : Int32T, landmarks : Int32T*)
+    fun cram_container_get_num_records(c : CramContainer) : Int32T
+    fun cram_container_get_num_bases(c : CramContainer) : Int32T
     fun cram_container_is_empty(fd : CramFd) : LibC::Int
     fun cram_block_get_content_id(b : CramBlock) : Int32T
     fun cram_block_get_comp_size(b : CramBlock) : Int32T
@@ -682,9 +706,24 @@ module HTS
     fun cram_block_update_size(b : CramBlock)
     fun cram_block_get_offset(b : CramBlock) : LibC::SizeT
     fun cram_block_set_offset(b : CramBlock, offset : LibC::SizeT)
+    fun cram_block_get_method(b : CramBlock) : CramBlockMethod
+    fun cram_expand_method(data : Void*, size : LibC::SizeT, comp : CramBlockMethod) : Void*
     fun cram_block_size(b : CramBlock) : Uint32T
     fun cram_transcode_rg(in : CramFd, out : CramFd, c : CramContainer, nrg : LibC::Int, in_rg : LibC::Int*, out_rg : LibC::Int*) : LibC::Int
     fun cram_copy_slice(in : CramFd, out : CramFd, num_slice : Int32T) : LibC::Int
+    fun cram_decode_slice_header(fd : CramFd, b : CramBlock) : CramBlockSliceHdr*
+    fun cram_free_slice_header(hdr : CramBlockSliceHdr*)
+    fun cram_slice_hdr_get_coords(h : CramBlockSliceHdr*, refid : LibC::Int*, start : HtsPosT*, span : HtsPosT*)
+    fun cram_slice_hdr_get_embed_ref_id(h : CramBlockSliceHdr*) : LibC::Int
+    fun cram_slice_hdr_get_num_blocks(hdr : CramBlockSliceHdr*) : Int32T
+    fun cram_decode_compression_header(fd : CramFd, b : CramBlock) : CramBlockCompressionHdr*
+    fun cram_free_compression_header(hdr : CramBlockCompressionHdr*)
+    fun cram_update_cid2ds_map(hdr : CramBlockCompressionHdr*, cid2ds : CramCid2dsT*) : CramCid2dsT*
+    fun cram_cid2ds_query(c2d : CramCid2dsT*, content_id : LibC::Int, n : LibC::Int*) : LibC::Int*
+    fun cram_cid2ds_free(cid2ds : CramCid2dsT*)
+    fun cram_describe_encodings(hdr : CramBlockCompressionHdr*, ks : KstringT*) : LibC::Int
+    fun cram_codec_get_content_ids(c : CramCodec*, ids : LibC::Int[2])
+    fun cram_codec_describe(c : CramCodec*, ks : KstringT*) : LibC::Int
     fun cram_new_block(content_type : CramContentType, content_id : LibC::Int) : CramBlock
     fun cram_read_block(fd : CramFd) : CramBlock
     fun cram_write_block(fd : CramFd, b : CramBlock) : LibC::Int
@@ -741,8 +780,12 @@ module HTS
     fun faidx_nseq(fai : FaidxT) : LibC::Int
     fun faidx_iseq(fai : FaidxT, i : LibC::Int) : LibC::Char*
     fun faidx_seq_len(fai : FaidxT, seq : LibC::Char*) : LibC::Int
+    fun faidx_seq_len64(fai : FaidxT, seq : LibC::Char*) : HtsPosT
+    fun fai_line_length(fai : FaidxT, reg : LibC::Char*) : LibC::Int
     fun fai_parse_region(fai : FaidxT, s : LibC::Char*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*, flags : LibC::Int) : LibC::Char*
+    fun fai_adjust_region(fai : FaidxT, tid : LibC::Int, beg : HtsPosT*, _end : HtsPosT*) : LibC::Int
     fun fai_set_cache_size(fai : FaidxT, cache_size : LibC::Int)
+    fun fai_thread_pool(fai : FaidxT, pool : HtsTpool*, qsize : LibC::Int) : LibC::Int
     fun fai_path(fa : LibC::Char*) : LibC::Char*
 
     struct TbxConfT
@@ -864,6 +907,7 @@ module HTS
       indiv_dirty : LibC::Int
     end
 
+    fun bcf_strerror(errorcode : LibC::Int, buffer : LibC::Char*, maxbuffer : LibC::SizeT) : LibC::Char*
     fun bcf_hdr_init(mode : LibC::Char*) : BcfHdrT*
     fun bcf_hdr_destroy(h : BcfHdrT*)
     fun bcf_init : Bcf1T*
@@ -938,6 +982,14 @@ module HTS
     fun bcf_translate(dst_hdr : BcfHdrT*, src_hdr : BcfHdrT*, src_line : Bcf1T*) : LibC::Int
     fun bcf_get_variant_types(rec : Bcf1T*) : LibC::Int
     fun bcf_get_variant_type(rec : Bcf1T*, ith_allele : LibC::Int) : LibC::Int
+    fun bcf_has_variant_types(rec : Bcf1T*, bitmask : Uint32T, mode : BcfVariantMatch) : LibC::Int
+    enum BcfVariantMatch
+      BcfMatchExact   = 0
+      BcfMatchOverlap = 1
+      BcfMatchSubset  = 2
+    end
+    fun bcf_has_variant_type(rec : Bcf1T*, ith_allele : LibC::Int, bitmask : Uint32T) : LibC::Int
+    fun bcf_variant_length(rec : Bcf1T*, ith_allele : LibC::Int) : LibC::Int
     fun bcf_is_snp(v : Bcf1T*) : LibC::Int
     fun bcf_update_filter(hdr : BcfHdrT*, line : Bcf1T*, flt_ids : LibC::Int*, n : LibC::Int) : LibC::Int
     fun bcf_add_filter(hdr : BcfHdrT*, line : Bcf1T*, flt_id : LibC::Int) : LibC::Int
