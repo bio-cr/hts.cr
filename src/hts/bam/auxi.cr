@@ -139,6 +139,7 @@ module HTS
       # HTSlib sam_format_aux1 compliant output with original type information
       def to_s(io : IO) : Nil
         aux_ptr = LibHTS.bam_aux_first(@bam1)
+        flag = false
         while !aux_ptr.null?
           tag = String.new(aux_ptr - 2, 2)
           value, original_type = parse_aux_value_with_type(aux_ptr)
@@ -162,7 +163,9 @@ module HTS
                               else          value.to_s
                               end
 
-            io.puts "#{tag}:#{type_str}:#{formatted_value}"
+            io.print "\t" if flag
+            io.print "#{tag}:#{type_str}:#{formatted_value}"
+            flag = true
           end
 
           aux_ptr = LibHTS.bam_aux_next(@bam1, aux_ptr)
