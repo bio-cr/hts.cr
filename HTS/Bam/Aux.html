@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bcf::Format - hts develop</title>
+  <title>HTS::Bam::Aux - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -62,12 +62,12 @@
       
         <ul>
   
-  <li class="parent " data-id="hts/HTS/Bam" data-name="hts::bam">
+  <li class="parent open current" data-id="hts/HTS/Bam" data-name="hts::bam">
       <a href="../../HTS/Bam.html">Bam</a>
       
         <ul>
   
-  <li class=" " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
+  <li class=" current" data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
       <a href="../../HTS/Bam/Aux.html">Aux</a>
       
     </li>
@@ -97,12 +97,12 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bcf" data-name="hts::bcf">
+  <li class="parent " data-id="hts/HTS/Bcf" data-name="hts::bcf">
       <a href="../../HTS/Bcf.html">Bcf</a>
       
         <ul>
   
-  <li class=" current" data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
+  <li class=" " data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
       <a href="../../HTS/Bcf/Format.html">Format</a>
       
     </li>
@@ -163,15 +163,49 @@
 
   <span class="kind">
     class
-  </span> HTS::<wbr>Bcf::<wbr>Format
+  </span> HTS::<wbr>Bam::<wbr>Aux
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bcf/Format.html">HTS::Bcf::Format</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/Aux.html">HTS::Bam::Aux</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Provides iteration over auxiliary tags in BAM records</p>
+<p>This class enables efficient access to all auxiliary tags
+using HTSlib's bam_aux_first and bam_aux_next functions.</p>
+<p>Usage examples:</p>
+<h1><a id="iterate-over-all-tags" class="anchor" href="#iterate-over-all-tags">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Iterate over all tags</h1>
+<p>record.aux.each do |tag, value|
+puts &quot;#{tag}: #{value}&quot;
+end</p>
+<h1><a id="access-specific-tag" class="anchor" href="#access-specific-tag">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Access specific tag</h1>
+<p>as_score = record.aux[&quot;AS&quot;]</p>
+<h1><a id="get-all-tags-as-hash" class="anchor" href="#get-all-tags-as-hash">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Get all tags as hash</h1>
+<p>all_tags = record.aux.to_h</p>
 
 
 
@@ -198,8 +232,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bcf/format.cr#L3" target="_blank">
-        hts/bcf/format.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L21" target="_blank">
+        hts/bam/auxi.cr
       </a>
     
     <br/>
@@ -221,7 +255,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28record%3ABcf%3A%3ARecord%29-class-method" class="signature"><strong>.new</strong>(record : Bcf::Record)</a>
+        <a href="#new%28bam1%3APointer%28LibHTS%3A%3ABam1T%29%29-class-method" class="signature"><strong>.new</strong>(bam1 : Pointer(LibHTS::Bam1T))</a>
         
       </li>
     
@@ -244,12 +278,33 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#get_float%28key%29-instance-method" class="signature"><strong>#get_float</strong>(key)</a>
+        <a href="#%5B%5D%28tag%3AString%29-instance-method" class="signature"><strong>#[]</strong>(tag : String)</a>
+        
+          <div class="summary"><p>Array-style access to specific tags</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_int%28key%29-instance-method" class="signature"><strong>#get_int</strong>(key)</a>
+        <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
+        
+          <div class="summary"><p>Iterate over all auxiliary tags</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_float%28tag%3AString%29-instance-method" class="signature"><strong>#get_float</strong>(tag : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_int%28tag%3AString%29-instance-method" class="signature"><strong>#get_int</strong>(tag : String)</a>
+        
+          <div class="summary"><p>Type-specific access methods</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_string%28tag%3AString%29-instance-method" class="signature"><strong>#get_string</strong>(tag : String)</a>
         
       </li>
     
@@ -297,18 +352,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(record:Bcf::Record)-class-method">
+    <div class="entry-detail" id="new(bam1:Pointer(LibHTS::Bam1T))-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(record : <a href="../../HTS/Bcf/Record.html">Bcf::Record</a>)
+        def self.<strong>new</strong>(bam1 : Pointer(LibHTS::Bam1T))
 
-        <a class="method-permalink" href="#new%28record%3ABcf%3A%3ARecord%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28bam1%3APointer%28LibHTS%3A%3ABam1T%29%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bcf/format.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -329,34 +384,97 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="get_float(key)-instance-method">
+    <div class="entry-detail" id="[](tag:String)-instance-method">
       <div class="signature">
         
-        def <strong>get_float</strong>(key)
+        def <strong>[]</strong>(tag : String)
 
-        <a class="method-permalink" href="#get_float%28key%29-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%28tag%3AString%29-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Array-style access to specific tags</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bcf/format.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_int(key)-instance-method">
+    <div class="entry-detail" id="each(&amp;)-instance-method">
       <div class="signature">
         
-        def <strong>get_int</strong>(key)
+        def <strong>each</strong>(&)
 
-        <a class="method-permalink" href="#get_int%28key%29-instance-method">#</a>
+        <a class="method-permalink" href="#each%28%26%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Iterate over all auxiliary tags</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_float(tag:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_float</strong>(tag : String)
+
+        <a class="method-permalink" href="#get_float%28tag%3AString%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bcf/format.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L50" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_int(tag:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_int</strong>(tag : String)
+
+        <a class="method-permalink" href="#get_int%28tag%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Type-specific access methods</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L44" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_string(tag:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_string</strong>(tag : String)
+
+        <a class="method-permalink" href="#get_string%28tag%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/ac97fc8b6eee4d221215314a84119e3fed8103e4/src/hts/bam/auxi.cr#L56" target="_blank">View source</a>]
         
       </div>
     </div>
