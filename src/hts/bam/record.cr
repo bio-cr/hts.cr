@@ -1,5 +1,6 @@
 require "./flag"
 require "./cigar"
+require "./auxi"
 
 module HTS
   class Bam < Hts
@@ -233,6 +234,7 @@ module HTS
         LibHTS.bam_aux_get(@bam1, str2)
       end
 
+      # Access individual auxiliary tag by name (existing method)
       def aux(str)
         ax = get_aux_pointer(str)
         return nil if ax.null?
@@ -252,6 +254,11 @@ module HTS
         when 'A'
           LibHTS.bam_aux2_a(ax).chr
         end
+      end
+
+      # Return Aux object for iteration over all auxiliary tags
+      def aux
+        Aux.new(@bam1)
       end
 
       # Return Int64

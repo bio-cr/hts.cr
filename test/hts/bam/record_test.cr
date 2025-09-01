@@ -234,6 +234,50 @@ class BamRecordTest < Minitest::Test
     assert_nil aln.aux("Tanuki")
   end
 
+  def test_aux_each
+    aln = aln1
+    aln.aux.each do |tag, value|
+      case tag
+      when "MC"
+        assert_equal "70M", value
+      when "AS"
+        assert_equal 0, value
+      when "XS"
+        assert_equal 0, value
+      end
+    end
+  end
+
+  def test_aux_bracket_access
+    aln = aln1
+    assert_equal "70M", aln.aux["MC"]
+    assert_equal 0, aln.aux["AS"]
+    assert_equal 0, aln.aux["XS"]
+    assert_nil aln.aux["Tanuki"]
+  end
+
+  def test_aux_type_specific_methods
+    aln = aln1
+    assert_equal 0, aln.aux.get_int("AS")
+    assert_equal 0, aln.aux.get_int("XS")
+    assert_equal "70M", aln.aux.get_string("MC")
+    assert_nil aln.aux.get_int("Tanuki")
+    assert_nil aln.aux.get_string("Tanuki")
+  end
+
+  def test_aux_iteration_consistency
+    aln = aln1
+    tags1 = [] of String
+    tags2 = [] of String
+
+    2.times do
+      aln.aux.each { |tag, _| tags1 << tag }
+      aln.aux.each { |tag, _| tags2 << tag }
+    end
+
+    assert_equal tags1, tags2
+  end
+
   def test_aux_int
     aln = aln1
     assert_equal 0, aln.aux_int("AS")

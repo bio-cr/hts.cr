@@ -654,16 +654,16 @@ module HTS
     alias CramCodec = Void*
     alias CramCid2dsT = Void*
     enum CramBlockMethod
-      CramCompUnknown = -1
-      CramCompRaw     =  0
-      CramCompGzip    =  1
-      CramCompBzip2   =  2
-      CramCompLzma    =  3
-      CramCompRans4x8 =  4
-      CramCompRansNx16 = 5
-      CramCompArith   =  6
-      CramCompFqz     =  7
-      CramCompTok3    =  8
+      CramCompUnknown  = -1
+      CramCompRaw      =  0
+      CramCompGzip     =  1
+      CramCompBzip2    =  2
+      CramCompLzma     =  3
+      CramCompRans4x8  =  4
+      CramCompRansNx16 =  5
+      CramCompArith    =  6
+      CramCompFqz      =  7
+      CramCompTok3     =  8
     end
     fun cram_fd_get_header(fd : CramFd) : SamHdrT*
     fun cram_fd_set_header(fd : CramFd, hdr : SamHdrT*)
