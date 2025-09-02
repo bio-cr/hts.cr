@@ -127,6 +127,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/Bgzf" data-name="hts::bgzf">
+      <a href="../HTS/Bgzf.html">Bgzf</a>
+      
+    </li>
+  
   <li class=" " data-id="hts/HTS/Faidx" data-name="hts::faidx">
       <a href="../HTS/Faidx.html">Faidx</a>
       
@@ -168,7 +173,7 @@
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../HTS/Tabix.html">HTS::Tabix</a></li><li class="superclass"><a href="../HTS/Hts.html">HTS::Hts</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../HTS/Tabix.html">HTS::Tabix</a></li><li class="superclass"><a href="../HTS/Bgzf.html">HTS::Bgzf</a></li><li class="superclass"><a href="../HTS/Hts.html">HTS::Hts</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -198,7 +203,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/cae3d04b9fd976ef6b6d39ec80e07b4aa61391ea/src/hts/tabix.cr#L7" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/764a62c26444a412f096841a1704b0e6976471b6/src/hts/tabix.cr#L7" target="_blank">
         hts/tabix.cr
       </a>
     
@@ -221,7 +226,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28file_name%3APath%7CString%2Cmode%3AString%3D%22r%22%2Cthreads%3D0%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode : String = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</a>
+        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</a>
         
       </li>
     
@@ -280,6 +285,111 @@
 
 
   <div class="methods-inherited">
+    
+      
+
+  <h3>Instance methods inherited from class <code><a href="../HTS/Bgzf.html">HTS::Bgzf</a></code></h3>
+  
+  
+    <a href="../HTS/Bgzf.html#compression_level%3AInt32-instance-method" class="tooltip">
+      <span>compression_level : Int32</span>
+    compression_level</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#each_char%28%26%29-instance-method" class="tooltip">
+      <span>each_char(&)</span>
+    each_char</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#each_line%28delimiter%3D%27%5Cn%27%2C%26%29-instance-method" class="tooltip">
+      <span>each_line(delimiter = <span class="s">&#39;\n&#39;</span>, &)</span>
+    each_line</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#file_name%3APath%7CString-instance-method" class="tooltip">
+      <span>file_name : Path | String</span>
+    file_name</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#flush%3AInt32-instance-method" class="tooltip">
+      <span>flush : Int32</span>
+    flush</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#getc%3AChar%7CNil-instance-method" class="tooltip">
+      <span>getc : Char | Nil</span>
+    getc</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#gets%28delimiter%3D%27%5Cn%27%29%3AString%7CNil-instance-method" class="tooltip">
+      <span>gets(delimiter = <span class="s">&#39;\n&#39;</span>) : String | Nil</span>
+    gets</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#is_bgzf%3F%3ABool-instance-method" class="tooltip">
+      <span>is_bgzf? : Bool</span>
+    is_bgzf?</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#mode%3AString-instance-method" class="tooltip">
+      <span>mode : String</span>
+    mode</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#puts%28data%3AString%29%3AInt64-instance-method" class="tooltip">
+      <span>puts(data : String) : Int64</span>
+    puts</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#read%28size%3AInt32%29%3ABytes-instance-method" class="tooltip">
+      <span>read(size : Int32) : Bytes</span>
+    read</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#seek%28offset%29-instance-method" class="tooltip">
+      <span>seek(offset)</span>
+    seek</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#tell-instance-method" class="tooltip">
+      <span>tell</span>
+    tell</a>, 
+    
+  
+    <a href="../HTS/Bgzf.html#write%28data%3AString%7CBytes%29%3AInt64-instance-method" class="tooltip">
+      <span>write(data : String | Bytes) : Int64</span>
+    write</a>
+    
+  
+
+
+      
+
+  <h3>Constructor methods inherited from class <code><a href="../HTS/Bgzf.html">HTS::Bgzf</a></code></h3>
+  
+  
+    <a href="../HTS/Bgzf.html#new%28file_name%3APath%7CString%2Cmode%3AString%3D%22r%22%2Cthreads%3D0%29-class-method" class="tooltip">
+      <span>new(file_name : Path | String, mode : String = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)</span>
+    new</a>
+    
+  
+
+
+      
+
+  <h3>Class methods inherited from class <code><a href="../HTS/Bgzf.html">HTS::Bgzf</a></code></h3>
+  
+  
+    <a href="../HTS/Bgzf.html#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method" class="tooltip">
+      <span>open(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)<br/>open(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>, &)</span>
+    open</a>
+    
+  
+
+
+      
+
+
     
       
 
@@ -395,18 +505,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(file_name:Path|String,mode:String=&quot;r&quot;,threads=0)-class-method">
+    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,threads=0)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(file_name : Path | String, mode : String = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)
+        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, threads = <span class="n">0</span>)
 
-        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3AString%3D%22r%22%2Cthreads%3D0%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cthreads%3D0%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/cae3d04b9fd976ef6b6d39ec80e07b4aa61391ea/src/hts/tabix.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/764a62c26444a412f096841a1704b0e6976471b6/src/hts/tabix.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -434,7 +544,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/cae3d04b9fd976ef6b6d39ec80e07b4aa61391ea/src/hts/tabix.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/764a62c26444a412f096841a1704b0e6976471b6/src/hts/tabix.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -450,7 +560,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/cae3d04b9fd976ef6b6d39ec80e07b4aa61391ea/src/hts/tabix.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/764a62c26444a412f096841a1704b0e6976471b6/src/hts/tabix.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -480,7 +590,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/cae3d04b9fd976ef6b6d39ec80e07b4aa61391ea/src/hts/tabix.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/764a62c26444a412f096841a1704b0e6976471b6/src/hts/tabix.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -496,7 +606,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/cae3d04b9fd976ef6b6d39ec80e07b4aa61391ea/src/hts/tabix.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/764a62c26444a412f096841a1704b0e6976471b6/src/hts/tabix.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
