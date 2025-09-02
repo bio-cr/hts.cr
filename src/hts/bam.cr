@@ -47,13 +47,18 @@ module HTS
 
       # Auto-detect and set reference for CRAM files
       if fai == "" && @file_name.ends_with?(".cram")
-        # Try to find reference file in the same directory
-        base_name = File.basename(@file_name, ".cram")
-        dir_name = File.dirname(@file_name)
-        potential_ref = File.join(dir_name, "#{base_name}.fa")
-
-        # For remote URLs, assume reference exists; for local files, check existence
-        fai = potential_ref if @file_name.starts_with?("http") || File.exists?(potential_ref)
+        # Remote URL case: avoid File.join which introduces backslashes on Windows
+        if @file_name.starts_with?("http://") || @file_name.starts_with?("https://")
+          # Replace only the trailing .cram with .fa to keep URL separators intact
+          potential_ref = @file_name.gsub(/\.cram\z/, ".fa")
+          fai = potential_ref
+        else
+          # Local file case: construct a sibling .fa path and use it only if it exists
+          base_name = File.basename(@file_name, ".cram")
+          dir_name = File.dirname(@file_name)
+          potential_ref = File.join(dir_name, "#{base_name}.fa")
+          fai = potential_ref if File.exists?(potential_ref)
+        end
       end
 
       if fai != ""
