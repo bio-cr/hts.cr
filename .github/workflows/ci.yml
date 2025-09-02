@@ -7,10 +7,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:   [ 'ubuntu', 'macos' ]
+        os: ["ubuntu", "macos", "windows"]
     steps:
       - uses: actions/checkout@v5
       - uses: crystal-lang/install-crystal@v1
+        if: matrix.os != 'windows'
+      - name: Install Crystal (MinGW64)
+        if: matrix.os == 'windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-crystal
+            mingw-w64-x86_64-shards
+            mingw-w64-x86_64-htslib
       - name: Install latest HTSLib (ubuntu)
         if: ${{ matrix.os == 'ubuntu' }}
         run: |
@@ -22,8 +34,20 @@ jobs:
         if: ${{ matrix.os == 'macos' }}
         run: |
           brew install htslib pkg-config
+      - name: Install dependencies
+        if: matrix.os != 'windows'
+        run: shards install
+      - name: Install dependencies (MinGW64)
+        if: matrix.os == 'windows'
+        shell: msys2 {0}
+        run: shards install
       - name: Run tests
+        if: matrix.os != 'windows'
         run: |
-          shards install
           export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+          crystal test/run_all.cr -- --chaos --paralel 4 --verbose
+      - name: Run tests (MinGW64)
+        if: matrix.os == 'windows'
+        shell: msys2 {0}
+        run: |
           crystal test/run_all.cr -- --chaos --paralel 4 --verbose
