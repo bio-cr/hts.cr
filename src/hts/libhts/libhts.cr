@@ -78,16 +78,25 @@ module HTS
       seeked : Int64T
     end
 
-    alias X__Int64T = LibC::Long
-    alias Int64T = X__Int64T
+    # htslib uses fixed-width 64-bit ints (int64_t/uint64_t). On Windows,
+    # LibC::Long is 32-bit, so map explicitly to LongLong.
+    {% if flag?(:win32) %}
+      alias Int64T = LibC::LongLong
+    {% else %}
+      alias Int64T = LibC::Long
+    {% end %}
     type BgzidxT = Void*
     alias ZStreamS = Void
     fun bgzf_open(path : LibC::Char*, mode : LibC::Char*) : Bgzf*
     fun bgzf_hopen(fp : HFile*, mode : LibC::Char*) : Bgzf*
     fun bgzf_close(fp : Bgzf*) : LibC::Int
     fun bgzf_read(fp : Bgzf*, data : Void*, length : LibC::SizeT) : SsizeT
-    alias X__SsizeT = LibC::Long
-    alias SsizeT = X__SsizeT
+    # ssize_t width differs; prefer 64-bit on Windows builds.
+    {% if flag?(:win32) %}
+      alias SsizeT = LibC::LongLong
+    {% else %}
+      alias SsizeT = LibC::Long
+    {% end %}
     fun bgzf_write(fp : Bgzf*, data : Void*, length : LibC::SizeT) : SsizeT
     fun bgzf_block_write(fp : Bgzf*, data : Void*, length : LibC::SizeT) : SsizeT
     fun bgzf_peek(fp : Bgzf*) : LibC::Int
@@ -114,8 +123,11 @@ module HTS
     fun bgzf_mt(fp : Bgzf*, n_threads : LibC::Int, n_sub_blks : LibC::Int) : LibC::Int
     fun bgzf_compress(dst : Void*, dlen : LibC::SizeT*, src : Void*, slen : LibC::SizeT, level : LibC::Int) : LibC::Int
     fun bgzf_useek(fp : Bgzf*, uoffset : OffT, where : LibC::Int) : LibC::Int
-    alias X__OffT = LibC::Long
-    alias OffT = X__OffT
+    {% if flag?(:win32) %}
+      alias OffT = LibC::LongLong
+    {% else %}
+      alias OffT = LibC::Long
+    {% end %}
     fun bgzf_utell(fp : Bgzf*) : OffT
     fun bgzf_index_build_init(fp : Bgzf*) : LibC::Int
     fun bgzf_index_load(fp : Bgzf*, bname : LibC::Char*, suffix : LibC::Char*) : LibC::Int
@@ -351,8 +363,11 @@ module HTS
       v : Uint64T
     end
 
-    alias X__Uint64T = LibC::ULong
-    alias Uint64T = X__Uint64T
+    {% if flag?(:win32) %}
+      alias Uint64T = LibC::ULongLong
+    {% else %}
+      alias Uint64T = LibC::ULong
+    {% end %}
 
     struct HtsPair64MaxT
       u : Uint64T

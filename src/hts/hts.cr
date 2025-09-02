@@ -90,9 +90,9 @@ module HTS
         # "cram_tell is not implemented"
         nil
       elsif (flags & "10000".to_i(2) != 0) # bgzf
-        LibHTS2.bgzf_tell(@hts_file.value.fp.bgzf)
+        LibHTS2.bgzf_tell(@hts_file.value.fp.bgzf).to_i64
       else # hfile
-        LibHTS2.htell(@hts_file.value.fp.hfile)
+        LibHTS2.htell(@hts_file.value.fp.hfile).to_i64
       end
     end
 
