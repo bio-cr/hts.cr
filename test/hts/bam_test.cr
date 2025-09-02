@@ -9,6 +9,21 @@ class BamTest < Minitest::Test
         @{{format.id}}_{{type.id}}.try &.close
       {% end %}
     {% end %}
+
+    # Clean up index files created during tests
+    cleanup_index_files
+  end
+
+  private def cleanup_index_files
+    index_files = [
+      "moo.bam.bai",
+      "moo.cram.crai",
+      "poo.sort.bam.bai",
+    ]
+
+    index_files.each do |file|
+      File.delete(file) if File.exists?(file)
+    end
   end
 
   {% for format in ["bam", "sam", "cram"] %}
