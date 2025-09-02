@@ -1,10 +1,10 @@
 require "./libhts"
 require "./version"
 
-require "./hts"
+require "./bgzf"
 
 module HTS
-  class Tabix < Hts
+  class Tabix < Bgzf
     getter :file_name
     getter :mode
 
@@ -27,7 +27,7 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @hts_file = LibHTS.hts_open(@file_name, @mode)
+      @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
 

@@ -1,0 +1,187 @@
+require "./libhts"
+require "./hts"
+
+module HTS
+  class Bgzf < Hts
+    @nthreads : Int32?
+    @hts_file : LibHTS::HtsFile*
+
+    getter :file_name
+    getter :mode
+
+    def self.open(file_name : Path | String, mode = "r", threads = 0)
+      new(file_name, mode, threads)
+    end
+
+    def self.open(file_name : Path | String, mode = "r", threads = 0, &)
+      file = new(file_name, mode, threads)
+      begin
+        yield file
+      ensure
+        file.close
+      end
+    end
+
+    def initialize(@file_name : Path | String, @mode = "r", threads = 0)
+      @file_name = file_name.to_s || ""
+
+      # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
+
+      @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
+
+      raise "Failed to open file #{@file_name}" if @hts_file.null?
+
+      set_threads(threads) if threads > 0
+
+      @start_position = tell
+    end
+
+    # Standard IO methods
+
+    def getc : Char?
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      return nil if bgzf_fp.null?
+
+      result = LibHTS.bgzf_getc(bgzf_fp)
+      return nil if result < 0
+      result.chr
+    end
+
+    def gets(delimiter = '\n') : String?
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+
+      str = LibHTS::KstringT.new
+      str.l = 0
+      str.m = 0
+      str.s = Pointer(LibC::Char).null
+
+      if bgzf_fp.null?
+        # Fall back to HTS file reading
+        result = LibHTS.hts_getline(@hts_file, delimiter.ord, pointerof(str))
+        return nil if result < 0
+      else
+        result = LibHTS.bgzf_getline(bgzf_fp, delimiter.ord, pointerof(str))
+        return nil if result < 0
+      end
+
+      if str.s.null?
+        nil
+      else
+        line = String.new(str.s, str.l)
+        LibC.free(str.s)
+        line
+      end
+    end
+
+    def puts(data : String) : Int64
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      raise "Not a BGZF file" if bgzf_fp.null?
+
+      # Write the string
+      bytes_written = LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
+      return bytes_written if bytes_written < 0
+
+      # Write newline
+      newline_written = LibHTS.bgzf_write(bgzf_fp, "\n".to_unsafe, 1)
+      return newline_written if newline_written < 0
+
+      bytes_written + newline_written
+    end
+
+    def read(size : Int32) : Bytes
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      raise "Not a BGZF file" if bgzf_fp.null?
+
+      buffer = Bytes.new(size)
+      bytes_read = LibHTS.bgzf_read(bgzf_fp, buffer.to_unsafe, size)
+
+      if bytes_read < 0
+        raise "Failed to read from BGZF file"
+      elsif bytes_read == 0
+        Bytes.empty
+      else
+        buffer[0, bytes_read]
+      end
+    end
+
+    def write(data : String | Bytes) : Int64
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      raise "Not a BGZF file" if bgzf_fp.null?
+
+      case data
+      when String
+        LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
+      when Bytes
+        LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.size)
+      else
+        0_i64
+      end
+    end
+
+    def flush : Int32
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      return 0 if bgzf_fp.null?
+
+      LibHTS.bgzf_flush(bgzf_fp)
+    end
+
+    # Iterator methods
+
+    def each_line(delimiter = '\n', &)
+      check_closed
+      while line = gets(delimiter)
+        yield line
+      end
+      self
+    end
+
+    def each_char(&)
+      check_closed
+      while char = getc
+        yield char
+      end
+      self
+    end
+
+    # BGZF specific methods
+
+    def compression_level : Int32
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      return -1 if bgzf_fp.null?
+
+      LibHTS.bgzf_compression(bgzf_fp)
+    end
+
+    def is_bgzf? : Bool
+      !LibHTS.hts_get_bgzfp(@hts_file).null?
+    end
+
+    # Override seek and tell for BGZF-specific behavior
+    def seek(offset)
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      if bgzf_fp.null?
+        super(offset)
+      else
+        LibHTS.bgzf_seek(bgzf_fp, offset, IO::Seek::Set)
+      end
+    end
+
+    def tell
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      if bgzf_fp.null?
+        super
+      else
+        LibHTS2.bgzf_tell(bgzf_fp)
+      end
+    end
+  end
+end
