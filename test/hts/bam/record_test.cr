@@ -293,7 +293,7 @@ class BamRecordTest < Minitest::Test
 
   def test_aux_to_s
     aln = aln1
-    expected = "MC:Z:70M\nAS:i:0\nXS:i:0\n"
+    expected = "MC:Z:70M\tAS:i:0\tXS:i:0"
     assert_equal expected, aln.aux.to_s
   end
 
