@@ -1,9 +1,5 @@
 module HTS
-  {% if flag?(:darwin) %}
-    @[Link("htslib")]
-  {% else %}
-    @[Link("hts")]
-  {% end %}
+  @[Link("hts", pkg_config: "htslib")]
   lib LibHTS
     BCF_GT_MISSING     = 0
     BCF_STR_VECTOR_END = 0
