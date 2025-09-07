@@ -1,5 +1,6 @@
 require "minitest/autorun"
 require "../../src/hts/bgzf"
+require "../../src/hts/tabix"
 
 class BgzfTest < Minitest::Test
   def test_create_bgzf_instance

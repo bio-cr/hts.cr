@@ -108,19 +108,20 @@ module HTS
       end
     end
 
-    def write(data : String | Bytes) : Int64
+    def write(data : String) : Int64
       check_closed
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       raise "Not a BGZF file" if bgzf_fp.null?
 
-      case data
-      when String
-        LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
-      when Bytes
-        LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.size)
-      else
-        0_i64
-      end
+      LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
+    end
+
+    def write(data : Bytes) : Int64
+      check_closed
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      raise "Not a BGZF file" if bgzf_fp.null?
+
+      LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.size)
     end
 
     def flush : Int32
