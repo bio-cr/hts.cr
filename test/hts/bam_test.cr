@@ -120,6 +120,29 @@ class BamTest < Minitest::Test
           end
           assert_equal [341, 658], arr
         end
+
+        # New: numeric tid query should produce identical positions.
+        def test_query_tid_numeric_{{ft}}
+          arr = [] of Int64
+          # Resolve tid from header (reference name to integer id)
+          tid = {{ft}}.header.get_tid("chr2")
+          assert tid >= 0, "Expected valid tid for chr2"
+          # Convert 1-based inclusive 350-700 to 0-based half-open => [349, 700)
+          {{ft}}.query(tid, 349_i64, 700_i64) do |aln|
+            arr << aln.pos
+          end
+          assert_equal [341, 658], arr
+        end
+
+        # New: chromosome name + numeric coordinates variant
+        def test_query_chrom_numeric_{{ft}}
+          arr = [] of Int64
+            # 1-based inclusive 350-700 -> 0-based half-open [349,700)
+          {{ft}}.query("chr2", 349_i64, 700_i64) do |aln|
+            arr << aln.pos
+          end
+          assert_equal [341, 658], arr
+        end
       {% end %}
 
       def test_each_{{ft}}

@@ -236,26 +236,63 @@ module HTS
       raise "Index file is required to call the query method." unless index_loaded?
 
       qiter = LibHTS.sam_itr_querys(@idx, header, region)
+      raise "sam_itr_querys failed for region: #{region}" if qiter.null?
       begin
-        if copy
-          bam1 = LibHTS.bam_init1
-          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          while slen > 0
-            yield Record.new(header, bam1)
-            bam1 = LibHTS.bam_init1
-            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          end
-        else
-          bam1 = LibHTS.bam_init1
-          record = Record.new(header, bam1)
-          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          while slen > 0
-            yield record
-            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          end
-        end
+        iterate_iterator(qiter, copy) { |r| yield r }
       ensure
         LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    # IMPORTANT (coordinate systems):
+    # - query(region : String, ...) above uses sam_itr_querys(). Region strings follow the SAM spec:
+    #   1-based, inclusive coordinates (e.g. "chr1:100-200" covers both ends 100 and 200).
+    # - The numeric query methods below use sam_itr_queryi() which takes 0-based, half-open intervals [beg, end).
+    #   To convert a region string "chr1:100-200" (1-based inclusive) to numeric form:
+    #     beg = 100 - 1 = 99
+    #     end = 200      (DO NOT subtract 1)  => numeric interval [99, 200)
+    #   Be careful not to decrement the end coordinate during conversion.
+
+    # Numeric (tid) query: coordinates are 0-based half-open [beg, end)
+    def query(tid : Int32, beg : Int64, end_pos : Int64, copy = false, &)
+      check_closed
+      raise "Index file is required to call the query method." unless index_loaded?
+      raise "tid (#{tid}) must be >= 0" if tid < 0
+      raise "beg (#{beg}) must be <= end (#{end_pos})" if beg > end_pos
+
+      qiter = LibHTS.sam_itr_queryi(@idx, tid, beg, end_pos)
+      raise "sam_itr_queryi failed (tid=#{tid}, beg=#{beg}, end=#{end_pos})" if qiter.null?
+      begin
+        iterate_iterator(qiter, copy) { |r| yield r }
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    # Chromosome name + range (0-based half-open [beg, end))
+    def query(chrom : String, beg : Int64, end_pos : Int64, copy = false, &)
+      tid = @header.get_tid(chrom)
+      raise "Unknown reference name: #{chrom}" if tid < 0
+      query(tid, beg, end_pos, copy) { |r| yield r }
+    end
+
+    private def iterate_iterator(qiter, copy, &block : HTS::Bam::Record ->)
+      if copy
+        bam1 = LibHTS.bam_init1
+        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+        while slen > 0
+          yield Record.new(header, bam1)
+          bam1 = LibHTS.bam_init1
+          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+        end
+      else
+        bam1 = LibHTS.bam_init1
+        record = Record.new(header, bam1)
+        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+        while slen > 0
+          yield record
+          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+        end
       end
     end
   end
