@@ -10,11 +10,32 @@ module HTS
       def initialize(header : Bam::Header, bam1_t : Pointer(HTS::LibHTS::Bam1T))
         @header = header
         @bam1 = bam1_t
+        @owned = true
       end
 
       def initialize(header : Bam::Header)
         @header = header
         @bam1 = LibHTS.bam_init1
+        @owned = true
+      end
+      
+      # Create a borrowed view of a BAM record (does not own pointer)
+      # WARNING: The pointer must remain valid for the lifetime of this object
+      # Do not call bam_destroy1 on the pointer externally
+      protected def self.borrowed(header : Bam::Header, ptr : LibHTS::Bam1T*) : self
+        record = allocate
+        record.initialize_borrowed(header, ptr)
+        record
+      end
+      
+      # Initialize as borrowed record (internal use only)
+      protected def initialize_borrowed(@header : Bam::Header, @bam1 : LibHTS::Bam1T*)
+        @owned = false
+      end
+      
+      # Create a deep copy of a BAM record from pointer
+      protected def self.dup(header : Bam::Header, ptr : LibHTS::Bam1T*) : self
+        new(header, LibHTS.bam_dup1(ptr))
       end
 
       def to_unsafe
@@ -301,9 +322,9 @@ module HTS
         self.class.new(@header, bam1)
       end
 
-      # garbagew collection
+      # Garbage collection
       def finalize
-        LibHTS.bam_destroy1 @bam1 unless @bam1.null?
+        LibHTS.bam_destroy1(@bam1) if @owned && !@bam1.null?
       end
     end
   end

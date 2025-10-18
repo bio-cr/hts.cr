@@ -213,6 +213,13 @@ module HTS
       end
     end
 
+    # Read next record into provided bam1_t pointer using header
+    # Returns: >0 on success, -1 on EOF, < -1 on error (htslib semantics)
+    def read1(header : Bam::Header, bam1_ptr : LibHTS::Bam1T*) : Int32
+      check_closed
+      LibHTS.sam_read1(@hts_file, header, bam1_ptr)
+    end
+
     private def each_record_copy(&)
       check_closed
 

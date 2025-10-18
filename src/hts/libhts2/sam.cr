@@ -90,10 +90,9 @@ module HTS
     end
 
     def sam_itr_next(htsfp, itr, r)
-      # FIXME: check if htsfp is compressed BGZF
       raise "Null iterator" if itr.null?
-      # FIXME: check multi
-      LibHTS.hts_itr_next(htsfp.value.fp.bgzf, itr, r, htsfp)
+      # Use the stable sam_itr_next wrapper that accepts HtsFile*
+      LibHTS.sam_itr_next(htsfp, itr, r)
     end
   end
 end
