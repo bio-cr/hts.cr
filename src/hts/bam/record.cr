@@ -301,6 +301,11 @@ module HTS
         self.class.new(@header, bam1)
       end
 
+      # Base modification accessor (lazy)
+      def base_mod : Bam::BaseMod
+        @base_mod ||= Bam::BaseMod.new(self)
+      end
+
       # garbagew collection
       def finalize
         LibHTS.bam_destroy1 @bam1 unless @bam1.null?
