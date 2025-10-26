@@ -36,8 +36,9 @@ module HTS
 
     def initialize(file_name : Path | String, @mode = "r", index = "",
                    threads = 0, build_index = false)
-      @file_name = file_name.to_s || ""
+      @file_name = file_name.to_s
       @nthreads = threads
+      @idx = LibHTS::HtsIdxT.null
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
@@ -109,8 +110,7 @@ module HTS
     def write(var)
       check_closed
 
-      # var_dup = var.clone
-      r = LibHTS.bcf_write(@hts_file, header, var_dup)
+      r = LibHTS.bcf_write(@hts_file, header, var)
       raise "Failed to write record" if r < 0
     end
 

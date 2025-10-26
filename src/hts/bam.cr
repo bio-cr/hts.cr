@@ -36,8 +36,9 @@ module HTS
 
     def initialize(file_name : Path | String, @mode = "r", index = "", fai = "",
                    threads = 0, build_index = false)
-      @file_name = file_name.to_s || ""
+      @file_name = file_name.to_s
       @nthreads = threads
+      @idx = LibHTS::HtsIdxT.null
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
