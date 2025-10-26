@@ -74,8 +74,7 @@ module HTS
 
     def seq(name : String | Symbol)
       name = name.to_s
-      len = 0
-      result = LibHTS.fai_fetch(@fai, name, pointerof(len))
+      result = LibHTS.fai_fetch(@fai, name, out len)
       case len
       when -2 then raise "Invalid chromosome name: #{name}"
       when -1 then raise "Error fetching sequence: #{name}"
