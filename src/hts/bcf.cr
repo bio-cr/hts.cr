@@ -59,15 +59,20 @@ module HTS
       @start_position = tell
     end
 
-    def build_index(index_name = "", min_shift = 14)
+    def build_index(index_name = "", min_shift = 14, verbose = true)
       check_closed
 
-      if index_name == ""
-        STDERR.puts "Create index for #{@file_name}"
-      else
-        STDERR.puts "Create index for #{@file_name} to #{index_name}"
+      if verbose
+        if index_name == ""
+          STDERR.puts "Create index for #{@file_name}"
+        else
+          STDERR.puts "Create index for #{@file_name} to #{index_name}"
+        end
       end
-      LibHTS.bcf_index_build3(@file_name, index_name, min_shift, @nthreads)
+
+      r = LibHTS.bcf_index_build3(@file_name, index_name, min_shift, @nthreads)
+      raise "Indexing failed for #{@file_name} (rc=#{r})" if r < 0
+      self
     end
 
     def load_index(index_name = "")

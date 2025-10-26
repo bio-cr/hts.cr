@@ -89,13 +89,15 @@ module HTS
       build_index(index) if build_index
     end
 
-    def build_index(index_name, min_shift = 0)
+    def build_index(index_name, min_shift = 0, verbose = true)
       check_closed
 
-      if index_name == ""
-        STDERR.puts "Create index for #{@file_name}"
-      else
-        STDERR.puts "Create index for #{@file_name} to #{index_name}"
+      if verbose
+        if index_name == ""
+          STDERR.puts "Create index for #{@file_name}"
+        else
+          STDERR.puts "Create index for #{@file_name} to #{index_name}"
+        end
       end
 
       case LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
