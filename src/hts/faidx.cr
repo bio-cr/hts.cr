@@ -20,8 +20,8 @@ module HTS
     end
 
     def initialize(file_name : Path | String)
-      @file_name = file_name.to_s || ""
-      @fai = LibHTS.fai_load(file_name)
+      @file_name = file_name.to_s
+      @fai = LibHTS.fai_load(@file_name)
       @closed = false
       raise "Failed to load fai file: #{file_name}" if @fai.null?
     end
@@ -50,7 +50,7 @@ module HTS
     end
 
     def chrom_size(chrom : String | Symbol)
-      chrom = chrom.to_s || ""
+      chrom = chrom.to_s
       result = LibHTS.faidx_seq_len(@fai, chrom)
     end
 
@@ -61,25 +61,28 @@ module HTS
     end
 
     def seq(name : String | Symbol, start : Number, stop : Number)
-      name = name.to_s || ""
-      rlen = Pointer(Int32).malloc
-      result = LibHTS.faidx_fetch_seq(@fai, name, start, stop, rlen)
-      case rlen.value
+      name = name.to_s
+      result = LibHTS.faidx_fetch_seq(@fai, name, start, stop, out len)
+      case len
       when -2 then raise "Invalid chromosome name: #{name}"
       when -1 then raise "Error fetching sequence: #{name}:#{start}-#{stop}"
       end
-      String.new(result)
+      str = String.new(result)
+      LibC.free(result.as(Void*))
+      str
     end
 
     def seq(name : String | Symbol)
-      name = name.to_s || ""
-      rlen = Pointer(Int32).malloc
-      result = LibHTS.fai_fetch(@fai, name, rlen)
-      case rlen.value
+      name = name.to_s
+      len = 0
+      result = LibHTS.fai_fetch(@fai, name, pointerof(len))
+      case len
       when -2 then raise "Invalid chromosome name: #{name}"
       when -1 then raise "Error fetching sequence: #{name}"
       end
-      String.new(result)
+      str = String.new(result)
+      LibC.free(result.as(Void*))
+      str
     end
 
     def finalize
