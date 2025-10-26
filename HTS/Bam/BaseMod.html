@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.17.1">
+<meta name="crystal_docs.project_version" content="develop">
+<meta name="crystal_docs.project_name" content="hts">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="hts">
+  <title>HTS::Bam::BaseMod - hts develop</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          hts
+        </a>
+      </h1>
+
+      <span class="project-version">
+        develop
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="hts/HTS" data-name="hts">
+      <a href="../../HTS.html">HTS</a>
+      
+        <ul>
+  
+  <li class="parent open current" data-id="hts/HTS/Bam" data-name="hts::bam">
+      <a href="../../HTS/Bam.html">Bam</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
+      <a href="../../HTS/Bam/Aux.html">Aux</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+      <a href="../../HTS/Bam/BaseMod.html">BaseMod</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
+      <a href="../../HTS/Bam/BaseMod/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Modification" data-name="hts::bam::basemod::modification">
+      <a href="../../HTS/Bam/BaseMod/Modification.html">Modification</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Position" data-name="hts::bam::basemod::position">
+      <a href="../../HTS/Bam/BaseMod/Position.html">Position</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Cigar" data-name="hts::bam::cigar">
+      <a href="../../HTS/Bam/Cigar.html">Cigar</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Flag" data-name="hts::bam::flag">
+      <a href="../../HTS/Bam/Flag.html">Flag</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Header" data-name="hts::bam::header">
+      <a href="../../HTS/Bam/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Record" data-name="hts::bam::record">
+      <a href="../../HTS/Bam/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Bcf" data-name="hts::bcf">
+      <a href="../../HTS/Bcf.html">Bcf</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
+      <a href="../../HTS/Bcf/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Header" data-name="hts::bcf::header">
+      <a href="../../HTS/Bcf/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Info" data-name="hts::bcf::info">
+      <a href="../../HTS/Bcf/Info.html">Info</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Record" data-name="hts::bcf::record">
+      <a href="../../HTS/Bcf/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bgzf" data-name="hts::bgzf">
+      <a href="../../HTS/Bgzf.html">Bgzf</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Faidx" data-name="hts::faidx">
+      <a href="../../HTS/Faidx.html">Faidx</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Hts" data-name="hts::hts">
+      <a href="../../HTS/Hts.html">Hts</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/LibHTS2" data-name="hts::libhts2">
+      <a href="../../HTS/LibHTS2.html">LibHTS2</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Tabix" data-name="hts::tabix">
+      <a href="../../HTS/Tabix.html">Tabix</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> HTS::<wbr>Bam::<wbr>BaseMod
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/BaseMod.html">HTS::Bam::BaseMod</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Base modification information from MM/ML tags
+View over a Record's MM/ML tags using htslib base-mod API</p>
+
+
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Enumerable(<a href="../../HTS/Bam/BaseMod/Position.html">HTS::Bam::BaseMod::Position</a>)</li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L7" target="_blank">
+        hts/bam/base_mod.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28record%3AHTS%3A%3ABam%3A%3ARecord%2Cauto_parse%3ABool%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(record : HTS::Bam::Record, auto_parse : Bool = <span class="n">true</span>)</a>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#at_pos%28position%3AInt32%2Cmax_mods%3AInt32%3D10%29%3APosition%7CNil-instance-method" class="signature"><strong>#at_pos</strong>(position : Int32, max_mods : Int32 = <span class="n">10</span>) : Position | Nil</a>
+        
+          <div class="summary"><p>Get modifications at a specific query position (0-based); returns nil if none</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each%28max_mods%3AInt32%3D10%2C%26block%3APosition-%3E%29-instance-method" class="signature"><strong>#each</strong>(max_mods : Int32 = <span class="n">10</span>, &block : Position -> )</a>
+        
+          <div class="summary"><p>Iterate over all positions with modifications</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ensure_parsed%21%28flags%3AUInt32%3D0_u32%29-instance-method" class="signature"><strong>#ensure_parsed!</strong>(flags : UInt32 = <span class="n">0_u32</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#modification_types%3AArray%28Int32%29-instance-method" class="signature"><strong>#modification_types</strong> : Array(Int32)</a>
+        
+          <div class="summary"><p>List of modification codes (positive char codes or negative ChEBI)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#parse%28flags%3AUInt32%3D0_u32%29%3AInt32-instance-method" class="signature"><strong>#parse</strong>(flags : UInt32 = <span class="n">0_u32</span>) : Int32</a>
+        
+          <div class="summary"><p>Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#parsed%3F%3ABool-instance-method" class="signature"><strong>#parsed?</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#query_type%28code%3AInt32%7CString%29-instance-method" class="signature"><strong>#query_type</strong>(code : Int32 | String)</a>
+        
+          <div class="summary"><p>Query info about a specific modification code</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#query_type_at%28index%3AInt32%29-instance-method" class="signature"><strong>#query_type_at</strong>(index : Int32)</a>
+        
+          <div class="summary"><p>Query info about i-th modification type</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#record%3AHTS%3A%3ABam%3A%3ARecord-instance-method" class="signature"><strong>#record</strong> : HTS::Bam::Record</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#recorded_types%3AArray%28Int32%29-instance-method" class="signature"><strong>#recorded_types</strong> : Array(Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_a%3AArray%28Position%29-instance-method" class="signature"><strong>#to_a</strong> : Array(Position)</a>
+        
+          <div class="summary"><p>Returns an <code>Array</code> with all the elements in the collection.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s%3AString-instance-method" class="signature"><strong>#to_s</strong> : String</a>
+        
+          <div class="summary"><p>Returns a nicely readable and concise string representation of this object, typically intended for users.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(record:HTS::Bam::Record,auto_parse:Bool=true)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(record : <a href="../../HTS/Bam/Record.html">HTS::Bam::Record</a>, auto_parse : Bool = <span class="n">true</span>)
+
+        <a class="method-permalink" href="#new%28record%3AHTS%3A%3ABam%3A%3ARecord%2Cauto_parse%3ABool%3Dtrue%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L76" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="at_pos(position:Int32,max_mods:Int32=10):Position|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>at_pos</strong>(position : Int32, max_mods : Int32 = <span class="n">10</span>) : <a href="../../HTS/Bam/BaseMod/Position.html">Position</a> | Nil
+
+        <a class="method-permalink" href="#at_pos%28position%3AInt32%2Cmax_mods%3AInt32%3D10%29%3APosition%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get modifications at a specific query position (0-based); returns nil if none</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L113" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="close-instance-method">
+      <div class="signature">
+        
+        def <strong>close</strong>
+
+        <a class="method-permalink" href="#close-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L83" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each(max_mods:Int32=10,&amp;block:Position-&gt;)-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(max_mods : Int32 = <span class="n">10</span>, &block : <a href="../../HTS/Bam/BaseMod/Position.html">Position</a> -> )
+
+        <a class="method-permalink" href="#each%28max_mods%3AInt32%3D10%2C%26block%3APosition-%3E%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Iterate over all positions with modifications</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L128" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ensure_parsed!(flags:UInt32=0_u32)-instance-method">
+      <div class="signature">
+        
+        def <strong>ensure_parsed!</strong>(flags : UInt32 = <span class="n">0_u32</span>)
+
+        <a class="method-permalink" href="#ensure_parsed%21%28flags%3AUInt32%3D0_u32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L106" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L90" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="modification_types:Array(Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>modification_types</strong> : Array(Int32)
+
+        <a class="method-permalink" href="#modification_types%3AArray%28Int32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>List of modification codes (positive char codes or negative ChEBI)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L146" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="parse(flags:UInt32=0_u32):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>parse</strong>(flags : UInt32 = <span class="n">0_u32</span>) : Int32
+
+        <a class="method-permalink" href="#parse%28flags%3AUInt32%3D0_u32%29%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L99" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="parsed?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>parsed?</strong> : Bool
+
+        <a class="method-permalink" href="#parsed%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L94" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="query_type(code:Int32|String)-instance-method">
+      <div class="signature">
+        
+        def <strong>query_type</strong>(code : Int32 | String)
+
+        <a class="method-permalink" href="#query_type%28code%3AInt32%7CString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Query info about a specific modification code</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L158" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="query_type_at(index:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>query_type_at</strong>(index : Int32)
+
+        <a class="method-permalink" href="#query_type_at%28index%3AInt32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Query info about i-th modification type</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L168" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="record:HTS::Bam::Record-instance-method">
+      <div class="signature">
+        
+        def <strong>record</strong> : <a href="../../HTS/Bam/Record.html">HTS::Bam::Record</a>
+
+        <a class="method-permalink" href="#record%3AHTS%3A%3ABam%3A%3ARecord-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L74" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="recorded_types:Array(Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>recorded_types</strong> : Array(Int32)
+
+        <a class="method-permalink" href="#recorded_types%3AArray%28Int32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L153" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_a:Array(Position)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_a</strong> : Array(<a href="../../HTS/Bam/BaseMod/Position.html">Position</a>)
+
+        <a class="method-permalink" href="#to_a%3AArray%28Position%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from module Enumerable(<a href="../../HTS/Bam/BaseMod/Position.html">HTS::Bam::BaseMod::Position</a>)
+            </div>
+          
+          <p>Returns an <code>Array</code> with all the elements in the collection.</p>
+<pre><code class="language-crystal">(<span class="n">1</span>..<span class="n">5</span>).to_a <span class="c"># =&gt; [1, 2, 3, 4, 5]</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L177" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s:String-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong> : String
+
+        <a class="method-permalink" href="#to_s%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Object
+            </div>
+          
+          <p>Returns a nicely readable and concise string representation of this object,
+typically intended for users.</p>
+<p>This method should usually <strong>not</strong> be overridden. It delegates to
+<code>#to_s(IO)</code> which can be overridden for custom implementations.</p>
+<p>Also see <code>#inspect</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/2aaf723ecd8f091cf371622faab8e7e22f29f94d/src/hts/bam/base_mod.cr#L183" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>
