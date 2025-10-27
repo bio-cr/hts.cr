@@ -37,11 +37,11 @@ module HTS
           @qual / 256.0
         end
 
-        def to_s : String
+        def to_s(io : IO) : String
           if (p = probability)
-            "#{canonical}->#{code}(#{p.round(3)})"
+            io << "#{canonical}->#{code}(#{p.round(3)})"
           else
-            "#{canonical}->#{code}"
+            io << "#{canonical}->#{code}"
           end
         end
       end
