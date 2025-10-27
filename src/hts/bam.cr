@@ -217,6 +217,13 @@ module HTS
       end
     end
 
+    # Ensure collected records are independent and safe after iteration ends.
+    def to_a : Array(Record)
+      ary = [] of Record
+      each(copy: true) { |r| ary << r }
+      ary
+    end
+
     private def each_record_copy(&)
       check_closed
 

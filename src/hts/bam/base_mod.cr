@@ -37,7 +37,7 @@ module HTS
           @qual / 256.0
         end
 
-        def to_s(io : IO) : String
+        def to_s(io : IO) : Nil
           if (p = probability)
             io << "#{canonical}->#{code}(#{p.round(3)})"
           else
@@ -62,7 +62,7 @@ module HTS
           @modifications.any? { |m| m.code == "h" }
         end
 
-        def to_s(io : IO) : String
+        def to_s(io : IO) : Nil
           mods_str = @modifications.map(&.to_s).join(", ")
           io << "pos=#{@position} [#{mods_str}]"
         end
@@ -78,6 +78,8 @@ module HTS
         raise Error.new("Failed to allocate hts_base_mod_state") if @state.null?
         @closed = false
         @parsed = false
+        # Reusable temporary buffer for LibHTS::HtsBaseMod structs
+        @mods_buffer = Bytes.new(10 * sizeof(LibHTS::HtsBaseMod))
       end
 
       def close
@@ -96,14 +98,15 @@ module HTS
       end
 
       # Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1)
-      def parse(flags : UInt32 = 0_u32) : Int32
+      # Default to reporting unchecked modifications so we see MM/ML content without strict validation.
+      def parse(flags : UInt32 = 1_u32) : Int32
         ret = LibHTS.bam_parse_basemod2(@record, @state, flags)
         raise Error.new("Failed to parse base modifications") if ret < 0
         @parsed = true
         ret
       end
 
-      def ensure_parsed!(flags : UInt32 = 0_u32)
+      def ensure_parsed!(flags : UInt32 = 1_u32)
         return if @parsed
         raise Error.new("BaseMod is not parsed. Call parse first.") unless @auto_parse
         parse(flags)
@@ -113,31 +116,25 @@ module HTS
       def at_pos(position : Int32, max_mods : Int32 = 10) : Position?
         ensure_parsed!
 
-        mods_ptr = Pointer(LibHTS::HtsBaseMod).malloc(max_mods)
-        begin
-          ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, max_mods)
-          return nil if ret <= 0
-          n = ret < max_mods ? ret : max_mods
-          build_position(position, mods_ptr, n)
-        ensure
-          LibC.free(mods_ptr.as(Void*))
-        end
+        ensure_buffer_capacity(max_mods)
+        mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
+        ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, max_mods)
+        return nil if ret <= 0
+        n = ret < max_mods ? ret : max_mods
+        build_position(position, mods_ptr, n)
       end
 
       # Iterate over all positions with modifications
       def each(max_mods : Int32 = 10, &block : Position ->)
         ensure_parsed!
 
-        mods_ptr = Pointer(LibHTS::HtsBaseMod).malloc(max_mods)
-        begin
-          loop do
-            ret = LibHTS.bam_next_basemod(@record, @state, mods_ptr, max_mods, out pos)
-            break if ret <= 0
-            n = ret < max_mods ? ret : max_mods
-            yield build_position(pos, mods_ptr, n)
-          end
-        ensure
-          LibC.free(mods_ptr.as(Void*))
+        ensure_buffer_capacity(max_mods)
+        mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
+        loop do
+          ret = LibHTS.bam_next_basemod(@record, @state, mods_ptr, max_mods, out pos)
+          break if ret <= 0
+          n = ret < max_mods ? ret : max_mods
+          yield build_position(pos, mods_ptr, n)
         end
         self
       end
@@ -150,6 +147,7 @@ module HTS
         Array.new(ntype) { |i| codes_ptr[i] }
       end
 
+      # Alias for `modification_types`
       def recorded_types : Array(Int32)
         modification_types
       end
@@ -158,19 +156,22 @@ module HTS
       def query_type(code : Int32 | String)
         ensure_parsed!
         code_i = code.is_a?(String) ? code.ord : code
-        ret = LibHTS.bam_mods_query_type(@state, code_i, out strand, out implicit, out canonical)
+        # canonical is written via char*; allocate a single byte buffer
+        canonical_ch = uninitialized LibC::Char
+        ret = LibHTS.bam_mods_query_type(@state, code_i, out strand, out implicit, pointerof(canonical_ch))
         return nil if ret < 0
-        canonical = (canonical.to_u8).chr.to_s
+        canonical = (canonical_ch.to_u8).chr.to_s
         {canonical: canonical, strand: strand, implicit: implicit != 0}
       end
 
       # Query info about i-th modification type
       def query_type_at(index : Int32)
         ensure_parsed!
-        ret = LibHTS.bam_mods_queryi(@state, index, out strand, out implicit, out canonical)
+        canonical_ch = uninitialized LibC::Char
+        ret = LibHTS.bam_mods_queryi(@state, index, out strand, out implicit, pointerof(canonical_ch))
         return nil if ret < 0
         types = modification_types
-        canonical = (canonical.to_u8).chr.to_s
+        canonical = (canonical_ch.to_u8).chr.to_s
         {code: types[index], canonical: canonical, strand: strand, implicit: implicit != 0}
       end
 
@@ -180,7 +181,7 @@ module HTS
         positions
       end
 
-      def to_s(io : IO) : String
+      def to_s(io : IO) : Nil
         return "#<HTS::Bam::BaseMod (not parsed)>" unless @parsed
         items = [] of String
         each { |pos| items << pos.to_s }
@@ -188,14 +189,21 @@ module HTS
       end
 
       private def build_position(position : Int32, mods_ptr : Pointer(LibHTS::HtsBaseMod), n_mods : Int32) : Position
-        modifications = Array(Modification).new(n_mods)
-        i = 0
-        while i < n_mods
+        modifications = Array.new(n_mods) do |i|
           m = (mods_ptr + i).value
-          modifications << Modification.new(m.modified_base, m.canonical_base, m.strand, m.qual)
-          i += 1
+          Modification.new(m.modified_base, m.canonical_base, m.strand, m.qual)
         end
         Position.new(position, modifications)
+      end
+
+      # Ensure the reusable buffer has at least `max_mods` capacity
+      private def ensure_buffer_capacity(max_mods : Int32)
+        needed = max_mods * sizeof(LibHTS::HtsBaseMod)
+        if @mods_buffer.size < needed
+          # grow by 1.5x to reduce realloc frequency
+          new_size = Math.max(needed, (@mods_buffer.size * 3) // 2)
+          @mods_buffer = Bytes.new(new_size)
+        end
       end
     end
   end
