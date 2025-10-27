@@ -62,9 +62,9 @@ module HTS
           @modifications.any? { |m| m.code == "h" }
         end
 
-        def to_s : String
+        def to_s(io : IO) : String
           mods_str = @modifications.map(&.to_s).join(", ")
-          "pos=#{@position} [#{mods_str}]"
+          io << "pos=#{@position} [#{mods_str}]"
         end
       end
 
@@ -180,11 +180,11 @@ module HTS
         positions
       end
 
-      def to_s : String
+      def to_s(io : IO) : String
         return "#<HTS::Bam::BaseMod (not parsed)>" unless @parsed
         items = [] of String
         each { |pos| items << pos.to_s }
-        "#<HTS::Bam::BaseMod #{items.join(' ')}>"
+        io << "#<HTS::Bam::BaseMod #{items.join(' ')}>"
       end
 
       private def build_position(position : Int32, mods_ptr : Pointer(LibHTS::HtsBaseMod), n_mods : Int32) : Position
