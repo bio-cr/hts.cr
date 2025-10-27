@@ -228,7 +228,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/62d49f3e4e8bb7498414661d4df456fc71abb7fa/src/hts/bcf/info.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L3" target="_blank">
         hts/bcf/info.cr
       </a>
     
@@ -276,20 +276,49 @@
       <li class="entry-summary">
         <a href="#get_flag%28tag%29-instance-method" class="signature"><strong>#get_flag</strong>(tag)</a>
         
+          <div class="summary"><p>Get INFO flag.</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#get_float%28tag%29-instance-method" class="signature"><strong>#get_float</strong>(tag)</a>
+        
+          <div class="summary"><p>Get INFO float array.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_float_opt%28tag%29-instance-method" class="signature"><strong>#get_float_opt</strong>(tag)</a>
+        
+          <div class="summary"><p>Get INFO float array with missing values mapped to nil (bcf_float_missing is a NaN sentinel)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#get_int%28tag%29-instance-method" class="signature"><strong>#get_int</strong>(tag)</a>
         
+          <div class="summary"><p>Get INFO int32 array.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_int64%28tag%29-instance-method" class="signature"><strong>#get_int64</strong>(tag)</a>
+        
+          <div class="summary"><p>Get INFO int64 array.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_int_opt%28tag%29-instance-method" class="signature"><strong>#get_int_opt</strong>(tag)</a>
+        
+          <div class="summary"><p>Get INFO int32 array with missing values mapped to nil.</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#get_string%28tag%29-instance-method" class="signature"><strong>#get_string</strong>(tag)</a>
+        
+          <div class="summary"><p>Get INFO string.</p></div>
         
       </li>
     
@@ -348,7 +377,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/62d49f3e4e8bb7498414661d4df456fc71abb7fa/src/hts/bcf/info.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -377,10 +406,15 @@
         <a class="method-permalink" href="#get_flag%28tag%29-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Get INFO flag. Returns true/false, or nil if tag undefined.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/62d49f3e4e8bb7498414661d4df456fc71abb7fa/src/hts/bcf/info.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -393,10 +427,36 @@
         <a class="method-permalink" href="#get_float%28tag%29-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Get INFO float array. Returns nil if tag not present.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/62d49f3e4e8bb7498414661d4df456fc71abb7fa/src/hts/bcf/info.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L49" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_float_opt(tag)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_float_opt</strong>(tag)
+
+        <a class="method-permalink" href="#get_float_opt%28tag%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get INFO float array with missing values mapped to nil (bcf_float_missing is a NaN sentinel)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L64" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -409,10 +469,58 @@
         <a class="method-permalink" href="#get_int%28tag%29-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Get INFO int32 array. Returns nil if tag not present.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/62d49f3e4e8bb7498414661d4df456fc71abb7fa/src/hts/bcf/info.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_int64(tag)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_int64</strong>(tag)
+
+        <a class="method-permalink" href="#get_int64%28tag%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get INFO int64 array. Returns nil if tag not present.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L23" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_int_opt(tag)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_int_opt</strong>(tag)
+
+        <a class="method-permalink" href="#get_int_opt%28tag%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get INFO int32 array with missing values mapped to nil.
+Missing is encoded in BCF as INT32_MIN; vector_end should not appear in INFO but is ignored if present.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L41" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -425,10 +533,15 @@
         <a class="method-permalink" href="#get_string%28tag%29-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Get INFO string. Returns nil if tag not present.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/62d49f3e4e8bb7498414661d4df456fc71abb7fa/src/hts/bcf/info.cr#L34" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/157af65a6a6917bd1f9803f3d247a77c8b5b2185/src/hts/bcf/info.cr#L71" target="_blank">View source</a>]
         
       </div>
     </div>
