@@ -2,61 +2,104 @@ module HTS
   class Bcf < Hts
     class Info
       def initialize(@record : Bcf::Record)
-        @p1 = Pointer(Void).null
       end
 
-      # FIXME: API This API is tentative and needs to be modified to be consistent with Ruby.
-
+      # Get INFO int32 array. Returns nil if tag not present.
       def get_int(tag)
-        ndst = Pointer(Int32).malloc
-        dst = pointerof(@p1)
+        ndst = 0
+        dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        if LibHTS2.bcf_get_info_int32(hdr, r, tag, dst, ndst) < 0
-          return nil
+        return nil if LibHTS2.bcf_get_info_int32(hdr, r, tag, pointerof(dst), pointerof(ndst)) < 0
+        begin
+          res = dst.as(Pointer(Int32))
+          Array(Int32).new(ndst) { |i| res[i] }
+        ensure
+          LibHTS.hts_free(dst) unless dst.null?
         end
-        res = Pointer(Int32).new(@p1.address)
-        Array(Int32).new(ndst[0]) { |i| res[i] }
       end
 
+      # Get INFO int64 array. Returns nil if tag not present.
+      def get_int64(tag)
+        ndst = 0
+        dst = Pointer(Void).null
+        hdr = @record.header
+        r = @record
+        # Use base function with LONG type explicitly (not all wrappers expose int64 helper)
+        rc = LibHTS.bcf_get_info_values(hdr, r, tag, pointerof(dst), pointerof(ndst), LibHTS2::BCF_HT_LONG)
+        return nil if rc < 0
+        begin
+          res = dst.as(Pointer(Int64))
+          Array(Int64).new(ndst) { |i| res[i] }
+        ensure
+          LibHTS.hts_free(dst) unless dst.null?
+        end
+      end
+
+      # Get INFO int32 array with missing values mapped to nil.
+      # Missing is encoded in BCF as INT32_MIN; vector_end should not appear in INFO but is ignored if present.
+      def get_int_opt(tag)
+        ints = get_int(tag)
+        return nil unless ints
+        missing = Int32::MIN
+        ints.map { |v| v == missing ? nil : v }
+      end
+
+      # Get INFO float array. Returns nil if tag not present.
       def get_float(tag)
-        ndst = Pointer(Int32).malloc
-        dst = pointerof(@p1)
+        ndst = 0
+        dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        if LibHTS2.bcf_get_info_float(hdr, r, tag, dst, ndst) < 0
-          return nil
+        return nil if LibHTS2.bcf_get_info_float(hdr, r, tag, pointerof(dst), pointerof(ndst)) < 0
+        begin
+          res = dst.as(Pointer(Float32))
+          Array(Float32).new(ndst) { |i| res[i] }
+        ensure
+          LibHTS.hts_free(dst) unless dst.null?
         end
-        res = Pointer(Float32).new(@p1.address)
-        Array(Float32).new(ndst[0]) { |i| res[i] }
       end
 
+      # Get INFO float array with missing values mapped to nil (bcf_float_missing is a NaN sentinel)
+      def get_float_opt(tag)
+        floats = get_float(tag)
+        return nil unless floats
+        floats.map { |v| LibHTS.bcf_float_is_missing(v) != 0 ? nil : v.to_f64 }
+      end
+
+      # Get INFO string. Returns nil if tag not present.
       def get_string(tag)
-        ndst = Pointer(Int32).malloc
-        dst = pointerof(@p1)
+        ndst = 0
+        dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        if LibHTS2.bcf_get_info_string(hdr, r, tag, dst, ndst) < 0
-          return nil
+        return nil if LibHTS2.bcf_get_info_string(hdr, r, tag, pointerof(dst), pointerof(ndst)) < 0
+        begin
+          String.new dst.as(Pointer(UInt8))
+        ensure
+          LibHTS.hts_free(dst) unless dst.null?
         end
-        String.new Pointer(UInt8).new(@p1.address)
       end
 
+      # Get INFO flag. Returns true/false, or nil if tag undefined.
       def get_flag(tag)
-        ndst = Pointer(Int32).malloc
-        dst = pointerof(@p1)
+        ndst = 0
+        dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        case LibHTS2.bcf_get_info_flag(hdr, r, tag, dst, ndst)
+        case LibHTS2.bcf_get_info_flag(hdr, r, tag, pointerof(dst), pointerof(ndst))
         when 1
-          return true
+          val = true
         when 0
-          return false
+          val = false
         when -1
-          return nil
+          val = nil
         else
           raise "unknown return value"
         end
+        # typically no allocation for flags, but free if htslib did allocate
+        LibHTS.hts_free(dst) unless dst.null?
+        val
       end
     end
   end
