@@ -254,7 +254,7 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L7" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L7" target="_blank">
         hts/bam/base_mod.cr
       </a>
     
@@ -262,6 +262,30 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
   
 
 
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="HTS_MOD_REPORT_UNCHECKED">
+        <strong>HTS_MOD_REPORT_UNCHECKED</strong> = <code><span class="n">1_u32</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default flags for parsing base modifications via htslib
+HTS_MOD_REPORT_UNCHECKED = 1 (report unvalidated mods instead of failing)</p>
+      </dd>
+      
+    
+  </dl>
 
 
 
@@ -300,6 +324,13 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#%5B%5D%28position%3AInt32%29%3APosition%7CNil-instance-method" class="signature"><strong>#[]</strong>(position : Int32) : Position | Nil</a>
+        
+          <div class="summary"><p>Array-style access to modifications at a query position</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#at_pos%28position%3AInt32%2Cmax_mods%3AInt32%3D10%29%3APosition%7CNil-instance-method" class="signature"><strong>#at_pos</strong>(position : Int32, max_mods : Int32 = <span class="n">10</span>) : Position | Nil</a>
         
           <div class="summary"><p>Get modifications at a specific query position (0-based); returns nil if none</p></div>
@@ -319,7 +350,14 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#ensure_parsed%21%28flags%3AUInt32%3D1_u32%29-instance-method" class="signature"><strong>#ensure_parsed!</strong>(flags : UInt32 = <span class="n">1_u32</span>)</a>
+        <a href="#each_position%28max_mods%3AInt32%3D10%2C%26block%3APosition-%3E%29-instance-method" class="signature"><strong>#each_position</strong>(max_mods : Int32 = <span class="n">10</span>, &block : Position -> )</a>
+        
+          <div class="summary"><p>Alias for clarity and parity with common terminology</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ensure_parsed%21%28flags%3AUInt32%3DHTS_MOD_REPORT_UNCHECKED%29-instance-method" class="signature"><strong>#ensure_parsed!</strong>(flags : UInt32 = <span class="t">HTS_MOD_REPORT_UNCHECKED</span>)</a>
         
       </li>
     
@@ -336,7 +374,7 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#parse%28flags%3AUInt32%3D1_u32%29%3AInt32-instance-method" class="signature"><strong>#parse</strong>(flags : UInt32 = <span class="n">1_u32</span>) : Int32</a>
+        <a href="#parse%28flags%3AUInt32%3DHTS_MOD_REPORT_UNCHECKED%29%3AInt32-instance-method" class="signature"><strong>#parse</strong>(flags : UInt32 = <span class="t">HTS_MOD_REPORT_UNCHECKED</span>) : Int32</a>
         
           <div class="summary"><p>Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1) Default to reporting unchecked modifications so we see MM/ML content without strict validation.</p></div>
         
@@ -455,7 +493,7 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L76" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L80" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -476,6 +514,27 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="[](position:Int32):Position|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(position : Int32) : <a href="../../HTS/Bam/BaseMod/Position.html">Position</a> | Nil
+
+        <a class="method-permalink" href="#%5B%5D%28position%3AInt32%29%3APosition%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Array-style access to modifications at a query position</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L174" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="at_pos(position:Int32,max_mods:Int32=10):Position|Nil-instance-method">
       <div class="signature">
         
@@ -492,7 +551,7 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L129" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -508,7 +567,7 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L85" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L89" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -529,23 +588,44 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L128" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L146" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="ensure_parsed!(flags:UInt32=1_u32)-instance-method">
+    <div class="entry-detail" id="each_position(max_mods:Int32=10,&amp;block:Position-&gt;)-instance-method">
       <div class="signature">
         
-        def <strong>ensure_parsed!</strong>(flags : UInt32 = <span class="n">1_u32</span>)
+        def <strong>each_position</strong>(max_mods : Int32 = <span class="n">10</span>, &block : <a href="../../HTS/Bam/BaseMod/Position.html">Position</a> -> )
 
-        <a class="method-permalink" href="#ensure_parsed%21%28flags%3AUInt32%3D1_u32%29-instance-method">#</a>
+        <a class="method-permalink" href="#each_position%28max_mods%3AInt32%3D10%2C%26block%3APosition-%3E%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Alias for clarity and parity with common terminology</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L169" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ensure_parsed!(flags:UInt32=HTS_MOD_REPORT_UNCHECKED)-instance-method">
+      <div class="signature">
+        
+        def <strong>ensure_parsed!</strong>(flags : UInt32 = <span class="t">HTS_MOD_REPORT_UNCHECKED</span>)
+
+        <a class="method-permalink" href="#ensure_parsed%21%28flags%3AUInt32%3DHTS_MOD_REPORT_UNCHECKED%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -561,7 +641,7 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L92" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L96" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -582,17 +662,17 @@ View over a Record's MM/ML tags using htslib base-mod API</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L143" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L179" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="parse(flags:UInt32=1_u32):Int32-instance-method">
+    <div class="entry-detail" id="parse(flags:UInt32=HTS_MOD_REPORT_UNCHECKED):Int32-instance-method">
       <div class="signature">
         
-        def <strong>parse</strong>(flags : UInt32 = <span class="n">1_u32</span>) : Int32
+        def <strong>parse</strong>(flags : UInt32 = <span class="t">HTS_MOD_REPORT_UNCHECKED</span>) : Int32
 
-        <a class="method-permalink" href="#parse%28flags%3AUInt32%3D1_u32%29%3AInt32-instance-method">#</a>
+        <a class="method-permalink" href="#parse%28flags%3AUInt32%3DHTS_MOD_REPORT_UNCHECKED%29%3AInt32-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -604,7 +684,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L102" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L106" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -620,7 +700,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L100" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -641,7 +721,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L156" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L192" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -662,7 +742,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L168" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L204" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -678,7 +758,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L74" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L78" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -699,7 +779,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L151" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L187" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -725,7 +805,7 @@ Default to reporting unchecked modifications so we see MM/ML content without str
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L214" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -757,7 +837,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/10c83ce5e46535bdab12464ba937a97d2b844f64/src/hts/bam/base_mod.cr#L184" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/de66d585f48eab889a8b4f366ad81adcafc39be3/src/hts/bam/base_mod.cr#L220" target="_blank">View source</a>]
         
       </div>
     </div>
