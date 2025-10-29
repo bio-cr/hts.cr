@@ -7,6 +7,10 @@ module HTS
     class BaseMod
       class Error < Exception; end
 
+      # Default flags for parsing base modifications via htslib
+      # HTS_MOD_REPORT_UNCHECKED = 1 (report unvalidated mods instead of failing)
+      HTS_MOD_REPORT_UNCHECKED = 1_u32
+
       # Individual base modification information
       class Modification
         getter modified_base : Int32
@@ -99,44 +103,76 @@ module HTS
 
       # Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1)
       # Default to reporting unchecked modifications so we see MM/ML content without strict validation.
-      def parse(flags : UInt32 = 1_u32) : Int32
+      def parse(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED) : Int32
         ret = LibHTS.bam_parse_basemod2(@record, @state, flags)
         raise Error.new("Failed to parse base modifications") if ret < 0
         @parsed = true
         ret
       end
 
-      def ensure_parsed!(flags : UInt32 = 1_u32)
+      def ensure_parsed!(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED)
         return if @parsed
         raise Error.new("BaseMod is not parsed. Call parse first.") unless @auto_parse
         parse(flags)
       end
 
+      # Ensure a fresh iteration state: if already parsed, re-parse to reset
+      private def reparse_or_parse!(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED)
+        if @parsed
+          parse(flags)
+        else
+          ensure_parsed!(flags)
+        end
+      end
+
       # Get modifications at a specific query position (0-based); returns nil if none
       def at_pos(position : Int32, max_mods : Int32 = 10) : Position?
-        ensure_parsed!
+        reparse_or_parse!
 
         ensure_buffer_capacity(max_mods)
         mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
         ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, max_mods)
         return nil if ret <= 0
-        n = ret < max_mods ? ret : max_mods
-        build_position(position, mods_ptr, n)
+        # If the buffer was too small, re-fetch with the exact needed size to avoid truncation
+        if ret > max_mods
+          ensure_buffer_capacity(ret)
+          mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
+          ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, ret)
+        end
+        build_position(position, mods_ptr, ret)
       end
 
       # Iterate over all positions with modifications
       def each(max_mods : Int32 = 10, &block : Position ->)
-        ensure_parsed!
+        reparse_or_parse!
 
         ensure_buffer_capacity(max_mods)
         mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
         loop do
           ret = LibHTS.bam_next_basemod(@record, @state, mods_ptr, max_mods, out pos)
           break if ret <= 0
-          n = ret < max_mods ? ret : max_mods
-          yield build_position(pos, mods_ptr, n)
+          # If more mods exist than the buffer size, fetch the full set for this position
+          if ret > max_mods
+            ensure_buffer_capacity(ret)
+            mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
+            # Use at_qpos API to re-read all modifications at this query position
+            full = LibHTS.bam_mods_at_qpos(@record, pos, @state, mods_ptr, ret)
+            yield build_position(pos, mods_ptr, full)
+          else
+            yield build_position(pos, mods_ptr, ret)
+          end
         end
         self
+      end
+
+      # Alias for clarity and parity with common terminology
+      def each_position(max_mods : Int32 = 10, &block : Position ->)
+        each(max_mods, &block)
+      end
+
+      # Array-style access to modifications at a query position
+      def [](position : Int32) : Position?
+        at_pos(position)
       end
 
       # List of modification codes (positive char codes or negative ChEBI)

@@ -165,4 +165,3 @@ class BamBaseModChebiIntegrationTest < Minitest::Test
     end
   end
 end
-
