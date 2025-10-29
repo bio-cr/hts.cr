@@ -100,3 +100,69 @@ class BamBaseModGenerateTest < Minitest::Test
     Process.run("bash", ["-lc", "command -v samtools >/dev/null 2>&1"]).success?
   end
 end
+
+# Integration test: open MM-chebi.sam directly via HTTPS URL using htslib's remote I/O
+# and verify BaseMod parsing behavior without local downloads or samtools.
+class BamBaseModChebiIntegrationTest < Minitest::Test
+  MM_CHEBI_URL = "https://raw.githubusercontent.com/samtools/htslib/refs/heads/develop/test/base_mods/MM-chebi.sam"
+
+  def test_mm_chebi_remote_sam_integration
+    bam = HTS::Bam.new(MM_CHEBI_URL)
+    begin
+      rec = bam.first?
+      assert rec, "No record found in MM-chebi.sam"
+
+      bm = HTS::Bam::BaseMod.new(rec.not_nil!)
+      bm.parse
+
+      types = bm.recorded_types
+      assert types.includes?('m'.ord), "expected 'm' in recorded types"
+      assert types.includes?(-76_792), "expected ChEBI:-76792 in recorded types"
+      assert types.includes?('n'.ord), "expected 'n' in recorded types"
+
+      mods = bm.to_a
+      total = mods.sum { |p| p.modifications.size }
+      assert_equal 8, total
+
+      expected_positions = [6, 15, 17, 19, 20, 31, 34].sort
+      got_positions = mods.map(&.position).uniq.sort
+      assert_equal expected_positions, got_positions
+
+      pos_to_codes = Hash(Int32, Array(Int32)).new { |h, k| h[k] = [] of Int32 }
+      mods.each do |p|
+        pos_to_codes[p.position].concat p.modifications.map(&.modified_base)
+      end
+
+      [6, 17, 20, 31, 34].each do |q|
+        assert pos_to_codes[q].any? { |c| c == 'm'.ord }, "pos #{q} should have 'm'"
+      end
+
+      [19, 34].each do |q|
+        assert pos_to_codes[q].any? { |c| c == -76_792 }, "pos #{q} should have -76792"
+      end
+
+      assert pos_to_codes[15].any? { |c| c == 'n'.ord }, "pos 15 should have 'n'"
+
+      qt_m = bm.query_type('m'.ord)
+      qt_n = bm.query_type('n'.ord)
+      qt_chebi = bm.query_type(-76_792)
+
+      assert qt_m, "query_type('m') returned nil"
+      assert qt_n, "query_type('n') returned nil"
+      assert qt_chebi, "query_type(ChEBI) returned nil"
+
+      assert_equal "C", qt_m.not_nil![:canonical]
+      assert_equal "N", qt_n.not_nil![:canonical]
+      assert_equal "C", qt_chebi.not_nil![:canonical]
+
+      [:strand, :implicit].each do |k|
+        refute_nil qt_m.not_nil![k]
+        refute_nil qt_n.not_nil![k]
+        refute_nil qt_chebi.not_nil![k]
+      end
+    ensure
+      bam.close
+    end
+  end
+end
+
