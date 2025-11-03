@@ -242,7 +242,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/d459a900b9d1ad7c2fff85879890b27f9f487c42/src/hts/bam/cigar.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L3" target="_blank">
         hts/bam/cigar.cr
       </a>
     
@@ -269,10 +269,50 @@
         
       </li>
     
+      <li class="entry-summary">
+        <a href="#new%28cigar_str%3AString%29-class-method" class="signature"><strong>.new</strong>(cigar_str : String)</a>
+        
+          <div class="summary"><p>Convenience: build from a CIGAR string like &quot;10M1I5M&quot;</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28ops%3AArray%28Tuple%28Char%2CUInt32%29%29%29-class-method" class="signature"><strong>.new</strong>(ops : Array(Tuple(Char, UInt32)))</a>
+        
+          <div class="summary"><p>Convenience: build from op tuples, e.g., [{'M', 10_u32}, {'I', 1_u32}]</p></div>
+        
+      </li>
+    
   </ul>
 
 
   
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#encode%28ops%3AArray%28Tuple%28Char%2CUInt32%29%29%29%3AArray%28UInt32%29-class-method" class="signature"><strong>.encode</strong>(ops : Array(Tuple(Char, UInt32))) : Array(UInt32)</a>
+        
+          <div class="summary"><p>Encode helpers</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#encode%28cigar_str%3AString%29%3AArray%28UInt32%29-class-method" class="signature"><strong>.encode</strong>(cigar_str : String) : Array(UInt32)</a>
+        
+          <div class="summary"><p>Parse a CIGAR string like &quot;10M1I5M&quot; into encoded UInt32 words.</p></div>
+        
+      </li>
+    
+  </ul>
+
 
   
 
@@ -369,7 +409,49 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/d459a900b9d1ad7c2fff85879890b27f9f487c42/src/hts/bam/cigar.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(cigar_str:String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(cigar_str : String)
+
+        <a class="method-permalink" href="#new%28cigar_str%3AString%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convenience: build from a CIGAR string like &quot;10M1I5M&quot;</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L15" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(ops:Array(Tuple(Char,UInt32)))-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(ops : Array(Tuple(Char, UInt32)))
+
+        <a class="method-permalink" href="#new%28ops%3AArray%28Tuple%28Char%2CUInt32%29%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Convenience: build from op tuples, e.g., [{'M', 10_u32}, {'I', 1_u32}]</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -377,6 +459,60 @@
 
 
   
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="encode(ops:Array(Tuple(Char,UInt32))):Array(UInt32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>encode</strong>(ops : Array(Tuple(Char, UInt32))) : Array(UInt32)
+
+        <a class="method-permalink" href="#encode%28ops%3AArray%28Tuple%28Char%2CUInt32%29%29%29%3AArray%28UInt32%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Encode helpers</p>
+<p>Supported op chars follow htslib: M I D N S H P = X B
+Returns an Array of UInt32 where each element packs len/op as in BAM.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L45" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="encode(cigar_str:String):Array(UInt32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>encode</strong>(cigar_str : String) : Array(UInt32)
+
+        <a class="method-permalink" href="#encode%28cigar_str%3AString%29%3AArray%28UInt32%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Parse a CIGAR string like &quot;10M1I5M&quot; into encoded UInt32 words.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
@@ -410,7 +546,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/d459a900b9d1ad7c2fff85879890b27f9f487c42/src/hts/bam/cigar.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L33" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -442,7 +578,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/d459a900b9d1ad7c2fff85879890b27f9f487c42/src/hts/bam/cigar.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/063fb57e019807bdc74263b1524ad2ff1814bb0b/src/hts/bam/cigar.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
