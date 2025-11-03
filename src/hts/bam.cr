@@ -50,9 +50,16 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      # Normalize write mode to ensure binary BAM by default
-      if @mode[0]? == 'w' && !@mode.includes?('b')
-        @mode = "#{@mode}b"
+      # PySAM-compatible mode handling
+      # Do NOT force 'b' for write: "w" should be SAM text like PySAM.
+      # Apply small compatibility mappings observed in PySAM:
+      # - "wbu" => "wb0" (htslib handles wb0; wbu may not work)
+      # - "rU"  => "rb"  (uppercase U is not recognized by htslib)
+      case @mode
+      when "wbu"
+        @mode = "wb0"
+      when "rU"
+        @mode = "rb"
       end
 
       @hts_file = LibHTS.hts_open(@file_name, @mode)

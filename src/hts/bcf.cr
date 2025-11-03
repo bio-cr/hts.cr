@@ -47,11 +47,6 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      # Normalize write mode for BCF to ensure binary output
-      if @mode[0]? == 'w' && !@mode.includes?('b')
-        @mode = "#{@mode}b"
-      end
-
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
