@@ -23,6 +23,58 @@ module HTS
 
       getter :header
 
+      # Convenience constructor: build a record with core fields using bam_set1
+      # - Coordinates are 0-based (as in BAM core)
+      # - CIGAR may be given as encoded words (Array(UInt32)) or SAM string
+      # - Qualities are Phred-scaled values (0..93), one per base
+      def initialize(header : Bam::Header,
+                     qname : String,
+                     flag : UInt16 | Int32,
+                     tid : Int32,
+                     pos : Int64,
+                     mapq : UInt8 | Int32,
+                     cigar_words : Array(UInt32),
+                     seq : String,
+                     qual : Array(UInt8),
+                     mtid : Int32 = -1,
+                     mpos : Int64 = 0_i64,
+                     isize : Int64 = 0_i64)
+        @header = header
+        @bam1 = LibHTS.bam_init1
+
+        r = LibHTS.bam_set1(
+          @bam1,
+          qname.bytesize, qname.to_unsafe.as(LibC::Char*),
+          flag.to_u16,
+          tid, pos,
+          mapq.to_u8,
+          cigar_words.size, cigar_words.to_unsafe,
+          mtid, mpos, isize,
+          seq.bytesize, seq.to_unsafe.as(LibC::Char*),
+          qual.to_unsafe.as(LibC::Char*),
+          0
+        )
+        raise "Failed to build record via bam_set1" if r < 0
+      end
+
+      # Overload: rname + CIGAR as String
+      def initialize(header : Bam::Header,
+                     qname : String,
+                     flag : UInt16 | Int32,
+                     rname : String,
+                     pos : Int64,
+                     mapq : UInt8 | Int32,
+                     cigar_str : String,
+                     seq : String,
+                     qual : Array(UInt8),
+                     mtid : Int32 = -1,
+                     mpos : Int64 = 0_i64,
+                     isize : Int64 = 0_i64)
+        tid = header.get_tid(rname)
+        raise "Unknown reference name: #{rname}" if tid < 0
+        initialize(header, qname, flag, tid, pos, mapq, Cigar.encode(cigar_str), seq, qual, mtid, mpos, isize)
+      end
+
       # returns the query name.
       def qname
         String.new LibHTS2.bam_get_qname(@bam1)
