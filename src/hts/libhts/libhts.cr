@@ -1098,9 +1098,9 @@ module HTS
     # - seq_nt16_table: ASCII -> BAM 4-bit nibble code (size 256)
     # - seq_nt16_str:   code -> ASCII string mapping ("=ACMGRSVTWYHKDBN")
     # - seq_nt16_int:   legacy integer mapping table
-    $seq_nt16_table : Uint8T*
+    $seq_nt16_table : UInt8[256]
     $seq_nt16_str : LibC::Char*
-    $seq_nt16_int : Int32T*
+    $seq_nt16_int : Int32[16]
 
     # HTS Expression/Filter functions (hts_expr.h)
     struct HtsExprValT
