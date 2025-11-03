@@ -31,7 +31,7 @@ class BamCigarTest < Minitest::Test
     words = HTS::Bam::Cigar.encode(ops)
     expected = [
       (28_u32 << 4) | 0_u32, # M
-      (1_u32 << 4)  | 1_u32, # I
+      (1_u32 << 4) | 1_u32,  # I
       (11_u32 << 4) | 0_u32, # M
     ]
     assert_equal expected, words
@@ -41,7 +41,7 @@ class BamCigarTest < Minitest::Test
     words = HTS::Bam::Cigar.encode("28M1I11M")
     expected = [
       (28_u32 << 4) | 0_u32, # M
-      (1_u32 << 4)  | 1_u32, # I
+      (1_u32 << 4) | 1_u32,  # I
       (11_u32 << 4) | 0_u32, # M
     ]
     assert_equal expected, words
@@ -49,15 +49,15 @@ class BamCigarTest < Minitest::Test
 
   def test_decode_each_and_to_s_roundtrip
     words = [
-      (1_u32 << 4)  | 0_u32, # 1M
-      (2_u32 << 4)  | 1_u32, # 2I
-      (3_u32 << 4)  | 2_u32, # 3D
-      (4_u32 << 4)  | 3_u32, # 4N
-      (5_u32 << 4)  | 4_u32, # 5S
-      (6_u32 << 4)  | 5_u32, # 6H
-      (7_u32 << 4)  | 6_u32, # 7P
-      (8_u32 << 4)  | 7_u32, # 8=
-      (9_u32 << 4)  | 8_u32, # 9X
+      (1_u32 << 4) | 0_u32,  # 1M
+      (2_u32 << 4) | 1_u32,  # 2I
+      (3_u32 << 4) | 2_u32,  # 3D
+      (4_u32 << 4) | 3_u32,  # 4N
+      (5_u32 << 4) | 4_u32,  # 5S
+      (6_u32 << 4) | 5_u32,  # 6H
+      (7_u32 << 4) | 6_u32,  # 7P
+      (8_u32 << 4) | 7_u32,  # 8=
+      (9_u32 << 4) | 8_u32,  # 9X
       (10_u32 << 4) | 9_u32, # 10B
     ]
     ptr = words.to_unsafe
