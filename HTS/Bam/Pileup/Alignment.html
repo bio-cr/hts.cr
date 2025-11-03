@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::BaseMod::Modification - hts develop</title>
+  <title>HTS::Bam::Pileup::Alignment - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -72,7 +72,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+  <li class="parent " data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
       <a href="../../../HTS/Bam/BaseMod.html">BaseMod</a>
       
         <ul>
@@ -82,7 +82,7 @@
       
     </li>
   
-  <li class=" current" data-id="hts/HTS/Bam/BaseMod/Modification" data-name="hts::bam::basemod::modification">
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Modification" data-name="hts::bam::basemod::modification">
       <a href="../../../HTS/Bam/BaseMod/Modification.html">Modification</a>
       
     </li>
@@ -127,12 +127,12 @@
       
     </li>
   
-  <li class="parent " data-id="hts/HTS/Bam/Pileup" data-name="hts::bam::pileup">
+  <li class="parent open current" data-id="hts/HTS/Bam/Pileup" data-name="hts::bam::pileup">
       <a href="../../../HTS/Bam/Pileup.html">Pileup</a>
       
         <ul>
   
-  <li class=" " data-id="hts/HTS/Bam/Pileup/Alignment" data-name="hts::bam::pileup::alignment">
+  <li class=" current" data-id="hts/HTS/Bam/Pileup/Alignment" data-name="hts::bam::pileup::alignment">
       <a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a>
       
     </li>
@@ -233,12 +233,12 @@
 
   <span class="kind">
     class
-  </span> HTS::<wbr>Bam::<wbr>BaseMod::<wbr>Modification
+  </span> HTS::<wbr>Bam::<wbr>Pileup::<wbr>Alignment
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/BaseMod/Modification.html">HTS::Bam::BaseMod::Modification</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/Pileup/Alignment.html">HTS::Bam::Pileup::Alignment</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -252,7 +252,7 @@
     Overview
   </h2>
 
-  <p>Individual base modification information</p>
+  <p>Thin wrapper around a single bam_pileup1_t entry</p>
 
 
 
@@ -279,8 +279,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L15" target="_blank">
-        hts/bam/base_mod.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L33" target="_blank">
+        hts/bam/pileup.cr
       </a>
     
     <br/>
@@ -302,7 +302,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28modified_base%3AInt32%2Ccanonical_base%3AInt32%2Cstrand%3AInt32%2Cqual%3AInt32%29-class-method" class="signature"><strong>.new</strong>(modified_base : Int32, canonical_base : Int32, strand : Int32, qual : Int32)</a>
+        <a href="#new%28entry%3APointer%28LibHTS%3A%3ABamPileup1T%29%2Cheader%3ABam%3A%3AHeader%29-class-method" class="signature"><strong>.new</strong>(entry : Pointer(LibHTS::BamPileup1T), header : Bam::Header)</a>
         
       </li>
     
@@ -325,50 +325,45 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#canonical%3AString-instance-method" class="signature"><strong>#canonical</strong> : String</a>
+        <a href="#del%3F%3ABool-instance-method" class="signature"><strong>#del?</strong> : Bool</a>
         
-          <div class="summary"><p>Canonical base as single character string (A/C/G/T/N)</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#canonical_base%3AInt32-instance-method" class="signature"><strong>#canonical_base</strong> : Int32</a>
+          <div class="summary"><p>Bitfield helpers</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#code%3AString-instance-method" class="signature"><strong>#code</strong> : String</a>
-        
-          <div class="summary"><p>Single-letter code or negative ChEBI number as String</p></div>
+        <a href="#head%3F%3ABool-instance-method" class="signature"><strong>#head?</strong> : Bool</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#modified_base%3AInt32-instance-method" class="signature"><strong>#modified_base</strong> : Int32</a>
+        <a href="#indel%3AInt32-instance-method" class="signature"><strong>#indel</strong> : Int32</a>
+        
+          <div class="summary"><p>Indel length (0 no indel, &gt;0 insertion, &lt;0 deletion)</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#probability%3AFloat64%7CNil-instance-method" class="signature"><strong>#probability</strong> : Float64 | Nil</a>
+        <a href="#query_pos%3AInt32-instance-method" class="signature"><strong>#query_pos</strong> : Int32</a>
         
-          <div class="summary"><p>0.0..1.0 probability, or nil if unknown (-1)</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#qual%3AInt32-instance-method" class="signature"><strong>#qual</strong> : Int32</a>
+          <div class="summary"><p>0-based query position</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#strand%3AInt32-instance-method" class="signature"><strong>#strand</strong> : Int32</a>
+        <a href="#record%3ABam%3A%3ARecord-instance-method" class="signature"><strong>#record</strong> : Bam::Record</a>
+        
+          <div class="summary"><p>Lazily duplicates the underlying bam1_t to return a safe Record</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#to_s%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io : IO) : Nil</a>
+        <a href="#refskip%3F%3ABool-instance-method" class="signature"><strong>#refskip?</strong> : Bool</a>
         
-          <div class="summary"><p>Appends a short String representation of this object which includes its class name and its object address.</p></div>
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tail%3F%3ABool-instance-method" class="signature"><strong>#tail?</strong> : Bool</a>
         
       </li>
     
@@ -416,18 +411,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(modified_base:Int32,canonical_base:Int32,strand:Int32,qual:Int32)-class-method">
+    <div class="entry-detail" id="new(entry:Pointer(LibHTS::BamPileup1T),header:Bam::Header)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(modified_base : Int32, canonical_base : Int32, strand : Int32, qual : Int32)
+        def self.<strong>new</strong>(entry : Pointer(LibHTS::BamPileup1T), header : <a href="../../../HTS/Bam/Header.html">Bam::Header</a>)
 
-        <a class="method-permalink" href="#new%28modified_base%3AInt32%2Ccanonical_base%3AInt32%2Cstrand%3AInt32%2Cqual%3AInt32%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28entry%3APointer%28LibHTS%3A%3ABamPileup1T%29%2Cheader%3ABam%3A%3AHeader%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L38" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -448,161 +443,134 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="canonical:String-instance-method">
+    <div class="entry-detail" id="del?:Bool-instance-method">
       <div class="signature">
         
-        def <strong>canonical</strong> : String
+        def <strong>del?</strong> : Bool
 
-        <a class="method-permalink" href="#canonical%3AString-instance-method">#</a>
+        <a class="method-permalink" href="#del%3F%3ABool-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Canonical base as single character string (A/C/G/T/N)</p>
+          <p>Bitfield helpers</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L34" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L52" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="canonical_base:Int32-instance-method">
+    <div class="entry-detail" id="head?:Bool-instance-method">
       <div class="signature">
         
-        def <strong>canonical_base</strong> : Int32
+        def <strong>head?</strong> : Bool
 
-        <a class="method-permalink" href="#canonical_base%3AInt32-instance-method">#</a>
+        <a class="method-permalink" href="#head%3F%3ABool-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L56" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="code:String-instance-method">
+    <div class="entry-detail" id="indel:Int32-instance-method">
       <div class="signature">
         
-        def <strong>code</strong> : String
+        def <strong>indel</strong> : Int32
 
-        <a class="method-permalink" href="#code%3AString-instance-method">#</a>
+        <a class="method-permalink" href="#indel%3AInt32-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Single-letter code or negative ChEBI number as String</p>
+          <p>Indel length (0 no indel, &gt;0 insertion, &lt;0 deletion)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="modified_base:Int32-instance-method">
+    <div class="entry-detail" id="query_pos:Int32-instance-method">
       <div class="signature">
         
-        def <strong>modified_base</strong> : Int32
+        def <strong>query_pos</strong> : Int32
 
-        <a class="method-permalink" href="#modified_base%3AInt32-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L16" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="probability:Float64|Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>probability</strong> : Float64 | Nil
-
-        <a class="method-permalink" href="#probability%3AFloat64%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#query_pos%3AInt32-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>0.0..1.0 probability, or nil if unknown (-1)</p>
+          <p>0-based query position</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="qual:Int32-instance-method">
+    <div class="entry-detail" id="record:Bam::Record-instance-method">
       <div class="signature">
         
-        def <strong>qual</strong> : Int32
+        def <strong>record</strong> : <a href="../../../HTS/Bam/Record.html">Bam::Record</a>
 
-        <a class="method-permalink" href="#qual%3AInt32-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L19" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="strand:Int32-instance-method">
-      <div class="signature">
-        
-        def <strong>strand</strong> : Int32
-
-        <a class="method-permalink" href="#strand%3AInt32-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L18" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="to_s(io:IO):Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>to_s</strong>(io : IO) : Nil
-
-        <a class="method-permalink" href="#to_s%28io%3AIO%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#record%3ABam%3A%3ARecord-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-            <div class="doc-inherited">
-              Description copied from class Reference
-            </div>
-          
-          <p>Appends a short String representation of this object
-which includes its class name and its object address.</p>
-<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Person</span>
-  <span class="k">def</span> <span class="m">initialize</span>(@name : <span class="t">String</span>, @age : <span class="t">Int32</span>)
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="t">Person</span>.new(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).to_s <span class="c"># =&gt; #&lt;Person:0x10a199f20&gt;</span></code></pre>
+          <p>Lazily duplicates the underlying bam1_t to return a safe Record</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L44" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L69" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="refskip?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>refskip?</strong> : Bool
+
+        <a class="method-permalink" href="#refskip%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L64" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tail?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>tail?</strong> : Bool
+
+        <a class="method-permalink" href="#tail%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/pileup.cr#L60" target="_blank">View source</a>]
         
       </div>
     </div>

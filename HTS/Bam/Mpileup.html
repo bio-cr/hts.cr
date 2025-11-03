@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::Aux - hts develop</title>
+  <title>HTS::Bam::Mpileup - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -67,7 +67,7 @@
       
         <ul>
   
-  <li class=" current" data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
+  <li class=" " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
       <a href="../../HTS/Bam/Aux.html">Aux</a>
       
     </li>
@@ -112,7 +112,7 @@
       
     </li>
   
-  <li class="parent " data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
+  <li class="parent open current" data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
       <a href="../../HTS/Bam/Mpileup.html">Mpileup</a>
       
         <ul>
@@ -233,12 +233,12 @@
 
   <span class="kind">
     class
-  </span> HTS::<wbr>Bam::<wbr>Aux
+  </span> HTS::<wbr>Bam::<wbr>Mpileup
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/Aux.html">HTS::Bam::Aux</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/Mpileup.html">HTS::Bam::Mpileup</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -252,30 +252,28 @@
     Overview
   </h2>
 
-  <p>Provides iteration over auxiliary tags in BAM records</p>
-<p>This class enables efficient access to all auxiliary tags
-using HTSlib's bam_aux_first and bam_aux_next functions.</p>
-<p>Usage examples:</p>
-<h1><a id="iterate-over-all-tags" class="anchor" href="#iterate-over-all-tags">
+  <p>High-level mpileup iterator over multiple BAM/CRAM inputs.
+Yields an Array of Pileup::Column (one per input) for each position.</p>
+
+
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Iterate over all tags</h1>
-<p>record.aux.each do |tag, value|
-puts &quot;#{tag}: #{value}&quot;
-end</p>
-<h1><a id="access-specific-tag" class="anchor" href="#access-specific-tag">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Access specific tag</h1>
-<p>as_score = record.aux[&quot;AS&quot;]</p>
-
-
-
-
-
-
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Enumerable(Array(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>))</li>
+    
+  </ul>
 
 
 
@@ -296,8 +294,8 @@ end</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L18" target="_blank">
-        hts/bam/auxi.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L5" target="_blank">
+        hts/bam/mpileup.cr
       </a>
     
     <br/>
@@ -319,7 +317,9 @@ end</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28bam1%3APointer%28LibHTS%3A%3ABam1T%29%29-class-method" class="signature"><strong>.new</strong>(bam1 : Pointer(LibHTS::Bam1T))</a>
+        <a href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>)</a>
+        
+          <div class="summary"><p>Minimal constructor: accept Array(Bam).</p></div>
         
       </li>
     
@@ -342,40 +342,19 @@ end</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#%5B%5D%28tag%3AString%29-instance-method" class="signature"><strong>#[]</strong>(tag : String)</a>
-        
-          <div class="summary"><p>Array-style access to specific tags</p></div>
+        <a href="#close%3ANil-instance-method" class="signature"><strong>#close</strong> : Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
+        <a href="#each%28%26block%3AArray%28HTS%3A%3ABam%3A%3APileup%3A%3AColumn%29-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(&block : Array(HTS::Bam::Pileup::Column) -> ) : Nil</a>
         
-          <div class="summary"><p>Iterate over all auxiliary tags</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#get_float%28tag%3AString%29-instance-method" class="signature"><strong>#get_float</strong>(tag : String)</a>
+          <div class="summary"><p>Iterate and yield per-position columns array (aligned by tid,pos across inputs)</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_int%28tag%3AString%29-instance-method" class="signature"><strong>#get_int</strong>(tag : String)</a>
-        
-          <div class="summary"><p>Type-specific access methods</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#get_string%28tag%3AString%29-instance-method" class="signature"><strong>#get_string</strong>(tag : String)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#to_s%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io : IO) : Nil</a>
-        
-          <div class="summary"><p>HTSlib sam_format_aux1 compliant output with original type information</p></div>
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
         
       </li>
     
@@ -384,6 +363,19 @@ end</p>
 
 
   <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
     
       
 
@@ -423,18 +415,23 @@ end</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(bam1:Pointer(LibHTS::Bam1T))-class-method">
+    <div class="entry-detail" id="new(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(bam1 : Pointer(LibHTS::Bam1T))
+        def self.<strong>new</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>)
 
-        <a class="method-permalink" href="#new%28bam1%3APointer%28LibHTS%3A%3ABam1T%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%29-class-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Minimal constructor: accept Array(Bam). (String inputs or regions can be added later.)</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L29" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -455,118 +452,55 @@ end</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="[](tag:String)-instance-method">
+    <div class="entry-detail" id="close:Nil-instance-method">
       <div class="signature">
         
-        def <strong>[]</strong>(tag : String)
+        def <strong>close</strong> : Nil
 
-        <a class="method-permalink" href="#%5B%5D%28tag%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#close%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L121" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each(&amp;block:Array(HTS::Bam::Pileup::Column)-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(&block : Array(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>) -> ) : Nil
+
+        <a class="method-permalink" href="#each%28%26block%3AArray%28HTS%3A%3ABam%3A%3APileup%3A%3AColumn%29-%3E%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Array-style access to specific tags</p>
+          <p>Iterate and yield per-position columns array (aligned by tid,pos across inputs)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L80" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each(&amp;)-instance-method">
+    <div class="entry-detail" id="finalize-instance-method">
       <div class="signature">
         
-        def <strong>each</strong>(&)
+        def <strong>finalize</strong>
 
-        <a class="method-permalink" href="#each%28%26%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Iterate over all auxiliary tags</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L25" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_float(tag:String)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_float</strong>(tag : String)
-
-        <a class="method-permalink" href="#get_float%28tag%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L47" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_int(tag:String)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_int</strong>(tag : String)
-
-        <a class="method-permalink" href="#get_int%28tag%3AString%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Type-specific access methods</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L41" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_string(tag:String)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_string</strong>(tag : String)
-
-        <a class="method-permalink" href="#get_string%28tag%3AString%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L53" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="to_s(io:IO):Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>to_s</strong>(io : IO) : Nil
-
-        <a class="method-permalink" href="#to_s%28io%3AIO%29%3ANil-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>HTSlib sam_format_aux1 compliant output with original type information</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/auxi.cr#L140" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L130" target="_blank">View source</a>]
         
       </div>
     </div>

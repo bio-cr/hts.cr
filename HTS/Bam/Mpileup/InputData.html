@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::BaseMod::Error - hts develop</title>
+  <title>HTS::Bam::Mpileup::InputData - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -72,12 +72,12 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+  <li class="parent " data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
       <a href="../../../HTS/Bam/BaseMod.html">BaseMod</a>
       
         <ul>
   
-  <li class=" current" data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
       <a href="../../../HTS/Bam/BaseMod/Error.html">Error</a>
       
     </li>
@@ -112,12 +112,12 @@
       
     </li>
   
-  <li class="parent " data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
+  <li class="parent open current" data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
       <a href="../../../HTS/Bam/Mpileup.html">Mpileup</a>
       
         <ul>
   
-  <li class=" " data-id="hts/HTS/Bam/Mpileup/InputData" data-name="hts::bam::mpileup::inputdata">
+  <li class=" current" data-id="hts/HTS/Bam/Mpileup/InputData" data-name="hts::bam::mpileup::inputdata">
       <a href="../../../HTS/Bam/Mpileup/InputData.html">InputData</a>
       
     </li>
@@ -232,16 +232,27 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
-  </span> HTS::<wbr>Bam::<wbr>BaseMod::<wbr>Error
+    struct
+  </span> HTS::<wbr>Bam::<wbr>Mpileup::<wbr>InputData
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/BaseMod/Error.html">HTS::Bam::BaseMod::Error</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/Mpileup/InputData.html">HTS::Bam::Mpileup::InputData</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Per-input user data passed to the C callback</p>
 
 
 
@@ -268,8 +279,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/base_mod.cr#L8" target="_blank">
-        hts/bam/base_mod.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L9" target="_blank">
+        hts/bam/mpileup.cr
       </a>
     
     <br/>
@@ -280,12 +291,56 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28htsfp%3APointer%28LibHTS%3A%3AHtsFile%29%2Chdr%3APointer%28LibHTS%3A%3ASamHdrT%29%2Citr%3APointer%28LibHTS%3A%3AHtsItrT%29%29-class-method" class="signature"><strong>.new</strong>(htsfp : Pointer(LibHTS::HtsFile), hdr : Pointer(LibHTS::SamHdrT), itr : Pointer(LibHTS::HtsItrT))</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#hdr%3APointer%28LibHTS%3A%3ASamHdrT%29-instance-method" class="signature"><strong>#hdr</strong> : Pointer(LibHTS::SamHdrT)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#htsfp%3APointer%28LibHTS%3A%3AHtsFile%29-instance-method" class="signature"><strong>#htsfp</strong> : Pointer(LibHTS::HtsFile)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#itr%3APointer%28LibHTS%3A%3AHtsItrT%29-instance-method" class="signature"><strong>#itr</strong> : Pointer(LibHTS::HtsItrT)</a>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
@@ -332,12 +387,96 @@
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(htsfp:Pointer(LibHTS::HtsFile),hdr:Pointer(LibHTS::SamHdrT),itr:Pointer(LibHTS::HtsItrT))-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(htsfp : Pointer(LibHTS::HtsFile), hdr : Pointer(LibHTS::SamHdrT), itr : Pointer(LibHTS::HtsItrT))
+
+        <a class="method-permalink" href="#new%28htsfp%3APointer%28LibHTS%3A%3AHtsFile%29%2Chdr%3APointer%28LibHTS%3A%3ASamHdrT%29%2Citr%3APointer%28LibHTS%3A%3AHtsItrT%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L14" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="hdr:Pointer(LibHTS::SamHdrT)-instance-method">
+      <div class="signature">
+        
+        def <strong>hdr</strong> : Pointer(LibHTS::SamHdrT)
+
+        <a class="method-permalink" href="#hdr%3APointer%28LibHTS%3A%3ASamHdrT%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L11" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="htsfp:Pointer(LibHTS::HtsFile)-instance-method">
+      <div class="signature">
+        
+        def <strong>htsfp</strong> : Pointer(LibHTS::HtsFile)
+
+        <a class="method-permalink" href="#htsfp%3APointer%28LibHTS%3A%3AHtsFile%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="itr:Pointer(LibHTS::HtsItrT)-instance-method">
+      <div class="signature">
+        
+        def <strong>itr</strong> : Pointer(LibHTS::HtsItrT)
+
+        <a class="method-permalink" href="#itr%3APointer%28LibHTS%3A%3AHtsItrT%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/22443b9001760f8c3793b631106e2e7d0ee67b8e/src/hts/bam/mpileup.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>
