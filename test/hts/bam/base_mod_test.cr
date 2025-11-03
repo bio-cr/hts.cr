@@ -1,99 +1,112 @@
 require "minitest/autorun"
 require "../../../src/hts/bam"
 
-# Generate a tiny BAM with MM/ML (base modification) tags and read it back.
-# If samtools isn't available, the test returns early.
+# Test BaseMod API with a generated BAM file containing MM/ML tags
 class BamBaseModGenerateTest < Minitest::Test
   @tmpdir : String?
+  @bam : HTS::Bam?
 
   def setup
-    # Create a unique temporary directory without relying on Dir.mktmpdir (not available in this Crystal version)
     tmp = File.join(Dir.tempdir, "base_mod_test_#{Time.utc.to_unix_ns}_#{Process.pid}")
     Dir.mkdir_p(tmp)
     @tmpdir = tmp
-    @bam = nil
   end
 
   def teardown
     @bam.try &.close
     if tmp = @tmpdir
       begin
-        Dir.glob(File.join(tmp, "*")).each do |f|
-          begin
-            File.delete(f)
-          rescue
-          end
-        end
+        Dir.glob(File.join(tmp, "*")).each { |f| File.delete(f) rescue nil }
         Dir.delete(tmp)
       rescue
       end
     end
   end
 
-  def test_generate_and_read_bam_with_base_mod_tags
+  def test_base_mod_api_with_generated_bam
+    skip_unless_samtools_available
+
+    base_mod = create_and_parse_base_mod
+
+    verify_modification_positions(base_mod)
+    verify_modification_types(base_mod)
+    verify_modification_qualities(base_mod)
+  end
+
+  private def skip_unless_samtools_available
     unless have_samtools?
       puts "[INFO] samtools not found; skipping base_mod generation test"
       return
     end
+  end
 
+  private def create_and_parse_base_mod : HTS::Bam::BaseMod
+    bam_path = create_test_bam_with_modifications
+    verify_tags_preserved_in_bam(bam_path)
+
+    @bam = HTS::Bam.open(bam_path)
+    record = @bam.not_nil!.first? || raise "No record in BAM"
+
+    base_mod = HTS::Bam::BaseMod.new(record)
+    base_mod.parse
+    base_mod
+  end
+
+  private def create_test_bam_with_modifications : String
     tmp = @tmpdir || raise "tmpdir not set"
     sam_path = File.join(tmp, "mods.sam")
     bam_path = File.join(tmp, "mods.bam")
 
-    # Minimal SAM with MM/ML; ML length matches total modified bases (3).
-    # Sequence: ACGT ACGT ACGT ACGT ACGT (20bp)
-    # C positions (0-based): 1,5,9,13,17  -> C+m at 1 and 9 (deltas: 0,2)
-    # A positions (0-based): 0,4,8,12,16  -> A+a at 8        (delta: 2)
-    sam = <<-SAM
+    # Sequence: ACGTACGTACGTACGTACGT (20bp)
+    # C positions (0-based): 1,5,9,13,17  -> C+m at positions 1,9 (skip deltas: 0,2)
+    # A positions (0-based): 0,4,8,12,16  -> A+a at position 8 (skip delta: 2)
+    # ML has 3 values for the 3 modifications total
+    sam_content = <<-SAM
   @HD\tVN:1.6\tSO:unknown
   @SQ\tSN:ref\tLN:1000
   r1\t0\tref\t1\t60\t20M\t*\t0\t0\tACGTACGTACGTACGTACGT\t*\tMM:Z:C+m,0,2;A+a,2;\tML:B:C,200,150,180
   SAM
-    File.write(sam_path, sam)
 
-    st = Process.run("samtools", ["view", "-b", "-o", bam_path, sam_path], output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
-    assert st.success?, "samtools view failed"
+    File.write(sam_path, sam_content)
 
-    @bam = HTS::Bam.open(bam_path)
-    bam = @bam || raise "bam not opened"
-    alns = bam.to_a
-    assert_equal 1, alns.size
+    result = Process.run("samtools", ["view", "-b", "-o", bam_path, sam_path],
+      output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
+    raise "samtools conversion failed" unless result.success?
 
-    # Confirm tags are preserved in BAM using samtools (temporary check until direct API is used)
-    out_io = IO::Memory.new
-    st2 = Process.run("samtools", ["view", "-h", bam_path], output: out_io, error: Process::Redirect::Inherit)
-    assert st2.success?, "samtools view -h failed"
-    text = out_io.to_s
+    bam_path
+  end
+
+  private def verify_tags_preserved_in_bam(bam_path : String)
+    output = IO::Memory.new
+    result = Process.run("samtools", ["view", "-h", bam_path],
+      output: output, error: Process::Redirect::Inherit)
+    raise "samtools view failed" unless result.success?
+
+    text = output.to_s
     assert_includes text, "MM:Z:C+m,0,2;A+a,2;"
     assert_includes text, "ML:B:C,200,150,180"
+  end
 
-    # Exercise BaseMod API: parse and validate positions/types/probabilities
-    rec = alns.first?
-    raise "no record" unless rec
-
-    bm = HTS::Bam::BaseMod.new(rec.not_nil!)
-    bm.parse
-
-    # Collect once to avoid re-iterating internal state
-    mods = bm.to_a
-    # positions with modifications should be {1, 8, 13}
-    positions = mods.map(&.position).sort
+  private def verify_modification_positions(base_mod : HTS::Bam::BaseMod)
+    positions = base_mod.to_a.map(&.position).sort
     assert_equal [1, 8, 13], positions
+  end
 
-    # recorded types should include 'm' (C modifications) and 'a' (A modifications)
-    types = bm.recorded_types
-    assert types.includes?('m'.ord), "expected 'm' in recorded types"
-    assert types.includes?('a'.ord), "expected 'a' in recorded types"
+  private def verify_modification_types(base_mod : HTS::Bam::BaseMod)
+    types = base_mod.recorded_types
+    assert types.includes?('m'.ord)
+    assert types.includes?('a'.ord)
 
-    # query type metadata
-    qt_m = bm.query_type('m'.ord)
-    qt_a = bm.query_type('a'.ord)
-    assert qt_m && qt_m[:canonical] == "C"
-    assert qt_a && qt_a[:canonical] == "A"
+    qt_m = base_mod.query_type('m'.ord)
+    qt_a = base_mod.query_type('a'.ord)
 
-    # collect quals and compare multiset (order by qpos may vary across types)
-    quals = mods.flat_map { |p| p.modifications.map(&.qual) }.sort
-    assert_equal [150, 180, 200].sort, quals
+    assert_equal "C", qt_m.not_nil![:canonical]
+    assert_equal "A", qt_a.not_nil![:canonical]
+  end
+
+  private def verify_modification_qualities(base_mod : HTS::Bam::BaseMod)
+    qualities = base_mod.to_a.flat_map { |p| p.modifications.map(&.qual) }.sort
+    assert_equal [150, 180, 200], qualities
   end
 
   private def have_samtools? : Bool
@@ -101,67 +114,113 @@ class BamBaseModGenerateTest < Minitest::Test
   end
 end
 
-# Integration test: open MM-chebi.sam directly via HTTPS URL using htslib's remote I/O
-# and verify BaseMod parsing behavior without local downloads or samtools.
+# Test BaseMod API with remote SAM file containing ChEBI modification codes
 class BamBaseModChebiIntegrationTest < Minitest::Test
   MM_CHEBI_URL = "https://raw.githubusercontent.com/samtools/htslib/refs/heads/develop/test/base_mods/MM-chebi.sam"
 
-  def test_mm_chebi_remote_sam_integration
+  def test_chebi_modification_types
     bam = HTS::Bam.new(MM_CHEBI_URL)
-    begin
-      rec = bam.first?
-      assert rec, "No record found in MM-chebi.sam"
+    record = bam.first? || raise "No record found"
+    base_mod = HTS::Bam::BaseMod.new(record)
+    base_mod.parse
 
-      bm = HTS::Bam::BaseMod.new(rec.not_nil!)
-      bm.parse
+    verify_chebi_modification_types(base_mod)
+  ensure
+    bam.try &.close
+  end
 
-      types = bm.recorded_types
-      assert types.includes?('m'.ord), "expected 'm' in recorded types"
-      assert types.includes?(-76_792), "expected ChEBI:-76792 in recorded types"
-      assert types.includes?('n'.ord), "expected 'n' in recorded types"
+  def test_chebi_modification_positions
+    bam = HTS::Bam.new(MM_CHEBI_URL)
+    record = bam.first? || raise "No record found"
+    base_mod = HTS::Bam::BaseMod.new(record)
+    base_mod.parse
 
-      mods = bm.to_a
-      total = mods.sum { |p| p.modifications.size }
-      assert_equal 8, total
+    verify_chebi_modification_positions(base_mod)
+  ensure
+    bam.try &.close
+  end
 
-      expected_positions = [6, 15, 17, 19, 20, 31, 34].sort
-      got_positions = mods.map(&.position).uniq.sort
-      assert_equal expected_positions, got_positions
+  def test_chebi_position_specific_modifications
+    bam = HTS::Bam.new(MM_CHEBI_URL)
+    record = bam.first? || raise "No record found"
+    base_mod = HTS::Bam::BaseMod.new(record)
+    base_mod.parse
 
-      pos_to_codes = Hash(Int32, Array(Int32)).new { |h, k| h[k] = [] of Int32 }
-      mods.each do |p|
-        pos_to_codes[p.position].concat p.modifications.map(&.modified_base)
-      end
+    verify_chebi_position_specific_modifications(base_mod)
+  ensure
+    bam.try &.close
+  end
 
-      [6, 17, 20, 31, 34].each do |q|
-        assert pos_to_codes[q].any? { |c| c == 'm'.ord }, "pos #{q} should have 'm'"
-      end
+  def test_chebi_type_metadata
+    bam = HTS::Bam.new(MM_CHEBI_URL)
+    record = bam.first? || raise "No record found"
+    base_mod = HTS::Bam::BaseMod.new(record)
+    base_mod.parse
 
-      [19, 34].each do |q|
-        assert pos_to_codes[q].any? { |c| c == -76_792 }, "pos #{q} should have -76792"
-      end
+    verify_chebi_type_metadata(base_mod)
+  ensure
+    bam.try &.close
+  end
 
-      assert pos_to_codes[15].any? { |c| c == 'n'.ord }, "pos 15 should have 'n'"
+  private def verify_chebi_modification_types(base_mod : HTS::Bam::BaseMod)
+    types = base_mod.recorded_types
 
-      qt_m = bm.query_type('m'.ord)
-      qt_n = bm.query_type('n'.ord)
-      qt_chebi = bm.query_type(-76_792)
+    assert types.includes?('m'.ord)
+    assert types.includes?(-76_792) # ChEBI ID
+    assert types.includes?('n'.ord)
+  end
 
-      assert qt_m, "query_type('m') returned nil"
-      assert qt_n, "query_type('n') returned nil"
-      assert qt_chebi, "query_type(ChEBI) returned nil"
+  private def verify_chebi_modification_positions(base_mod : HTS::Bam::BaseMod)
+    modifications = base_mod.to_a
 
-      assert_equal "C", qt_m.not_nil![:canonical]
-      assert_equal "N", qt_n.not_nil![:canonical]
-      assert_equal "C", qt_chebi.not_nil![:canonical]
+    total_count = modifications.sum { |p| p.modifications.size }
+    assert_equal 8, total_count
 
-      [:strand, :implicit].each do |k|
-        refute_nil qt_m.not_nil![k]
-        refute_nil qt_n.not_nil![k]
-        refute_nil qt_chebi.not_nil![k]
-      end
-    ensure
-      bam.close
+    positions = modifications.map(&.position).uniq.sort
+    assert_equal [6, 15, 17, 19, 20, 31, 34], positions
+  end
+
+  private def verify_chebi_position_specific_modifications(base_mod : HTS::Bam::BaseMod)
+    position_codes = build_position_to_codes_map(base_mod)
+
+    # Positions with 'm' modification
+    [6, 17, 20, 31, 34].each do |pos|
+      assert position_codes[pos].includes?('m'.ord)
     end
+
+    # Positions with ChEBI modification
+    [19, 34].each do |pos|
+      assert position_codes[pos].includes?(-76_792)
+    end
+
+    # Position with 'n' modification
+    assert position_codes[15].includes?('n'.ord)
+  end
+
+  private def verify_chebi_type_metadata(base_mod : HTS::Bam::BaseMod)
+    metadata_m = base_mod.query_type('m'.ord) || raise "Missing 'm' metadata"
+    metadata_n = base_mod.query_type('n'.ord) || raise "Missing 'n' metadata"
+    metadata_chebi = base_mod.query_type(-76_792) || raise "Missing ChEBI metadata"
+
+    assert_equal "C", metadata_m[:canonical]
+    assert_equal "N", metadata_n[:canonical]
+    assert_equal "C", metadata_chebi[:canonical]
+
+    [metadata_m, metadata_n, metadata_chebi].each do |metadata|
+      refute_nil metadata[:strand]
+      refute_nil metadata[:implicit]
+    end
+  end
+
+  private def build_position_to_codes_map(base_mod : HTS::Bam::BaseMod)
+    position_codes = Hash(Int32, Array(Int32)).new { |h, k| h[k] = [] of Int32 }
+
+    base_mod.each do |position|
+      position.modifications.each do |mod|
+        position_codes[position.position] << mod.modified_base
+      end
+    end
+
+    position_codes
   end
 end
