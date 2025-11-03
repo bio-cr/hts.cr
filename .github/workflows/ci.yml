@@ -33,7 +33,7 @@ jobs:
       - name: Install HTSLib (macos)
         if: ${{ matrix.os == 'macos' }}
         run: |
-          brew install htslib pkg-config
+          brew install htslib samtools bcftools pkg-config
       - name: Install dependencies
         if: matrix.os != 'windows'
         run: shards install
