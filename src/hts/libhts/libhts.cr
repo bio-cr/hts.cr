@@ -1094,6 +1094,14 @@ module HTS
     $bcf_float_vector_end : Uint32T
     $bcf_float_missing : Uint32T
 
+    # Nucleotide encoding/decoding tables exported by htslib (sam/bam API)
+    # - seq_nt16_table: ASCII -> BAM 4-bit nibble code (size 256)
+    # - seq_nt16_str:   code -> ASCII string mapping ("=ACMGRSVTWYHKDBN")
+    # - seq_nt16_int:   legacy integer mapping table
+    $seq_nt16_table : Uint8T*
+    $seq_nt16_str : LibC::Char*
+    $seq_nt16_int : Int32T*
+
     # HTS Expression/Filter functions (hts_expr.h)
     struct HtsExprValT
       is_str : UInt8
