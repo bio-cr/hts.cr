@@ -15,6 +15,11 @@ module HTS
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT
+    # Auto index after close when opened for writing with build_index: true
+    @auto_index_on_close : Bool = false
+    @index_name_on_close : String = ""
+    # Track whether a header has been written/initialized in this handle
+    @header_written : Bool = false
 
     getter :file_name
     getter :mode
@@ -45,6 +50,11 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
+      # Normalize write mode to ensure binary BAM by default
+      if @mode[0]? == 'w' && !@mode.includes?('b')
+        @mode = "#{@mode}b"
+      end
+
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
@@ -72,12 +82,18 @@ module HTS
 
       set_threads(threads) if threads > 0
 
-      if mode[0] == 'w'
+      if @mode[0] == 'w'
+        # Defer index building until after close
+        if build_index
+          @auto_index_on_close = true
+          @index_name_on_close = index
+        end
         @idx = LibHTS::HtsIdxT.null
         return
       end
 
       @header = Bam::Header.new(@hts_file)
+      @header_written = true
 
       @idx = load_index(index)
 
@@ -90,6 +106,26 @@ module HTS
       end
 
       build_index(index) if build_index
+    end
+
+    # Class method: build index for any file on disk (even after close)
+    def self.build_index(file_name : Path | String, index_name = "", min_shift = 0, threads = 0, verbose = true)
+      if verbose
+        if index_name == ""
+          STDERR.puts "Create index for #{file_name}"
+        else
+          STDERR.puts "Create index for #{file_name} to #{index_name}"
+        end
+      end
+
+      case LibHTS.sam_index_build3(file_name.to_s, index_name, min_shift, threads)
+      when 0 # successful
+      when -1 then raise "indexing failed"
+      when -2 then raise "opening #{file_name} failed"
+      when -3 then raise "format not indexable"
+      when -4 then raise "failed to create and/or save the index"
+      else         raise "unknown error"
+      end
     end
 
     def build_index(index_name, min_shift = 0, verbose = true)
@@ -134,6 +170,11 @@ module HTS
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
       @idx = @idx.class.null
       super
+      # Auto-build index after file is closed when requested in write mode
+      if @auto_index_on_close
+        self.class.build_index(@file_name, @index_name_on_close, 0, @nthreads, true)
+        @auto_index_on_close = false
+      end
     end
 
     def finalize
@@ -151,6 +192,7 @@ module HTS
 
       @header = header.clone # Necessary. If not, it will cause segfault.
       LibHTS.sam_hdr_write(@hts_file, header)
+      @header_written = true
     end
 
     def header=(header)
@@ -159,7 +201,9 @@ module HTS
 
     def write(record)
       check_closed
-
+      unless @header_written
+        raise "Header not written. Call write_header(header) first."
+      end
       r = LibHTS.sam_write1(@hts_file, header, record)
       raise "Failed to write record: #{record}" if r < 0
     end

@@ -12,6 +12,11 @@ module HTS
     include Enumerable(Bcf::Record)
 
     @idx : LibHTS::HtsIdxT
+    # Auto index after close when opened for writing with build_index: true
+    @auto_index_on_close : Bool = false
+    @index_name_on_close : String = ""
+    # Track whether a header has been written/initialized in this handle
+    @header_written : Bool = false
 
     getter :file_name
     getter :mode
@@ -42,15 +47,28 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
+      # Normalize write mode for BCF to ensure binary output
+      if @mode[0]? == 'w' && !@mode.includes?('b')
+        @mode = "#{@mode}b"
+      end
+
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
 
       set_threads(threads) if threads > 0
 
-      return if mode[0] == "w"
+      if @mode[0] == 'w'
+        # Defer index building until after close
+        if build_index
+          @auto_index_on_close = true
+          @index_name_on_close = index
+        end
+        return
+      end
 
       @header = Bcf::Header.new(@hts_file)
+      @header_written = true
 
       build_index(index) if build_index
 
@@ -59,19 +77,22 @@ module HTS
       @start_position = tell
     end
 
-    def build_index(index_name = "", min_shift = 14, verbose = true)
-      check_closed
-
+    # Build index for an on-disk file (callable even after close)
+    def self.build_index(file_name : Path | String, index_name = "", min_shift = 14, threads = 0, verbose = true)
       if verbose
         if index_name == ""
-          STDERR.puts "Create index for #{@file_name}"
+          STDERR.puts "Create index for #{file_name}"
         else
-          STDERR.puts "Create index for #{@file_name} to #{index_name}"
+          STDERR.puts "Create index for #{file_name} to #{index_name}"
         end
       end
+      r = LibHTS.bcf_index_build3(file_name.to_s, index_name, min_shift, threads)
+      raise "Indexing failed for #{file_name} (rc=#{r})" if r < 0
+    end
 
-      r = LibHTS.bcf_index_build3(@file_name, index_name, min_shift, @nthreads)
-      raise "Indexing failed for #{@file_name} (rc=#{r})" if r < 0
+    # Instance helper delegating to the class method.
+    def build_index(index_name = "", min_shift = 14, verbose = true)
+      self.class.build_index(@file_name, index_name, min_shift, @nthreads, verbose)
       self
     end
 
@@ -95,6 +116,11 @@ module HTS
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
       @idx = @idx.class.null
       super
+      # Auto-build index after file is closed when requested in write mode
+      if @auto_index_on_close
+        self.class.build_index(@file_name, @index_name_on_close, 14, @nthreads, true)
+        @auto_index_on_close = false
+      end
     end
 
     def finalize
@@ -106,6 +132,7 @@ module HTS
 
       @header = header.clone # Necessary. If not, it will cause segfault.
       LibHTS.bcf_hdr_write(@hts_file, header)
+      @header_written = true
     end
 
     def header=(header)
@@ -114,7 +141,10 @@ module HTS
 
     def write(var)
       check_closed
-
+      # Guard to ensure header was written before any record
+      unless @header_written
+        raise "Header not written. Call write_header(header) first."
+      end
       r = LibHTS.bcf_write(@hts_file, header, var)
       raise "Failed to write record" if r < 0
     end
@@ -145,6 +175,13 @@ module HTS
           yield record
         end
       end
+    end
+
+    # Ensure collected records are independent and safe after iteration ends.
+    def to_a : Array(Bcf::Record)
+      ary = [] of Bcf::Record
+      each(copy: true) { |r| ary << r }
+      ary
     end
 
     private def each_record_copy(&)
