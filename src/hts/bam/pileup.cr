@@ -81,36 +81,61 @@ module HTS
       @bam : Bam
       @hdr : Bam::Header
       @plp : LibHTS::BamPlpT?
-      @cb : LibHTS::BamPlpAutoF?   # keepalive for C callback
-      @udata : Pointer(InputData)? # keepalive of user data for callback
+      @cb : LibHTS::BamPlpAutoF?    # keepalive for C callback
+      @udata : Pointer(InputData)?  # keepalive of user data for callback
+      @itr : LibHTS::HtsItrT*?      # keepalive for region iterator
+      @idx_local : LibHTS::HtsIdxT? # optional index we loaded for region
       @maxcnt : Int32?
 
-      # region is optional for future extension. For now, full-stream iteration.
+      # Create a Pileup iterator
+      # @param bam [HTS::Bam]
+      # @param region [String, nil] Optional region string (e.g., "chr1:1000-2000", requires index)
+      # @param maxcnt [Int32, nil] Max per-position depth (capped)
       def initialize(@bam : Bam, region : String? = nil, @maxcnt : Int32? = nil)
-        # Prepare callback user data block
         @hdr = @bam.header
+
+        # Build region iterator if specified
+        itr_ptr = Pointer(LibHTS::HtsItrT).null
+        if region
+          # Ensure we have an index; if not accessible, load a temporary one
+          raise "Index file is required to use region pileup" unless @bam.index_loaded?
+
+          # Load an index handle we can pass to htslib; keep it to destroy later
+          idx_ptr = @bam.load_index
+          raise "Index not available" if idx_ptr.null?
+          @idx_local = idx_ptr
+
+          # Create iterator from region string (1-based inclusive SAM-style)
+          itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)
+          raise "Failed to query region: #{region}" if itr_ptr.null?
+          @itr = itr_ptr
+        end
+
+        # Prepare callback user data block
         @udata = Pointer(InputData).malloc(1)
         @udata.not_nil!.value = InputData.new(
           @bam.to_unsafe,
           @hdr.to_unsafe,
-          Pointer(LibHTS::HtsItrT).null
+          itr_ptr
         )
 
         # Read function compatible with bam_plp_init
+        # Expected return values:
+        #   0 on success, -1 on EOF, < -1 on non-recoverable errors
         @cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
           id = data.as(Pointer(InputData)).value
           if id.itr.null?
-            # Whole-file path
+            # Whole-file path: sam_read1 returns -1 on EOF or error (no finer error code)
             r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
             r >= 0 ? 0 : -1
           else
-            # Region iterator path (reserved for future use)
+            # Region iterator path: sam_itr_next returns < -1 on error, -1 on EOF
             r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
-            r >= 0 ? 0 : -1
+            r >= 0 ? 0 : r
           end
         }
 
-        # Create iterator
+        # Create pileup iterator
         @plp = LibHTS.bam_plp_init(@cb.not_nil!, @udata.not_nil!.as(Void*))
         raise "bam_plp_init failed" if @plp.nil? || @plp.not_nil!.as(Void*).null?
         if cnt = @maxcnt
@@ -128,8 +153,9 @@ module HTS
         while true
           plp1 = LibHTS.bam_plp64_auto(plp, pointerof(tid), pointerof(pos), pointerof(n))
           if plp1.null?
+            # bam_plp64_auto sets n = 0 on EOF, n < 0 on error
             break if n >= 0
-            raise "HTSlib pileup error (bam_plp64_auto)"
+            raise "HTSlib pileup error (bam_plp64_auto), n=#{n}"
           end
 
           aligns = Array(Alignment).new(n)
@@ -154,9 +180,17 @@ module HTS
           LibHTS.bam_plp_destroy(plp)
           @plp = nil
         end
+        if itr = @itr
+          LibHTS.hts_itr_destroy(itr)
+          @itr = nil
+        end
+        if idx = @idx_local
+          LibHTS.hts_idx_destroy(idx)
+          @idx_local = nil
+        end
         # NOTE:
-        # - @udata is allocated via Pointer.malloc (GC 管理) のため明示的に free しない。
-        # - @cb は C コールバックの keepalive 用参照。オブジェクト存続中は保持される。
+        # - @udata is allocated via Pointer.malloc (GC managed), no explicit free needed.
+        # - @cb is a keepalive reference for the C callback during iteration.
       end
 
       def finalize
