@@ -11,6 +11,18 @@ module HTS
         end
       end
 
+      # Convenience: build from a CIGAR string like "10M1I5M"
+      def initialize(cigar_str : String)
+        @c = self.class.encode(cigar_str)
+        @n_cigar = @c.size.to_u32
+      end
+
+      # Convenience: build from op tuples, e.g., [{'M', 10_u32}, {'I', 1_u32}]
+      def initialize(ops : Array(Tuple(Char, UInt32)))
+        @c = self.class.encode(ops)
+        @n_cigar = @c.size.to_u32
+      end
+
       def to_s(io : IO)
         each do |op, len|
           io << len
@@ -43,11 +55,12 @@ module HTS
         num = 0_u32
         cigar_str.each_char do |ch|
           if ch.ascii_number?
-            num = num * 10 + (ch.ord - '0'.ord)
+            # keep calculations in UInt32 domain to avoid unions
+            num = num * 10_u32 + (ch.ord - '0'.ord).to_u32
           else
             raise ArgumentError.new("Invalid CIGAR: length missing before '#{ch}'") if num == 0
             code = op_code(ch)
-            res << ((num << 4) | code)
+            res << ((num << 4) | code).to_u32
             num = 0
           end
         end
