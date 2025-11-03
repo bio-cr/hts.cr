@@ -25,6 +25,16 @@ module HTS
       @maxcnt : Int32?
       @overlaps : Bool
 
+      # Open an Mpileup iterator with block (RAII style)
+      def self.open(inputs : Array(Bam), maxcnt : Int32? = nil, overlaps : Bool = false, &)
+        mpileup = new(inputs, maxcnt, overlaps)
+        begin
+          yield mpileup
+        ensure
+          mpileup.close
+        end
+      end
+
       # Minimal constructor: accept Array(Bam). (String inputs or regions can be added later.)
       def initialize(inputs : Array(Bam), @maxcnt : Int32? = nil, overlaps : Bool = false)
         @bams = inputs

@@ -87,6 +87,16 @@ module HTS
       @idx_local : LibHTS::HtsIdxT? # optional index we loaded for region
       @maxcnt : Int32?
 
+      # Open a Pileup iterator with block (RAII style)
+      def self.open(bam : Bam, region : String? = nil, maxcnt : Int32? = nil, &)
+        pileup = new(bam, region, maxcnt)
+        begin
+          yield pileup
+        ensure
+          pileup.close
+        end
+      end
+
       # Create a Pileup iterator
       # @param bam [HTS::Bam]
       # @param region [String, nil] Optional region string (e.g., "chr1:1000-2000", requires index)

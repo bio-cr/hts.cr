@@ -28,13 +28,10 @@ in_path = ARGV.shift
 
 def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?)
   HTS::Bam.open(in_path) do |bam|
-    pileup = HTS::Bam::Pileup.new(bam, region, maxcnt)
-
     io.puts ["chrom", "pos", "depth", "A", "C", "G", "T", "N", "n_del", "n_refskip"].join('\t')
-
     hdr_ptr = bam.header.to_unsafe
 
-    begin
+    HTS::Bam::Pileup.open(bam, region, maxcnt) do |pileup|
       pileup.each do |col|
         name_ptr = HTS::LibHTS.sam_hdr_tid2name(hdr_ptr, col.tid)
         chrom = name_ptr.null? ? col.tid.to_s : String.new(name_ptr)
@@ -45,23 +42,14 @@ def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?)
         n_refskip = 0
 
         col.alignments.each do |aln|
-          if aln.refskip?
-            n_refskip += 1
-            next
-          end
-
-          if aln.del?
-            n_del += 1
-            next
-          end
+          next n_refskip += 1 if aln.refskip?
+          next n_del += 1 if aln.del?
 
           qpos = aln.query_pos
-          rec = aln.record
-          seq = rec.seq
+          seq = aln.record.seq
 
           if qpos >= 0 && qpos < seq.size
-            base = seq[qpos].upcase
-            case base
+            case seq[qpos].upcase
             when 'A' then a += 1
             when 'C' then c += 1
             when 'G' then g += 1
@@ -75,12 +63,10 @@ def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?)
 
         io.puts "#{chrom}\t#{pos1}\t#{col.depth}\t#{a}\t#{c}\t#{g}\t#{t}\t#{n}\t#{n_del}\t#{n_refskip}"
       end
-    rescue ex : IO::Error
-      # Ignore broken pipe errors (e.g., when piped to head)
-    ensure
-      pileup.close
     end
   end
+rescue IO::Error
+  # Ignore broken pipe errors (e.g., when piped to head)
 end
 
 if output_path
