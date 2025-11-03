@@ -7,6 +7,8 @@ require "./bam/cigar"
 require "./bam/flag"
 require "./bam/record"
 require "./bam/base_mod"
+require "./bam/pileup"
+require "./bam/mpileup"
 
 module HTS
   class Bam < Hts
