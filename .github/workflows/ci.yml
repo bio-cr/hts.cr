@@ -23,6 +23,8 @@ jobs:
             mingw-w64-x86_64-crystal
             mingw-w64-x86_64-shards
             mingw-w64-x86_64-htslib
+            mingw-w64-x86_64-samtools
+            mingw-w64-x86_64-bcftools
       - name: Install latest HTSLib (ubuntu)
         if: ${{ matrix.os == 'ubuntu' }}
         run: |
