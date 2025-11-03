@@ -294,7 +294,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/6be688d56f9b752890b222aec98b7ae177f6204b/src/hts/bam/pileup.cr#L5" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/70770a7b2a9f3944412c6e3b0dfe32f8755354eb/src/hts/bam/pileup.cr#L5" target="_blank">
         hts/bam/pileup.cr
       </a>
     
@@ -319,7 +319,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <li class="entry-summary">
         <a href="#new%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(bam : Bam, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>)</a>
         
-          <div class="summary"><p>region is optional for future extension.</p></div>
+          <div class="summary"><p>Create a Pileup iterator @param bam [HTS::Bam] @param region [String, nil] Optional region string (e.g., &quot;chr1:1000-2000&quot;, requires index) @param maxcnt [Int32, nil] Max per-position depth (capped)</p></div>
         
       </li>
     
@@ -434,13 +434,16 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       
         <div class="doc">
           
-          <p>region is optional for future extension. For now, full-stream iteration.</p>
+          <p>Create a Pileup iterator
+@param bam [HTS::Bam]
+@param region [String, nil] Optional region string (e.g., &quot;chr1:1000-2000&quot;, requires index)
+@param maxcnt [Int32, nil] Max per-position depth (capped)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6be688d56f9b752890b222aec98b7ae177f6204b/src/hts/bam/pileup.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/70770a7b2a9f3944412c6e3b0dfe32f8755354eb/src/hts/bam/pileup.cr#L94" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -477,7 +480,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6be688d56f9b752890b222aec98b7ae177f6204b/src/hts/bam/pileup.cr#L152" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/70770a7b2a9f3944412c6e3b0dfe32f8755354eb/src/hts/bam/pileup.cr#L178" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -498,7 +501,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6be688d56f9b752890b222aec98b7ae177f6204b/src/hts/bam/pileup.cr#L122" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/70770a7b2a9f3944412c6e3b0dfe32f8755354eb/src/hts/bam/pileup.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -514,7 +517,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6be688d56f9b752890b222aec98b7ae177f6204b/src/hts/bam/pileup.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/70770a7b2a9f3944412c6e3b0dfe32f8755354eb/src/hts/bam/pileup.cr#L196" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -535,7 +538,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6be688d56f9b752890b222aec98b7ae177f6204b/src/hts/bam/pileup.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/70770a7b2a9f3944412c6e3b0dfe32f8755354eb/src/hts/bam/pileup.cr#L173" target="_blank">View source</a>]
         
       </div>
     </div>
