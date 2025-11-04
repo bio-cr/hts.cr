@@ -111,7 +111,7 @@ module HTS
 
             base_ptr = plp_arr[s]
             if count == 0 || base_ptr.null?
-              cols << HTS::Bam::Pileup::Column.new(tid, pos, [] of HTS::Bam::Pileup::Alignment)
+              cols << HTS::Bam::Pileup::Column.new(tid, pos, [] of HTS::Bam::Pileup::Alignment, @bams[s].header)
             else
               aligns = Array(HTS::Bam::Pileup::Alignment).new(count)
               i = 0
@@ -119,7 +119,7 @@ module HTS
                 aligns << HTS::Bam::Pileup::Alignment.new(base_ptr + i, @bams[s].header)
                 i += 1
               end
-              cols << HTS::Bam::Pileup::Column.new(tid, pos, aligns)
+              cols << HTS::Bam::Pileup::Column.new(tid, pos, aligns, @bams[s].header)
             end
             s += 1
           end
