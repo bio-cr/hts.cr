@@ -279,7 +279,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/52c213a52c1da95bdb8904e5f8d35e7348c53a3f/src/hts/bam/pileup.cr#L7" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L7" target="_blank">
         hts/bam/pileup.cr
       </a>
     
@@ -302,7 +302,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28tid%3AInt32%2Cpos%3AInt64%2Calignments%3AArray%28Alignment%29%29-class-method" class="signature"><strong>.new</strong>(tid : Int32, pos : Int64, alignments : Array(Alignment))</a>
+        <a href="#new%28tid%3AInt32%2Cpos%3AInt64%2Calignments%3AArray%28Alignment%29%2Cheader%3ABam%3A%3AHeader%29-class-method" class="signature"><strong>.new</strong>(tid : Int32, pos : Int64, alignments : Array(Alignment), header : Bam::Header)</a>
         
       </li>
     
@@ -326,6 +326,13 @@
     
       <li class="entry-summary">
         <a href="#alignments%3AArray%28Alignment%29-instance-method" class="signature"><strong>#alignments</strong> : Array(Alignment)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#chrom%3AString-instance-method" class="signature"><strong>#chrom</strong> : String</a>
+        
+          <div class="summary"><p>Reference (chromosome) name for this position Returns empty string if tid is -1 (unmapped)</p></div>
         
       </li>
     
@@ -403,18 +410,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(tid:Int32,pos:Int64,alignments:Array(Alignment))-class-method">
+    <div class="entry-detail" id="new(tid:Int32,pos:Int64,alignments:Array(Alignment),header:Bam::Header)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(tid : Int32, pos : Int64, alignments : Array(<a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a>))
+        def self.<strong>new</strong>(tid : Int32, pos : Int64, alignments : Array(<a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a>), header : <a href="../../../HTS/Bam/Header.html">Bam::Header</a>)
 
-        <a class="method-permalink" href="#new%28tid%3AInt32%2Cpos%3AInt64%2Calignments%3AArray%28Alignment%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28tid%3AInt32%2Cpos%3AInt64%2Calignments%3AArray%28Alignment%29%2Cheader%3ABam%3A%3AHeader%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/52c213a52c1da95bdb8904e5f8d35e7348c53a3f/src/hts/bam/pileup.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -446,7 +453,29 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/52c213a52c1da95bdb8904e5f8d35e7348c53a3f/src/hts/bam/pileup.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="chrom:String-instance-method">
+      <div class="signature">
+        
+        def <strong>chrom</strong> : String
+
+        <a class="method-permalink" href="#chrom%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Reference (chromosome) name for this position
+Returns empty string if tid is -1 (unmapped)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -467,7 +496,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/52c213a52c1da95bdb8904e5f8d35e7348c53a3f/src/hts/bam/pileup.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -483,7 +512,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/52c213a52c1da95bdb8904e5f8d35e7348c53a3f/src/hts/bam/pileup.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -499,7 +528,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/52c213a52c1da95bdb8904e5f8d35e7348c53a3f/src/hts/bam/pileup.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0997358116f1c6c2f4b02aad3f202afd086dee1d/src/hts/bam/pileup.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
