@@ -23,21 +23,24 @@ end
 in_path = ARGV.shift
 
 HTS::Bam.open(in_path) do |bam|
+  header = bam.header
   HTS::Bam::Pileup.open(bam, region) do |pileup|
     pileup.each do |column|
+      # Get chromosome name from header using tid
+      chrom = header.target_name(column.tid)
+      
       column.alignments.each do |pileup_read|
         next if pileup_read.del?
 
-        mods = pileup_read.record.modified_bases
-        next unless mods
-
-        mods.each do |(base, strand, mod_type), positions|
-          positions.each do |pos, qual|
-            if pos == pileup_read.query_pos
-              puts "Position #{column.pos}: " \
-                   "Base #{base.chr}, Strand #{strand}, " \
-                   "Modification #{mod_type.chr}, Quality #{qual}"
-            end
+        # Get base modification information for this read
+        base_mod = pileup_read.record.base_mod
+        
+        # Check for modifications at the current query position
+        if mod_pos = base_mod.at_pos(pileup_read.query_pos)
+          mod_pos.modifications.each do |mod|
+            prob = mod.probability
+            prob_str = prob ? prob.round(3).to_s : "N/A"
+            puts "#{chrom}\t#{column.pos + 1}\t#{mod.canonical}\t#{pileup_read.record.strand}\t#{mod.code}\t#{prob_str}"
           end
         end
       end
