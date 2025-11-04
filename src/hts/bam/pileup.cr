@@ -8,12 +8,20 @@ module HTS
         getter tid : Int32
         getter pos : Int64
         getter alignments : Array(Alignment)
+        @header : Bam::Header
 
-        def initialize(@tid : Int32, @pos : Int64, @alignments : Array(Alignment)); end
+        def initialize(@tid : Int32, @pos : Int64, @alignments : Array(Alignment), @header : Bam::Header); end
 
         # Depth equals number of alignments covering this position
         def depth : Int32
           @alignments.size
+        end
+
+        # Reference (chromosome) name for this position
+        # Returns empty string if tid is -1 (unmapped)
+        def chrom : String
+          return "" if @tid == -1
+          @header.target_name(@tid)
         end
       end
 
@@ -175,7 +183,7 @@ module HTS
             aligns << Alignment.new(entry_ptr, @hdr)
             i += 1
           end
-          yield Column.new(tid, pos, aligns)
+          yield Column.new(tid, pos, aligns, @hdr)
         end
       end
 
