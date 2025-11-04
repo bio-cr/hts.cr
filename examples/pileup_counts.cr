@@ -10,12 +10,14 @@ require "../src/hts"
 output_path = nil.as(String?)
 maxcnt = nil.as(Int32?)
 region = nil.as(String?)
+threads = 0
 
 parser = OptionParser.parse do |p|
   p.banner = "Usage: pileup_counts [options] <in.bam|in.cram>"
   p.on("--maxcnt=N", "Max reads per column") { |v| maxcnt = v.to_i }
   p.on("-r REGION", "--region=REGION", "Region (e.g., chr1:1000-2000)") { |v| region = v }
   p.on("-o FILE", "--output=FILE", "Output TSV (default: stdout)") { |v| output_path = v }
+  p.on("-@ THREADS", "--threads=THREADS", "Number of threads for decompression (default: 0)") { |v| threads = v.to_i }
   p.on("-h", "--help", "Show help") { puts p; exit 0 }
 end
 
@@ -26,8 +28,8 @@ end
 
 in_path = ARGV.shift
 
-def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?)
-  HTS::Bam.open(in_path) do |bam|
+def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?, threads : Int32)
+  HTS::Bam.open(in_path, threads: threads) do |bam|
     io.puts ["chrom", "pos", "depth", "A", "C", "G", "T", "N", "n_del", "n_refskip"].join('\t')
     hdr_ptr = bam.header.to_unsafe
 
@@ -71,8 +73,8 @@ end
 
 if output_path
   File.open(output_path.not_nil!, "w") do |io|
-    run_pileup(io, in_path, region, maxcnt)
+    run_pileup(io, in_path, region, maxcnt, threads)
   end
 else
-  run_pileup(STDOUT, in_path, region, maxcnt)
+  run_pileup(STDOUT, in_path, region, maxcnt, threads)
 end
