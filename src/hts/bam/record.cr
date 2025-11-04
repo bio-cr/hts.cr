@@ -353,9 +353,12 @@ module HTS
         self.class.new(@header, bam1)
       end
 
-      # Base modification accessor (lazy)
+      # Base modification accessor
+      # NOTE: Currently always returns a new BaseMod instance to avoid a finalizer cycle
+      #       between Record and BaseMod. In the future, memoization could be considered
+      #       for performance optimization once the GC cycle issue is resolved.
       def base_mod : Bam::BaseMod
-        @base_mod ||= Bam::BaseMod.new(self)
+        Bam::BaseMod.new(self)
       end
 
       # garbagew collection
