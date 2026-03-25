@@ -503,6 +503,8 @@ module HTS
     fun sam_hdr_pg_id(h : SamHdrT*, name : LibC::Char*) : LibC::Char*
     fun sam_hdr_add_pg(h : SamHdrT*, name : LibC::Char*, ...) : LibC::Int
     fun sam_hdr_incr_ref(h : SamHdrT*)
+    fun sam_hdr_set(fp : SamFile*, h : SamHdrT*, dup : LibC::Int) : LibC::Int
+    fun sam_hdr_get(fp : SamFile*) : SamHdrT*
     fun bam_init1 : Bam1T*
 
     struct Bam1T
