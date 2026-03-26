@@ -56,6 +56,12 @@ module HTS
         String.new LibHTS.bam_aux2_z(aux_ptr)
       end
 
+      def get_char(tag : String)
+        aux_ptr = get_aux_pointer(tag)
+        return nil if aux_ptr.null?
+        LibHTS.bam_aux2_a(aux_ptr).chr
+      end
+
       # Parse auxiliary value based on its type
       private def parse_aux_value(aux_ptr)
         return nil if aux_ptr.null?

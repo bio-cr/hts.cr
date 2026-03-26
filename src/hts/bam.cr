@@ -16,6 +16,8 @@ module HTS
 
     class MissingIndexError < QueryError; end
 
+    alias AuxValue = Int64 | Float64 | String | Char | Array(Int64) | Array(Float64) | Nil
+
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT
@@ -243,7 +245,35 @@ module HTS
       mate_pos
     end
 
-    # def aux(tag)
+    def aux_int(tag : String) : Array(Int64 | Nil)
+      collect_aux_values do |record|
+        record.aux.get_int(tag)
+      end
+    end
+
+    def aux_float(tag : String) : Array(Float64 | Nil)
+      collect_aux_values do |record|
+        record.aux.get_float(tag)
+      end
+    end
+
+    def aux_string(tag : String) : Array(String | Nil)
+      collect_aux_values do |record|
+        record.aux.get_string(tag)
+      end
+    end
+
+    def aux_char(tag : String) : Array(Char | Nil)
+      collect_aux_values do |record|
+        record.aux.get_char(tag)
+      end
+    end
+
+    def aux(tag : String) : Array(AuxValue)
+      collect_aux_values do |record|
+        record.aux[tag]
+      end
+    end
 
     define_iterator :qname
     define_iterator :flag
@@ -260,7 +290,45 @@ module HTS
     # each_isize
     # each_mpos
 
-    # each_aux(tag)
+    def each_aux_int(tag : String, &)
+      check_closed
+      each do |record|
+        yield record.aux.get_int(tag)
+      end
+      self
+    end
+
+    def each_aux_float(tag : String, &)
+      check_closed
+      each do |record|
+        yield record.aux.get_float(tag)
+      end
+      self
+    end
+
+    def each_aux_string(tag : String, &)
+      check_closed
+      each do |record|
+        yield record.aux.get_string(tag)
+      end
+      self
+    end
+
+    def each_aux_char(tag : String, &)
+      check_closed
+      each do |record|
+        yield record.aux.get_char(tag)
+      end
+      self
+    end
+
+    def each_aux(tag : String, &)
+      check_closed
+      each do |record|
+        yield record.aux[tag]
+      end
+      self
+    end
 
     def each(copy = false, &)
       if copy
@@ -296,6 +364,26 @@ module HTS
       record = Record.new(header, bam1)
       while LibHTS.sam_read1(@hts_file, header, bam1) != -1
         yield record
+      end
+    end
+
+    private def collect_aux_values(& : Record -> T) : Array(T) forall T
+      check_closed
+
+      position = tell
+      ary = [] of T
+      each do |record|
+        ary << yield record
+      end
+      restore_aux_position(position)
+      ary
+    end
+
+    private def restore_aux_position(position : Int64 | Nil) : Nil
+      if position.nil?
+        STDERR.puts "Warning: #{@file_name} is not seekable"
+      else
+        seek(position)
       end
     end
 

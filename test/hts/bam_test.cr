@@ -202,6 +202,49 @@ class BamTest < Minitest::Test
     assert_raises { HTS::Bam.new("/tmp/no_such_file") }
   end
 
+  def test_file_level_aux_int
+    values : Array(Int64 | Nil) = bam_string.aux_int("NM")
+    expected = [] of (Int64 | Nil)
+    bam_string.each do |aln|
+      expected << aln.aux.get_int("NM")
+    end
+    assert_equal expected, values
+  end
+
+  def test_file_level_aux_string
+    values : Array(String | Nil) = bam_string.aux_string("MC")
+    expected = [] of (String | Nil)
+    bam_string.each do |aln|
+      expected << aln.aux.get_string("MC")
+    end
+    assert_equal expected, values
+  end
+
+  def test_file_level_aux_runtime_fallback
+    values : Array(HTS::Bam::AuxValue) = bam_string.aux("NM")
+    expected = [] of HTS::Bam::AuxValue
+    bam_string.each do |aln|
+      expected << aln.aux["NM"]
+    end
+    assert_equal expected, values
+  end
+
+  def test_each_aux_int
+    values = [] of (Int64 | Nil)
+    bam_string.each_aux_int("NM") do |value|
+      values << value
+    end
+    assert_equal bam_string.aux_int("NM"), values
+  end
+
+  def test_each_aux_runtime_fallback
+    values = [] of HTS::Bam::AuxValue
+    bam_string.each_aux("MC") do |value|
+      values << value
+    end
+    assert_equal bam_string.aux("MC"), values
+  end
+
   def test_query_requires_index_for_sam
     ex = assert_raises(HTS::Bam::MissingIndexError) do
       sam_string.query("chr1:1-10") { |_| }
