@@ -6,6 +6,18 @@ class BamHeaderTest < Minitest::Test
     @bam.try &.close
   end
 
+  private def normalize_header(text : String) : String
+    text.gsub(/\r\n/, "\n")
+  end
+
+  private def minimal_header_text : String
+    <<-TEXT
+    @HD\tVN:1.6\tSO:coordinate
+    @SQ\tSN:chr1\tLN:1000
+
+    TEXT
+  end
+
   def test_bam_path
     File.expand_path("../../fixtures/poo.sort.bam", __DIR__)
   end
@@ -46,8 +58,52 @@ class BamHeaderTest < Minitest::Test
   end
 
   def test_add_pg
-    bam.header.add_pg("meowtools", "CL", "meow -n 3")
-    # FIXME
+    header = HTS::Bam::Header.parse(minimal_header_text)
+    header.add_pg("meowtools", "CL", "meow -n 3")
+
+    assert normalize_header(header.to_s).includes?("@PG\tID:meowtools\tPN:meowtools\tCL:meow -n 3\n")
+  end
+
+  def test_add_pg_generates_unique_id
+    header_text = <<-TEXT
+    @HD\tVN:1.6\tSO:coordinate
+    @SQ\tSN:chr1\tLN:1000
+    @PG\tID:samtools\tPN:samtools
+
+    TEXT
+    header = HTS::Bam::Header.parse(header_text)
+
+    header.add_pg("samtools", "CL", "samtools view -H")
+
+    assert normalize_header(header.to_s).includes?("@PG\tID:samtools.1\tPN:samtools\tCL:samtools view -H\n")
+  end
+
+  def test_add_pg_with_parent
+    header_text = <<-TEXT
+    @HD\tVN:1.6\tSO:coordinate
+    @SQ\tSN:chr1\tLN:1000
+    @PG\tID:align\tPN:align
+
+    TEXT
+    header = HTS::Bam::Header.parse(header_text)
+
+    header.add_pg("sort", "PP", "align", "CL", "samtools sort")
+
+    assert normalize_header(header.to_s).includes?("@PG\tID:sort\tPN:sort\tPP:align\tCL:samtools sort\n")
+  end
+
+  def test_add_pg_rejects_odd_tag_count
+    header = HTS::Bam::Header.parse(minimal_header_text)
+
+    ex = assert_raises(ArgumentError) { header.add_pg("meowtools", "CL") }
+    assert ex.message.try &.includes?("key/value pairs")
+  end
+
+  def test_add_pg_rejects_unknown_parent
+    header = HTS::Bam::Header.parse(minimal_header_text)
+
+    ex = assert_raises(ArgumentError) { header.add_pg("meowtools", "PP", "missing") }
+    assert ex.message.try &.includes?("Unknown PG parent")
   end
 
   def test_to_s
