@@ -4,22 +4,16 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
-      def get_int(tag)
+      def get_int(tag) : Array(Int32)?
         get_numeric_values(tag, LibHTS2::BCF_HT_INT, Int32)
       end
 
-      def get_float(tag)
+      def get_float(tag) : Array(Float32)?
         get_numeric_values(tag, LibHTS2::BCF_HT_REAL, Float32)
       end
 
-      # Get FORMAT string values. Returns one string per sample.
-      #
-      # Low-level contract:
-      # - returns nil for undefined tags and tags absent in the record
-      # - raises on type mismatch and internal htslib failures
-      # - preserves raw character buffers except for GT, which is decoded via
-      #   the dedicated genotype helpers
-      def get_string(tag)
+      # Returns one String per sample. FORMAT/GT is decoded into genotype strings.
+      def get_string(tag) : Array(String)?
         return decode_genotype_strings if tag == "GT"
 
         ndst = 0
@@ -52,12 +46,7 @@ module HTS
         end
       end
 
-      # Get raw encoded GT values from FORMAT/GT.
-      #
-      # The returned array is the flat htslib representation. Callers that want
-      # per-sample decoding should interpret it using the GT helpers in LibHTS2.
-      # Raw sentinel values are preserved.
-      def get_genotypes
+      def get_genotypes : Array(Int32)?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -75,7 +64,7 @@ module HTS
         end
       end
 
-      private def get_numeric_values(tag, type, value_type : T.class) forall T
+      private def get_numeric_values(tag, type, value_type : T.class) : Array(T)? forall T
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -107,7 +96,7 @@ module HTS
         end
       end
 
-      private def decode_genotype_strings
+      private def decode_genotype_strings : Array(String)?
         encoded = get_genotypes
         return nil unless encoded
 

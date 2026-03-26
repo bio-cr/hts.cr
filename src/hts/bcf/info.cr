@@ -4,15 +4,8 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
-      # Dynamic access using the declared INFO type from the header.
-      #
-      # Returns one of:
-      # - Array(Int32)
-      # - Array(Float32)
-      # - String
-      # - Bool
-      # - nil
-      def [](tag : String)
+      # Dispatches according to the declared INFO type in the header.
+      def [](tag : String) : Array(Int32) | Array(Float32) | String | Bool | Nil
         case @record.header.info_type(tag)
         when :flag
           get_flag(tag)
@@ -27,13 +20,7 @@ module HTS
         end
       end
 
-      # Get INFO int32 array. Returns nil if tag not present.
-      #
-      # Low-level contract:
-      # - returns nil for undefined tags and tags absent in the record
-      # - raises on type mismatch and internal htslib failures
-      # - preserves raw sentinel values; use *_opt helpers to map missing values
-      def get_int(tag)
+      def get_int(tag) : Array(Int32)?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -49,13 +36,11 @@ module HTS
         end
       end
 
-      # Get INFO int64 array. Returns nil if tag not present.
-      def get_int64(tag)
+      def get_int64(tag) : Array(Int64)?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        # Use base function with LONG type explicitly (not all wrappers expose int64 helper)
         rc = LibHTS.bcf_get_info_values(hdr, r, tag, pointerof(dst), pointerof(ndst), LibHTS2::BCF_HT_LONG)
         rc = normalize_info_rc(rc, tag, "integer")
         return nil unless rc
@@ -67,19 +52,14 @@ module HTS
         end
       end
 
-      # Get INFO int32 array with missing values mapped to nil.
-      # Missing is encoded in BCF as INT32_MIN; vector_end should not appear in INFO but is ignored if present.
-      def get_int_opt(tag)
+      def get_int_opt(tag) : Array(Int32?)?
         ints = get_int(tag)
         return nil unless ints
         missing = Int32::MIN
         ints.map { |v| v == missing ? nil : v }
       end
 
-      # Get INFO float array. Returns nil if tag not present.
-      # Raw floating-point sentinels are preserved. Use get_float_opt to map
-      # missing values to nil.
-      def get_float(tag)
+      def get_float(tag) : Array(Float32)?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -95,15 +75,13 @@ module HTS
         end
       end
 
-      # Get INFO float array with missing values mapped to nil (bcf_float_missing is a NaN sentinel)
-      def get_float_opt(tag)
+      def get_float_opt(tag) : Array(Float64?)?
         floats = get_float(tag)
         return nil unless floats
         floats.map { |v| LibHTS.bcf_float_is_missing(v) != 0 ? nil : v.to_f64 }
       end
 
-      # Get INFO string. Returns nil if tag not present.
-      def get_string(tag)
+      def get_string(tag) : String?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -118,13 +96,7 @@ module HTS
         end
       end
 
-      # Get INFO flag.
-      #
-      # Low-level contract:
-      # - returns nil for undefined tags
-      # - returns false when the flag is defined but absent in the record
-      # - raises on type mismatch and internal htslib failures
-      def get_flag(tag)
+      def get_flag(tag) : Bool?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -145,7 +117,6 @@ module HTS
         else
           raise "unknown return value"
         end
-        # typically no allocation for flags, but free if htslib did allocate
         LibHTS.hts_free(dst) unless dst.null?
         val
       end
