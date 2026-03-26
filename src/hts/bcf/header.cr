@@ -35,6 +35,11 @@ module HTS
         tag_type(tag, LibHTS2::BCF_HL_INFO)
       end
 
+      # Character is reported as :string because htslib exposes both via BCF_HT_STR.
+      def format_type(tag : String)
+        tag_type(tag, LibHTS2::BCF_HL_FMT)
+      end
+
       def samples
         # bcf_hdr_id2name is macro function
         Array.new(nsamples) do |i|

@@ -5,16 +5,19 @@ module HTS
       end
 
       def get_int(tag) : Array(Int32)?
+        raise_unsupported_format_flag(tag)
         get_numeric_values(tag, LibHTS2::BCF_HT_INT, Int32)
       end
 
       def get_float(tag) : Array(Float32)?
+        raise_unsupported_format_flag(tag)
         get_numeric_values(tag, LibHTS2::BCF_HT_REAL, Float32)
       end
 
-      # Returns one String per sample. FORMAT/GT is decoded into genotype strings.
+      # Returns one String per sample. Character FORMAT fields are handled here too.
       def get_string(tag) : Array(String)?
         return decode_genotypes if tag == "GT"
+        raise_unsupported_format_flag(tag)
 
         ndst = 0
         dst = Pointer(Void).null
@@ -105,6 +108,10 @@ module HTS
         ensure
           LibHTS.hts_free(dst) unless dst.null?
         end
+      end
+
+      private def raise_unsupported_format_flag(tag : String)
+        raise "FORMAT flag fields are not supported: #{tag}" if @record.header.format_type(tag) == :flag
       end
 
       private def normalize_format_rc(rc : Int32, tag : String, expected_type : String) : Int32?

@@ -2,6 +2,24 @@ require "minitest/autorun"
 require "../../../src/hts/bcf"
 
 class BcfFormatTest < Minitest::Test
+  def with_temp_character_format_vcf(&)
+    file = File.tempfile("format_character_test", ".vcf")
+    path = file.path || raise "tempfile path is nil"
+    begin
+      file.puts "##fileformat=VCFv4.3"
+      file.puts "##contig=<ID=1,length=100>"
+      file.puts "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">"
+      file.puts "##FORMAT=<ID=CH,Number=1,Type=Character,Description=\"Character field\">"
+      file.puts "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tS1\tS2"
+      file.puts "1\t10\t.\tA\tC\t.\tPASS\t.\tGT:CH\t0/1:A\t1/1:Z"
+      file.close
+
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def with_temp_bcf(&)
     file = File.tempfile("format_test", ".bcf")
     path = file.path || raise "tempfile path is nil"
@@ -111,6 +129,17 @@ class BcfFormatTest < Minitest::Test
     assert_equal(["1/1"], format.get_string("GT"))
   end
 
+  def test_character_format_is_routed_through_string
+    with_temp_character_format_vcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        format = bcf.first.format
+
+        assert_equal(:string, bcf.header.format_type("CH"))
+        assert_equal(["A", "Z"], format.get_string("CH"))
+      end
+    end
+  end
+
   def test_get_genotypes
     assert_equal([4, 4], format.get_genotypes)
   end
@@ -153,5 +182,23 @@ class BcfFormatTest < Minitest::Test
 
     ex = assert_raises(Exception) { format.get_float("PL") }
     assert_equal "Tag PL is not float FORMAT field", ex.message
+  end
+
+  def test_format_flag_is_unsupported
+    header = HTS::Bcf::Header.new
+    header.set_version("VCFv4.3")
+    header.append("##contig=<ID=1,length=100>")
+    header.append("##FORMAT=<ID=BAD,Number=0,Type=Flag,Description=\"Unsupported\">")
+    header.add_sample("S1")
+
+    assert_equal(:flag, header.format_type("BAD"))
+
+    record = HTS::Bcf::Record.new(header)
+    record.rid = HTS::LibHTS2.bcf_hdr_name2id(header, "1")
+    record.pos = 0
+    format = record.format
+
+    ex = assert_raises(Exception) { format.get_string("BAD") }
+    assert_equal "FORMAT flag fields are not supported: BAD", ex.message
   end
 end
