@@ -64,6 +64,18 @@ module HTS
         end
       end
 
+      private def get_int_samples(tag : String) : Array(Array(Int32))?
+        values = get_int(tag)
+        return nil unless values
+        split_integer_samples(values)
+      end
+
+      private def get_float_samples(tag : String) : Array(Array(Float32))?
+        values = get_float(tag)
+        return nil unless values
+        split_float_samples(values)
+      end
+
       private def get_numeric_values(tag, type, value_type : T.class) : Array(T)? forall T
         ndst = 0
         dst = Pointer(Void).null
@@ -100,21 +112,11 @@ module HTS
         encoded = get_genotypes
         return nil unless encoded
 
-        sample_count = @record.header.nsamples
-        return [] of String if sample_count <= 0
-
-        vector_end = Int32::MIN + 1
-        max_ploidy = encoded.size // sample_count
-
-        Array(String).new(sample_count) do |sample_index|
-          start = sample_index * max_ploidy
+        split_integer_samples(encoded).map do |sample_values|
           io = IO::Memory.new
           wrote_allele = false
 
-          max_ploidy.times do |offset|
-            value = encoded[start + offset]
-            break if value == vector_end
-
+          sample_values.each do |value|
             if wrote_allele
               separator = LibHTS2.bcf_gt_is_phased(value) != 0 ? '|' : '/'
               io << separator
@@ -131,6 +133,40 @@ module HTS
 
           io.to_s
         end
+      end
+
+      private def split_integer_samples(values : Array(Int32)) : Array(Array(Int32))
+        split_sample_values(values).map { |sample_values| trim_integer_vector_end(sample_values) }
+      end
+
+      private def split_float_samples(values : Array(Float32)) : Array(Array(Float32))
+        split_sample_values(values).map { |sample_values| trim_float_vector_end(sample_values) }
+      end
+
+      private def split_sample_values(values : Array(T)) : Array(Array(T)) forall T
+        sample_count = @record.header.nsamples
+        return [] of Array(T) if sample_count <= 0
+
+        if values.size % sample_count != 0
+          raise "Failed to split FORMAT values by sample"
+        end
+
+        values_per_sample = values.size // sample_count
+        Array(Array(T)).new(sample_count) do |sample_index|
+          start = sample_index * values_per_sample
+          values[start, values_per_sample]
+        end
+      end
+
+      private def trim_integer_vector_end(values : Array(Int32)) : Array(Int32)
+        vector_end = Int32::MIN + 1
+        end_index = values.index(vector_end) || values.size
+        values[0, end_index]
+      end
+
+      private def trim_float_vector_end(values : Array(Float32)) : Array(Float32)
+        end_index = values.index { |value| LibHTS.bcf_float_is_vector_end(value) != 0 } || values.size
+        values[0, end_index]
       end
     end
   end

@@ -2,6 +2,52 @@ require "minitest/autorun"
 require "../../../src/hts/bcf"
 
 class BcfFormatTest < Minitest::Test
+  def with_temp_bcf(&)
+    file = File.tempfile("format_test", ".bcf")
+    path = file.path || raise "tempfile path is nil"
+    begin
+      file.close
+
+      header = HTS::Bcf::Header.new
+      header.set_version("VCFv4.3")
+      header.append("##contig=<ID=1,length=100>")
+      header.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
+      header.append("##FORMAT=<ID=PL,Number=G,Type=Integer,Description=\"Phred likelihoods\">")
+      header.add_sample("S1", sync: false)
+      header.add_sample("S2", sync: true)
+
+      HTS::Bcf.open(path, "wb") do |bcf|
+        bcf.write_header(header)
+
+        record = HTS::Bcf::Record.new(header)
+        record.rid = HTS::LibHTS2.bcf_hdr_name2id(header, "1")
+        record.pos = 9
+
+        rc = HTS::LibHTS.bcf_update_alleles_str(header, record, "A,C")
+        raise "bcf_update_alleles_str failed (rc=#{rc})" if rc < 0
+
+        genotypes = [
+          HTS::LibHTS2.bcf_gt_unphased(0),
+          HTS::LibHTS2.bcf_gt_unphased(1),
+          HTS::LibHTS2.bcf_gt_unphased(1),
+          HTS::LibHTS2.bcf_gt_unphased(1),
+        ]
+        rc = HTS::LibHTS2.bcf_update_genotypes(header, record, genotypes.to_unsafe, genotypes.size)
+        raise "bcf_update_genotypes failed (rc=#{rc})" if rc < 0
+
+        likelihoods = [10, 20, 30, 40, 50, 60]
+        rc = HTS::LibHTS2.bcf_update_format_int32(header, record, "PL", likelihoods.to_unsafe, likelihoods.size)
+        raise "bcf_update_format_int32 failed (rc=#{rc})" if rc < 0
+
+        bcf << record
+      end
+
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def test_bcf_path
     File.expand_path("../../fixtures/test.bcf", __DIR__)
   end
@@ -23,6 +69,18 @@ class BcfFormatTest < Minitest::Test
 
   def test_get_genotypes
     assert_equal([4, 4], format.get_genotypes)
+  end
+
+  def test_multisample_gt_and_flat_numeric_buffers
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        format = bcf.first.format
+
+        assert_equal(["0/1", "1/1"], format.get_string("GT"))
+        assert_equal([2, 4, 4, 4], format.get_genotypes)
+        assert_equal([10, 20, 30, 40, 50, 60], format.get_int("PL"))
+      end
+    end
   end
 
   def test_low_level_contract
