@@ -268,7 +268,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/format.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/0413c384b863dcd5d95eab32c158d8ab45d905ad/src/hts/bcf/format.cr#L3" target="_blank">
         hts/bcf/format.cr
       </a>
     
@@ -314,26 +314,24 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#get_float%28tag%29-instance-method" class="signature"><strong>#get_float</strong>(tag)</a>
+        <a href="#get_float%28tag%29%3AArray%28Float32%29%7CNil-instance-method" class="signature"><strong>#get_float</strong>(tag) : Array(Float32) | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_genotypes-instance-method" class="signature"><strong>#get_genotypes</strong></a>
-        
-          <div class="summary"><p>Get raw encoded GT values from FORMAT/GT.</p></div>
+        <a href="#get_genotypes%3AArray%28Int32%29%7CNil-instance-method" class="signature"><strong>#get_genotypes</strong> : Array(Int32) | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_int%28tag%29-instance-method" class="signature"><strong>#get_int</strong>(tag)</a>
+        <a href="#get_int%28tag%29%3AArray%28Int32%29%7CNil-instance-method" class="signature"><strong>#get_int</strong>(tag) : Array(Int32) | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_string%28tag%29-instance-method" class="signature"><strong>#get_string</strong>(tag)</a>
+        <a href="#get_string%28tag%29%3AArray%28String%29%7CNil-instance-method" class="signature"><strong>#get_string</strong>(tag) : Array(String) | Nil</a>
         
-          <div class="summary"><p>Get FORMAT string values.</p></div>
+          <div class="summary"><p>Returns one String per sample.</p></div>
         
       </li>
     
@@ -392,7 +390,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/format.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0413c384b863dcd5d95eab32c158d8ab45d905ad/src/hts/bcf/format.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -413,86 +411,71 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="get_float(tag)-instance-method">
+    <div class="entry-detail" id="get_float(tag):Array(Float32)|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get_float</strong>(tag)
+        def <strong>get_float</strong>(tag) : Array(Float32) | Nil
 
-        <a class="method-permalink" href="#get_float%28tag%29-instance-method">#</a>
+        <a class="method-permalink" href="#get_float%28tag%29%3AArray%28Float32%29%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/format.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0413c384b863dcd5d95eab32c158d8ab45d905ad/src/hts/bcf/format.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_genotypes-instance-method">
+    <div class="entry-detail" id="get_genotypes:Array(Int32)|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get_genotypes</strong>
+        def <strong>get_genotypes</strong> : Array(Int32) | Nil
 
-        <a class="method-permalink" href="#get_genotypes-instance-method">#</a>
+        <a class="method-permalink" href="#get_genotypes%3AArray%28Int32%29%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0413c384b863dcd5d95eab32c158d8ab45d905ad/src/hts/bcf/format.cr#L49" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_int(tag):Array(Int32)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_int</strong>(tag) : Array(Int32) | Nil
+
+        <a class="method-permalink" href="#get_int%28tag%29%3AArray%28Int32%29%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0413c384b863dcd5d95eab32c158d8ab45d905ad/src/hts/bcf/format.cr#L7" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_string(tag):Array(String)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_string</strong>(tag) : Array(String) | Nil
+
+        <a class="method-permalink" href="#get_string%28tag%29%3AArray%28String%29%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Get raw encoded GT values from FORMAT/GT.</p>
-<p>The returned array is the flat htslib representation. Callers that want
-per-sample decoding should interpret it using the GT helpers in LibHTS2.
-Raw sentinel values are preserved.</p>
+          <p>Returns one String per sample. FORMAT/GT is decoded into genotype strings.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/format.cr#L60" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_int(tag)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_int</strong>(tag)
-
-        <a class="method-permalink" href="#get_int%28tag%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/format.cr#L7" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_string(tag)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_string</strong>(tag)
-
-        <a class="method-permalink" href="#get_string%28tag%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Get FORMAT string values. Returns one string per sample.</p>
-<p>Low-level contract:</p>
-<ul>
-<li>returns nil for undefined tags and tags absent in the record</li>
-<li>raises on type mismatch and internal htslib failures</li>
-<li>preserves raw character buffers except for GT, which is decoded via
-the dedicated genotype helpers</li>
-</ul>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/format.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/0413c384b863dcd5d95eab32c158d8ab45d905ad/src/hts/bcf/format.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
