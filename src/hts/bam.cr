@@ -12,6 +12,9 @@ require "./bam/mpileup"
 
 module HTS
   class Bam < Hts
+    class QueryError < Exception; end
+    class MissingIndexError < QueryError; end
+
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT
@@ -297,10 +300,11 @@ module HTS
 
     def query(region : String, copy = false, &)
       check_closed
-      raise "Index file is required to call the query method." unless index_loaded?
+      raise ArgumentError.new("region must not be empty") if region.empty?
+      ensure_query_index!
 
       qiter = LibHTS.sam_itr_querys(@idx, header, region)
-      raise "sam_itr_querys failed for region: #{region}" if qiter.null?
+      raise_region_query_error(region) if qiter.null?
       begin
         iterate_iterator(qiter, copy) { |r| yield r }
       ensure
@@ -312,9 +316,11 @@ module HTS
     # It preserves the same copy semantics as the single-region query.
     def query(regions : Array(String), copy = false, &)
       check_closed
-      raise "Index file is required to call the query method." unless index_loaded?
+      raise ArgumentError.new("regions must not be empty") if regions.empty?
+      ensure_query_index!
 
-      regions.each do |region|
+      regions.each_with_index do |region, index|
+        raise ArgumentError.new("regions[#{index}] must not be empty") if region.empty?
         query(region, copy) { |r| yield r }
       end
     end
@@ -331,12 +337,13 @@ module HTS
     # Numeric (tid) query: coordinates are 0-based half-open [beg, end)
     def query(tid : Int32, beg : Int64, end_pos : Int64, copy = false, &)
       check_closed
-      raise "Index file is required to call the query method." unless index_loaded?
-      raise "tid (#{tid}) must be >= 0" if tid < 0
-      raise "beg (#{beg}) must be <= end (#{end_pos})" if beg > end_pos
+      ensure_query_index!
+      validate_tid!(tid)
+      raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
+      raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
       qiter = LibHTS.sam_itr_queryi(@idx, tid, beg, end_pos)
-      raise "sam_itr_queryi failed (tid=#{tid}, beg=#{beg}, end=#{end_pos})" if qiter.null?
+      raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         iterate_iterator(qiter, copy) { |r| yield r }
       ensure
@@ -346,14 +353,37 @@ module HTS
 
     # Chromosome name + range using SAM-style 1-based inclusive coordinates.
     def query(chrom : String, beg : Int64, end_pos : Int64, copy = false, &)
-      raise "beg (#{beg}) must be >= 1" if beg < 1
-      raise "beg (#{beg}) must be <= end (#{end_pos})" if beg > end_pos
+      raise ArgumentError.new("chrom must not be empty") if chrom.empty?
+      raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
+      raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
       tid = @header.get_tid(chrom)
-      raise "Unknown reference name: #{chrom}" if tid < 0
+      raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
       # Convert 1-based inclusive [beg, end] to 0-based half-open [beg - 1, end).
       query(tid, beg - 1, end_pos, copy) { |r| yield r }
+    end
+
+    private def ensure_query_index! : Nil
+      return if index_loaded?
+
+      raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BAM/CRAM with a matching index or build one first.")
+    end
+
+    private def validate_tid!(tid : Int32) : Nil
+      target_count = header.target_count
+      if tid < 0 || tid >= target_count
+        raise ArgumentError.new("tid (#{tid}) must be within 0...#{target_count}")
+      end
+    end
+
+    private def raise_region_query_error(region : String) : NoReturn
+      raise QueryError.new("Failed to create an iterator for region #{region.inspect} in #{@file_name}. Check the region syntax, that the reference exists in the header, and that the index matches the file.")
+    end
+
+    private def raise_coordinate_query_error(tid : Int32, beg : Int64, end_pos : Int64) : NoReturn
+      ref_name = header.target_name(tid)
+      raise QueryError.new("Failed to create an iterator for #{ref_name}:#{beg}-#{end_pos} (tid=#{tid}, 0-based half-open) in #{@file_name}. The index may be stale or incompatible with the file.")
     end
 
     private def iterate_iterator(qiter, copy, & : HTS::Bam::Record ->)

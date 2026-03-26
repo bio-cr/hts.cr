@@ -201,4 +201,35 @@ class BamTest < Minitest::Test
   def test_initialize_no_file_bam
     assert_raises { HTS::Bam.new("/tmp/no_such_file") }
   end
+
+  def test_query_requires_index_for_sam
+    ex = assert_raises(HTS::Bam::MissingIndexError) do
+      sam_string.query("chr1:1-10") { |_| }
+    end
+    assert_includes ex.message, path_sam_string
+    assert_includes ex.message, "Query requires an index"
+  end
+
+  def test_query_invalid_region_message_bam
+    ex = assert_raises(HTS::Bam::QueryError) do
+      bam_string.query("chrX:1-10") { |_| }
+    end
+    assert_includes ex.message, "chrX:1-10"
+    assert_includes ex.message, path_bam_string
+  end
+
+  def test_query_invalid_tid_message_bam
+    ex = assert_raises(ArgumentError) do
+      bam_string.query(-1, 0_i64, 10_i64) { |_| }
+    end
+    assert_includes ex.message, "tid (-1)"
+  end
+
+  def test_query_invalid_chrom_message_bam
+    ex = assert_raises(ArgumentError) do
+      bam_string.query("chrX", 1_i64, 10_i64) { |_| }
+    end
+    assert_includes ex.message, path_bam_string
+    assert_includes ex.message, "Unknown reference name"
+  end
 end
