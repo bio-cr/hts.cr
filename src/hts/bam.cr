@@ -295,7 +295,7 @@ module HTS
       end
     end
 
-    def query(region, copy = false, &)
+    def query(region : String, copy = false, &)
       check_closed
       raise "Index file is required to call the query method." unless index_loaded?
 
@@ -305,6 +305,17 @@ module HTS
         iterate_iterator(qiter, copy) { |r| yield r }
       ensure
         LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    # Multi-region query. This currently uses sequential single-region iterators.
+    # It preserves the same copy semantics as the single-region query.
+    def query(regions : Array(String), copy = false, &)
+      check_closed
+      raise "Index file is required to call the query method." unless index_loaded?
+
+      regions.each do |region|
+        query(region, copy) { |r| yield r }
       end
     end
 
@@ -333,14 +344,19 @@ module HTS
       end
     end
 
-    # Chromosome name + range (0-based half-open [beg, end))
+    # Chromosome name + range using SAM-style 1-based inclusive coordinates.
     def query(chrom : String, beg : Int64, end_pos : Int64, copy = false, &)
+      raise "beg (#{beg}) must be >= 1" if beg < 1
+      raise "beg (#{beg}) must be <= end (#{end_pos})" if beg > end_pos
+
       tid = @header.get_tid(chrom)
       raise "Unknown reference name: #{chrom}" if tid < 0
-      query(tid, beg, end_pos, copy) { |r| yield r }
+
+      # Convert 1-based inclusive [beg, end] to 0-based half-open [beg - 1, end).
+      query(tid, beg - 1, end_pos, copy) { |r| yield r }
     end
 
-    private def iterate_iterator(qiter, copy, &block : HTS::Bam::Record ->)
+    private def iterate_iterator(qiter, copy, & : HTS::Bam::Record ->)
       if copy
         bam1 = LibHTS.bam_init1
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)

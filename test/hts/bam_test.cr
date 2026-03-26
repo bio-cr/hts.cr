@@ -137,8 +137,34 @@ class BamTest < Minitest::Test
         # New: chromosome name + numeric coordinates variant
         def test_query_chrom_numeric_{{ft}}
           arr = [] of Int64
-            # 1-based inclusive 350-700 -> 0-based half-open [349,700)
-          {{ft}}.query("chr2", 349_i64, 700_i64) do |aln|
+          # chr2, 350-700 uses 1-based inclusive coordinates like region strings.
+          {{ft}}.query("chr2", 350_i64, 700_i64) do |aln|
+            arr << aln.pos
+          end
+          assert_equal [341, 658], arr
+        end
+
+        def test_query_multi_regions_{{ft}}
+          arr = [] of Int64
+          {{ft}}.query(["chr1:100-200", "chr2:350-700"]) do |aln|
+            arr << aln.pos
+          end
+          assert_includes arr, 341
+          assert_includes arr, 658
+        end
+
+        def test_query_multi_regions_copy_{{ft}}
+          arr = [] of Int64
+          {{ft}}.query(["chr1:100-200", "chr2:350-700"], copy: true) do |aln|
+            arr << aln.pos
+          end
+          assert_includes arr, 341
+          assert_includes arr, 658
+        end
+
+        def test_query_single_region_array_{{ft}}
+          arr = [] of Int64
+          {{ft}}.query(["chr2:350-700"]) do |aln|
             arr << aln.pos
           end
           assert_equal [341, 658], arr
