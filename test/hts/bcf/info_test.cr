@@ -27,4 +27,13 @@ class BcfInfoTest < Minitest::Test
     tag = "DP"
     assert_equal([31], info[tag])
   end
+
+  def test_low_level_contract
+    assert_nil info.get_int("NO_SUCH_TAG")
+    assert_nil info.get_string("NO_SUCH_TAG")
+    assert_nil info.get_flag("NO_SUCH_TAG")
+
+    ex = assert_raises(Exception) { info.get_float("DP") }
+    assert_equal "Tag DP is not float INFO field", ex.message
+  end
 end

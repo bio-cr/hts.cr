@@ -13,6 +13,12 @@ module HTS
       end
 
       # Get FORMAT string values. Returns one string per sample.
+      #
+      # Low-level contract:
+      # - returns nil for undefined tags and tags absent in the record
+      # - raises on type mismatch and internal htslib failures
+      # - preserves raw character buffers except for GT, which is decoded via
+      #   the dedicated genotype helpers
       def get_string(tag)
         return decode_genotype_strings if tag == "GT"
 
@@ -20,12 +26,13 @@ module HTS
         dst = Pointer(Void).null
         hdr = @record.header
         rec = @record
-        fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
-
-        return nil if fmt.null?
 
         rc = LibHTS2.bcf_get_format_char(hdr, rec, tag, pointerof(dst), pointerof(ndst))
-        return nil if rc < 0
+        rc = normalize_format_rc(rc, tag, "string")
+        return nil unless rc
+
+        fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
+        raise "Failed to inspect FORMAT/#{tag}" if fmt.null?
 
         begin
           bytes_per_sample = fmt.value.n
@@ -49,6 +56,7 @@ module HTS
       #
       # The returned array is the flat htslib representation. Callers that want
       # per-sample decoding should interpret it using the GT helpers in LibHTS2.
+      # Raw sentinel values are preserved.
       def get_genotypes
         ndst = 0
         dst = Pointer(Void).null
@@ -56,7 +64,8 @@ module HTS
         rec = @record
 
         rc = LibHTS2.bcf_get_genotypes(hdr, rec, pointerof(dst), pointerof(ndst))
-        return nil if rc < 0
+        rc = normalize_format_rc(rc, "GT", "genotype")
+        return nil unless rc
 
         begin
           res = dst.as(Pointer(Int32))
@@ -73,13 +82,28 @@ module HTS
         rec = @record
 
         rc = LibHTS.bcf_get_format_values(hdr, rec, tag, pointerof(dst), pointerof(ndst), type)
-        return nil if rc < 0
+        expected_type = value_type == Float32 ? "float" : "integer"
+        rc = normalize_format_rc(rc, tag, expected_type)
+        return nil unless rc
 
         begin
           res = dst.as(Pointer(T))
           Array(T).new(rc) { |i| res[i] }
         ensure
           LibHTS.hts_free(dst) unless dst.null?
+        end
+      end
+
+      private def normalize_format_rc(rc : Int32, tag : String, expected_type : String) : Int32?
+        case rc
+        when -1, -3
+          nil
+        when -2
+          raise "Tag #{tag} is not #{expected_type} FORMAT field"
+        when -4
+          raise "Failed to read FORMAT/#{tag}"
+        else
+          rc
         end
       end
 
