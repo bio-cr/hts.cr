@@ -268,7 +268,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L3" target="_blank">
         hts/bcf/info.cr
       </a>
     
@@ -424,7 +424,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -469,7 +469,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -484,13 +484,19 @@
       
         <div class="doc">
           
-          <p>Get INFO flag. Returns true/false, or nil if tag undefined.</p>
+          <p>Get INFO flag.</p>
+<p>Low-level contract:</p>
+<ul>
+<li>returns nil for undefined tags</li>
+<li>returns false when the flag is defined but absent in the record</li>
+<li>raises on type mismatch and internal htslib failures</li>
+</ul>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L110" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L127" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -505,13 +511,15 @@
       
         <div class="doc">
           
-          <p>Get INFO float array. Returns nil if tag not present.</p>
+          <p>Get INFO float array. Returns nil if tag not present.
+Raw floating-point sentinels are preserved. Use get_float_opt to map
+missing values to nil.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -532,7 +540,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L99" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -548,12 +556,18 @@
         <div class="doc">
           
           <p>Get INFO int32 array. Returns nil if tag not present.</p>
+<p>Low-level contract:</p>
+<ul>
+<li>returns nil for undefined tags and tags absent in the record</li>
+<li>raises on type mismatch and internal htslib failures</li>
+<li>preserves raw sentinel values; use *_opt helpers to map missing values</li>
+</ul>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L36" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -574,7 +588,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -596,7 +610,7 @@ Missing is encoded in BCF as INT32_MIN; vector_end should not appear in INFO but
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L72" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -617,7 +631,7 @@ Missing is encoded in BCF as INT32_MIN; vector_end should not appear in INFO but
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/9ed3f0ab8707b30c1e2f05d5db46483eb012d5ff/src/hts/bcf/info.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d4fa894db0ab68d3dd842313fd383ec63838c66/src/hts/bcf/info.cr#L106" target="_blank">View source</a>]
         
       </div>
     </div>
