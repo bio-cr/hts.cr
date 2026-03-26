@@ -11,7 +11,12 @@ class BcfInfoTest < Minitest::Test
       header = HTS::Bcf::Header.new
       header.set_version("VCFv4.3")
       header.append("##contig=<ID=1,length=5000000000>")
+      header.append("##INFO=<ID=ABSI,Number=1,Type=Integer,Description=\"defined but absent integer\">")
+      header.append("##INFO=<ID=ABSF,Number=1,Type=Float,Description=\"defined but absent float\">")
+      header.append("##INFO=<ID=ABSS,Number=1,Type=String,Description=\"defined but absent string\">")
+      header.append("##INFO=<ID=FLAG,Number=0,Type=Flag,Description=\"defined but absent flag\">")
       header.append("##INFO=<ID=MIX,Number=2,Type=Integer,Description=\"integer with missing\">")
+      header.append("##INFO=<ID=FOPT,Number=2,Type=Float,Description=\"float with missing\">")
       header.append("##INFO=<ID=CH,Number=1,Type=Character,Description=\"character test\">")
       header.sync
 
@@ -28,6 +33,10 @@ class BcfInfoTest < Minitest::Test
         mix = [42, Int32::MIN]
         rc = HTS::LibHTS2.bcf_update_info_int32(header, record, "MIX", mix.to_unsafe, mix.size)
         raise "bcf_update_info_int32 failed for MIX (rc=#{rc})" if rc < 0
+
+        floats = [1.5_f32, HTS::LibHTS2.bcf_float_missing]
+        rc = HTS::LibHTS2.bcf_update_info_float(header, record, "FOPT", floats.to_unsafe, floats.size)
+        raise "bcf_update_info_float failed for FOPT (rc=#{rc})" if rc < 0
 
         rc = HTS::LibHTS2.bcf_update_info_string(header, record, "CH", "Q")
         raise "bcf_update_info_string failed for CH (rc=#{rc})" if rc < 0
@@ -63,8 +72,15 @@ class BcfInfoTest < Minitest::Test
       HTS::Bcf.open(path) do |bcf|
         record_info = bcf.first.info
 
+        assert_equal([42, Int32::MIN], record_info.get_int("MIX"))
+        assert_equal([42, nil], record_info.get_int_opt("MIX"))
         assert_equal([42_i64, Int64::MIN], record_info.get_int64("MIX"))
         assert_equal([42_i64, nil], record_info.get_int64_opt("MIX"))
+        raw_float = record_info.get_float("FOPT") || raise "FOPT should be present"
+        assert_equal(2, raw_float.size)
+        assert_equal(1.5_f32, raw_float[0])
+        assert_equal(1, HTS::LibHTS2.bcf_float_is_missing(raw_float[1]))
+        assert_equal([1.5_f32, nil], record_info.get_float_opt("FOPT"))
         assert_equal("Q", record_info.get_string("CH"))
         assert_equal(:string, bcf.header.info_type("CH"))
         assert_equal("Q", record_info["CH"])
@@ -89,6 +105,19 @@ class BcfInfoTest < Minitest::Test
 
     ex = assert_raises(Exception) { info.get_float("DP") }
     assert_equal "Tag DP is not float INFO field", ex.message
+  end
+
+  def test_defined_but_absent_tags
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record_info = bcf.first.info
+
+        assert_nil record_info.get_int("ABSI")
+        assert_nil record_info.get_float("ABSF")
+        assert_nil record_info.get_string("ABSS")
+        assert_equal(false, record_info.get_flag("FLAG"))
+      end
+    end
   end
 
   def test_numeric_sentinel_helpers
