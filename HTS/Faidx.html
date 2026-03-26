@@ -268,7 +268,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L5" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L5" target="_blank">
         hts/faidx.cr
       </a>
     
@@ -291,7 +291,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28file_name%3APath%7CString%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String)</a>
+        <a href="#new%28file_name%3APath%7CString%2C%2A%2Cformat%3ASymbol%3D%3Aauto%2Cauto_build%3ABool%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, *, format : Symbol = <span class="n">:auto</span>, auto_build : Bool = <span class="n">true</span>)</a>
         
       </li>
     
@@ -310,12 +310,17 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#open%28file_name%3APath%7CString%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String)</a>
+        <a href="#build_index%28file_name%3APath%7CString%2Cfai_path%3AString%7CNil%3Dnil%2Cgzi_path%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.build_index</strong>(file_name : Path | String, fai_path : String | Nil = <span class="n">nil</span>, gzi_path : String | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28file_name%3APath%7CString%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, &)</a>
+        <a href="#open%28file_name%3APath%7CString%2C%2A%2Cformat%3ASymbol%3D%3Aauto%2Cauto_build%3ABool%3Dtrue%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, *, format : Symbol = <span class="n">:auto</span>, auto_build : Bool = <span class="n">true</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#open%28file_name%3APath%7CString%2C%2A%2Cformat%3ASymbol%3D%3Aauto%2Cauto_build%3ABool%3Dtrue%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, *, format : Symbol = <span class="n">:auto</span>, auto_build : Bool = <span class="n">true</span>, &)</a>
         
       </li>
     
@@ -336,17 +341,37 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#chrom_names-instance-method" class="signature"><strong>#chrom_names</strong></a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#chrom_size%28chrom%3AString%7CSymbol%29-instance-method" class="signature"><strong>#chrom_size</strong>(chrom : String | Symbol)</a>
+        <a href="#build_index%28fai_path%3AString%7CNil%3Dnil%2Cgzi_path%3AString%7CNil%3Dnil%29-instance-method" class="signature"><strong>#build_index</strong>(fai_path : String | Nil = <span class="n">nil</span>, gzi_path : String | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
       <li class="entry-summary">
         <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#closed%3F%3ABool-instance-method" class="signature"><strong>#closed?</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fetch_qual%28name%3AString%7CSymbol%2Cstart%3AInt%2Cstop%3AInt%29-instance-method" class="signature"><strong>#fetch_qual</strong>(name : String | Symbol, start : Int, stop : Int)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fetch_qual%28name%3AString%7CSymbol%29-instance-method" class="signature"><strong>#fetch_qual</strong>(name : String | Symbol)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fetch_seq%28name%3AString%7CSymbol%2Cstart%3AInt%2Cstop%3AInt%29-instance-method" class="signature"><strong>#fetch_seq</strong>(name : String | Symbol, start : Int, stop : Int)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fetch_seq%28name%3AString%7CSymbol%29-instance-method" class="signature"><strong>#fetch_seq</strong>(name : String | Symbol)</a>
         
       </li>
     
@@ -361,17 +386,27 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#format%3ASymbol-instance-method" class="signature"><strong>#format</strong> : Symbol</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#has_seq%3F%28name%3AString%7CSymbol%29-instance-method" class="signature"><strong>#has_seq?</strong>(name : String | Symbol)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#length-instance-method" class="signature"><strong>#length</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#seq%28name%3AString%7CSymbol%2Cstart%3ANumber%2Cstop%3ANumber%29-instance-method" class="signature"><strong>#seq</strong>(name : String | Symbol, start : Number, stop : Number)</a>
+        <a href="#names-instance-method" class="signature"><strong>#names</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#seq%28name%3AString%7CSymbol%29-instance-method" class="signature"><strong>#seq</strong>(name : String | Symbol)</a>
+        <a href="#seq_len%28name%3AString%7CSymbol%29-instance-method" class="signature"><strong>#seq_len</strong>(name : String | Symbol)</a>
         
       </li>
     
@@ -429,18 +464,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(file_name:Path|String)-class-method">
+    <div class="entry-detail" id="new(file_name:Path|String,*,format:Symbol=:auto,auto_build:Bool=true)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(file_name : Path | String)
+        def self.<strong>new</strong>(file_name : Path | String, *, format : Symbol = <span class="n">:auto</span>, auto_build : Bool = <span class="n">true</span>)
 
-        <a class="method-permalink" href="#new%28file_name%3APath%7CString%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2C%2A%2Cformat%3ASymbol%3D%3Aauto%2Cauto_build%3ABool%3Dtrue%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L34" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -457,34 +492,50 @@
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="open(file_name:Path|String)-class-method">
+    <div class="entry-detail" id="build_index(file_name:Path|String,fai_path:String|Nil=nil,gzi_path:String|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(file_name : Path | String)
+        def self.<strong>build_index</strong>(file_name : Path | String, fai_path : String | Nil = <span class="n">nil</span>, gzi_path : String | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#open%28file_name%3APath%7CString%29-class-method">#</a>
+        <a class="method-permalink" href="#build_index%28file_name%3APath%7CString%2Cfai_path%3AString%7CNil%3Dnil%2Cgzi_path%3AString%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(file_name:Path|String,&amp;)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,*,format:Symbol=:auto,auto_build:Bool=true)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(file_name : Path | String, &)
+        def self.<strong>open</strong>(file_name : Path | String, *, format : Symbol = <span class="n">:auto</span>, auto_build : Bool = <span class="n">true</span>)
 
-        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2C%2A%2Cformat%3ASymbol%3D%3Aauto%2Cauto_build%3ABool%3Dtrue%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="open(file_name:Path|String,*,format:Symbol=:auto,auto_build:Bool=true,&amp;)-class-method">
+      <div class="signature">
+        
+        def self.<strong>open</strong>(file_name : Path | String, *, format : Symbol = <span class="n">:auto</span>, auto_build : Bool = <span class="n">true</span>, &)
+
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2C%2A%2Cformat%3ASymbol%3D%3Aauto%2Cauto_build%3ABool%3Dtrue%2C%26%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -503,34 +554,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="chrom_names-instance-method">
+    <div class="entry-detail" id="build_index(fai_path:String|Nil=nil,gzi_path:String|Nil=nil)-instance-method">
       <div class="signature">
         
-        def <strong>chrom_names</strong>
+        def <strong>build_index</strong>(fai_path : String | Nil = <span class="n">nil</span>, gzi_path : String | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#chrom_names-instance-method">#</a>
+        <a class="method-permalink" href="#build_index%28fai_path%3AString%7CNil%3Dnil%2Cgzi_path%3AString%7CNil%3Dnil%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L57" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="chrom_size(chrom:String|Symbol)-instance-method">
-      <div class="signature">
-        
-        def <strong>chrom_size</strong>(chrom : String | Symbol)
-
-        <a class="method-permalink" href="#chrom_size%28chrom%3AString%7CSymbol%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L52" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -546,7 +581,87 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L46" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="closed?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>closed?</strong> : Bool
+
+        <a class="method-permalink" href="#closed%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fetch_qual(name:String|Symbol,start:Int,stop:Int)-instance-method">
+      <div class="signature">
+        
+        def <strong>fetch_qual</strong>(name : String | Symbol, start : Int, stop : Int)
+
+        <a class="method-permalink" href="#fetch_qual%28name%3AString%7CSymbol%2Cstart%3AInt%2Cstop%3AInt%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L109" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fetch_qual(name:String|Symbol)-instance-method">
+      <div class="signature">
+        
+        def <strong>fetch_qual</strong>(name : String | Symbol)
+
+        <a class="method-permalink" href="#fetch_qual%28name%3AString%7CSymbol%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L101" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fetch_seq(name:String|Symbol,start:Int,stop:Int)-instance-method">
+      <div class="signature">
+        
+        def <strong>fetch_seq</strong>(name : String | Symbol, start : Int, stop : Int)
+
+        <a class="method-permalink" href="#fetch_seq%28name%3AString%7CSymbol%2Cstart%3AInt%2Cstop%3AInt%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L97" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fetch_seq(name:String|Symbol)-instance-method">
+      <div class="signature">
+        
+        def <strong>fetch_seq</strong>(name : String | Symbol)
+
+        <a class="method-permalink" href="#fetch_seq%28name%3AString%7CSymbol%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L90" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -562,7 +677,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -578,7 +693,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L119" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="format:Symbol-instance-method">
+      <div class="signature">
+        
+        def <strong>format</strong> : Symbol
+
+        <a class="method-permalink" href="#format%3ASymbol-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="has_seq?(name:String|Symbol)-instance-method">
+      <div class="signature">
+        
+        def <strong>has_seq?</strong>(name : String | Symbol)
+
+        <a class="method-permalink" href="#has_seq%3F%28name%3AString%7CSymbol%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L73" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -594,39 +741,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L44" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="seq(name:String|Symbol,start:Number,stop:Number)-instance-method">
+    <div class="entry-detail" id="names-instance-method">
       <div class="signature">
         
-        def <strong>seq</strong>(name : String | Symbol, start : Number, stop : Number)
+        def <strong>names</strong>
 
-        <a class="method-permalink" href="#seq%28name%3AString%7CSymbol%2Cstart%3ANumber%2Cstop%3ANumber%29-instance-method">#</a>
+        <a class="method-permalink" href="#names-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L66" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="seq(name:String|Symbol)-instance-method">
+    <div class="entry-detail" id="seq_len(name:String|Symbol)-instance-method">
       <div class="signature">
         
-        def <strong>seq</strong>(name : String | Symbol)
+        def <strong>seq_len</strong>(name : String | Symbol)
 
-        <a class="method-permalink" href="#seq%28name%3AString%7CSymbol%29-instance-method">#</a>
+        <a class="method-permalink" href="#seq_len%28name%3AString%7CSymbol%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L75" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -642,7 +789,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -658,7 +805,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/ed967928704ff6dfd315ddb62b6b2db0e269bfec/src/hts/faidx.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/b4ed7aa4a71b6d98733c788b789eea6c0f6bbec3/src/hts/faidx.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>
