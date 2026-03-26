@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::Mpileup - hts develop</title>
+  <title>HTS::Tabix::QueryError - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -62,7 +62,7 @@
       
         <ul>
   
-  <li class="parent open current" data-id="hts/HTS/Bam" data-name="hts::bam">
+  <li class="parent " data-id="hts/HTS/Bam" data-name="hts::bam">
       <a href="../../HTS/Bam.html">Bam</a>
       
         <ul>
@@ -117,7 +117,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
+  <li class="parent " data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
       <a href="../../HTS/Bam/Mpileup.html">Mpileup</a>
       
         <ul>
@@ -232,7 +232,7 @@
       
     </li>
   
-  <li class="parent " data-id="hts/HTS/Tabix" data-name="hts::tabix">
+  <li class="parent open current" data-id="hts/HTS/Tabix" data-name="hts::tabix">
       <a href="../../HTS/Tabix.html">Tabix</a>
       
         <ul>
@@ -242,7 +242,7 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Tabix/QueryError" data-name="hts::tabix::queryerror">
+  <li class=" current" data-id="hts/HTS/Tabix/QueryError" data-name="hts::tabix::queryerror">
       <a href="../../HTS/Tabix/QueryError.html">QueryError</a>
       
     </li>
@@ -268,27 +268,19 @@
 
   <span class="kind">
     class
-  </span> HTS::<wbr>Bam::<wbr>Mpileup
+  </span> HTS::<wbr>Tabix::<wbr>QueryError
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bam/Mpileup.html">HTS::Bam::Mpileup</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Tabix/QueryError.html">HTS::Tabix::QueryError</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
 
-  <h2>
-    <a id="overview" class="anchor" href="#overview">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Overview
-  </h2>
 
-  <p>High-level mpileup iterator over multiple BAM/CRAM inputs.
-Yields an Array of Pileup::Column (one per input) for each position.</p>
+
+
 
 
 
@@ -297,22 +289,18 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
 
 
   <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
+    <a id="direct-known-subclasses" class="anchor" href="#direct-known-subclasses">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Included Modules
+    Direct Known Subclasses
   </h2>
   <ul class="other-types-list">
     
-      <li class="other-type">Enumerable(Array(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>))</li>
+      <li class="other-type"><a href="../../HTS/Tabix/MissingIndexError.html">HTS::Tabix::MissingIndexError</a></li>
     
   </ul>
-
-
-
-
 
 
 
@@ -329,8 +317,8 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/bam/mpileup.cr#L5" target="_blank">
-        hts/bam/mpileup.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/tabix.cr#L8" target="_blank">
+        hts/tabix.cr
       </a>
     
     <br/>
@@ -341,79 +329,12 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
 
 
   
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>)</a>
-        
-          <div class="summary"><p>Minimal constructor: accept Array(Bam).</p></div>
-        
-      </li>
-    
-  </ul>
-
-
-  
-  <h2>
-    <a id="class-method-summary" class="anchor" href="#class-method-summary">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Class Method Summary
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, &)</a>
-        
-          <div class="summary"><p>Open an Mpileup iterator with block (RAII style)</p></div>
-        
-      </li>
-    
-  </ul>
-
 
   
 
   
-  <h2>
-    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Summary
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#close%3ANil-instance-method" class="signature"><strong>#close</strong> : Nil</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#each%28%26block%3AArray%28HTS%3A%3ABam%3A%3APileup%3A%3AColumn%29-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(&block : Array(HTS::Bam::Pileup::Column) -> ) : Nil</a>
-        
-          <div class="summary"><p>Iterate and yield per-position columns array (aligned by tid,pos across inputs)</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
-        
-      </li>
-    
-  </ul>
 
+  
 
 
   <div class="methods-inherited">
@@ -460,137 +381,12 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
   </div>
 
   
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false)-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>)
-
-        <a class="method-permalink" href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%29-class-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Minimal constructor: accept Array(Bam). (String inputs or regions can be added later.)</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/bam/mpileup.cr#L39" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
-
-  
-  <h2>
-    <a id="class-method-detail" class="anchor" href="#class-method-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Class Method Detail
-  </h2>
-  
-    <div class="entry-detail" id="open(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,&amp;)-class-method">
-      <div class="signature">
-        
-        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, &)
-
-        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%26%29-class-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Open an Mpileup iterator with block (RAII style)</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/bam/mpileup.cr#L29" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
   
 
   
-  <h2>
-    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Detail
-  </h2>
-  
-    <div class="entry-detail" id="close:Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>close</strong> : Nil
 
-        <a class="method-permalink" href="#close%3ANil-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/bam/mpileup.cr#L131" target="_blank">View source</a>]
-        
-      </div>
-    </div>
   
-    <div class="entry-detail" id="each(&amp;block:Array(HTS::Bam::Pileup::Column)-&gt;):Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>each</strong>(&block : Array(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>) -> ) : Nil
-
-        <a class="method-permalink" href="#each%28%26block%3AArray%28HTS%3A%3ABam%3A%3APileup%3A%3AColumn%29-%3E%29%3ANil-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Iterate and yield per-position columns array (aligned by tid,pos across inputs)</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/bam/mpileup.cr#L90" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="finalize-instance-method">
-      <div class="signature">
-        
-        def <strong>finalize</strong>
-
-        <a class="method-permalink" href="#finalize-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0e60d82452bdad051e1301ffe843a24e425ef392/src/hts/bam/mpileup.cr#L140" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
 
 </div>
