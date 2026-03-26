@@ -18,4 +18,13 @@ class BcfInfoTest < Minitest::Test
     assert_equal([0.673439_f32], info.get_float("VDB"))
     assert_equal([0, 0, 14, 17], info.get_int("DP4"))
   end
+
+  def test_bracket_access
+    assert_equal([31], info["DP"])
+    assert_equal([0.673439_f32], info["VDB"])
+    assert_equal(false, info["INDEL"])
+
+    tag = "DP"
+    assert_equal([31], info[tag])
+  end
 end

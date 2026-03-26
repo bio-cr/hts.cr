@@ -4,16 +4,40 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
+      # Dynamic access using the declared INFO type from the header.
+      #
+      # Returns one of:
+      # - Array(Int32)
+      # - Array(Float32)
+      # - String
+      # - Bool
+      # - nil
+      def [](tag : String)
+        case @record.header.info_type(tag)
+        when :flag
+          get_flag(tag)
+        when :int
+          get_int(tag)
+        when :float
+          get_float(tag)
+        when :string
+          get_string(tag)
+        else
+          nil
+        end
+      end
+
       # Get INFO int32 array. Returns nil if tag not present.
       def get_int(tag)
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        return nil if LibHTS2.bcf_get_info_int32(hdr, r, tag, pointerof(dst), pointerof(ndst)) < 0
+        rc = LibHTS2.bcf_get_info_int32(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        return nil if rc < 0
         begin
           res = dst.as(Pointer(Int32))
-          Array(Int32).new(ndst) { |i| res[i] }
+          Array(Int32).new(rc) { |i| res[i] }
         ensure
           LibHTS.hts_free(dst) unless dst.null?
         end
@@ -30,7 +54,7 @@ module HTS
         return nil if rc < 0
         begin
           res = dst.as(Pointer(Int64))
-          Array(Int64).new(ndst) { |i| res[i] }
+          Array(Int64).new(rc) { |i| res[i] }
         ensure
           LibHTS.hts_free(dst) unless dst.null?
         end
@@ -51,10 +75,11 @@ module HTS
         dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        return nil if LibHTS2.bcf_get_info_float(hdr, r, tag, pointerof(dst), pointerof(ndst)) < 0
+        rc = LibHTS2.bcf_get_info_float(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        return nil if rc < 0
         begin
           res = dst.as(Pointer(Float32))
-          Array(Float32).new(ndst) { |i| res[i] }
+          Array(Float32).new(rc) { |i| res[i] }
         ensure
           LibHTS.hts_free(dst) unless dst.null?
         end
@@ -92,8 +117,12 @@ module HTS
           val = true
         when 0
           val = false
+        when -3
+          val = false
         when -1
           val = nil
+        when -2
+          raise "Tag #{tag} is not a flag INFO field"
         else
           raise "unknown return value"
         end

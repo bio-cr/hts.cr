@@ -30,6 +30,14 @@ module HTS
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
 
+      # Returns the declared INFO tag type from the header.
+      #
+      # This is used by the dynamic `info["TAG"]` API to route lookups to the
+      # appropriate typed getter.
+      def info_type(tag : String)
+        tag_type(tag, LibHTS2::BCF_HL_INFO)
+      end
+
       def samples
         # bcf_hdr_id2name is macro function
         Array.new(nsamples) do |i|
@@ -77,6 +85,30 @@ module HTS
 
       def finalize
         LibHTS.bcf_hdr_destroy(@bcf_hdr) unless @bcf_hdr.null?
+      end
+
+      private def tag_type(tag : String, header_line_type : Int32)
+        id = LibHTS.bcf_hdr_id2int(@bcf_hdr, LibHTS2::BCF_DT_ID, tag)
+        return nil if id < 0
+
+        entry = Pointer(LibHTS::BcfIdpairT).new(
+          (@bcf_hdr.value.id[LibHTS2::BCF_DT_ID]).address +
+          sizeof(LibHTS::BcfIdpairT) * id
+        )
+        descriptor = entry.value.val.value.info[header_line_type]
+
+        case ((descriptor >> 4) & 0xf).to_i
+        when LibHTS2::BCF_HT_FLAG
+          :flag
+        when LibHTS2::BCF_HT_INT
+          :int
+        when LibHTS2::BCF_HT_REAL
+          :float
+        when LibHTS2::BCF_HT_STR
+          :string
+        else
+          nil
+        end
       end
 
       private def bcf_hl_type_to_int(bcf_hl_type)
