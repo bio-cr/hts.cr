@@ -91,6 +91,15 @@ class TabixTest < Minitest::Test
     end
   end
 
+  # htslib parser accepts commas in region coordinates.
+  def test_query_string_with_commas
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      results = [] of Array(String)
+      tbx.query("poo:1-3,00") { |f| results << f }
+      assert_equal 3, results.size
+    end
+  end
+
   # whole-chromosome query "poo" → all 5 data records
   def test_query_string_whole_chromosome
     HTS::Tabix.open(@vcf_gz) do |tbx|

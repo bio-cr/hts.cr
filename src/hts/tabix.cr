@@ -6,6 +6,9 @@ require "./bgzf"
 module HTS
   class Tabix < Bgzf
     @idx : LibHTS::TbxT*
+    @@tbx_name2id = ->(tbx : Void*, ss : LibC::Char*) : LibC::Int {
+      LibHTS.tbx_name2id(tbx.as(LibHTS::TbxT*), ss)
+    }
 
     getter :file_name
     getter :mode
@@ -102,17 +105,27 @@ module HTS
       raise "Index file is required to call seqnames." unless index_loaded?
       n = 0
       names = LibHTS.tbx_seqnames(@idx, pointerof(n))
-      Array(String).new(n) { |i| String.new(names[i]) }
+      begin
+        Array(String).new(n) { |i| String.new(names[i]) }
+      ensure
+        LibC.free(names.as(Void*)) unless names.null?
+      end
     end
 
-    # Query by region string. Follows htslib convention: "chr:start-end" (1-based inclusive).
+    # Query by region string using htslib's native parser.
     # Yields each matching record as an Array(String) of tab-split fields.
     def query(region : String, &)
       check_closed
       raise "Index file is required to call the query method." unless index_loaded?
-      tid, beg, end_pos = parse_region(region)
-      raise "Unknown reference name in region: #{region}" if tid < 0
-      query_by_coord(tid, beg, end_pos) { |fields| yield fields }
+      readrec = ->LibHTS.tbx_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
+      itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
+      qiter = LibHTS.hts_itr_querys(@idx.value.idx, region, @@tbx_name2id, @idx.as(Void*), itr_query, readrec)
+      raise "Failed to query region: #{region}" if qiter.null?
+      begin
+        query_yield(qiter) { |fields| yield fields }
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
+      end
       self
     end
 
@@ -138,25 +151,6 @@ module HTS
 
     def finalize
       close unless closed?
-    end
-
-    private def parse_region(region : String) : {Int32, Int64, Int64}
-      if colon_idx = region.index(':')
-        name = region[0...colon_idx]
-        rest = region[(colon_idx + 1)..]
-        tid = name2id(name)
-        if hyphen_idx = rest.index('-')
-          beg = rest[0...hyphen_idx].delete(',').to_i64 - 1
-          end_pos = rest[(hyphen_idx + 1)..].delete(',').to_i64
-        else
-          beg = rest.delete(',').to_i64 - 1
-          end_pos = beg + 1
-        end
-        {tid, beg, end_pos}
-      else
-        tid = name2id(region)
-        {tid, 0_i64, Int64::MAX >> 1}
-      end
     end
 
     private def query_by_coord(tid : Int32, beg : Int64, end_pos : Int64, &)
