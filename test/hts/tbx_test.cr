@@ -36,7 +36,13 @@ class TabixTest < Minitest::Test
     File.delete(tbi) if File.exists?(tbi)
   end
 
-  # ── open / close ──────────────────────────────────────────────────────────
+  def without_index(&)
+    tbi = "#{@vcf_gz}.tbi"
+    File.delete(tbi) if File.exists?(tbi)
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      yield tbx
+    end
+  end
 
   def test_open_and_close
     HTS::Tabix.open(@vcf_gz) do |tbx|
@@ -49,8 +55,6 @@ class TabixTest < Minitest::Test
       assert tbx.index_loaded?
     end
   end
-
-  # ── index metadata ────────────────────────────────────────────────────────
 
   def test_seqnames
     HTS::Tabix.open(@vcf_gz) do |tbx|
@@ -70,7 +74,21 @@ class TabixTest < Minitest::Test
     end
   end
 
-  # ── string-based query ────────────────────────────────────────────────────
+  def test_seqnames_requires_index
+    without_index do |tbx|
+      ex = assert_raises(HTS::Tabix::MissingIndexError) { tbx.seqnames }
+      assert_includes ex.message, @vcf_gz
+      assert_includes ex.message, "seqnames requires an index"
+    end
+  end
+
+  def test_name2id_requires_index
+    without_index do |tbx|
+      ex = assert_raises(HTS::Tabix::MissingIndexError) { tbx.name2id("poo") }
+      assert_includes ex.message, @vcf_gz
+      assert_includes ex.message, "name2id requires an index"
+    end
+  end
 
   # "poo:150-250" (1-based inclusive) → POS=200 only
   def test_query_string_single_record
@@ -109,8 +127,6 @@ class TabixTest < Minitest::Test
     end
   end
 
-  # ── numeric query (0-based half-open) ────────────────────────────────────
-
   # query("poo", 149, 201) → 0-based [149,201) covers 1-based POS=200 only
   def test_query_numeric_single_record
     HTS::Tabix.open(@vcf_gz) do |tbx|
@@ -130,8 +146,6 @@ class TabixTest < Minitest::Test
     end
   end
 
-  # ── field content ─────────────────────────────────────────────────────────
-
   def test_query_fields
     HTS::Tabix.open(@vcf_gz) do |tbx|
       tbx.query("poo:100-100") do |fields|
@@ -140,6 +154,45 @@ class TabixTest < Minitest::Test
         assert_equal "A", fields[3]
         assert_equal "T", fields[4]
       end
+    end
+  end
+
+  def test_query_requires_index
+    without_index do |tbx|
+      ex = assert_raises(HTS::Tabix::MissingIndexError) do
+        tbx.query("poo:100-100") { |_| }
+      end
+      assert_includes ex.message, @vcf_gz
+      assert_includes ex.message, "query requires an index"
+    end
+  end
+
+  def test_query_invalid_region_message
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      ex = assert_raises(HTS::Tabix::QueryError) do
+        tbx.query("unknown:1-10") { |_| }
+      end
+      assert_includes ex.message, "unknown:1-10"
+      assert_includes ex.message, @vcf_gz
+    end
+  end
+
+  def test_query_invalid_chrom_message
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      ex = assert_raises(ArgumentError) do
+        tbx.query("unknown", 0, 10) { |_| }
+      end
+      assert_includes ex.message, "Unknown reference name"
+      assert_includes ex.message, @vcf_gz
+    end
+  end
+
+  def test_query_negative_start
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      ex = assert_raises(ArgumentError) do
+        tbx.query("poo", -1, 10) { |_| }
+      end
+      assert_includes ex.message, "must be >= 0"
     end
   end
 

@@ -5,6 +5,9 @@ require "./bgzf"
 
 module HTS
   class Tabix < Bgzf
+    class QueryError < Exception; end
+    class MissingIndexError < QueryError; end
+
     @idx : LibHTS::TbxT*
     @@tbx_name2id = ->(tbx : Void*, ss : LibC::Char*) : LibC::Int {
       LibHTS.tbx_name2id(tbx.as(LibHTS::TbxT*), ss)
@@ -95,14 +98,15 @@ module HTS
     # Return the sequence (chromosome) ID for *name*, or -1 if not found.
     def name2id(name : String) : Int32
       check_closed
-      raise "Index file is required to call name2id." unless index_loaded?
+      raise ArgumentError.new("name must not be empty") if name.empty?
+      ensure_index!("name2id")
       LibHTS.tbx_name2id(@idx, name)
     end
 
     # Return the list of sequence names stored in the index.
     def seqnames : Array(String)
       check_closed
-      raise "Index file is required to call seqnames." unless index_loaded?
+      ensure_index!("seqnames")
       n = 0
       names = LibHTS.tbx_seqnames(@idx, pointerof(n))
       begin
@@ -116,11 +120,12 @@ module HTS
     # Yields each matching record as an Array(String) of tab-split fields.
     def query(region : String, &)
       check_closed
-      raise "Index file is required to call the query method." unless index_loaded?
+      raise ArgumentError.new("region must not be empty") if region.empty?
+      ensure_index!("query")
       readrec = ->LibHTS.tbx_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
       itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
       qiter = LibHTS.hts_itr_querys(@idx.value.idx, region, @@tbx_name2id, @idx.as(Void*), itr_query, readrec)
-      raise "Failed to query region: #{region}" if qiter.null?
+      raise_region_query_error(region) if qiter.null?
       begin
         query_yield(qiter) { |fields| yield fields }
       ensure
@@ -133,10 +138,12 @@ module HTS
     # Yields each matching record as an Array(String) of tab-split fields.
     def query(chrom : String, start : Int, end_ : Int, &)
       check_closed
-      raise "Index file is required to call the query method." unless index_loaded?
+      raise ArgumentError.new("chrom must not be empty") if chrom.empty?
+      ensure_index!("query")
       tid = name2id(chrom)
-      raise "Unknown reference name: #{chrom}" if tid < 0
-      raise "start (#{start}) must be <= end_ (#{end_})" if start > end_
+      raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
+      raise ArgumentError.new("start (#{start}) must be >= 0 for 0-based half-open coordinates") if start < 0
+      raise ArgumentError.new("start (#{start}) must be <= end_ (#{end_})") if start > end_
       query_by_coord(tid, start.to_i64, end_.to_i64) { |fields| yield fields }
       self
     end
@@ -156,12 +163,27 @@ module HTS
     private def query_by_coord(tid : Int32, beg : Int64, end_pos : Int64, &)
       readrec = ->LibHTS.tbx_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
       qiter = LibHTS.hts_itr_query(@idx.value.idx, tid, beg, end_pos, readrec)
-      raise "hts_itr_query failed (tid=#{tid}, beg=#{beg}, end=#{end_pos})" if qiter.null?
+      raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         query_yield(qiter) { |fields| yield fields }
       ensure
         LibHTS.hts_itr_destroy(qiter)
       end
+    end
+
+    private def ensure_index!(operation : String) : Nil
+      return if index_loaded?
+
+      raise MissingIndexError.new("#{operation} requires an index for #{@file_name}. Open the file with a matching .tbi/.csi index or build one first.")
+    end
+
+    private def raise_region_query_error(region : String) : NoReturn
+      raise QueryError.new("Failed to create an iterator for region #{region.inspect} in #{@file_name}. Check the region syntax, that the reference exists in the index, and that the index matches the file.")
+    end
+
+    private def raise_coordinate_query_error(tid : Int32, beg : Int64, end_pos : Int64) : NoReturn
+      ref_name = seqnames[tid]? || tid.to_s
+      raise QueryError.new("Failed to create an iterator for #{ref_name}:#{beg}-#{end_pos} (tid=#{tid}, 0-based half-open) in #{@file_name}. The index may be stale or incompatible with the file.")
     end
 
     private def query_yield(qiter, &)
