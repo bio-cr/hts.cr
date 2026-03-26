@@ -291,43 +291,33 @@ module HTS
     # each_mpos
 
     def each_aux_int(tag : String, &)
-      check_closed
-      each do |record|
+      each_aux_value do |record|
         yield record.aux.get_int(tag)
       end
-      self
     end
 
     def each_aux_float(tag : String, &)
-      check_closed
-      each do |record|
+      each_aux_value do |record|
         yield record.aux.get_float(tag)
       end
-      self
     end
 
     def each_aux_string(tag : String, &)
-      check_closed
-      each do |record|
+      each_aux_value do |record|
         yield record.aux.get_string(tag)
       end
-      self
     end
 
     def each_aux_char(tag : String, &)
-      check_closed
-      each do |record|
+      each_aux_value do |record|
         yield record.aux.get_char(tag)
       end
-      self
     end
 
     def each_aux(tag : String, &)
-      check_closed
-      each do |record|
+      each_aux_value do |record|
         yield record.aux[tag]
       end
-      self
     end
 
     def each(copy = false, &)
@@ -372,11 +362,28 @@ module HTS
 
       position = tell
       ary = [] of T
-      each do |record|
-        ary << yield record
+      begin
+        each do |record|
+          ary << yield record
+        end
+      ensure
+        restore_aux_position(position)
       end
-      restore_aux_position(position)
       ary
+    end
+
+    private def each_aux_value(& : Record ->) : self
+      check_closed
+
+      position = tell
+      begin
+        each do |record|
+          yield record
+        end
+      ensure
+        restore_aux_position(position)
+      end
+      self
     end
 
     private def restore_aux_position(position : Int64 | Nil) : Nil
