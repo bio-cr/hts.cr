@@ -9,6 +9,13 @@ require "./bcf/record"
 
 module HTS
   class Bcf < Hts
+    class QueryError < Exception; end
+    class MissingIndexError < QueryError; end
+
+    @@bcf_name2id = ->(hdr : Void*, name : LibC::Char*) : LibC::Int {
+      LibHTS.bcf_hdr_id2int(hdr.as(LibHTS::BcfHdrT*), LibHTS2::BCF_DT_CTG, name)
+    }
+
     include Enumerable(Bcf::Record)
 
     @idx : LibHTS::HtsIdxT
@@ -192,6 +199,100 @@ module HTS
       record = Bcf::Record.new(header, bcf1)
       while LibHTS.bcf_read(@hts_file, header, bcf1) != -1
         yield record
+      end
+    end
+
+    def query(region : String, copy = false, &)
+      check_closed
+      raise ArgumentError.new("region must not be empty") if region.empty?
+      ensure_query_index!
+
+      readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
+      itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
+
+      qiter = LibHTS.hts_itr_querys(@idx, region, @@bcf_name2id, header.to_unsafe.as(Void*), itr_query, readrec)
+      raise_region_query_error(region) if qiter.null?
+      begin
+        iterate_query_iterator(qiter, copy) { |record| yield record }
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    def query(regions : Array(String), copy = false, &)
+      check_closed
+      raise ArgumentError.new("regions must not be empty") if regions.empty?
+      ensure_query_index!
+
+      regions.each_with_index do |region, index|
+        raise ArgumentError.new("regions[#{index}] must not be empty") if region.empty?
+        query(region, copy) { |record| yield record }
+      end
+    end
+
+    # Numeric (tid) query: coordinates are 0-based half-open [beg, end)
+    def query(tid : Int32, beg : Int64, end_pos : Int64, copy = false, &)
+      check_closed
+      ensure_query_index!
+      raise ArgumentError.new("tid (#{tid}) must be >= 0") if tid < 0
+      raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
+      raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
+
+      readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
+
+      qiter = LibHTS.hts_itr_query(@idx, tid, beg, end_pos, readrec)
+      raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
+      begin
+        iterate_query_iterator(qiter, copy) { |record| yield record }
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    # Chromosome name + range using SAM-style 1-based inclusive coordinates.
+    def query(chrom : String, beg : Int64, end_pos : Int64, copy = false, &)
+      raise ArgumentError.new("chrom must not be empty") if chrom.empty?
+      raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
+      raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
+
+      tid = header.name2id(chrom)
+      raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
+
+      query(tid, beg - 1, end_pos, copy) { |record| yield record }
+    end
+
+    private def ensure_query_index! : Nil
+      return if index_loaded?
+
+      raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BCF/VCF with a matching index or build one first.")
+    end
+
+    private def raise_region_query_error(region : String) : NoReturn
+      raise QueryError.new("Failed to create an iterator for region #{region.inspect} in #{@file_name}. Check the region syntax, that the reference exists in the header, and that the index matches the file.")
+    end
+
+    private def raise_coordinate_query_error(tid : Int32, beg : Int64, end_pos : Int64) : NoReturn
+      ref_name = header.target_name(tid)
+      raise QueryError.new("Failed to create an iterator for #{ref_name}:#{beg}-#{end_pos} (tid=#{tid}, 0-based half-open) in #{@file_name}. The index may be stale or incompatible with the file.")
+    end
+
+    private def iterate_query_iterator(qiter, copy, & : HTS::Bcf::Record ->)
+      if copy
+        bcf1 = LibHTS.bcf_init
+        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+        while slen >= 0
+          yield Bcf::Record.new(header, bcf1)
+          bcf1 = LibHTS.bcf_init
+          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+        end
+      else
+        bcf1 = LibHTS.bcf_init
+        record = Bcf::Record.new(header, bcf1)
+        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+        while slen >= 0
+          yield record
+          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+        end
       end
     end
 

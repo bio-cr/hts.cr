@@ -4,14 +4,38 @@ require "../../src/hts/bcf"
 class BcfTest < Minitest::Test
   def teardown
     @bcf.try &.close
+    @indexed_bcf.try &.close
+    cleanup_index_files
+  end
+
+  private def cleanup_index_files
+    index_files = [test_bcf_index_path]
+
+    index_files.each do |file|
+      File.delete(file) if File.exists?(file)
+    end
   end
 
   def test_bcf_path
     File.expand_path("../fixtures/test.bcf", __DIR__)
   end
 
+  def test_bcf_index_path
+    File.expand_path("../fixtures/test.bcf.csi.tmp", __DIR__)
+  end
+
   def bcf
     @bcf ||= HTS::Bcf.new(test_bcf_path)
+  end
+
+  def indexed_bcf : HTS::Bcf
+    if indexed_bcf = @indexed_bcf
+      indexed_bcf
+    else
+      HTS::Bcf.build_index(test_bcf_path, test_bcf_index_path, 14, 0, false)
+      @indexed_bcf = HTS::Bcf.new(test_bcf_path, "r", test_bcf_index_path)
+      @indexed_bcf.not_nil!
+    end
   end
 
   def test_new
@@ -71,6 +95,79 @@ class BcfTest < Minitest::Test
 
   def test_initialize_no_file_bcf
     assert_raises { HTS::Bcf.new("/tmp/no_such_file") }
+  end
+
+  def test_query_requires_index
+    ex = assert_raises(HTS::Bcf::MissingIndexError) do
+      bcf.query("poo:4000-4100") { |_| }
+    end
+    assert_includes ex.message, test_bcf_path
+    assert_includes ex.message, "Query requires an index"
+  end
+
+  def test_query_region
+    positions = [] of Int64
+    indexed_bcf.query("poo:4000-4500") do |record|
+      positions << record.pos
+    end
+    assert_equal [4020, 4309, 4336], positions
+  end
+
+  def test_query_region_copy
+    positions = [] of Int64
+    indexed_bcf.query("poo:4000-4500", copy: true) do |record|
+      positions << record.pos
+    end
+    assert_equal [4020, 4309, 4336], positions
+  end
+
+  def test_query_tid_numeric
+    positions = [] of Int64
+    tid = indexed_bcf.header.get_tid("poo")
+    indexed_bcf.query(tid, 3999_i64, 4500_i64) do |record|
+      positions << record.pos
+    end
+    assert_equal [4020, 4309, 4336], positions
+  end
+
+  def test_query_chrom_numeric
+    positions = [] of Int64
+    indexed_bcf.query("poo", 4000_i64, 4500_i64) do |record|
+      positions << record.pos
+    end
+    assert_equal [4020, 4309, 4336], positions
+  end
+
+  def test_query_multi_regions
+    positions = [] of Int64
+    indexed_bcf.query(["poo:4000-4100", "poo:4300-4400"]) do |record|
+      positions << record.pos
+    end
+    assert_equal [4020, 4309, 4336], positions
+  end
+
+  def test_query_multi_regions_copy
+    positions = [] of Int64
+    indexed_bcf.query(["poo:4000-4100", "poo:4300-4400"], copy: true) do |record|
+      positions << record.pos
+    end
+    assert_equal [4020, 4309, 4336], positions
+  end
+
+  def test_query_invalid_region_message
+    ex = assert_raises(HTS::Bcf::QueryError) do
+      indexed_bcf.query("unknown:1-10") { |_| }
+    end
+    assert_includes ex.message, "unknown:1-10"
+    assert_includes ex.message, test_bcf_path
+  end
+
+  def test_query_invalid_chrom_message
+    ex = assert_raises(ArgumentError) do
+      indexed_bcf.query("unknown", 1_i64, 10_i64) { |_| }
+    end
+    assert_includes ex.message, "Unknown reference name"
+    assert_includes ex.message, test_bcf_path
   end
 
   def test_each

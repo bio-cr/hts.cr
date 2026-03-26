@@ -30,6 +30,18 @@ module HTS
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
 
+      def name2id(name : String) : Int32
+        LibHTS2.bcf_hdr_name2id(self, name)
+      end
+
+      def get_tid(name : String) : Int32
+        name2id(name)
+      end
+
+      def target_name(rid : Int32) : String
+        String.new LibHTS2.bcf_hdr_id2name(self, rid)
+      end
+
       # Character is reported as :string because htslib exposes both via BCF_HT_STR.
       def info_type(tag : String)
         tag_type(tag, LibHTS2::BCF_HL_INFO)
