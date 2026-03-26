@@ -55,15 +55,13 @@ module HTS
       def get_int_opt(tag) : Array(Int32?)?
         ints = get_int(tag)
         return nil unless ints
-        missing = Int32::MIN
-        ints.map { |v| v == missing ? nil : v }
+        ints.map { |v| LibHTS2.bcf_int32_is_missing(v) != 0 ? nil : v }
       end
 
       def get_int64_opt(tag) : Array(Int64?)?
         ints = get_int64(tag)
         return nil unless ints
-        missing = Int64::MIN
-        ints.map { |v| v == missing ? nil : v }
+        ints.map { |v| LibHTS2.bcf_int64_is_missing(v) != 0 ? nil : v }
       end
 
       def get_float(tag) : Array(Float32)?
@@ -85,7 +83,7 @@ module HTS
       def get_float_opt(tag) : Array(Float32?)?
         floats = get_float(tag)
         return nil unless floats
-        floats.map { |v| LibHTS.bcf_float_is_missing(v) != 0 ? nil : v }
+        floats.map { |v| LibHTS2.bcf_float_is_missing(v) != 0 ? nil : v }
       end
 
       def get_string(tag) : String?

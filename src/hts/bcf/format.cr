@@ -70,10 +70,22 @@ module HTS
         split_integer_samples(values)
       end
 
+      private def get_int_samples_opt(tag : String) : Array(Array(Int32?))?
+        values = get_int(tag)
+        return nil unless values
+        split_integer_samples_opt(values)
+      end
+
       private def get_float_samples(tag : String) : Array(Array(Float32))?
         values = get_float(tag)
         return nil unless values
         split_float_samples(values)
+      end
+
+      private def get_float_samples_opt(tag : String) : Array(Array(Float32?))?
+        values = get_float(tag)
+        return nil unless values
+        split_float_samples_opt(values)
       end
 
       private def get_numeric_values(tag, type, value_type : T.class) : Array(T)? forall T
@@ -146,8 +158,16 @@ module HTS
         split_sample_values(values).map { |sample_values| trim_integer_vector_end(sample_values) }
       end
 
+      private def split_integer_samples_opt(values : Array(Int32)) : Array(Array(Int32?))
+        split_sample_values(values).map { |sample_values| map_integer_missing(trim_integer_vector_end(sample_values)) }
+      end
+
       private def split_float_samples(values : Array(Float32)) : Array(Array(Float32))
         split_sample_values(values).map { |sample_values| trim_float_vector_end(sample_values) }
+      end
+
+      private def split_float_samples_opt(values : Array(Float32)) : Array(Array(Float32?))
+        split_sample_values(values).map { |sample_values| map_float_missing(trim_float_vector_end(sample_values)) }
       end
 
       private def split_sample_values(values : Array(T)) : Array(Array(T)) forall T
@@ -166,8 +186,7 @@ module HTS
       end
 
       private def trim_integer_vector_end(values : Array(Int32)) : Array(Int32)
-        vector_end = Int32::MIN + 1
-        end_index = values.index(vector_end) || values.size
+        end_index = values.index { |value| LibHTS2.bcf_int32_is_vector_end(value) != 0 } || values.size
         values[0, end_index]
       end
 
@@ -177,8 +196,16 @@ module HTS
       end
 
       private def trim_float_vector_end(values : Array(Float32)) : Array(Float32)
-        end_index = values.index { |value| LibHTS.bcf_float_is_vector_end(value) != 0 } || values.size
+        end_index = values.index { |value| LibHTS2.bcf_float_is_vector_end(value) != 0 } || values.size
         values[0, end_index]
+      end
+
+      private def map_integer_missing(values : Array(Int32)) : Array(Int32?)
+        values.map { |value| LibHTS2.bcf_int32_is_missing(value) != 0 ? nil : value }
+      end
+
+      private def map_float_missing(values : Array(Float32)) : Array(Float32?)
+        values.map { |value| LibHTS2.bcf_float_is_missing(value) != 0 ? nil : value }
       end
     end
   end

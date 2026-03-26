@@ -155,6 +155,54 @@ module HTS
       ((a) > (b) ? (a * (a + 1) / 2 + b) : (b * (b + 1) / 2 + a))
     end
 
+    def bcf_int32_missing
+      Int32::MIN
+    end
+
+    def bcf_int32_vector_end
+      Int32::MIN + 1
+    end
+
+    def bcf_int32_is_missing(val : Int32)
+      val == bcf_int32_missing ? 1 : 0
+    end
+
+    def bcf_int32_is_vector_end(val : Int32)
+      val == bcf_int32_vector_end ? 1 : 0
+    end
+
+    def bcf_int64_missing
+      Int64::MIN
+    end
+
+    def bcf_int64_vector_end
+      Int64::MIN + 1
+    end
+
+    def bcf_int64_is_missing(val : Int64)
+      val == bcf_int64_missing ? 1 : 0
+    end
+
+    def bcf_int64_is_vector_end(val : Int64)
+      val == bcf_int64_vector_end ? 1 : 0
+    end
+
+    def bcf_float_missing
+      LibHTS.bcf_float_missing.unsafe_as(Float32)
+    end
+
+    def bcf_float_vector_end
+      LibHTS.bcf_float_vector_end.unsafe_as(Float32)
+    end
+
+    def bcf_float_is_missing(val : Float32)
+      val.unsafe_as(UInt32) == LibHTS.bcf_float_missing ? 1 : 0
+    end
+
+    def bcf_float_is_vector_end(val : Float32)
+      val.unsafe_as(UInt32) == LibHTS.bcf_float_vector_end ? 1 : 0
+    end
+
     def bcf_get_info_int32(hdr, line, tag, dst, ndst)
       LibHTS.bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_INT)
     end

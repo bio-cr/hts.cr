@@ -90,4 +90,21 @@ class BcfInfoTest < Minitest::Test
     ex = assert_raises(Exception) { info.get_float("DP") }
     assert_equal "Tag DP is not float INFO field", ex.message
   end
+
+  def test_numeric_sentinel_helpers
+    assert_equal(1, HTS::LibHTS2.bcf_int32_is_missing(HTS::LibHTS2.bcf_int32_missing))
+    assert_equal(1, HTS::LibHTS2.bcf_int32_is_vector_end(HTS::LibHTS2.bcf_int32_vector_end))
+    assert_equal(0, HTS::LibHTS2.bcf_int32_is_missing(42))
+    assert_equal(0, HTS::LibHTS2.bcf_int32_is_vector_end(42))
+
+    assert_equal(1, HTS::LibHTS2.bcf_int64_is_missing(HTS::LibHTS2.bcf_int64_missing))
+    assert_equal(1, HTS::LibHTS2.bcf_int64_is_vector_end(HTS::LibHTS2.bcf_int64_vector_end))
+    assert_equal(0, HTS::LibHTS2.bcf_int64_is_missing(42_i64))
+    assert_equal(0, HTS::LibHTS2.bcf_int64_is_vector_end(42_i64))
+
+    assert_equal(1, HTS::LibHTS2.bcf_float_is_missing(HTS::LibHTS2.bcf_float_missing))
+    assert_equal(1, HTS::LibHTS2.bcf_float_is_vector_end(HTS::LibHTS2.bcf_float_vector_end))
+    assert_equal(0, HTS::LibHTS2.bcf_float_is_missing(1.5_f32))
+    assert_equal(0, HTS::LibHTS2.bcf_float_is_vector_end(1.5_f32))
+  end
 end
