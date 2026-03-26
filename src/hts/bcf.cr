@@ -10,6 +10,7 @@ require "./bcf/record"
 module HTS
   class Bcf < Hts
     class QueryError < Exception; end
+
     class MissingIndexError < QueryError; end
 
     @@bcf_name2id = ->(hdr : Void*, name : LibC::Char*) : LibC::Int {

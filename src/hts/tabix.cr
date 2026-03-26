@@ -6,6 +6,7 @@ require "./bgzf"
 module HTS
   class Tabix < Bgzf
     class QueryError < Exception; end
+
     class MissingIndexError < QueryError; end
 
     @idx : LibHTS::TbxT*

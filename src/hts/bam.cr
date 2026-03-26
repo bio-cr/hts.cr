@@ -13,6 +13,7 @@ require "./bam/mpileup"
 module HTS
   class Bam < Hts
     class QueryError < Exception; end
+
     class MissingIndexError < QueryError; end
 
     include Enumerable(Record)
