@@ -151,6 +151,10 @@ module HTS
       LibHTS.bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_INT)
     end
 
+    def bcf_get_info_int64(hdr, line, tag, dst, ndst)
+      LibHTS.bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_LONG)
+    end
+
     def bcf_get_info_float(hdr, line, tag, dst, ndst)
       LibHTS.bcf_get_info_values(hdr, line, tag, dst, ndst, BCF_HT_REAL)
     end

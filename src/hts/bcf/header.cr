@@ -30,10 +30,7 @@ module HTS
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
 
-      # Returns the declared INFO tag type from the header.
-      #
-      # This is used by the dynamic `info["TAG"]` API to route lookups to the
-      # appropriate typed getter.
+      # Character is reported as :string because htslib exposes both via BCF_HT_STR.
       def info_type(tag : String)
         tag_type(tag, LibHTS2::BCF_HL_INFO)
       end

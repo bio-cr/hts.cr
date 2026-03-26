@@ -4,7 +4,7 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
-      # Dispatches according to the declared INFO type in the header.
+      # Character INFO fields are routed through the string path.
       def [](tag : String) : Array(Int32) | Array(Float32) | String | Bool | Nil
         case @record.header.info_type(tag)
         when :flag
@@ -41,7 +41,7 @@ module HTS
         dst = Pointer(Void).null
         hdr = @record.header
         r = @record
-        rc = LibHTS.bcf_get_info_values(hdr, r, tag, pointerof(dst), pointerof(ndst), LibHTS2::BCF_HT_LONG)
+        rc = LibHTS2.bcf_get_info_int64(hdr, r, tag, pointerof(dst), pointerof(ndst))
         rc = normalize_info_rc(rc, tag, "integer")
         return nil unless rc
         begin
@@ -56,6 +56,13 @@ module HTS
         ints = get_int(tag)
         return nil unless ints
         missing = Int32::MIN
+        ints.map { |v| v == missing ? nil : v }
+      end
+
+      def get_int64_opt(tag) : Array(Int64?)?
+        ints = get_int64(tag)
+        return nil unless ints
+        missing = Int64::MIN
         ints.map { |v| v == missing ? nil : v }
       end
 
@@ -75,10 +82,10 @@ module HTS
         end
       end
 
-      def get_float_opt(tag) : Array(Float64?)?
+      def get_float_opt(tag) : Array(Float32?)?
         floats = get_float(tag)
         return nil unless floats
-        floats.map { |v| LibHTS.bcf_float_is_missing(v) != 0 ? nil : v.to_f64 }
+        floats.map { |v| LibHTS.bcf_float_is_missing(v) != 0 ? nil : v }
       end
 
       def get_string(tag) : String?
