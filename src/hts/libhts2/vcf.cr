@@ -131,8 +131,16 @@ module HTS
       0
     end
 
+    def bcf_gt_vector_end
+      Int32::MIN + 1
+    end
+
     def bcf_gt_is_missing(val)
-      ((val) >> 1 ? 0 : 1)
+      ((val >> 1) == 0 ? 1 : 0)
+    end
+
+    def bcf_gt_is_vector_end(val)
+      val == bcf_gt_vector_end ? 1 : 0
     end
 
     def bcf_gt_is_phased(idx)

@@ -14,7 +14,7 @@ module HTS
 
       # Returns one String per sample. FORMAT/GT is decoded into genotype strings.
       def get_string(tag) : Array(String)?
-        return decode_genotype_strings if tag == "GT"
+        return decode_genotypes if tag == "GT"
 
         ndst = 0
         dst = Pointer(Void).null
@@ -108,31 +108,38 @@ module HTS
         end
       end
 
-      private def decode_genotype_strings : Array(String)?
+      private def get_genotype_samples : Array(Array(Int32))?
         encoded = get_genotypes
         return nil unless encoded
+        split_sample_values(encoded).map { |sample_values| trim_genotype_vector_end(sample_values) }
+      end
 
-        split_integer_samples(encoded).map do |sample_values|
-          io = IO::Memory.new
-          wrote_allele = false
+      private def decode_genotypes : Array(String)?
+        sample_values = get_genotype_samples
+        return nil unless sample_values
+        sample_values.map { |values| decode_genotype_sample(values) }
+      end
 
-          sample_values.each do |value|
-            if wrote_allele
-              separator = LibHTS2.bcf_gt_is_phased(value) != 0 ? '|' : '/'
-              io << separator
-            end
+      private def decode_genotype_sample(values : Array(Int32)) : String
+        io = IO::Memory.new
+        wrote_allele = false
 
-            if LibHTS2.bcf_gt_is_missing(value) != 0
-              io << '.'
-            else
-              io << LibHTS2.bcf_gt_allele(value)
-            end
-
-            wrote_allele = true
+        values.each do |value|
+          if wrote_allele
+            separator = LibHTS2.bcf_gt_is_phased(value) != 0 ? '|' : '/'
+            io << separator
           end
 
-          io.to_s
+          if LibHTS2.bcf_gt_is_missing(value) != 0
+            io << '.'
+          else
+            io << LibHTS2.bcf_gt_allele(value)
+          end
+
+          wrote_allele = true
         end
+
+        io.to_s
       end
 
       private def split_integer_samples(values : Array(Int32)) : Array(Array(Int32))
@@ -161,6 +168,11 @@ module HTS
       private def trim_integer_vector_end(values : Array(Int32)) : Array(Int32)
         vector_end = Int32::MIN + 1
         end_index = values.index(vector_end) || values.size
+        values[0, end_index]
+      end
+
+      private def trim_genotype_vector_end(values : Array(Int32)) : Array(Int32)
+        end_index = values.index { |value| LibHTS2.bcf_gt_is_vector_end(value) != 0 } || values.size
         values[0, end_index]
       end
 
