@@ -308,7 +308,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/09214f87b548740b720fb033c57eb9bcc8c0c342/src/hts/bcf/format.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L3" target="_blank">
         hts/bcf/format.cr
       </a>
     
@@ -354,6 +354,11 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#delete%28tag%3AString%29%3ABool-instance-method" class="signature"><strong>#delete</strong>(tag : String) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#get_float%28tag%29%3AArray%28Float32%29%7CNil-instance-method" class="signature"><strong>#get_float</strong>(tag) : Array(Float32) | Nil</a>
         
       </li>
@@ -372,6 +377,41 @@
         <a href="#get_string%28tag%29%3AArray%28String%29%7CNil-instance-method" class="signature"><strong>#get_string</strong>(tag) : Array(String) | Nil</a>
         
           <div class="summary"><p>Returns one String per sample.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_float%28tag%3AString%2Cvalue%3ANumber%29-instance-method" class="signature"><strong>#update_float</strong>(tag : String, value : Number)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_float%28tag%3AString%2Cvalues%3AArray%28Float32%29%29-instance-method" class="signature"><strong>#update_float</strong>(tag : String, values : Array(Float32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_genotypes%28values%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#update_genotypes</strong>(values : Array(Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_int%28tag%3AString%2Cvalue%3AInt%29-instance-method" class="signature"><strong>#update_int</strong>(tag : String, value : Int)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_int%28tag%3AString%2Cvalues%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#update_int</strong>(tag : String, values : Array(Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_string%28tag%3AString%2Cvalue%3AString%29-instance-method" class="signature"><strong>#update_string</strong>(tag : String, value : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_string%28tag%3AString%2Cvalues%3AArray%28String%29%29-instance-method" class="signature"><strong>#update_string</strong>(tag : String, values : Array(String))</a>
         
       </li>
     
@@ -430,7 +470,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/09214f87b548740b720fb033c57eb9bcc8c0c342/src/hts/bcf/format.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -451,6 +491,22 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="delete(tag:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(tag : String) : Bool
+
+        <a class="method-permalink" href="#delete%28tag%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L68" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="get_float(tag):Array(Float32)|Nil-instance-method">
       <div class="signature">
         
@@ -462,7 +518,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/09214f87b548740b720fb033c57eb9bcc8c0c342/src/hts/bcf/format.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -478,7 +534,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/09214f87b548740b720fb033c57eb9bcc8c0c342/src/hts/bcf/format.cr#L52" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -494,7 +550,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/09214f87b548740b720fb033c57eb9bcc8c0c342/src/hts/bcf/format.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L90" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -515,7 +571,119 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/09214f87b548740b720fb033c57eb9bcc8c0c342/src/hts/bcf/format.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L101" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_float(tag:String,value:Number)-instance-method">
+      <div class="signature">
+        
+        def <strong>update_float</strong>(tag : String, value : Number)
+
+        <a class="method-permalink" href="#update_float%28tag%3AString%2Cvalue%3ANumber%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_float(tag:String,values:Array(Float32))-instance-method">
+      <div class="signature">
+        
+        def <strong>update_float</strong>(tag : String, values : Array(Float32))
+
+        <a class="method-permalink" href="#update_float%28tag%3AString%2Cvalues%3AArray%28Float32%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_genotypes(values:Array(Int32))-instance-method">
+      <div class="signature">
+        
+        def <strong>update_genotypes</strong>(values : Array(Int32))
+
+        <a class="method-permalink" href="#update_genotypes%28values%3AArray%28Int32%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L57" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_int(tag:String,value:Int)-instance-method">
+      <div class="signature">
+        
+        def <strong>update_int</strong>(tag : String, value : Int)
+
+        <a class="method-permalink" href="#update_int%28tag%3AString%2Cvalue%3AInt%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L7" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_int(tag:String,values:Array(Int32))-instance-method">
+      <div class="signature">
+        
+        def <strong>update_int</strong>(tag : String, values : Array(Int32))
+
+        <a class="method-permalink" href="#update_int%28tag%3AString%2Cvalues%3AArray%28Int32%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L11" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_string(tag:String,value:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>update_string</strong>(tag : String, value : String)
+
+        <a class="method-permalink" href="#update_string%28tag%3AString%2Cvalue%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L39" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_string(tag:String,values:Array(String))-instance-method">
+      <div class="signature">
+        
+        def <strong>update_string</strong>(tag : String, values : Array(String))
+
+        <a class="method-permalink" href="#update_string%28tag%3AString%2Cvalues%3AArray%28String%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/442d9fee4609fcae6e8a1da1fb6895efd2bfcc36/src/hts/bcf/format.cr#L43" target="_blank">View source</a>]
         
       </div>
     </div>
