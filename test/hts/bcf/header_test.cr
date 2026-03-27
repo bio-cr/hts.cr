@@ -58,6 +58,41 @@ class BcfHeaderTest < Minitest::Test
     assert_equal ["poo.sort.bam"], hdr.samples
   end
 
+  def test_subset_returns_new_header
+    source = HTS::Bcf.new(File.expand_path("../../../../htslib/test/tabix/vcf_file.bcf", __DIR__))
+    subset = source.header.subset(["B"])
+
+    assert_equal ["A", "B"], source.header.samples
+    assert_equal ["B"], subset.samples
+    assert_equal 1, subset.nsamples
+  ensure
+    source.try &.close
+  end
+
+  def test_subset_rejects_unknown_samples
+    source = HTS::Bcf.new(File.expand_path("../../../../htslib/test/tabix/vcf_file.bcf", __DIR__))
+
+    error = assert_raises(HTS::Bcf::UnknownSampleError) do
+      source.header.subset(["missing"])
+    end
+
+    assert_includes error.message, "missing"
+  ensure
+    source.try &.close
+  end
+
+  def test_subset_rejects_duplicates
+    source = HTS::Bcf.new(File.expand_path("../../../../htslib/test/tabix/vcf_file.bcf", __DIR__))
+
+    error = assert_raises(HTS::Bcf::SubsetError) do
+      source.header.subset(["A", "A"])
+    end
+
+    assert_includes error.message, "Duplicate sample names"
+  ensure
+    source.try &.close
+  end
+
   def test_sync
     hdr2 = hdr.clone
     hdr2.add_sample("kojix1", sync: false)

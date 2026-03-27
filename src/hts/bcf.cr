@@ -1,7 +1,9 @@
 require "./libhts"
 require "./version"
+require "./error"
 
 require "./hts"
+require "./bcf/errors"
 require "./bcf/header"
 require "./bcf/info"
 require "./bcf/format"
@@ -9,10 +11,6 @@ require "./bcf/record"
 
 module HTS
   class Bcf < Hts
-    class QueryError < Exception; end
-
-    class MissingIndexError < QueryError; end
-
     @@bcf_name2id = ->(hdr : Void*, name : LibC::Char*) : LibC::Int {
       LibHTS.bcf_hdr_id2int(hdr.as(LibHTS::BcfHdrT*), LibHTS2::BCF_DT_CTG, name)
     }
@@ -20,6 +18,8 @@ module HTS
     include Enumerable(Bcf::Record)
 
     @idx : LibHTS::HtsIdxT
+    @header : Bcf::Header?
+    @read_header : Bcf::Header?
     # Auto index after close when opened for writing with build_index: true
     @auto_index_on_close : Bool = false
     @index_name_on_close : String = ""
@@ -28,17 +28,24 @@ module HTS
 
     getter :file_name
     getter :mode
-    getter :header
     getter :nthreads
 
-    def self.open(file_name : Path | String, mode = "r", index = "",
-                  threads = 0, build_index = false)
-      new(file_name, mode, index, threads, build_index)
+    def header : Bcf::Header
+      if header = @header
+        header
+      else
+        raise Error.new("Header is not available for #{@file_name}")
+      end
     end
 
     def self.open(file_name : Path | String, mode = "r", index = "",
-                  threads = 0, build_index = false, &)
-      file = new(file_name, mode, index, threads, build_index)
+                  threads = 0, build_index = false, *, subset : Enumerable(String)? = nil)
+      new(file_name, mode, index, threads, build_index, subset: subset)
+    end
+
+    def self.open(file_name : Path | String, mode = "r", index = "",
+                  threads = 0, build_index = false, *, subset : Enumerable(String)? = nil, &)
+      file = new(file_name, mode, index, threads, build_index, subset: subset)
       begin
         yield file
       ensure
@@ -48,18 +55,24 @@ module HTS
     end
 
     def initialize(file_name : Path | String, @mode = "r", index = "",
-                   threads = 0, build_index = false)
+                   threads = 0, build_index = false, *, subset : Enumerable(String)? = nil)
       @file_name = file_name.to_s
       @nthreads = threads
       @idx = LibHTS::HtsIdxT.null
+      @header = nil
+      @read_header = nil
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
-      raise "Failed to open file #{@file_name}" if @hts_file.null?
+      raise OpenError.new("Failed to open file #{@file_name}") if @hts_file.null?
 
       set_threads(threads) if threads > 0
+
+      if subset && @mode[0] == 'w'
+        raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
+      end
 
       if @mode[0] == 'w'
         # Defer index building until after close
@@ -70,7 +83,10 @@ module HTS
         return
       end
 
-      @header = Bcf::Header.new(@hts_file)
+      @read_header = Bcf::Header.new(@hts_file)
+      if source_header = @read_header
+        @header = subset ? source_header.subset(subset) : source_header
+      end
       @header_written = true
 
       build_index(index) if build_index
@@ -90,7 +106,7 @@ module HTS
         end
       end
       r = LibHTS.bcf_index_build3(file_name.to_s, index_name, min_shift, threads)
-      raise "Indexing failed for #{file_name} (rc=#{r})" if r < 0
+      raise IndexError.new("Indexing failed for #{file_name} (rc=#{r})") if r < 0
     end
 
     # Instance helper delegating to the class method.
@@ -146,10 +162,10 @@ module HTS
       check_closed
       # Guard to ensure header was written before any record
       unless @header_written
-        raise "Header not written. Call write_header(header) first."
+        raise Error.new("Header not written. Call write_header(header) first.")
       end
       r = LibHTS.bcf_write(@hts_file, header, var)
-      raise "Failed to write record" if r < 0
+      raise Error.new("Failed to write record") if r < 0
     end
 
     def <<(var)
@@ -189,8 +205,10 @@ module HTS
 
     private def each_record_copy(&)
       check_closed
-      while LibHTS.bcf_read(@hts_file, header, bcf1 = LibHTS.bcf_init) != -1
-        yield Bcf::Record.new(header, bcf1)
+      while LibHTS.bcf_read(@hts_file, header_for_reading, bcf1 = LibHTS.bcf_init) != -1
+        record = Bcf::Record.new(header, bcf1)
+        apply_subset!(record)
+        yield record
       end
     end
 
@@ -198,7 +216,8 @@ module HTS
       check_closed
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(header, bcf1)
-      while LibHTS.bcf_read(@hts_file, header, bcf1) != -1
+      while LibHTS.bcf_read(@hts_file, header_for_reading, bcf1) != -1
+        apply_subset!(record)
         yield record
       end
     end
@@ -211,7 +230,7 @@ module HTS
       readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
       itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
 
-      qiter = LibHTS.hts_itr_querys(@idx, region, @@bcf_name2id, header.to_unsafe.as(Void*), itr_query, readrec)
+      qiter = LibHTS.hts_itr_querys(@idx, region, @@bcf_name2id, header_for_reading.to_unsafe.as(Void*), itr_query, readrec)
       raise_region_query_error(region) if qiter.null?
       begin
         iterate_query_iterator(qiter, copy) { |record| yield record }
@@ -282,7 +301,9 @@ module HTS
         bcf1 = LibHTS.bcf_init
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         while slen >= 0
-          yield Bcf::Record.new(header, bcf1)
+          record = Bcf::Record.new(header, bcf1)
+          apply_subset!(record)
+          yield record
           bcf1 = LibHTS.bcf_init
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         end
@@ -291,10 +312,32 @@ module HTS
         record = Bcf::Record.new(header, bcf1)
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         while slen >= 0
+          apply_subset!(record)
           yield record
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         end
       end
+    end
+
+    private def header_for_reading : Bcf::Header
+      if read_header = @read_header
+        read_header
+      elsif header = @header
+        header
+      else
+        raise Error.new("Header is not available for #{@file_name}")
+      end
+    end
+
+    private def apply_subset!(record : Bcf::Record) : Nil
+      current_header = @header
+      return unless current_header
+      return unless current_header.subset?
+
+      rc = LibHTS.bcf_subset(current_header, record, current_header.subset_sample_count, current_header.subset_imap_buffer)
+      return if rc >= 0
+
+      raise SubsetError.new("Failed to subset samples #{current_header.subset_samples.inspect} while reading #{@file_name}")
     end
 
     define_getter :chrom

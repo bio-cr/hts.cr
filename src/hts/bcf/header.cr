@@ -18,6 +18,9 @@ module HTS
         @bcf_hdr = LibHTS.bcf_hdr_read(hts_file)
         @sync_depth = 0
         @sync_needed = false
+        @subset_samples = nil
+        @subset_imap = nil
+        @subset_imap_buffer = Pointer(Int32).null
       end
 
       # for clone
@@ -25,12 +28,18 @@ module HTS
         @bcf_hdr = bcf_hdr
         @sync_depth = 0
         @sync_needed = false
+        @subset_samples = nil
+        @subset_imap = nil
+        @subset_imap_buffer = Pointer(Int32).null
       end
 
       def initialize
         @bcf_hdr = LibHTS.bcf_hdr_init("w")
         @sync_depth = 0
         @sync_needed = false
+        @subset_samples = nil
+        @subset_imap = nil
+        @subset_imap_buffer = Pointer(Int32).null
       end
 
       def to_unsafe
@@ -98,6 +107,44 @@ module HTS
         Array.new(nsamples) do |i|
           String.new @bcf_hdr.value.samples[i]
         end
+      end
+
+      getter subset_samples
+
+      def subset? : Bool
+        !@subset_imap.nil?
+      end
+
+      def subset_sample_count : Int32
+        return 0_i32 unless subset_samples = @subset_samples
+
+        subset_samples.size.to_i32
+      end
+
+      def subset_imap_buffer : Pointer(Int32)
+        @subset_imap_buffer
+      end
+
+      def subset(sample_names : Enumerable(String))
+        names = normalize_subset_samples(sample_names)
+        validate_subset_samples!(names)
+
+        sample_ptrs = Pointer(Pointer(LibC::Char)).null
+        imap_buffer = Pointer(Int32).null
+        encoded_samples = [] of Pointer(LibC::Char)
+
+        unless names.empty?
+          encoded_samples = names.map { |name| name.to_unsafe.as(LibC::Char*) }
+          sample_ptrs = encoded_samples.to_unsafe
+          imap_buffer = Pointer(Int32).malloc(names.size)
+        end
+
+        subset_hdr = LibHTS.bcf_hdr_subset(@bcf_hdr, names.size, sample_ptrs, imap_buffer)
+        raise SubsetError.new("Failed to subset BCF header samples #{names.inspect}") if subset_hdr.null?
+
+        header = self.class.new(subset_hdr)
+        header.set_subset_state(names, compose_subset_imap(read_subset_imap(imap_buffer, names.size)))
+        header
       end
 
       def add_sample(sample, sync : Bool = true)
@@ -233,7 +280,13 @@ module HTS
       end
 
       def clone
-        self.class.new(LibHTS.bcf_hdr_dup(@bcf_hdr))
+        header = self.class.new(LibHTS.bcf_hdr_dup(@bcf_hdr))
+        if subset_imap = @subset_imap
+          if subset_samples = @subset_samples
+            header.set_subset_state(subset_samples.dup, subset_imap.dup)
+          end
+        end
+        header
       end
 
       def finalize
@@ -242,6 +295,48 @@ module HTS
 
       private def cstr(value : String?)
         value ? value.to_unsafe : Pointer(LibC::Char).null
+      end
+
+      protected def set_subset_state(samples : Array(String), imap : Array(Int32)) : Nil
+        @subset_samples = samples.dup
+        @subset_imap = imap.dup
+        if imap.empty?
+          @subset_imap_buffer = Pointer(Int32).null
+        else
+          @subset_imap_buffer = Pointer(Int32).malloc(imap.size)
+          imap.each_with_index do |value, index|
+            @subset_imap_buffer[index] = value
+          end
+        end
+      end
+
+      private def normalize_subset_samples(sample_names : Enumerable(String)) : Array(String)
+        sample_names.map(&.to_s).to_a
+      end
+
+      private def validate_subset_samples!(subset_samples : Array(String)) : Nil
+        duplicates = subset_samples.group_by { |name| name }.compact_map do |name, group|
+          name if group.size > 1
+        end
+        unless duplicates.empty?
+          raise SubsetError.new("Duplicate sample names in subset: #{duplicates.join(", ")}")
+        end
+
+        missing = subset_samples.reject { |name| samples.includes?(name) }
+        unless missing.empty?
+          raise UnknownSampleError.new("Unknown sample names: #{missing.join(", ")}")
+        end
+      end
+
+      private def read_subset_imap(imap_buffer : Pointer(Int32), length : Int) : Array(Int32)
+        return [] of Int32 if length == 0
+
+        Array(Int32).new(length) { |index| imap_buffer[index] }
+      end
+
+      private def compose_subset_imap(imap : Array(Int32)) : Array(Int32)
+        base_imap = @subset_imap || Array(Int32).new(samples.size) { |index| index.to_i32 }
+        imap.map { |index| base_imap[index] }
       end
 
       private def normalize_bcf_type(type) : String
@@ -256,9 +351,9 @@ module HTS
         case number
         when Symbol
           case number
-          when :a, :A then "A"
-          when :r, :R then "R"
-          when :g, :G then "G"
+          when :a, :A                then "A"
+          when :r, :R                then "R"
+          when :g, :G                then "G"
           when :variable, :var, :dot then "."
           else
             number.to_s

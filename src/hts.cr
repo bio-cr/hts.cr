@@ -1,5 +1,6 @@
 require "./hts/version"
 require "./hts/libhts"
+require "./hts/error"
 require "./hts/bam"
 require "./hts/bcf"
 require "./hts/faidx"

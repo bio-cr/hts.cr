@@ -20,6 +20,10 @@ class BcfTest < Minitest::Test
     File.expand_path("../fixtures/test.bcf", __DIR__)
   end
 
+  def test_multi_sample_bcf_path
+    File.expand_path("../../../htslib/test/tabix/vcf_file.bcf", __DIR__)
+  end
+
   def test_bcf_index_path
     File.expand_path("../fixtures/test.bcf.csi.tmp", __DIR__)
   end
@@ -34,7 +38,11 @@ class BcfTest < Minitest::Test
     else
       HTS::Bcf.build_index(test_bcf_path, test_bcf_index_path, 14, 0, false)
       @indexed_bcf = HTS::Bcf.new(test_bcf_path, "r", test_bcf_index_path)
-      @indexed_bcf.not_nil!
+      if indexed_bcf = @indexed_bcf
+        indexed_bcf
+      else
+        raise "indexed_bcf was not initialized"
+      end
     end
   end
 
@@ -94,7 +102,17 @@ class BcfTest < Minitest::Test
   end
 
   def test_initialize_no_file_bcf
-    assert_raises { HTS::Bcf.new("/tmp/no_such_file") }
+    assert_raises(HTS::Bcf::OpenError) { HTS::Bcf.new("/tmp/no_such_file") }
+  end
+
+  def test_initialize_with_subset
+    subset_bcf = HTS::Bcf.new(test_multi_sample_bcf_path, subset: ["B"])
+
+    assert_equal ["B"], subset_bcf.samples
+    assert_equal 1, subset_bcf.nsamples
+    assert_equal ["0/1"], subset_bcf.first.format.get_string("GT")
+  ensure
+    subset_bcf.try &.close
   end
 
   def test_query_requires_index
