@@ -4,6 +4,89 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
+      def update_int(tag : String, value : Int)
+        update_int(tag, [value.to_i32])
+      end
+
+      def update_int(tag : String, values : Array(Int32))
+        raise "Use update_genotypes for GT" if tag == "GT"
+
+        ensure_expected_format_type!(tag, :int, "integer")
+        validate_numeric_sample_count!(tag, values.size)
+
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_format_int32(hdr, rec, tag, values.to_unsafe, values.size)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def update_float(tag : String, value : Number)
+        update_float(tag, [value.to_f32])
+      end
+
+      def update_float(tag : String, values : Array(Float32))
+        ensure_expected_format_type!(tag, :float, "float")
+        validate_numeric_sample_count!(tag, values.size)
+
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_format_float(hdr, rec, tag, values.to_unsafe, values.size)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def update_string(tag : String, value : String)
+        update_string(tag, [value])
+      end
+
+      def update_string(tag : String, values : Array(String))
+        raise "Use update_genotypes for GT" if tag == "GT"
+
+        ensure_expected_format_type!(tag, :string, "string")
+        validate_string_sample_count!(tag, values.size)
+
+        encoded = values.map { |value| value.to_unsafe.as(LibC::Char*) }
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS.bcf_update_format_string(hdr, rec, tag, encoded.to_unsafe, encoded.size)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def update_genotypes(values : Array(Int32))
+        ensure_gt_defined!
+        validate_numeric_sample_count!("GT", values.size)
+
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_genotypes(hdr, rec, values.to_unsafe, values.size)
+        check_update_rc!(rc, "GT")
+        rc
+      end
+
+      def delete(tag : String) : Bool
+        type = tag == "GT" ? :int : @record.header.format_type(tag)
+        return false unless type
+        return false unless format_present?(tag)
+
+        bcf_type = case type
+                   when :flag  then LibHTS2::BCF_HT_FLAG
+                   when :int   then LibHTS2::BCF_HT_INT
+                   when :float then LibHTS2::BCF_HT_REAL
+                   when :string
+                     LibHTS2::BCF_HT_STR
+                   else
+                     return false
+                   end
+
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS.bcf_update_format(hdr, rec, tag, Pointer(Void).null, 0, bcf_type)
+        raise "Failed to delete FORMAT/#{tag}" if rc < 0
+        true
+      end
+
       def get_int(tag) : Array(Int32)?
         raise_unsupported_format_flag(tag)
         get_numeric_values(tag, LibHTS2::BCF_HT_INT, Int32)
@@ -114,6 +197,46 @@ module HTS
         raise "FORMAT flag fields are not supported: #{tag}" if @record.header.format_type(tag) == :flag
       end
 
+      private def ensure_expected_format_type!(tag : String, expected_type : Symbol, expected_label : String)
+        actual_type = tag == "GT" ? :string : @record.header.format_type(tag)
+        raise "FORMAT tag #{tag} not defined in header" unless actual_type
+
+        raise_unsupported_format_flag(tag)
+        raise "Tag #{tag} is not #{expected_label} FORMAT field" unless actual_type == expected_type
+      end
+
+      private def ensure_gt_defined!
+        raise "FORMAT tag GT not defined in header" unless @record.header.format_type("GT")
+      end
+
+      private def validate_numeric_sample_count!(tag : String, value_count : Int32)
+        sample_count = @record.header.nsamples
+        raise "FORMAT fields require at least one sample" if sample_count <= 0
+        return if value_count % sample_count == 0
+
+        raise "FORMAT values for #{tag} must be divisible by sample count (#{sample_count})"
+      end
+
+      private def validate_string_sample_count!(tag : String, value_count : Int32)
+        sample_count = @record.header.nsamples
+        raise "FORMAT fields require at least one sample" if sample_count <= 0
+        return if value_count == sample_count
+
+        raise "FORMAT string values for #{tag} must provide one entry per sample (#{sample_count})"
+      end
+
+      private def check_update_rc!(rc : Int32, tag : String)
+        case rc
+        when -1
+          raise "FORMAT tag #{tag} not defined in header"
+        when 0
+          rc
+        else
+          raise "Failed to update FORMAT/#{tag}" if rc < 0
+          rc
+        end
+      end
+
       private def normalize_format_rc(rc : Int32, tag : String, expected_type : String) : Int32?
         case rc
         when -1, -3
@@ -213,6 +336,23 @@ module HTS
 
       private def map_float_missing(values : Array(Float32)) : Array(Float32?)
         values.map { |value| LibHTS2.bcf_float_is_missing(value) != 0 ? nil : value }
+      end
+
+      private def format_present?(tag : String) : Bool
+        if tag == "GT"
+          !get_genotypes.nil?
+        else
+          case @record.header.format_type(tag)
+          when :int
+            !get_int(tag).nil?
+          when :float
+            !get_float(tag).nil?
+          when :string
+            !get_string(tag).nil?
+          else
+            false
+          end
+        end
       end
     end
   end

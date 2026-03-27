@@ -124,6 +124,37 @@ class BcfFormatTest < Minitest::Test
     end
   end
 
+  def with_temp_format_source_vcf(&)
+    file = File.tempfile("format_update_source", ".vcf")
+    path = file.path || raise "tempfile path is nil"
+    begin
+      file.puts "##fileformat=VCFv4.3"
+      file.puts "##contig=<ID=1,length=100>"
+      file.puts "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">"
+      file.puts "##FORMAT=<ID=GQ,Number=1,Type=Integer,Description=\"Genotype quality\">"
+      file.puts "##FORMAT=<ID=TF,Number=1,Type=Float,Description=\"Float field\">"
+      file.puts "##FORMAT=<ID=ST,Number=1,Type=String,Description=\"String field\">"
+      file.puts "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tS1\tS2"
+      file.puts "1\t10\t.\tA\tC\t.\tPASS\t.\tGT:GQ:TF:ST\t0/1:10:1.5:ALPHA\t1/1:20:2.5:BETA"
+      file.close
+
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
+  def with_temp_output_vcf(&)
+    file = File.tempfile("format_update_output", ".vcf")
+    path = file.path || raise "tempfile path is nil"
+    begin
+      file.close
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def test_bcf_path
     File.expand_path("../../fixtures/test.bcf", __DIR__)
   end
@@ -234,5 +265,89 @@ class BcfFormatTest < Minitest::Test
 
     ex = assert_raises(Exception) { format.get_string("BAD") }
     assert_equal "FORMAT flag fields are not supported: BAD", ex.message
+  end
+
+  def test_update_methods_round_trip
+    with_temp_format_source_vcf do |source_path|
+      with_temp_output_vcf do |output_path|
+        HTS::Bcf.open(source_path) do |input_bcf|
+          record = input_bcf.first
+          format = record.format
+
+          format.update_int("GQ", [11, 22])
+          format.update_float("TF", [1.25_f32, 2.75_f32])
+          format.update_string("ST", ["LEFT", "RIGHT"])
+          format.update_genotypes([
+            HTS::LibHTS2.bcf_gt_unphased(0),
+            HTS::LibHTS2.bcf_gt_unphased(0),
+            HTS::LibHTS2.bcf_gt_phased(1),
+            HTS::LibHTS2.bcf_gt_phased(1),
+          ])
+
+          HTS::Bcf.open(output_path, "w") do |output_bcf|
+            output_bcf.write_header(input_bcf.header)
+            output_bcf << record
+          end
+        end
+
+        HTS::Bcf.open(output_path) do |verify_bcf|
+          format = verify_bcf.first.format
+
+          assert_equal([11, 22], format.get_int("GQ"))
+          assert_equal(["LEFT", "RIGHT"], format.get_string("ST"))
+          assert_equal(["0/0", "1|1"], format.get_string("GT"))
+
+          floats = format.get_float("TF") || raise "TF should be present"
+          assert_equal(2, floats.size)
+          assert_in_delta(1.25_f32, floats[0], 0.001)
+          assert_in_delta(2.75_f32, floats[1], 0.001)
+        end
+      end
+    end
+  end
+
+  def test_delete_round_trip
+    with_temp_format_source_vcf do |source_path|
+      with_temp_output_vcf do |output_path|
+        HTS::Bcf.open(source_path) do |input_bcf|
+          record = input_bcf.first
+          format = record.format
+
+          assert_equal(true, format.delete("ST"))
+          assert_equal(false, format.delete("ST"))
+
+          HTS::Bcf.open(output_path, "w") do |output_bcf|
+            output_bcf.write_header(input_bcf.header)
+            output_bcf << record
+          end
+        end
+
+        HTS::Bcf.open(output_path) do |verify_bcf|
+          assert_nil verify_bcf.first.format.get_string("ST")
+        end
+      end
+    end
+  end
+
+  def test_update_values_not_divisible_by_samples
+    with_temp_format_source_vcf do |source_path|
+      HTS::Bcf.open(source_path) do |bcf|
+        format = bcf.first.format
+
+        ex = assert_raises(Exception) { format.update_int("GQ", [1, 2, 3]) }
+        assert_equal "FORMAT values for GQ must be divisible by sample count (2)", ex.message
+      end
+    end
+  end
+
+  def test_update_string_requires_one_value_per_sample
+    with_temp_format_source_vcf do |source_path|
+      HTS::Bcf.open(source_path) do |bcf|
+        format = bcf.first.format
+
+        ex = assert_raises(Exception) { format.update_string("ST", "solo") }
+        assert_equal "FORMAT string values for ST must provide one entry per sample (2)", ex.message
+      end
+    end
   end
 end
