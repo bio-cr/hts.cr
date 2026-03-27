@@ -411,43 +411,36 @@
 <p>Read SAM / BAM / CRAM</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;hts/bam&quot;</span>
 
-bam <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bam</span>.open(bam_path)
+<span class="t">HTS</span><span class="t">::</span><span class="t">Bam</span>.open(bam_path) <span class="k">do</span> <span class="o">|</span>bam<span class="o">|</span>
+  bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
+    tags <span class="o">=</span> r.aux
 
-bam.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
-  p name: r.qname,
-    flag: r.flag.value,
-    chrm: r.chrom,
-    strt: r.pos <span class="o">+</span> <span class="n">1</span>,
-    mapq: r.mapq,
-    cigr: r.cigar.to_s,
-    mchr: r.mate_chrom,
-    mpos: r.mpos <span class="o">+</span> <span class="n">1</span>,
-    isiz: r.isize,
-    seqs: r.seq,
-    qual: r.qual_string,
-    axMC: r.aux(<span class="s">&quot;MC&quot;</span>)
-<span class="k">end</span>
-
-bam.close</code></pre>
+    p name: r.qname,
+      chrom: r.chrom,
+      start: r.pos <span class="o">+</span> <span class="n">1</span>,
+      cigar: r.cigar.to_s,
+      seq: r.seq,
+      qual: r.qual_string,
+      nm: tags.get_int(<span class="s">&quot;NM&quot;</span>),
+      mc: tags.get_string(<span class="s">&quot;MC&quot;</span>)
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
 <p>Read VCF / BCF</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;hts/bcf&quot;</span>
 
-bcf <span class="o">=</span> <span class="t">HTS</span><span class="t">::</span><span class="t">Bcf</span>.open(bcf_path)
-
-bcf.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
-  p chrom:  r.chrom,
-    pos:    r.pos,
-    id:     r.id,
-    qual:   r.qual,
-    filter: r.filter,
-    ref:    r.ref,
-    alt:    r.alt,
-  <span class="c"># alleles r.alleles</span>
-  <span class="c"># info:   r.info,</span>
-  <span class="c"># format  r.format</span>
-<span class="k">end</span>
-
-bcf.close</code></pre>
+<span class="t">HTS</span><span class="t">::</span><span class="t">Bcf</span>.open(bcf_path) <span class="k">do</span> <span class="o">|</span>bcf<span class="o">|</span>
+  bcf.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
+    p chrom: r.chrom,
+      pos: r.pos <span class="o">+</span> <span class="n">1</span>,
+      id: r.id,
+      qual: r.qual,
+      filter: r.filter,
+      ref: r.ref,
+      alt: r.alt,
+      info_dp: r.info[<span class="s">&quot;DP&quot;</span>],
+      genotypes: r.format.get_string(<span class="s">&quot;GT&quot;</span>)
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
 <h2><a id="api-overview" class="anchor" href="#api-overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
