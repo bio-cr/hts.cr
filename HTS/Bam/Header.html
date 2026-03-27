@@ -308,7 +308,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L3" target="_blank">
         hts/bam/header.cr
       </a>
     
@@ -316,6 +316,35 @@
   
 
 
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="HD_TAG_MAP">
+        <strong>HD_TAG_MAP</strong> = <code>{<span class="n">:version</span> <span class="o">=&gt;</span> <span class="s">&quot;VN&quot;</span>, <span class="n">:sort_order</span> <span class="o">=&gt;</span> <span class="s">&quot;SO&quot;</span>, <span class="n">:group_order</span> <span class="o">=&gt;</span> <span class="s">&quot;GO&quot;</span>, <span class="n">:subsorting</span> <span class="o">=&gt;</span> <span class="s">&quot;SS&quot;</span>}</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RG_TAG_MAP">
+        <strong>RG_TAG_MAP</strong> = <code>{<span class="n">:id</span> <span class="o">=&gt;</span> <span class="s">&quot;ID&quot;</span>, <span class="n">:sample</span> <span class="o">=&gt;</span> <span class="s">&quot;SM&quot;</span>, <span class="n">:library</span> <span class="o">=&gt;</span> <span class="s">&quot;LB&quot;</span>, <span class="n">:platform</span> <span class="o">=&gt;</span> <span class="s">&quot;PL&quot;</span>, <span class="n">:platform_unit</span> <span class="o">=&gt;</span> <span class="s">&quot;PU&quot;</span>, <span class="n">:center</span> <span class="o">=&gt;</span> <span class="s">&quot;CN&quot;</span>, <span class="n">:description</span> <span class="o">=&gt;</span> <span class="s">&quot;DS&quot;</span>, <span class="n">:date</span> <span class="o">=&gt;</span> <span class="s">&quot;DT&quot;</span>, <span class="n">:flow_order</span> <span class="o">=&gt;</span> <span class="s">&quot;FO&quot;</span>, <span class="n">:key_sequence</span> <span class="o">=&gt;</span> <span class="s">&quot;KS&quot;</span>, <span class="n">:program</span> <span class="o">=&gt;</span> <span class="s">&quot;PG&quot;</span>, <span class="n">:insert_size</span> <span class="o">=&gt;</span> <span class="s">&quot;PI&quot;</span>, <span class="n">:molecule_topology</span> <span class="o">=&gt;</span> <span class="s">&quot;PM&quot;</span>}</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SQ_TAG_MAP">
+        <strong>SQ_TAG_MAP</strong> = <code>{<span class="n">:name</span> <span class="o">=&gt;</span> <span class="s">&quot;SN&quot;</span>, <span class="n">:length</span> <span class="o">=&gt;</span> <span class="s">&quot;LN&quot;</span>, <span class="n">:assembly</span> <span class="o">=&gt;</span> <span class="s">&quot;AS&quot;</span>, <span class="n">:md5</span> <span class="o">=&gt;</span> <span class="s">&quot;M5&quot;</span>, <span class="n">:species</span> <span class="o">=&gt;</span> <span class="s">&quot;SP&quot;</span>, <span class="n">:uri</span> <span class="o">=&gt;</span> <span class="s">&quot;UR&quot;</span>, <span class="n">:alt_names</span> <span class="o">=&gt;</span> <span class="s">&quot;AN&quot;</span>}</code>
+      </dt>
+      
+    
+  </dl>
 
 
 
@@ -388,7 +417,37 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#add_rg%28id%3AString%2C%2A%2Atags%29-instance-method" class="signature"><strong>#add_rg</strong>(id : String, **tags)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_sq%28name%3AString%2Clength%3AInt%2C%2A%2Atags%29-instance-method" class="signature"><strong>#add_sq</strong>(name : String, length : Int, **tags)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#append%28line%3AString%29-instance-method" class="signature"><strong>#append</strong>(line : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#clone-instance-method" class="signature"><strong>#clone</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#count_lines%28type%3AString%29%3AInt32-instance-method" class="signature"><strong>#count_lines</strong>(type : String) : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete_line%28type%3AString%2Cid_key%3AString%7CNil%3Dnil%2Cid_value%3AString%7CNil%3Dnil%29%3ABool-instance-method" class="signature"><strong>#delete_line</strong>(type : String, id_key : String | Nil = <span class="n">nil</span>, id_value : String | Nil = <span class="n">nil</span>) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete_tag%28type%3AString%2Cid_key%3AString%7CNil%2Cid_value%3AString%7CNil%2Ckey%3AString%29%3ABool-instance-method" class="signature"><strong>#delete_tag</strong>(type : String, id_key : String | Nil, id_value : String | Nil, key : String) : Bool</a>
         
       </li>
     
@@ -398,9 +457,39 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#find_line%28type%3AString%2Cid_key%3AString%7CNil%3Dnil%2Cid_value%3AString%7CNil%3Dnil%29%3AString%7CNil-instance-method" class="signature"><strong>#find_line</strong>(type : String, id_key : String | Nil = <span class="n">nil</span>, id_value : String | Nil = <span class="n">nil</span>) : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#find_tag%28type%3AString%2Cid_key%3AString%7CNil%2Cid_value%3AString%7CNil%2Ckey%3AString%29%3AString%7CNil-instance-method" class="signature"><strong>#find_tag</strong>(type : String, id_key : String | Nil, id_value : String | Nil, key : String) : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#get_tid%28name%29-instance-method" class="signature"><strong>#get_tid</strong>(name)</a>
         
           <div class="summary"><p>experimental</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#line_index%28type%3AString%2Ckey%3AString%29%3AInt32-instance-method" class="signature"><strong>#line_index</strong>(type : String, key : String) : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#line_name%28type%3AString%2Cpos%3AInt%29%3AString%7CNil-instance-method" class="signature"><strong>#line_name</strong>(type : String, pos : Int) : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#remove_rg%28id%3AString%29%3ABool-instance-method" class="signature"><strong>#remove_rg</strong>(id : String) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#remove_sq%28name%3AString%29%3ABool-instance-method" class="signature"><strong>#remove_sq</strong>(name : String) : Bool</a>
         
       </li>
     
@@ -433,6 +522,21 @@
     
       <li class="entry-summary">
         <a href="#to_unsafe%3APointer%28HTS%3A%3ALibHTS%3A%3ASamHdrT%29-instance-method" class="signature"><strong>#to_unsafe</strong> : Pointer(HTS::LibHTS::SamHdrT)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_hd%28%2A%2Atags%29-instance-method" class="signature"><strong>#update_hd</strong>(**tags)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_rg%28id%3AString%2C%2A%2Atags%29-instance-method" class="signature"><strong>#update_rg</strong>(id : String, **tags)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_sq%28name%3AString%2C%2A%2Atags%29-instance-method" class="signature"><strong>#update_sq</strong>(name : String, **tags)</a>
         
       </li>
     
@@ -491,7 +595,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L41" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -512,7 +616,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -528,7 +632,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -556,7 +660,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L37" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -586,7 +690,55 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L166" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_rg(id:String,**tags)-instance-method">
+      <div class="signature">
+        
+        def <strong>add_rg</strong>(id : String, **tags)
+
+        <a class="method-permalink" href="#add_rg%28id%3AString%2C%2A%2Atags%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L149" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_sq(name:String,length:Int,**tags)-instance-method">
+      <div class="signature">
+        
+        def <strong>add_sq</strong>(name : String, length : Int, **tags)
+
+        <a class="method-permalink" href="#add_sq%28name%3AString%2Clength%3AInt%2C%2A%2Atags%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L132" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="append(line:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>append</strong>(line : String)
+
+        <a class="method-permalink" href="#append%28line%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L78" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -602,7 +754,55 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L190" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count_lines(type:String):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count_lines</strong>(type : String) : Int32
+
+        <a class="method-permalink" href="#count_lines%28type%3AString%29%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L113" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete_line(type:String,id_key:String|Nil=nil,id_value:String|Nil=nil):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>delete_line</strong>(type : String, id_key : String | Nil = <span class="n">nil</span>, id_value : String | Nil = <span class="n">nil</span>) : Bool
+
+        <a class="method-permalink" href="#delete_line%28type%3AString%2Cid_key%3AString%7CNil%3Dnil%2Cid_value%3AString%7CNil%3Dnil%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L105" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete_tag(type:String,id_key:String|Nil,id_value:String|Nil,key:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>delete_tag</strong>(type : String, id_key : String | Nil, id_value : String | Nil, key : String) : Bool
+
+        <a class="method-permalink" href="#delete_tag%28type%3AString%2Cid_key%3AString%7CNil%2Cid_value%3AString%7CNil%2Ckey%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L109" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -618,7 +818,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L369" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="find_line(type:String,id_key:String|Nil=nil,id_value:String|Nil=nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>find_line</strong>(type : String, id_key : String | Nil = <span class="n">nil</span>, id_value : String | Nil = <span class="n">nil</span>) : String | Nil
+
+        <a class="method-permalink" href="#find_line%28type%3AString%2Cid_key%3AString%7CNil%3Dnil%2Cid_value%3AString%7CNil%3Dnil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L85" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="find_tag(type:String,id_key:String|Nil,id_value:String|Nil,key:String):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>find_tag</strong>(type : String, id_key : String | Nil, id_value : String | Nil, key : String) : String | Nil
+
+        <a class="method-permalink" href="#find_tag%28type%3AString%2Cid_key%3AString%7CNil%2Cid_value%3AString%7CNil%2Ckey%3AString%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -639,7 +871,71 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L186" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="line_index(type:String,key:String):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>line_index</strong>(type : String, key : String) : Int32
+
+        <a class="method-permalink" href="#line_index%28type%3AString%2Ckey%3AString%29%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L117" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="line_name(type:String,pos:Int):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>line_name</strong>(type : String, pos : Int) : String | Nil
+
+        <a class="method-permalink" href="#line_name%28type%3AString%2Cpos%3AInt%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L121" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="remove_rg(id:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>remove_rg</strong>(id : String) : Bool
+
+        <a class="method-permalink" href="#remove_rg%28id%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L162" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="remove_sq(name:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>remove_sq</strong>(name : String) : Bool
+
+        <a class="method-permalink" href="#remove_sq%28name%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L145" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -655,7 +951,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L58" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -671,7 +967,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L72" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -687,7 +983,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -703,7 +999,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L66" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -735,7 +1031,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L60" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L181" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -751,7 +1047,55 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/1fa3278171df5e5d6ce6dbd29983bf5292cbe971/src/hts/bam/header.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L54" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_hd(**tags)-instance-method">
+      <div class="signature">
+        
+        def <strong>update_hd</strong>(**tags)
+
+        <a class="method-permalink" href="#update_hd%28%2A%2Atags%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L126" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_rg(id:String,**tags)-instance-method">
+      <div class="signature">
+        
+        def <strong>update_rg</strong>(id : String, **tags)
+
+        <a class="method-permalink" href="#update_rg%28id%3AString%2C%2A%2Atags%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L156" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_sq(name:String,**tags)-instance-method">
+      <div class="signature">
+        
+        def <strong>update_sq</strong>(name : String, **tags)
+
+        <a class="method-permalink" href="#update_sq%28name%3AString%2C%2A%2Atags%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/cf2b543c1926bae16b2f49a5f3635521c9113756/src/hts/bam/header.cr#L139" target="_blank">View source</a>]
         
       </div>
     </div>
