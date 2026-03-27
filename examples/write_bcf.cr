@@ -9,38 +9,38 @@ require "../src/hts"
 
 out_path = ARGV[0]? || File.expand_path("./out.bcf", __DIR__)
 
-# Build a minimal VCF/BCF header for writing (no samples)
 header = HTS::Bcf::Header.new
-# Set VCF version (optional but nice to have)
-header.set_version("VCFv4.3")
-# Define one contig
-header.append("##contig=<ID=ref,length=1000>")
-# Finalize header dictionaries
-header.sync
+header.edit do |h|
+  h.set_version("VCFv4.3")
+  h.add_contig("ref", length: 1000)
+  h.add_info("DP", number: 1, type: :int, description: "Read depth")
+  h.add_format("GT", number: 1, type: :string, description: "Genotype")
+  h.add_format("GQ", number: 1, type: :int, description: "Genotype quality")
+  h.add_sample("sample1")
+end
 
-# Open output BCF in write mode and write the header
 HTS::Bcf.open(out_path, "wb") do |bcf|
   bcf.write_header(header)
 
-  # Create a record and fill minimal fields (shared columns only)
   rec = HTS::Bcf::Record.new(header)
 
-  # Map contig name to rid and set coordinates (BCF uses 0-based POS internally)
-  rid = HTS::LibHTS2.bcf_hdr_name2id(header, "ref")
+  rid = header.name2id("ref")
   raise "Unknown contig 'ref' in header" if rid < 0
   rec.rid = rid
-  rec.pos = 0         # 0-based => corresponds to POS=1 in VCF
-  rec.qual = 60.0_f32 # Phred QUAL
+  rec.pos = 0
+  rec.qual = 60.0_f32
   rec.id = "v1"
 
-  # Set REF/ALT alleles (comma-separated)
-  # This updates the record's allele block and derived lengths
   rc = HTS::LibHTS.bcf_update_alleles_str(header, rec, "A,C")
   raise "bcf_update_alleles_str failed (rc=#{rc})" if rc < 0
 
-  # (Optional) update INFO/FORMAT here using LibHTS2.bcf_update_info_* / bcf_update_format_*
+  rec.info.update_int("DP", 42)
+  rec.format.update_genotypes([
+    HTS::LibHTS2.bcf_gt_unphased(0),
+    HTS::LibHTS2.bcf_gt_unphased(1),
+  ])
+  rec.format.update_int("GQ", 99)
 
-  # Write the record
   bcf << rec
 
   puts "Wrote BCF to #{out_path}"

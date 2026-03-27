@@ -31,12 +31,10 @@ in_path = ARGV.shift
 def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?, threads : Int32)
   HTS::Bam.open(in_path, threads: threads) do |bam|
     io.puts ["chrom", "pos", "depth", "A", "C", "G", "T", "N", "n_del", "n_refskip"].join('\t')
-    hdr_ptr = bam.header.to_unsafe
 
     HTS::Bam::Pileup.open(bam, region, maxcnt) do |pileup|
       pileup.each do |col|
-        name_ptr = HTS::LibHTS.sam_hdr_tid2name(hdr_ptr, col.tid)
-        chrom = name_ptr.null? ? col.tid.to_s : String.new(name_ptr)
+        chrom = col.chrom.empty? ? "*" : col.chrom
         pos1 = col.pos + 1
 
         a = c = g = t = n = 0
@@ -71,8 +69,8 @@ rescue IO::Error
   # Ignore broken pipe errors (e.g., when piped to head)
 end
 
-if output_path
-  File.open(output_path.not_nil!, "w") do |io|
+if path = output_path
+  File.open(path, "w") do |io|
     run_pileup(io, in_path, region, maxcnt, threads)
   end
 else

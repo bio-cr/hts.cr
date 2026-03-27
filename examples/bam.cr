@@ -1,24 +1,24 @@
 require "../src/hts"
 
-if ARGV.empty?
-  bam_path = File.expand_path("../test/fixtures/poo.sort.bam", __DIR__)
-else
-  bam_path = ARGV[0]
-end
+bam_path = ARGV[0]? || File.expand_path("../test/fixtures/poo.sort.bam", __DIR__)
 
 HTS::Bam.open(bam_path) do |b|
   b.each do |r|
-    p name: r.qname,
-      flag: r.flag.value,
-      chrm: r.chrom,
-      strt: r.pos + 1,
-      mapq: r.mapq,
-      cigr: r.cigar.to_s,
-      mchr: r.mate_chrom,
-      mpos: r.mpos + 1,
-      isiz: r.isize,
-      seqs: r.seq,
-      qual: r.qual_string,
-      axMC: r.aux("MC")
+    tags = r.aux
+    puts({
+      name:        r.qname,
+      flag:        r.flag.value,
+      chrom:       r.chrom,
+      start:       r.pos + 1,
+      mapq:        r.mapq,
+      cigar:       r.cigar.to_s,
+      mate_chrom:  r.mate_chrom,
+      mate_start:  r.mate_pos >= 0 ? r.mate_pos + 1 : nil,
+      insert_size: r.insert_size,
+      seq:         r.seq,
+      qual:        r.qual_string,
+      nm:          tags.get_int("NM"),
+      mc:          tags.get_string("MC"),
+    }.inspect)
   end
 end

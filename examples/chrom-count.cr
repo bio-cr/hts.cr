@@ -1,4 +1,4 @@
-require "../src/hts/bam"
+require "../src/hts"
 require "option_parser"
 
 nthreads = 0
@@ -22,24 +22,11 @@ end
 
 fname = ARGV[0]
 
-bam = HTS::Bam.open(fname, threads: nthreads)
-
-# Simple way
-
-# puts bam.map { |r|
-#        chr = r.chrom
-#        chr == "" ? "*" : chr
-#      }.tally
-#       .map { |i| i.join("\t") }
-#       .join("\n")\
-
-# Want to make it even faster?
-# Use tid instead of chrom to make it even faster.
-
-puts bam.map { |r| r.tid }
-  .tally
-  .map { |tid, num|
-    ptr = HTS::LibHTS.sam_hdr_tid2name(bam.header, tid)
-    chrom = ptr.null? ? "*" : String.new(ptr)
-    "#{chrom}\t#{num}"
-  }.join("\n")
+HTS::Bam.open(fname, threads: nthreads) do |bam|
+  puts bam.map(&.tid)
+    .tally
+    .map { |tid, num|
+      chrom = tid == -1 ? "*" : bam.header.target_name(tid)
+      "#{chrom}\t#{num}"
+    }.join("\n")
+end

@@ -26,17 +26,20 @@ HTS::Bam.open(in_path) do |bam|
   HTS::Bam::Pileup.open(bam, region) do |pileup|
     pileup.each do |column|
       column.alignments.each do |pileup_read|
-        next if pileup_read.del?
+        next if pileup_read.del? || pileup_read.refskip?
 
         # Get base modification information for this read
         base_mod = pileup_read.record.base_mod
+        qpos = pileup_read.query_pos
+        next if qpos < 0
 
         # Check for modifications at the current query position
-        if mod_pos = base_mod.at_pos(pileup_read.query_pos)
+        if mod_pos = base_mod[qpos]
           mod_pos.modifications.each do |mod|
             prob = mod.probability
             prob_str = prob ? prob.round(3).to_s : "N/A"
-            puts "#{column.reference_name}\t#{column.pos + 1}\t#{mod.canonical}\t#{pileup_read.record.strand}\t#{mod.code}\t#{prob_str}"
+            chrom = column.chrom.empty? ? "*" : column.chrom
+            puts "#{chrom}\t#{column.pos + 1}\t#{mod.canonical}\t#{pileup_read.record.strand}\t#{mod.code}\t#{prob_str}"
           end
         end
       end

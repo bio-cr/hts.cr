@@ -39,24 +39,20 @@ Read SAM / BAM / CRAM
 ```crystal
 require "hts/bam"
 
-bam = HTS::Bam.open(bam_path)
+HTS::Bam.open(bam_path) do |bam|
+  bam.each do |r|
+    tags = r.aux
 
-bam.each do |r|
-  p name: r.qname,
-    flag: r.flag.value,
-    chrm: r.chrom,
-    strt: r.pos + 1,
-    mapq: r.mapq,
-    cigr: r.cigar.to_s,
-    mchr: r.mate_chrom,
-    mpos: r.mpos + 1,
-    isiz: r.isize,
-    seqs: r.seq,
-    qual: r.qual_string,
-    axMC: r.aux("MC")
+    p name: r.qname,
+      chrom: r.chrom,
+      start: r.pos + 1,
+      cigar: r.cigar.to_s,
+      seq: r.seq,
+      qual: r.qual_string,
+      nm: tags.get_int("NM"),
+      mc: tags.get_string("MC")
+  end
 end
-
-bam.close
 ```
 
 Read VCF / BCF
@@ -64,22 +60,19 @@ Read VCF / BCF
 ```crystal
 require "hts/bcf"
 
-bcf = HTS::Bcf.open(bcf_path)
-
-bcf.each do |r|
-  p chrom:  r.chrom,
-    pos:    r.pos,
-    id:     r.id,
-    qual:   r.qual,
-    filter: r.filter,
-    ref:    r.ref,
-    alt:    r.alt,
-  # alleles r.alleles
-  # info:   r.info,
-  # format  r.format
+HTS::Bcf.open(bcf_path) do |bcf|
+  bcf.each do |r|
+    p chrom: r.chrom,
+      pos: r.pos + 1,
+      id: r.id,
+      qual: r.qual,
+      filter: r.filter,
+      ref: r.ref,
+      alt: r.alt,
+      info_dp: r.info["DP"],
+      genotypes: r.format.get_string("GT")
+  end
 end
-
-bcf.close
 ```
 
 ## API Overview
