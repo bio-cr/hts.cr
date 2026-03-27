@@ -245,7 +245,7 @@ class BcfFormatTest < Minitest::Test
     assert_nil format.get_float("NO_SUCH_TAG")
     assert_nil format.get_string("NO_SUCH_TAG")
 
-    ex = assert_raises(Exception) { format.get_float("PL") }
+    ex = assert_raises(HTS::Bcf::FormatTypeError) { format.get_float("PL") }
     assert_equal "Tag PL is not float FORMAT field", ex.message
   end
 
@@ -263,7 +263,7 @@ class BcfFormatTest < Minitest::Test
     record.pos = 0
     format = record.format
 
-    ex = assert_raises(Exception) { format.get_string("BAD") }
+    ex = assert_raises(HTS::Bcf::UnsupportedFormatOperationError) { format.get_string("BAD") }
     assert_equal "FORMAT flag fields are not supported: BAD", ex.message
   end
 

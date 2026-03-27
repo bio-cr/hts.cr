@@ -9,7 +9,7 @@ module HTS
       end
 
       def update_int(tag : String, values : Array(Int32))
-        raise "Use update_genotypes for GT" if tag == "GT"
+        raise UnsupportedFormatOperationError.new("Use update_genotypes for GT") if tag == "GT"
 
         ensure_expected_format_type!(tag, :int, "integer")
         validate_numeric_sample_count!(tag, values.size)
@@ -41,7 +41,7 @@ module HTS
       end
 
       def update_string(tag : String, values : Array(String))
-        raise "Use update_genotypes for GT" if tag == "GT"
+        raise UnsupportedFormatOperationError.new("Use update_genotypes for GT") if tag == "GT"
 
         ensure_expected_format_type!(tag, :string, "string")
         validate_string_sample_count!(tag, values.size)
@@ -83,7 +83,7 @@ module HTS
         hdr = @record.header
         rec = @record
         rc = LibHTS.bcf_update_format(hdr, rec, tag, Pointer(Void).null, 0, bcf_type)
-        raise "Failed to delete FORMAT/#{tag}" if rc < 0
+        raise FormatUpdateError.new("Failed to delete FORMAT/#{tag}") if rc < 0
         true
       end
 
@@ -112,7 +112,7 @@ module HTS
         return nil unless rc
 
         fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
-        raise "Failed to inspect FORMAT/#{tag}" if fmt.null?
+        raise FormatReadError.new("Failed to inspect FORMAT/#{tag}") if fmt.null?
 
         begin
           bytes_per_sample = fmt.value.n
@@ -194,19 +194,19 @@ module HTS
       end
 
       private def raise_unsupported_format_flag(tag : String)
-        raise "FORMAT flag fields are not supported: #{tag}" if @record.header.format_type(tag) == :flag
+        raise UnsupportedFormatOperationError.new("FORMAT flag fields are not supported: #{tag}") if @record.header.format_type(tag) == :flag
       end
 
       private def ensure_expected_format_type!(tag : String, expected_type : Symbol, expected_label : String)
         actual_type = tag == "GT" ? :string : @record.header.format_type(tag)
-        raise "FORMAT tag #{tag} not defined in header" unless actual_type
+        raise FormatDefinitionError.new("FORMAT tag #{tag} not defined in header") unless actual_type
 
         raise_unsupported_format_flag(tag)
-        raise "Tag #{tag} is not #{expected_label} FORMAT field" unless actual_type == expected_type
+        raise FormatTypeError.new("Tag #{tag} is not #{expected_label} FORMAT field") unless actual_type == expected_type
       end
 
       private def ensure_gt_defined!
-        raise "FORMAT tag GT not defined in header" unless @record.header.format_type("GT")
+        raise FormatDefinitionError.new("FORMAT tag GT not defined in header") unless @record.header.format_type("GT")
       end
 
       private def validate_numeric_sample_count!(tag : String, value_count : Int32)
@@ -228,11 +228,11 @@ module HTS
       private def check_update_rc!(rc : Int32, tag : String)
         case rc
         when -1
-          raise "FORMAT tag #{tag} not defined in header"
+          raise FormatDefinitionError.new("FORMAT tag #{tag} not defined in header")
         when 0
           rc
         else
-          raise "Failed to update FORMAT/#{tag}" if rc < 0
+          raise FormatUpdateError.new("Failed to update FORMAT/#{tag}") if rc < 0
           rc
         end
       end
@@ -242,9 +242,9 @@ module HTS
         when -1, -3
           nil
         when -2
-          raise "Tag #{tag} is not #{expected_type} FORMAT field"
+          raise FormatTypeError.new("Tag #{tag} is not #{expected_type} FORMAT field")
         when -4
-          raise "Failed to read FORMAT/#{tag}"
+          raise FormatReadError.new("Failed to read FORMAT/#{tag}")
         else
           rc
         end
@@ -305,7 +305,7 @@ module HTS
         return [] of Array(T) if sample_count <= 0
 
         if values.size % sample_count != 0
-          raise "Failed to split FORMAT values by sample"
+          raise FormatReadError.new("Failed to split FORMAT values by sample")
         end
 
         values_per_sample = values.size // sample_count

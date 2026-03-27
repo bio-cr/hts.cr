@@ -15,8 +15,6 @@ module HTS
           get_float(tag)
         when :string
           get_string(tag)
-        else
-          nil
         end
       end
 
@@ -116,11 +114,11 @@ module HTS
         when -1
           val = nil
         when -2
-          raise "Tag #{tag} is not a flag INFO field"
+          raise InfoTypeError.new("Tag #{tag} is not a flag INFO field")
         when -4
-          raise "Failed to read INFO/#{tag}"
+          raise InfoReadError.new("Failed to read INFO/#{tag}")
         else
-          raise "unknown return value"
+          raise InfoReadError.new("Unknown return value from bcf_get_info_flag")
         end
         LibHTS.hts_free(dst) unless dst.null?
         val
@@ -144,7 +142,7 @@ module HTS
 
       def update_int64(tag : String, values : Array(Int64))
         # FIXME
-        raise "htslib backend does not implement int64 INFO update (BCF_HT_LONG)"
+        raise UnsupportedInfoOperationError.new("htslib backend does not implement int64 INFO update (BCF_HT_LONG)")
       end
 
       def update_float(tag : String, value : Number)
@@ -201,16 +199,16 @@ module HTS
         when -1, -3
           nil
         when -2
-          raise "Tag #{tag} is not #{expected_type} INFO field"
+          raise InfoTypeError.new("Tag #{tag} is not #{expected_type} INFO field")
         when -4
-          raise "Failed to read INFO/#{tag}"
+          raise InfoReadError.new("Failed to read INFO/#{tag}")
         else
           rc
         end
       end
 
       private def check_update_rc!(rc : Int32, tag : String)
-        raise "Failed to update INFO/#{tag}" if rc < 0
+        raise InfoUpdateError.new("Failed to update INFO/#{tag}") if rc < 0
       end
     end
   end

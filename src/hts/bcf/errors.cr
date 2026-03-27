@@ -23,5 +23,41 @@ module HTS
 
     class UnknownSampleError < SubsetError
     end
+
+    class FieldError < Error
+    end
+
+    class InfoError < FieldError
+    end
+
+    class InfoTypeError < InfoError
+    end
+
+    class InfoReadError < InfoError
+    end
+
+    class InfoUpdateError < InfoError
+    end
+
+    class UnsupportedInfoOperationError < InfoError
+    end
+
+    class FormatError < FieldError
+    end
+
+    class FormatDefinitionError < FormatError
+    end
+
+    class FormatTypeError < FormatError
+    end
+
+    class FormatReadError < FormatError
+    end
+
+    class FormatUpdateError < FormatError
+    end
+
+    class UnsupportedFormatOperationError < FormatError
+    end
   end
 end

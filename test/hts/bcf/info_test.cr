@@ -108,7 +108,7 @@ class BcfInfoTest < Minitest::Test
     assert_nil info.get_string("NO_SUCH_TAG")
     assert_nil info.get_flag("NO_SUCH_TAG")
 
-    ex = assert_raises(Exception) { info.get_float("DP") }
+    ex = assert_raises(HTS::Bcf::InfoTypeError) { info.get_float("DP") }
     assert_equal "Tag DP is not float INFO field", ex.message
   end
 
@@ -151,7 +151,7 @@ class BcfInfoTest < Minitest::Test
         info.update_int("WINT", [10, 20])
         assert_equal([10, 20], info.get_int("WINT"))
 
-        ex = assert_raises(Exception) { info.update_int64("W64", [(1_i64 << 40)]) }
+        ex = assert_raises(HTS::Bcf::UnsupportedInfoOperationError) { info.update_int64("W64", [(1_i64 << 40)]) }
         assert_includes ex.message.to_s, "BCF_HT_LONG"
 
         info.update_float("WFLOAT", [0.25_f32, 0.5_f32])
@@ -178,7 +178,7 @@ class BcfInfoTest < Minitest::Test
         info.update_int("WINT", 7)
         assert_equal([7], info.get_int("WINT"))
 
-        ex = assert_raises(Exception) { info.update_int64("W64", (1_i64 << 39)) }
+        ex = assert_raises(HTS::Bcf::UnsupportedInfoOperationError) { info.update_int64("W64", (1_i64 << 39)) }
         assert_includes ex.message.to_s, "BCF_HT_LONG"
 
         info.update_float("WFLOAT", 1.25)
