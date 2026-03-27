@@ -1,7 +1,10 @@
 require "minitest/autorun"
 require "../../src/hts/bcf"
+require "./bcf/multisample_helper"
 
 class BcfTest < Minitest::Test
+  include TestBcfMultisampleHelper
+
   def teardown
     @bcf.try &.close
     @indexed_bcf.try &.close
@@ -18,10 +21,6 @@ class BcfTest < Minitest::Test
 
   def test_bcf_path
     File.expand_path("../fixtures/test.bcf", __DIR__)
-  end
-
-  def test_multi_sample_bcf_path
-    File.expand_path("../../../htslib/test/tabix/vcf_file.bcf", __DIR__)
   end
 
   def test_bcf_index_path
@@ -106,13 +105,15 @@ class BcfTest < Minitest::Test
   end
 
   def test_initialize_with_subset
-    subset_bcf = HTS::Bcf.new(test_multi_sample_bcf_path, subset: ["B"])
+    with_temp_multisample_bcf do |path|
+      subset_bcf = HTS::Bcf.new(path, subset: ["B"])
 
-    assert_equal ["B"], subset_bcf.samples
-    assert_equal 1, subset_bcf.nsamples
-    assert_equal ["0/1"], subset_bcf.first.format.get_string("GT")
-  ensure
-    subset_bcf.try &.close
+      assert_equal ["B"], subset_bcf.samples
+      assert_equal 1, subset_bcf.nsamples
+      assert_equal ["0/1"], subset_bcf.first.format.get_string("GT")
+    ensure
+      subset_bcf.try &.close
+    end
   end
 
   def test_query_requires_index

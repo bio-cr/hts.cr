@@ -2,10 +2,10 @@ module HTS
   class Bam < Hts
     class Header
       HD_TAG_MAP = {
-        :version      => "VN",
-        :sort_order   => "SO",
-        :group_order  => "GO",
-        :subsorting   => "SS",
+        :version     => "VN",
+        :sort_order  => "SO",
+        :group_order => "GO",
+        :subsorting  => "SS",
       }
 
       SQ_TAG_MAP = {
