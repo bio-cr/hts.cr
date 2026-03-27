@@ -341,10 +341,18 @@ module HTS
       {% end %}
 
       def to_s(io : IO)
-        kstr = Pointer(LibHTS::KstringT).malloc
-        raise "Failed to format bam record" if LibHTS.sam_format1(@header, @bam1, kstr) == -1
+        kstr = LibHTS::KstringT.new
+        kstr.l = 0
+        kstr.m = 0
+        kstr.s = Pointer(LibC::Char).null
 
-        io << (String.new kstr.value.s)
+        begin
+          raise "Failed to format bam record" if LibHTS.sam_format1(@header, @bam1, pointerof(kstr)) == -1
+
+          io << (String.new kstr.s)
+        ensure
+          LibC.free(kstr.s) unless kstr.s.null?
+        end
       end
 
       def clone

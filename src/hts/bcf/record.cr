@@ -117,9 +117,17 @@ module HTS
 
       def to_s(io : IO)
         ksr = LibHTS::KstringT.new
-        raise "Failed to format record" if LibHTS.vcf_format(@header, @bcf1, pointerof(ksr)) == -1
+        ksr.l = 0
+        ksr.m = 0
+        ksr.s = Pointer(LibC::Char).null
 
-        io << (String.new ksr.s)
+        begin
+          raise "Failed to format record" if LibHTS.vcf_format(@header, @bcf1, pointerof(ksr)) == -1
+
+          io << (String.new ksr.s)
+        ensure
+          LibC.free(ksr.s) unless ksr.s.null?
+        end
       end
 
       def clone

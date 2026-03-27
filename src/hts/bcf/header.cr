@@ -87,10 +87,18 @@ module HTS
 
       def to_s(io : IO)
         kstr = LibHTS::KstringT.new
-        unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
-          raise "Failed to format header"
+        kstr.l = 0
+        kstr.m = 0
+        kstr.s = Pointer(LibC::Char).null
+
+        begin
+          unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
+            raise "Failed to format header"
+          end
+          io << (String.new kstr.s)
+        ensure
+          LibC.free(kstr.s) unless kstr.s.null?
         end
-        io << (String.new kstr.s)
       end
 
       def clone
