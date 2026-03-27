@@ -38,6 +38,22 @@ class BcfHeaderTest < Minitest::Test
     assert_equal 1, hdr.nsamples
   end
 
+  def test_target_count
+    assert_equal 1, hdr.target_count
+  end
+
+  def test_target_name
+    assert_equal "poo", hdr.target_name(0)
+  end
+
+  def test_target_names
+    assert_equal ["poo"], hdr.target_names
+  end
+
+  def test_get_tid
+    assert_equal 0, hdr.get_tid("poo")
+  end
+
   def test_samples
     assert_equal ["poo.sort.bam"], hdr.samples
   end

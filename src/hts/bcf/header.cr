@@ -30,6 +30,10 @@ module HTS
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
 
+      def target_count : Int32
+        target_names.size.to_i32
+      end
+
       def name2id(name : String) : Int32
         LibHTS2.bcf_hdr_name2id(self, name)
       end
@@ -40,6 +44,20 @@ module HTS
 
       def target_name(rid : Int32) : String
         String.new LibHTS2.bcf_hdr_id2name(self, rid)
+      end
+
+      def target_names : Array(String)
+        nseqs = 0
+        names = LibHTS.bcf_hdr_seqnames(@bcf_hdr, pointerof(nseqs))
+        begin
+          return [] of String if names.null? || nseqs <= 0
+
+          Array(String).new(nseqs) do |index|
+            String.new(names[index])
+          end
+        ensure
+          LibHTS.hts_free(names.as(Void*)) unless names.null?
+        end
       end
 
       # Character is reported as :string because htslib exposes both via BCF_HT_STR.
@@ -128,8 +146,6 @@ module HTS
           :float
         when LibHTS2::BCF_HT_STR
           :string
-        else
-          nil
         end
       end
 
