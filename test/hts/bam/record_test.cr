@@ -313,8 +313,7 @@ class BamRecordTest < Minitest::Test
     aln.aux.update_string("MC", "71M")
 
     assert_equal 42, aln.aux.get_int("AS")
-    xf = aln.aux.get_float("XF")
-    refute_nil xf
+    xf = aln.aux.get_float("XF") || raise "XF should be present"
     assert_in_delta 1.5, xf, 1e-6
     assert_equal "71M", aln.aux.get_string("MC")
   end
@@ -344,8 +343,7 @@ class BamRecordTest < Minitest::Test
 
     assert_equal 'Q', aln.aux.get_char("XA")
     assert_equal "0A0B", aln.aux.get_string("XH")
-    xd = aln.aux.get_float("XD")
-    refute_nil xd
+    xd = aln.aux.get_float("XD") || raise "XD should be present"
     assert_in_delta 3.25, xd, 1e-12
   end
 
