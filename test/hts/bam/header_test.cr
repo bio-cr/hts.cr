@@ -18,6 +18,15 @@ class BamHeaderTest < Minitest::Test
     TEXT
   end
 
+  private def rg_header_text : String
+    <<-TEXT
+    @HD\tVN:1.6\tSO:coordinate
+    @SQ\tSN:chr1\tLN:1000
+    @RG\tID:rg1\tSM:sample1
+
+    TEXT
+  end
+
   def test_bam_path
     File.expand_path("../../fixtures/poo.sort.bam", __DIR__)
   end
@@ -104,6 +113,46 @@ class BamHeaderTest < Minitest::Test
 
     ex = assert_raises(ArgumentError) { header.add_pg("meowtools", "PP", "missing") }
     assert ex.message.try &.includes?("Unknown PG parent")
+  end
+
+  def test_update_hd
+    header = HTS::Bam::Header.parse(minimal_header_text)
+
+    header.update_hd(version: "1.7", group_order: "query")
+
+    assert normalize_header(header.to_s).includes?("@HD\tVN:1.7\tSO:coordinate\tGO:query\n")
+  end
+
+  def test_add_update_remove_sq
+    header = HTS::Bam::Header.parse(minimal_header_text)
+
+    header.add_sq("chr2", 2000, assembly: "GRCh38")
+    assert_equal 2, header.count_lines("SQ")
+    assert_equal "chr2", header.line_name("SQ", 1)
+    assert_equal "2000", header.find_tag("SQ", "SN", "chr2", "LN")
+
+    header.update_sq("chr2", md5: "abc123")
+    assert_equal "abc123", header.find_tag("SQ", "SN", "chr2", "M5")
+
+    assert_equal true, header.remove_sq("chr2")
+    assert_nil header.find_line("SQ", "SN", "chr2")
+  end
+
+  def test_add_update_remove_rg
+    header = HTS::Bam::Header.parse(rg_header_text)
+
+    header.add_rg("rg2", sample: "sample2", platform: "ILLUMINA")
+    assert_equal 2, header.count_lines("RG")
+    assert_equal "sample2", header.find_tag("RG", "ID", "rg2", "SM")
+
+    header.update_rg("rg2", description: "tumor")
+    assert_equal "tumor", header.find_tag("RG", "ID", "rg2", "DS")
+
+    assert_equal true, header.delete_tag("RG", "ID", "rg2", "DS")
+    assert_nil header.find_tag("RG", "ID", "rg2", "DS")
+
+    assert_equal true, header.remove_rg("rg2")
+    assert_nil header.find_line("RG", "ID", "rg2")
   end
 
   def test_to_s

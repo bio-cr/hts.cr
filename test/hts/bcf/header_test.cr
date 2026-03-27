@@ -85,4 +85,59 @@ class BcfHeaderTest < Minitest::Test
   def test_clone
     assert_instance_of HTS::Bcf::Header, hdr.clone
   end
+
+  def test_edit_batches_sync
+    hdr2 = hdr.clone
+
+    hdr2.edit do |header|
+      header.add_sample("kojix4")
+      header.add_sample("kojix5")
+      header.add_filter("BatchFilter", description: "batch-added")
+    end
+
+    assert_equal ["poo.sort.bam", "kojix4", "kojix5"], hdr2.samples
+    assert hdr2.to_s.includes?("##FILTER=<ID=BatchFilter,Description=\"batch-added\">")
+  end
+
+  def test_add_and_remove_contig
+    h = HTS::Bcf::Header.new
+    h.add_contig("chr1", length: 1000, assembly: "GRCh38")
+
+    assert_equal ["chr1"], h.target_names
+    assert h.to_s.includes?("##contig=<ID=chr1,length=1000,assembly=GRCh38>")
+
+    assert_equal true, h.remove_contig("chr1")
+    assert_equal [] of String, h.target_names
+  end
+
+  def test_add_update_remove_info_and_format
+    h = HTS::Bcf::Header.new
+    h.add_info("DP", number: 1, type: :int, description: "Total depth")
+    h.add_format("GT", number: 1, type: :string, description: "Genotype")
+
+    assert h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total depth\">")
+    assert h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
+
+    h.update_info("DP", number: 1, type: :int, description: "Read depth")
+    h.update_format("GT", number: 1, type: :string, description: "GT field")
+    assert h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Read depth\">")
+    assert h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"GT field\">")
+
+    assert_equal true, h.remove_info("DP")
+    assert_equal true, h.remove_format("GT")
+    refute h.to_s.includes?("##INFO=<ID=DP")
+    refute h.to_s.includes?("##FORMAT=<ID=GT")
+  end
+
+  def test_add_meta_and_filter
+    h = HTS::Bcf::Header.new
+    h.add_meta("source", "myCaller")
+    h.add_filter("LowQual", description: "Low quality")
+
+    assert h.to_s.includes?("##source=myCaller")
+    assert h.to_s.includes?("##FILTER=<ID=LowQual,Description=\"Low quality\">")
+
+    assert_equal true, h.remove_filter("LowQual")
+    refute h.to_s.includes?("LowQual")
+  end
 end
