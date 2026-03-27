@@ -126,6 +126,76 @@ module HTS
         val
       end
 
+      def update_int(tag : String, value : Int)
+        update_int(tag, [value.to_i32])
+      end
+
+      def update_int(tag : String, values : Array(Int32))
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_info_int32(hdr, rec, tag, values.to_unsafe, values.size)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def update_int64(tag : String, value : Int)
+        update_int64(tag, [value.to_i64])
+      end
+
+      def update_int64(tag : String, values : Array(Int64))
+        # FIXME
+        raise "htslib backend does not implement int64 INFO update (BCF_HT_LONG)"
+      end
+
+      def update_float(tag : String, value : Number)
+        update_float(tag, [value.to_f32])
+      end
+
+      def update_float(tag : String, values : Array(Float32))
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_info_float(hdr, rec, tag, values.to_unsafe, values.size)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def update_string(tag : String, value : String)
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_info_string(hdr, rec, tag, value)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def update_flag(tag : String, present : Bool = true)
+        hdr = @record.header
+        rec = @record
+        n = present ? 1 : 0
+        rc = LibHTS2.bcf_update_info_flag(hdr, rec, tag, Pointer(Void).null, n)
+        check_update_rc!(rc, tag)
+        rc
+      end
+
+      def delete(tag : String) : Bool
+        type = @record.header.info_type(tag)
+        return false unless type
+
+        bcf_type = case type
+                   when :flag  then LibHTS2::BCF_HT_FLAG
+                   when :int   then LibHTS2::BCF_HT_INT
+                   when :float then LibHTS2::BCF_HT_REAL
+                   when :string
+                     LibHTS2::BCF_HT_STR
+                   else
+                     return false
+                   end
+
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS.bcf_update_info(hdr, rec, tag, Pointer(Void).null, 0, bcf_type)
+        rc >= 0
+      end
+
       private def normalize_info_rc(rc : Int32, tag : String, expected_type : String) : Int32?
         case rc
         when -1, -3
@@ -137,6 +207,10 @@ module HTS
         else
           rc
         end
+      end
+
+      private def check_update_rc!(rc : Int32, tag : String)
+        raise "Failed to update INFO/#{tag}" if rc < 0
       end
     end
   end

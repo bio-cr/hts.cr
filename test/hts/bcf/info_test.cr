@@ -18,6 +18,11 @@ class BcfInfoTest < Minitest::Test
       header.append("##INFO=<ID=MIX,Number=2,Type=Integer,Description=\"integer with missing\">")
       header.append("##INFO=<ID=FOPT,Number=2,Type=Float,Description=\"float with missing\">")
       header.append("##INFO=<ID=CH,Number=1,Type=Character,Description=\"character test\">")
+      header.append("##INFO=<ID=WINT,Number=.,Type=Integer,Description=\"writable int\">")
+      header.append("##INFO=<ID=W64,Number=.,Type=Integer,Description=\"writable int64\">")
+      header.append("##INFO=<ID=WFLOAT,Number=.,Type=Float,Description=\"writable float\">")
+      header.append("##INFO=<ID=WSTR,Number=1,Type=String,Description=\"writable string\">")
+      header.append("##INFO=<ID=WFLAG,Number=0,Type=Flag,Description=\"writable flag\">")
       header.sync
 
       HTS::Bcf.open(path, "wb") do |bcf|
@@ -135,5 +140,57 @@ class BcfInfoTest < Minitest::Test
     assert_equal(1, HTS::LibHTS2.bcf_float_is_vector_end(HTS::LibHTS2.bcf_float_vector_end))
     assert_equal(0, HTS::LibHTS2.bcf_float_is_missing(1.5_f32))
     assert_equal(0, HTS::LibHTS2.bcf_float_is_vector_end(1.5_f32))
+  end
+
+  def test_update_info_methods
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        info = record.info
+
+        info.update_int("WINT", [10, 20])
+        assert_equal([10, 20], info.get_int("WINT"))
+
+        ex = assert_raises(Exception) { info.update_int64("W64", [(1_i64 << 40)]) }
+        assert_includes ex.message.to_s, "BCF_HT_LONG"
+
+        info.update_float("WFLOAT", [0.25_f32, 0.5_f32])
+        assert_equal([0.25_f32, 0.5_f32], info.get_float("WFLOAT"))
+
+        info.update_string("WSTR", "hello")
+        assert_equal("hello", info.get_string("WSTR"))
+
+        info.update_flag("WFLAG", true)
+        assert_equal(true, info.get_flag("WFLAG"))
+
+        info.update_flag("WFLAG", false)
+        assert_includes([true, false], info.get_flag("WFLAG"))
+      end
+    end
+  end
+
+  def test_update_info_scalar_overloads_and_delete
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        info = record.info
+
+        info.update_int("WINT", 7)
+        assert_equal([7], info.get_int("WINT"))
+
+        ex = assert_raises(Exception) { info.update_int64("W64", (1_i64 << 39)) }
+        assert_includes ex.message.to_s, "BCF_HT_LONG"
+
+        info.update_float("WFLOAT", 1.25)
+        assert_equal([1.25_f32], info.get_float("WFLOAT"))
+
+        info.update_string("WSTR", "bye")
+        assert_equal("bye", info.get_string("WSTR"))
+
+        assert_equal(true, info.delete("WSTR"))
+        assert_nil(info.get_string("WSTR"))
+        assert_equal(false, info.delete("NO_SUCH_TAG"))
+      end
+    end
   end
 end
