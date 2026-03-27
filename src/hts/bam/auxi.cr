@@ -62,6 +62,131 @@ module HTS
         LibHTS.bam_aux2_a(aux_ptr).chr
       end
 
+      def update_int(tag : String, value : Int)
+        validate_tag!(tag)
+        check_update_rc!(LibHTS.bam_aux_update_int(@bam1, tag_to_static_array(tag), value.to_i64), tag)
+        self
+      end
+
+      def update_float(tag : String, value : Number)
+        validate_tag!(tag)
+        check_update_rc!(LibHTS.bam_aux_update_float(@bam1, tag_to_static_array(tag), value.to_f32), tag)
+        self
+      end
+
+      def update_string(tag : String, value : String)
+        validate_tag!(tag)
+        check_update_rc!(LibHTS.bam_aux_update_str(@bam1, tag_to_static_array(tag), value.bytesize + 1, value.to_unsafe.as(LibC::Char*)), tag)
+        self
+      end
+
+      def update_array(tag : String, values : Array(Number), subtype : Char = 'i')
+        validate_tag!(tag)
+
+        case subtype
+        when 'c'
+          update_array_numeric(tag, subtype, values) { |v| v.to_i8 }
+        when 'C'
+          update_array_numeric(tag, subtype, values) { |v| v.to_u8 }
+        when 's'
+          update_array_numeric(tag, subtype, values) { |v| v.to_i16 }
+        when 'S'
+          update_array_numeric(tag, subtype, values) { |v| v.to_u16 }
+        when 'i'
+          update_array_numeric(tag, subtype, values) { |v| v.to_i32 }
+        when 'I'
+          update_array_numeric(tag, subtype, values) { |v| v.to_u32 }
+        when 'f'
+          update_array_numeric(tag, subtype, values) { |v| v.to_f32 }
+        else
+          raise ArgumentError.new("Unsupported B array subtype: #{subtype}")
+        end
+
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for B array subtype #{subtype}")
+      end
+
+      def update_char(tag : String, value : Char)
+        validate_tag!(tag)
+        char_byte = value.ord
+        raise ArgumentError.new("AUX A type expects single-byte ASCII character") if char_byte > 0x7f
+        data = char_byte.to_u8
+        replace_with_append!(tag, 'A', 1, pointerof(data))
+        self
+      end
+
+      def update_hex(tag : String, value : String)
+        validate_tag!(tag)
+        unless value.matches?(/\A[0-9A-Fa-f]*\z/) && value.bytesize.even?
+          raise ArgumentError.new("AUX H type expects an even-length hexadecimal string")
+        end
+        hex = value.upcase
+        replace_with_append!(tag, 'H', hex.bytesize + 1, hex.to_unsafe)
+        self
+      end
+
+      def update_double(tag : String, value : Number)
+        validate_tag!(tag)
+        data = value.to_f64
+        replace_with_append!(tag, 'd', 8, pointerof(data).as(UInt8*))
+        self
+      end
+
+      def update_int8(tag : String, value : Int)
+        validate_tag!(tag)
+        data = value.to_i8
+        replace_with_append!(tag, 'c', 1, pointerof(data).as(UInt8*))
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for int8")
+      end
+
+      def update_uint8(tag : String, value : Int)
+        validate_tag!(tag)
+        data = value.to_u8
+        replace_with_append!(tag, 'C', 1, pointerof(data).as(UInt8*))
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for uint8")
+      end
+
+      def update_int16(tag : String, value : Int)
+        validate_tag!(tag)
+        data = value.to_i16
+        replace_with_append!(tag, 's', 2, pointerof(data).as(UInt8*))
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for int16")
+      end
+
+      def update_uint16(tag : String, value : Int)
+        validate_tag!(tag)
+        data = value.to_u16
+        replace_with_append!(tag, 'S', 2, pointerof(data).as(UInt8*))
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for uint16")
+      end
+
+      def update_int32(tag : String, value : Int)
+        validate_tag!(tag)
+        data = value.to_i32
+        replace_with_append!(tag, 'i', 4, pointerof(data).as(UInt8*))
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for int32")
+      end
+
+      def update_uint32(tag : String, value : Int)
+        validate_tag!(tag)
+        data = value.to_u32
+        replace_with_append!(tag, 'I', 4, pointerof(data).as(UInt8*))
+        self
+      rescue OverflowError
+        raise ArgumentError.new("Value out of range for uint32")
+      end
+
       # Parse auxiliary value based on its type
       private def parse_aux_value(aux_ptr)
         return nil if aux_ptr.null?
@@ -133,6 +258,40 @@ module HTS
         b = tag.bytes
         tag_array = StaticArray(UInt8, 2).new { |i| b[i] }
         LibHTS.bam_aux_get(@bam1, tag_array)
+      end
+
+      private def validate_tag!(tag : String)
+        raise ArgumentError.new("AUX tag must be exactly 2 characters: #{tag}") unless tag.bytesize == 2
+      end
+
+      private def tag_to_static_array(tag : String)
+        b = tag.to_slice
+        StaticArray(UInt8, 2).new { |i| b[i] }
+      end
+
+      private def check_update_rc!(rc : Int32, tag : String)
+        raise "Failed to update AUX tag #{tag}" if rc < 0
+      end
+
+      private def replace_with_append!(tag : String, type : Char, len : Int32, data : Pointer(UInt8))
+        tag_array = tag_to_static_array(tag)
+        existing = LibHTS.bam_aux_get(@bam1, tag_array)
+        check_update_rc!(LibHTS.bam_aux_del(@bam1, existing), tag) unless existing.null?
+        check_update_rc!(LibHTS.bam_aux_append(@bam1, tag_array, type.ord.to_u8, len, data), tag)
+      end
+
+      private def update_array_numeric(tag : String, subtype : Char, values : Array(Number), &block)
+        converted = values.map { |value| yield value }
+        items = converted.size.to_u32
+        tag_array = tag_to_static_array(tag)
+
+        if converted.empty?
+          empty = 0_u8
+          check_update_rc!(LibHTS.bam_aux_update_array(@bam1, tag_array, subtype.ord.to_u8, items, pointerof(empty).as(Void*)), tag)
+          return
+        end
+
+        check_update_rc!(LibHTS.bam_aux_update_array(@bam1, tag_array, subtype.ord.to_u8, items, converted.to_unsafe.as(Void*)), tag)
       end
 
       # Get auxiliary value for specific tag

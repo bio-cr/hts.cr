@@ -297,6 +297,64 @@ class BamRecordTest < Minitest::Test
     assert_equal expected, aln.aux.to_s
   end
 
+  def test_aux_update_int_float_string
+    aln = aln1
+    aln.aux.update_int("AS", 42)
+    aln.aux.update_float("XF", 1.5)
+    aln.aux.update_string("MC", "71M")
+
+    assert_equal 42, aln.aux.get_int("AS")
+    assert_in_delta 1.5, aln.aux.get_float("XF").not_nil!, 1e-6
+    assert_equal "71M", aln.aux.get_string("MC")
+  end
+
+  def test_aux_update_typed_ints
+    aln = aln1
+    aln.aux.update_int8("X1", -3)
+    aln.aux.update_uint8("X2", 250)
+    aln.aux.update_int16("X3", -1234)
+    aln.aux.update_uint16("X4", 50000)
+    aln.aux.update_int32("X5", -123456)
+    aln.aux.update_uint32("X6", 3_000_000_000)
+
+    assert_equal(-3, aln.aux.get_int("X1"))
+    assert_equal 250, aln.aux.get_int("X2")
+    assert_equal(-1234, aln.aux.get_int("X3"))
+    assert_equal 50000, aln.aux.get_int("X4")
+    assert_equal(-123456, aln.aux.get_int("X5"))
+    assert_equal 3_000_000_000, aln.aux.get_int("X6")
+  end
+
+  def test_aux_update_char_hex_double
+    aln = aln1
+    aln.aux.update_char("XA", 'Q')
+    aln.aux.update_hex("XH", "0A0B")
+    aln.aux.update_double("XD", 3.25)
+
+    assert_equal 'Q', aln.aux.get_char("XA")
+    assert_equal "0A0B", aln.aux.get_string("XH")
+    assert_in_delta 3.25, aln.aux.get_float("XD").not_nil!, 1e-12
+  end
+
+  def test_aux_update_array
+    aln = aln1
+    aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
+    assert_equal [1_i64, 2_i64, 3_i64], aln.aux["XB"]
+
+    aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
+    assert_equal [1.25, 2.5], aln.aux["XF"]
+  end
+
+  def test_aux_update_validation
+    aln = aln1
+
+    assert_raises(ArgumentError) { aln.aux.update_int("TOO", 1) }
+    assert_raises(ArgumentError) { aln.aux.update_hex("XH", "XYZ") }
+    assert_raises(ArgumentError) { aln.aux.update_hex("XH", "ABC") }
+    assert_raises(ArgumentError) { aln.aux.update_int8("X1", 128) }
+    assert_raises(ArgumentError) { aln.aux.update_array("XB", [1, 2], subtype: 'd') }
+  end
+
   # TODO: def test_aux_float
 
   # TODO: def test_aux_flag
