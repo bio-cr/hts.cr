@@ -42,6 +42,11 @@ class BamHeaderTest < Minitest::Test
     assert_equal s, b.to_s
   end
 
+  def test_parse_rejects_invalid_header_text
+    ex = assert_raises(ArgumentError) { HTS::Bam::Header.parse("not-a-sam-header") }
+    assert_includes ex.message.to_s, "Failed to parse SAM header text"
+  end
+
   def test_initialize
     assert_instance_of HTS::Bam::Header, HTS::Bam::Header.new
   end
@@ -52,6 +57,11 @@ class BamHeaderTest < Minitest::Test
 
   def test_target_name
     assert_equal("poo", bam.header.target_name(0))
+  end
+
+  def test_target_name_rejects_invalid_tid
+    ex = assert_raises(ArgumentError) { bam.header.target_name(99) }
+    assert_includes ex.message.to_s, "Unknown target id 99"
   end
 
   def test_target_names

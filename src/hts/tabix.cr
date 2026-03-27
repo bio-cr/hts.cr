@@ -111,7 +111,13 @@ module HTS
       n = 0
       names = LibHTS.tbx_seqnames(@idx, pointerof(n))
       begin
-        Array(String).new(n) { |i| String.new(names[i]) }
+        raise "Failed to load seqnames for #{@file_name}" if names.null? && n > 0
+
+        Array(String).new(n) do |i|
+          name = names[i]
+          raise "Failed to load seqname #{i} for #{@file_name}" if name.null?
+          String.new(name)
+        end
       ensure
         LibC.free(names.as(Void*)) unless names.null?
       end

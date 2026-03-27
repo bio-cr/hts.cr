@@ -66,7 +66,9 @@ module HTS
     def names
       check_closed
       Array.new(size) do |i|
-        String.new(LibHTS.faidx_iseq(@fai, i))
+        name = LibHTS.faidx_iseq(@fai, i)
+        raise "Failed to load sequence name at index #{i} for #{@file_name}" if name.null?
+        String.new(name)
       end
     end
 

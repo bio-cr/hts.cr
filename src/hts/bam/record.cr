@@ -314,24 +314,20 @@ module HTS
       end
 
       # Return Int64
-      def aux_int(str)
-        ax = get_aux_pointer(str)
-        LibHTS.bam_aux2i(ax)
+      def aux_int(str) : Int64?
+        aux.get_int(str)
       end
 
-      def aux_float(str)
-        ax = get_aux_pointer(str)
-        LibHTS.bam_aux2f(ax)
+      def aux_float(str) : Float64?
+        aux.get_float(str)
       end
 
-      def aux_string(str)
-        ax = get_aux_pointer(str)
-        String.new LibHTS.bam_aux2_z(ax)
+      def aux_string(str) : String?
+        aux.get_string(str)
       end
 
-      def aux_char(str)
-        ax = get_aux_pointer(str)
-        LibHTS.bam_aux2_a(ax).chr
+      def aux_char(str) : Char?
+        aux.get_char(str)
       end
 
       {% for name, _ in Flag::TABLE %}

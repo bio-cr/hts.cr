@@ -5,11 +5,11 @@ module HTS
     @start_position : (Int64 | Nil)
 
     macro define_getter(name)
-      def {{name.id}}
+      def {{ name.id }}
         check_closed
         position = tell
         ary = map do |record|
-          record.{{name.id}}
+          record.{{ name.id }}
         end
         if position.nil?
           STDERR.puts "Warning: #{@file_name} is not seekable"
@@ -21,10 +21,10 @@ module HTS
     end
 
     macro define_iterator(name)
-      def each_{{name.id}}
+      def each_{{ name.id }}
         check_closed
         each do |record|
-          yield record.{{name.id}}
+          yield record.{{ name.id }}
         end
         self
       end
@@ -35,11 +35,17 @@ module HTS
     end
 
     def file_format
-      LibHTS.hts_get_format(@hts_file).value.format.to_s
+      check_closed
+      format = LibHTS.hts_get_format(@hts_file)
+      raise "Failed to inspect file format for #{@file_name}" if format.null?
+      format.value.format.to_s
     end
 
     def file_format_version
-      v = LibHTS.hts_get_format(@hts_file).value.version
+      check_closed
+      format = LibHTS.hts_get_format(@hts_file)
+      raise "Failed to inspect file format version for #{@file_name}" if format.null?
+      v = format.value.version
       major = v.major
       minor = v.minor
       if minor == -1

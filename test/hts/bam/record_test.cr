@@ -282,13 +282,22 @@ class BamRecordTest < Minitest::Test
     aln = aln1
     assert_equal 0, aln.aux_int("AS")
     assert_equal 0, aln.aux_int("XS")
-    a = [] of Int64
+    a = [] of (Int64 | Nil)
     assert_equal [0], (a << aln.aux_int("AS"))
   end
 
   def test_aux_string
     aln = aln1
     assert_equal "70M", aln.aux_string("MC")
+  end
+
+  def test_aux_type_specific_methods_return_nil_for_missing_tag
+    aln = aln1
+
+    assert_nil aln.aux_int("Tanuki")
+    assert_nil aln.aux_float("Tanuki")
+    assert_nil aln.aux_string("Tanuki")
+    assert_nil aln.aux_char("Tanuki")
   end
 
   def test_aux_to_s
@@ -304,7 +313,9 @@ class BamRecordTest < Minitest::Test
     aln.aux.update_string("MC", "71M")
 
     assert_equal 42, aln.aux.get_int("AS")
-    assert_in_delta 1.5, aln.aux.get_float("XF").not_nil!, 1e-6
+    xf = aln.aux.get_float("XF")
+    refute_nil xf
+    assert_in_delta 1.5, xf, 1e-6
     assert_equal "71M", aln.aux.get_string("MC")
   end
 
@@ -333,7 +344,9 @@ class BamRecordTest < Minitest::Test
 
     assert_equal 'Q', aln.aux.get_char("XA")
     assert_equal "0A0B", aln.aux.get_string("XH")
-    assert_in_delta 3.25, aln.aux.get_float("XD").not_nil!, 1e-12
+    xd = aln.aux.get_float("XD")
+    refute_nil xd
+    assert_in_delta 3.25, xd, 1e-12
   end
 
   def test_aux_update_array
@@ -362,8 +375,8 @@ class BamRecordTest < Minitest::Test
   # TODO: def test_aux_char
 
   {% for name in BamFlagTest::FLAG_METHODS %}
-    def test_{{name.id}}
-      assert_equal aln1.flag.{{name.id}}, aln1.{{name.id}}
+    def test_{{ name.id }}
+      assert_equal aln1.flag.{{ name.id }}, aln1.{{ name.id }}
     end
   {% end %}
 

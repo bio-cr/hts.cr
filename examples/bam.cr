@@ -4,7 +4,6 @@ bam_path = ARGV[0]? || File.expand_path("../test/fixtures/poo.sort.bam", __DIR__
 
 HTS::Bam.open(bam_path) do |b|
   b.each do |r|
-    tags = r.aux
     puts({
       name:        r.qname,
       flag:        r.flag.value,
@@ -17,8 +16,8 @@ HTS::Bam.open(bam_path) do |b|
       insert_size: r.insert_size,
       seq:         r.seq,
       qual:        r.qual_string,
-      nm:          tags.get_int("NM"),
-      mc:          tags.get_string("MC"),
+      nm:          r.aux_int("NM"),
+      mc:          r.aux_string("MC"),
     }.inspect)
   end
 end

@@ -35,20 +35,25 @@ module HTS
       }
 
       def self.parse(text)
-        self.new LibHTS.sam_hdr_parse(text.size, text)
+        sam_hdr = LibHTS.sam_hdr_parse(text.size, text)
+        raise ArgumentError.new("Failed to parse SAM header text") if sam_hdr.null?
+        self.new sam_hdr
       end
 
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @sam_hdr = LibHTS.sam_hdr_read(hts_file)
+        raise "Failed to read SAM header" if @sam_hdr.null?
       end
 
       # for clone
       def initialize(sam_hdr : Pointer(HTS::LibHTS::SamHdrT))
         @sam_hdr = sam_hdr
+        raise ArgumentError.new("SAM header pointer must not be null") if @sam_hdr.null?
       end
 
       def initialize
         @sam_hdr = LibHTS.sam_hdr_init
+        raise "Failed to initialize SAM header" if @sam_hdr.null?
       end
 
       def to_unsafe
@@ -65,7 +70,7 @@ module HTS
 
       def target_names
         Array.new(target_count) do |i|
-          String.new LibHTS.sam_hdr_tid2name(@sam_hdr, i)
+          tid2name(i)
         end
       end
 
@@ -175,7 +180,9 @@ module HTS
       end
 
       private def tid2name(tid)
-        String.new LibHTS.sam_hdr_tid2name(@sam_hdr, tid)
+        name = LibHTS.sam_hdr_tid2name(@sam_hdr, tid)
+        raise ArgumentError.new("Unknown target id #{tid}") if name.null?
+        String.new(name)
       end
 
       def to_s(io : IO)
