@@ -9,3 +9,6 @@ docs
 poo.sort.bam.bai
 moo.bam.bai
 moo.cram.crai
+!spec/fixtures/poo.sort.bam.bai
+!spec/fixtures/moo.bam.bai
+!spec/fixtures/moo.cram.crai
