@@ -37,43 +37,41 @@ module HTS
         end
       end
 
-      # Thin wrapper around a single bam_pileup1_t entry
+      # Thin wrapper around a single bam_pileup1_t entry.
+      # Small fields are copied so they remain valid after the iterator moves on.
       class Alignment
         @entry : Pointer(LibHTS::BamPileup1T)
         @header : Bam::Header
         @record : Bam::Record?
+        getter query_pos : Int32
+        getter indel : Int32
+        getter bitfields : UInt32
 
         def initialize(@entry : Pointer(LibHTS::BamPileup1T), @header : Bam::Header)
-        end
-
-        # 0-based query position
-        def query_pos : Int32
-          @entry.value.qpos
-        end
-
-        # Indel length (0 no indel, >0 insertion, <0 deletion)
-        def indel : Int32
-          @entry.value.indel
+          @query_pos = @entry.value.qpos
+          @indel = @entry.value.indel
+          @bitfields = @entry.value.bitfields
         end
 
         # Bitfield helpers
         def del? : Bool
-          (@entry.value.bitfields & 0x1) != 0
+          (@bitfields & 0x1) != 0
         end
 
         def head? : Bool
-          (@entry.value.bitfields & 0x2) != 0
+          (@bitfields & 0x2) != 0
         end
 
         def tail? : Bool
-          (@entry.value.bitfields & 0x4) != 0
+          (@bitfields & 0x4) != 0
         end
 
         def refskip? : Bool
-          (@entry.value.bitfields & 0x8) != 0
+          (@bitfields & 0x8) != 0
         end
 
-        # Lazily duplicates the underlying bam1_t to return a safe Record
+        # Lazily duplicates the underlying bam1_t to avoid copying every read.
+        # Call this before the pileup iterator advances or closes.
         def record : Bam::Record
           if rec = @record
             return rec

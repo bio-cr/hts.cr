@@ -7,11 +7,10 @@ class BamPileupSmokeTest
     HTS::Bam.open(path) do |bam|
       seen = 0
       first_col = nil
+      first_query_pos = nil
       plp = HTS::Bam::Pileup.new(bam, maxcnt: 1000)
-      # Capture a first column and, if present, duplicate one record while the
-      # underlying plp iterator is still alive. The pileup entry pointers are
-      # only valid until the next plp step or destruction, so record() must be
-      # called before close.
+      # Alignment metadata is copied into Crystal values, but record() still
+      # lazily reads the htslib pileup entry and must be called before close.
       rec1 = nil
       rec2 = nil
       begin
@@ -19,6 +18,7 @@ class BamPileupSmokeTest
           first_col ||= col
           if rec1.nil? && col.depth > 0
             aln = col.alignments.first
+            first_query_pos = aln.query_pos
             rec1 = aln.record
             rec2 = aln.record
           end
@@ -35,8 +35,9 @@ class BamPileupSmokeTest
       (first_col.not_nil!.pos.is_a?(Int64) || first_col.not_nil!.pos.is_a?(Int32)).should be_true
       (first_col.not_nil!.depth >= 0).should be_true
 
-      # Alignment wrapper basic behaviors (verified before close)
+      # Copied alignment metadata remains available after close.
       if first_col.not_nil!.depth > 0
+        (first_col.not_nil!.alignments.first.query_pos).should eq(first_query_pos)
         (rec2).same?(rec1).should be_true
         (rec1).should be_a(HTS::Bam::Record)
       end
