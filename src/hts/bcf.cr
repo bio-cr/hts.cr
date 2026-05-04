@@ -352,14 +352,8 @@ module HTS
     define_getter :qual
     define_getter :filter
 
-    def info
-      raise NotImplementedError.new
-    end
-
-    def format
-      raise NotImplementedError.new
-    end
-
+    # Do not add file-level INFO/FORMAT helpers here because these fields
+    # depend on each record and its samples. Use Bcf::Record instead.
     define_iterator :chrom
     define_iterator :pos
     define_iterator :endpos
