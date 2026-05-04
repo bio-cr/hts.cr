@@ -203,8 +203,11 @@ module HTS
     def write_header(header)
       check_closed
 
-      @header = header.clone # Necessary. If not, it will cause segfault.
-      LibHTS.sam_hdr_write(@hts_file, header)
+      cloned_header = header.clone # Necessary. If not, it will cause segfault.
+      r = LibHTS.sam_hdr_write(@hts_file, cloned_header)
+      raise "Failed to write SAM/BAM header" if r < 0
+
+      @header = cloned_header
       @header_written = true
     end
 
