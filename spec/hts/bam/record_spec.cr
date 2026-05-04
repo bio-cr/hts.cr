@@ -1,7 +1,7 @@
 require "../../spec_helper"
 require "../../../src/hts/bam"
 
-class BamRecordTest < HTSSpecCase
+class BamRecordTest
   def test_bam_path
     File.expand_path("../../fixtures/poo.sort.bam", __DIR__)
   end
@@ -32,227 +32,227 @@ class BamRecordTest < HTSSpecCase
       )
     end
 
-    expect_equal "qual length must equal sequence length", error.message
+    (error.message).should eq("qual length must equal sequence length")
   end
 
   def test_qname
-    expect_equal "poo_3290_3833_2:0:0_2:0:0_119", aln1.qname
+    (aln1.qname).should eq("poo_3290_3833_2:0:0_2:0:0_119")
   end
 
   def test_qname_set
     aln = aln1
-    expect_equal "poo_3290_3833_2:0:0_2:0:0_119", aln.qname
+    (aln.qname).should eq("poo_3290_3833_2:0:0_2:0:0_119")
     aln.qname = "test_qname_01"
-    expect_equal "test_qname_01", aln.qname
+    (aln.qname).should eq("test_qname_01")
     aln.qname = "poo_3290_3833_2:0:0_2:0:0_119"
-    expect_equal "poo_3290_3833_2:0:0_2:0:0_119", aln.qname
+    (aln.qname).should eq("poo_3290_3833_2:0:0_2:0:0_119")
   end
 
   def test_tid
-    expect_equal 0, aln1.tid
+    (aln1.tid).should eq(0)
   end
 
   def test_tid_set
     aln = aln1
-    expect_equal 0, aln.tid
+    (aln.tid).should eq(0)
     aln.tid = 1
-    expect_equal 1, aln.tid
+    (aln.tid).should eq(1)
     aln.tid = 0
-    expect_equal 0, aln.tid
+    (aln.tid).should eq(0)
   end
 
   def test_mtid
-    expect_equal 0, aln1.mtid
+    (aln1.mtid).should eq(0)
   end
 
   def test_mtid_set
     aln = aln1
-    expect_equal 0, aln.mtid
+    (aln.mtid).should eq(0)
     aln.mtid = 1
-    expect_equal 1, aln.mtid
+    (aln.mtid).should eq(1)
     aln.mtid = 0
-    expect_equal 0, aln.mtid
+    (aln.mtid).should eq(0)
   end
 
   def test_pos
-    expect_equal 3289, aln1.pos
+    (aln1.pos).should eq(3289)
   end
 
   def test_pos_set
     aln = aln1
-    expect_equal 3289, aln.pos
+    (aln.pos).should eq(3289)
     aln.pos = 3290
-    expect_equal 3290, aln.pos
+    (aln.pos).should eq(3290)
     aln.pos = 3289
-    expect_equal 3289, aln.pos
+    (aln.pos).should eq(3289)
   end
 
   def test_mpos
-    expect_equal 3289, aln1.mpos
+    (aln1.mpos).should eq(3289)
   end
 
   def test_mpos_set
     aln = aln1
-    expect_equal 3289, aln.mpos
+    (aln.mpos).should eq(3289)
     aln.mpos = 3290
-    expect_equal 3290, aln.mpos
+    (aln.mpos).should eq(3290)
     aln.mpos = 3289
-    expect_equal 3289, aln.mpos
+    (aln.mpos).should eq(3289)
   end
 
   def test_bin
-    expect_equal 4681, aln1.bin
+    (aln1.bin).should eq(4681)
   end
 
   def test_bin_set
     aln = aln1
-    expect_equal 4681, aln.bin
+    (aln.bin).should eq(4681)
     aln.bin = 4682
-    expect_equal 4682, aln.bin
+    (aln.bin).should eq(4682)
     aln.bin = 4681
-    expect_equal 4681, aln.bin
+    (aln.bin).should eq(4681)
   end
 
   def test_chrom
-    expect_equal "poo", aln1.chrom
+    (aln1.chrom).should eq("poo")
   end
 
   def test_contig
-    expect_equal "poo", aln1.contig
+    (aln1.contig).should eq("poo")
   end
 
   def test_mate_chrom
-    expect_equal "poo", aln1.mate_chrom
+    (aln1.mate_chrom).should eq("poo")
   end
 
   def test_mate_contig
-    expect_equal "poo", aln1.mate_contig
+    (aln1.mate_contig).should eq("poo")
   end
 
   def test_endpos
-    expect_equal 3290, aln1.endpos
+    (aln1.endpos).should eq(3290)
   end
 
   def test_strand
-    expect_equal "+", aln1.strand
+    (aln1.strand).should eq("+")
   end
 
   def test_mates_strand
-    expect_equal "+", aln1.strand
+    (aln1.strand).should eq("+")
   end
 
   def test_insert_size
-    expect_equal 0, aln1.insert_size
+    (aln1.insert_size).should eq(0)
   end
 
   def test_isize
-    expect_equal 0, aln1.isize
+    (aln1.isize).should eq(0)
   end
 
   def test_insert_size_set
     aln = aln1
-    expect_equal 0, aln.insert_size
+    (aln.insert_size).should eq(0)
     aln.insert_size = 1
-    expect_equal 1, aln.insert_size
+    (aln.insert_size).should eq(1)
     aln.insert_size = 0
-    expect_equal 0, aln.insert_size
+    (aln.insert_size).should eq(0)
   end
 
   def test_isize_set
     aln = aln1
-    expect_equal 0, aln.isize
+    (aln.isize).should eq(0)
     aln.isize = 1
-    expect_equal 1, aln.isize
+    (aln.isize).should eq(1)
     aln.isize = 0
-    expect_equal 0, aln.isize
+    (aln.isize).should eq(0)
   end
 
   def test_mapq
-    expect_equal 0, aln1.mapq
+    (aln1.mapq).should eq(0)
   end
 
   def test_mapq_set
     aln = aln1
-    expect_equal 0, aln.mapq
+    (aln.mapq).should eq(0)
     aln.mapq = 1
-    expect_equal 1, aln.mapq
+    (aln.mapq).should eq(1)
     aln.mapq = 0
-    expect_equal 0, aln.mapq
+    (aln.mapq).should eq(0)
   end
 
   def test_cigar
-    expect_instance_of HTS::Bam::Cigar, aln1.cigar
+    (aln1.cigar).should be_a(HTS::Bam::Cigar)
   end
 
   def test_qlen
-    expect_equal 0, aln1.qlen
+    (aln1.qlen).should eq(0)
   end
 
   def test_rlen
-    expect_equal 0, aln1.rlen
+    (aln1.rlen).should eq(0)
   end
 
   def test_seq
-    expect_equal "GGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC", aln1.seq
+    (aln1.seq).should eq("GGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC")
   end
 
   def test_sequence
-    expect_equal "GGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC", aln1.sequence
+    (aln1.sequence).should eq("GGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC")
   end
 
   def test_len
-    expect_equal 70, aln1.len
+    (aln1.len).should eq(70)
   end
 
   def test_base
     aln = aln1
-    expect_equal 'G', aln.base(0)
-    expect_equal 'C', aln.base(4)
-    expect_equal 'A', aln.base(5)
-    expect_equal '.', aln.base(70)
-    expect_equal 'C', aln.base(-1)
-    expect_equal 'G', aln.base(-2)
-    expect_equal 'G', aln.base(-70)
-    expect_equal '.', aln.base(-71)
+    (aln.base(0)).should eq('G')
+    (aln.base(4)).should eq('C')
+    (aln.base(5)).should eq('A')
+    (aln.base(70)).should eq('.')
+    (aln.base(-1)).should eq('C')
+    (aln.base(-2)).should eq('G')
+    (aln.base(-70)).should eq('G')
+    (aln.base(-71)).should eq('.')
   end
 
   def test_qual
-    expect_equal ([17] * 70), aln1.qual
+    (aln1.qual).should eq([17] * 70)
   end
 
   def test_qual_string
-    expect_equal "2" * 70, aln1.qual_string
+    (aln1.qual_string).should eq("2" * 70)
   end
 
   def test_base_qual
-    expect_equal 17, aln1.base_qual(0)
-    expect_equal 17, aln1.base_qual(-1)
-    expect_equal 17, aln1.base_qual(69)
-    expect_equal 17, aln1.base_qual(-70)
+    (aln1.base_qual(0)).should eq(17)
+    (aln1.base_qual(-1)).should eq(17)
+    (aln1.base_qual(69)).should eq(17)
+    (aln1.base_qual(-70)).should eq(17)
   end
 
   def test_flag
     aln = aln1
-    expect_instance_of HTS::Bam::Flag, aln.flag
-    expect_equal 133, aln.flag.value
+    (aln.flag).should be_a(HTS::Bam::Flag)
+    (aln.flag.value).should eq(133)
   end
 
   def test_flag_set
     aln = aln1
-    expect_equal 133, aln.flag.value
+    (aln.flag.value).should eq(133)
     aln.flag = 0
-    expect_equal 0, aln.flag.value
+    (aln.flag.value).should eq(0)
     f = HTS::Bam::Flag.new(133)
     aln.flag = f
-    expect_equal 133, aln.flag.value
+    (aln.flag.value).should eq(133)
   end
 
   def test_aux
     aln = aln1
-    expect_equal "70M", aln.aux("MC")
-    expect_equal 0, aln.aux("AS")
-    expect_equal 0, aln.aux("XS")
-    expect_nil aln.aux("Tanuki")
+    (aln.aux("MC")).should eq("70M")
+    (aln.aux("AS")).should eq(0)
+    (aln.aux("XS")).should eq(0)
+    (aln.aux("Tanuki")).should be_nil
   end
 
   def test_aux_each
@@ -260,30 +260,30 @@ class BamRecordTest < HTSSpecCase
     aln.aux.each do |tag, value|
       case tag
       when "MC"
-        expect_equal "70M", value
+        (value).should eq("70M")
       when "AS"
-        expect_equal 0, value
+        (value).should eq(0)
       when "XS"
-        expect_equal 0, value
+        (value).should eq(0)
       end
     end
   end
 
   def test_aux_bracket_access
     aln = aln1
-    expect_equal "70M", aln.aux["MC"]
-    expect_equal 0, aln.aux["AS"]
-    expect_equal 0, aln.aux["XS"]
-    expect_nil aln.aux["Tanuki"]
+    (aln.aux["MC"]).should eq("70M")
+    (aln.aux["AS"]).should eq(0)
+    (aln.aux["XS"]).should eq(0)
+    (aln.aux["Tanuki"]).should be_nil
   end
 
   def test_aux_type_specific_methods
     aln = aln1
-    expect_equal 0, aln.aux.get_int("AS")
-    expect_equal 0, aln.aux.get_int("XS")
-    expect_equal "70M", aln.aux.get_string("MC")
-    expect_nil aln.aux.get_int("Tanuki")
-    expect_nil aln.aux.get_string("Tanuki")
+    (aln.aux.get_int("AS")).should eq(0)
+    (aln.aux.get_int("XS")).should eq(0)
+    (aln.aux.get_string("MC")).should eq("70M")
+    (aln.aux.get_int("Tanuki")).should be_nil
+    (aln.aux.get_string("Tanuki")).should be_nil
   end
 
   def test_aux_iteration_consistency
@@ -296,35 +296,35 @@ class BamRecordTest < HTSSpecCase
       aln.aux.each { |tag, _| tags2 << tag }
     end
 
-    expect_equal tags1, tags2
+    (tags2).should eq(tags1)
   end
 
   def test_aux_int
     aln = aln1
-    expect_equal 0, aln.aux_int("AS")
-    expect_equal 0, aln.aux_int("XS")
+    (aln.aux_int("AS")).should eq(0)
+    (aln.aux_int("XS")).should eq(0)
     a = [] of (Int64 | Nil)
-    expect_equal [0], (a << aln.aux_int("AS"))
+    ((a << aln.aux_int("AS"))).should eq([0])
   end
 
   def test_aux_string
     aln = aln1
-    expect_equal "70M", aln.aux_string("MC")
+    (aln.aux_string("MC")).should eq("70M")
   end
 
   def test_aux_type_specific_methods_return_nil_for_missing_tag
     aln = aln1
 
-    expect_nil aln.aux_int("Tanuki")
-    expect_nil aln.aux_float("Tanuki")
-    expect_nil aln.aux_string("Tanuki")
-    expect_nil aln.aux_char("Tanuki")
+    (aln.aux_int("Tanuki")).should be_nil
+    (aln.aux_float("Tanuki")).should be_nil
+    (aln.aux_string("Tanuki")).should be_nil
+    (aln.aux_char("Tanuki")).should be_nil
   end
 
   def test_aux_to_s
     aln = aln1
     expected = "MC:Z:70M\tAS:i:0\tXS:i:0"
-    expect_equal expected, aln.aux.to_s
+    (aln.aux.to_s).should eq(expected)
   end
 
   def test_aux_update_int_float_string
@@ -333,10 +333,10 @@ class BamRecordTest < HTSSpecCase
     aln.aux.update_float("XF", 1.5)
     aln.aux.update_string("MC", "71M")
 
-    expect_equal 42, aln.aux.get_int("AS")
+    (aln.aux.get_int("AS")).should eq(42)
     xf = aln.aux.get_float("XF") || raise "XF should be present"
-    expect_in_delta 1.5, xf, 1e-6
-    expect_equal "71M", aln.aux.get_string("MC")
+    ((xf) - (1.5)).abs.should be <= 1e-6
+    (aln.aux.get_string("MC")).should eq("71M")
   end
 
   def test_aux_update_typed_ints
@@ -348,12 +348,12 @@ class BamRecordTest < HTSSpecCase
     aln.aux.update_int32("X5", -123456)
     aln.aux.update_uint32("X6", 3_000_000_000)
 
-    expect_equal(-3, aln.aux.get_int("X1"))
-    expect_equal 250, aln.aux.get_int("X2")
-    expect_equal(-1234, aln.aux.get_int("X3"))
-    expect_equal 50000, aln.aux.get_int("X4")
-    expect_equal(-123456, aln.aux.get_int("X5"))
-    expect_equal 3_000_000_000, aln.aux.get_int("X6")
+    (aln.aux.get_int("X1")).should eq(-3)
+    (aln.aux.get_int("X2")).should eq(250)
+    (aln.aux.get_int("X3")).should eq(-1234)
+    (aln.aux.get_int("X4")).should eq(50000)
+    (aln.aux.get_int("X5")).should eq(-123456)
+    (aln.aux.get_int("X6")).should eq(3_000_000_000)
   end
 
   def test_aux_update_char_hex_double
@@ -362,19 +362,19 @@ class BamRecordTest < HTSSpecCase
     aln.aux.update_hex("XH", "0A0B")
     aln.aux.update_double("XD", 3.25)
 
-    expect_equal 'Q', aln.aux.get_char("XA")
-    expect_equal "0A0B", aln.aux.get_string("XH")
+    (aln.aux.get_char("XA")).should eq('Q')
+    (aln.aux.get_string("XH")).should eq("0A0B")
     xd = aln.aux.get_float("XD") || raise "XD should be present"
-    expect_in_delta 3.25, xd, 1e-12
+    ((xd) - (3.25)).abs.should be <= 1e-12
   end
 
   def test_aux_update_array
     aln = aln1
     aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
-    expect_equal [1_i64, 2_i64, 3_i64], aln.aux["XB"]
+    (aln.aux["XB"]).should eq([1_i64, 2_i64, 3_i64])
 
     aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
-    expect_equal [1.25, 2.5], aln.aux["XF"]
+    (aln.aux["XF"]).should eq([1.25, 2.5])
   end
 
   def test_aux_update_validation
@@ -395,19 +395,18 @@ class BamRecordTest < HTSSpecCase
 
   {% for name in BAM_FLAG_METHODS %}
     def test_{{ name.id }}
-      expect_equal aln1.flag.{{ name.id }}, aln1.{{ name.id }}
+      (aln1.{{ name.id }}).should eq(aln1.flag.{{ name.id }})
     end
   {% end %}
 
   def test_to_s
-    expect_equal "poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0",
-      aln1.to_s
+    (aln1.to_s).should eq("poo_3290_3833_2:0:0_2:0:0_119\t133\tpoo\t3290\t0\t*\t=\t3290\t0\tGGGGCAGCTTGTTCGAAGCGTGACCCCCAAGACGTCGTCCTGACGAGCACAAACTCCCATTGAGAGTGGC\t2222222222222222222222222222222222222222222222222222222222222222222222\tMC:Z:70M\tAS:i:0\tXS:i:0")
   end
 
   def test_clone
     aln = aln1
     aln2 = aln.clone
-    expect_equal aln.to_s, aln2.to_s
+    (aln2.to_s).should eq(aln.to_s)
   end
 end
 
@@ -415,7 +414,7 @@ describe BamRecordTest do
   {% for method in BamRecordTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamRecordTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
       end
     end

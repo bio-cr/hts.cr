@@ -1,7 +1,7 @@
 require "../../spec_helper"
 require "../../../src/hts/bam"
 
-class BamCigarTest < HTSSpecCase
+class BamCigarTest
   def test_bam_path
     File.expand_path("../../fixtures/moo.bam", __DIR__)
   end
@@ -14,15 +14,15 @@ class BamCigarTest < HTSSpecCase
   end
 
   def test_initialize
-    expect_instance_of HTS::Bam::Cigar, cigar9
+    (cigar9).should be_a(HTS::Bam::Cigar)
   end
 
   def test_each
-    expect_equal [{'M', 28}, {'I', 1}, {'M', 11}], cigar9.to_a
+    (cigar9.to_a).should eq([{'M', 28}, {'I', 1}, {'M', 11}])
   end
 
   def test_to_s
-    expect_equal "28M1I11M", cigar9.to_s
+    (cigar9.to_s).should eq("28M1I11M")
   end
 
   # --- Integrated encode/decode tests ---
@@ -34,7 +34,7 @@ class BamCigarTest < HTSSpecCase
       (1_u32 << 4) | 1_u32,  # I
       (11_u32 << 4) | 0_u32, # M
     ]
-    expect_equal expected, words
+    (words).should eq(expected)
   end
 
   def test_encode_from_string
@@ -44,7 +44,7 @@ class BamCigarTest < HTSSpecCase
       (1_u32 << 4) | 1_u32,  # I
       (11_u32 << 4) | 0_u32, # M
     ]
-    expect_equal expected, words
+    (words).should eq(expected)
   end
 
   def test_decode_each_and_to_s_roundtrip
@@ -63,24 +63,24 @@ class BamCigarTest < HTSSpecCase
     ptr = words.to_unsafe
     cig = HTS::Bam::Cigar.new(ptr, words.size.to_u32)
 
-    expect_equal [
+    (cig.to_a).should eq([
       {'M', 1_u32}, {'I', 2_u32}, {'D', 3_u32}, {'N', 4_u32}, {'S', 5_u32},
       {'H', 6_u32}, {'P', 7_u32}, {'=', 8_u32}, {'X', 9_u32}, {'B', 10_u32},
-    ], cig.to_a
+    ])
 
-    expect_equal "1M2I3D4N5S6H7P8=9X10B", cig.to_s
+    (cig.to_s).should eq("1M2I3D4N5S6H7P8=9X10B")
   end
 
   def test_initialize_from_string
     cig = HTS::Bam::Cigar.new("28M1I11M")
-    expect_equal [{'M', 28_u32}, {'I', 1_u32}, {'M', 11_u32}], cig.to_a
-    expect_equal "28M1I11M", cig.to_s
+    (cig.to_a).should eq([{'M', 28_u32}, {'I', 1_u32}, {'M', 11_u32}])
+    (cig.to_s).should eq("28M1I11M")
   end
 
   def test_initialize_from_ops
     cig = HTS::Bam::Cigar.new([{'M', 2_u32}, {'D', 3_u32}, {'S', 4_u32}])
-    expect_equal [{'M', 2_u32}, {'D', 3_u32}, {'S', 4_u32}], cig.to_a
-    expect_equal "2M3D4S", cig.to_s
+    (cig.to_a).should eq([{'M', 2_u32}, {'D', 3_u32}, {'S', 4_u32}])
+    (cig.to_s).should eq("2M3D4S")
   end
 
   def test_encode_raises_on_missing_length_before_op
@@ -100,7 +100,7 @@ describe BamCigarTest do
   {% for method in BamCigarTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamCigarTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
       end
     end

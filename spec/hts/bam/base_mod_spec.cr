@@ -2,7 +2,7 @@ require "../../spec_helper"
 require "../../../src/hts/bam"
 
 # Test BaseMod API with a generated BAM file containing MM/ML tags
-class BamBaseModGenerateTest < HTSSpecCase
+class BamBaseModGenerateTest
   @tmpdir : String?
   @bam : HTS::Bam?
 
@@ -83,30 +83,30 @@ class BamBaseModGenerateTest < HTSSpecCase
     raise "samtools view failed" unless result.success?
 
     text = output.to_s
-    expect_includes text, "MM:Z:C+m,0,2;A+a,2;"
-    expect_includes text, "ML:B:C,200,150,180"
+    (text).should contain("MM:Z:C+m,0,2;A+a,2;")
+    (text).should contain("ML:B:C,200,150,180")
   end
 
   private def verify_modification_positions(base_mod : HTS::Bam::BaseMod)
     positions = base_mod.to_a.map(&.position).sort
-    expect_equal [1, 8, 13], positions
+    (positions).should eq([1, 8, 13])
   end
 
   private def verify_modification_types(base_mod : HTS::Bam::BaseMod)
     types = base_mod.recorded_types
-    expect_true types.includes?('m'.ord)
-    expect_true types.includes?('a'.ord)
+    (types.includes?('m'.ord)).should be_true
+    (types.includes?('a'.ord)).should be_true
 
     qt_m = base_mod.query_type('m'.ord)
     qt_a = base_mod.query_type('a'.ord)
 
-    expect_equal "C", qt_m.not_nil![:canonical]
-    expect_equal "A", qt_a.not_nil![:canonical]
+    (qt_m.not_nil![:canonical]).should eq("C")
+    (qt_a.not_nil![:canonical]).should eq("A")
   end
 
   private def verify_modification_qualities(base_mod : HTS::Bam::BaseMod)
     qualities = base_mod.to_a.flat_map { |p| p.modifications.map(&.qual) }.sort
-    expect_equal [150, 180, 200], qualities
+    (qualities).should eq([150, 180, 200])
   end
 
   private def have_samtools? : Bool
@@ -115,7 +115,7 @@ class BamBaseModGenerateTest < HTSSpecCase
 end
 
 # Test BaseMod API with remote SAM file containing ChEBI modification codes
-class BamBaseModChebiIntegrationTest < HTSSpecCase
+class BamBaseModChebiIntegrationTest
   MM_CHEBI_URL = "https://raw.githubusercontent.com/samtools/htslib/refs/heads/develop/test/base_mods/MM-chebi.sam"
 
   def test_chebi_modification_types
@@ -165,19 +165,19 @@ class BamBaseModChebiIntegrationTest < HTSSpecCase
   private def verify_chebi_modification_types(base_mod : HTS::Bam::BaseMod)
     types = base_mod.recorded_types
 
-    expect_true types.includes?('m'.ord)
-    expect_true types.includes?(-76_792) # ChEBI ID
-    expect_true types.includes?('n'.ord)
+    (types.includes?('m'.ord)).should be_true
+    types.includes?(-76_792).should be_true # ChEBI ID
+    (types.includes?('n'.ord)).should be_true
   end
 
   private def verify_chebi_modification_positions(base_mod : HTS::Bam::BaseMod)
     modifications = base_mod.to_a
 
     total_count = modifications.sum { |p| p.modifications.size }
-    expect_equal 8, total_count
+    (total_count).should eq(8)
 
     positions = modifications.map(&.position).uniq.sort
-    expect_equal [6, 15, 17, 19, 20, 31, 34], positions
+    (positions).should eq([6, 15, 17, 19, 20, 31, 34])
   end
 
   private def verify_chebi_position_specific_modifications(base_mod : HTS::Bam::BaseMod)
@@ -185,16 +185,16 @@ class BamBaseModChebiIntegrationTest < HTSSpecCase
 
     # Positions with 'm' modification
     [6, 17, 20, 31, 34].each do |pos|
-      expect_true position_codes[pos].includes?('m'.ord)
+      (position_codes[pos].includes?('m'.ord)).should be_true
     end
 
     # Positions with ChEBI modification
     [19, 34].each do |pos|
-      expect_true position_codes[pos].includes?(-76_792)
+      (position_codes[pos].includes?(-76_792)).should be_true
     end
 
     # Position with 'n' modification
-    expect_true position_codes[15].includes?('n'.ord)
+    (position_codes[15].includes?('n'.ord)).should be_true
   end
 
   private def verify_chebi_type_metadata(base_mod : HTS::Bam::BaseMod)
@@ -202,13 +202,13 @@ class BamBaseModChebiIntegrationTest < HTSSpecCase
     metadata_n = base_mod.query_type('n'.ord) || raise "Missing 'n' metadata"
     metadata_chebi = base_mod.query_type(-76_792) || raise "Missing ChEBI metadata"
 
-    expect_equal "C", metadata_m[:canonical]
-    expect_equal "N", metadata_n[:canonical]
-    expect_equal "C", metadata_chebi[:canonical]
+    (metadata_m[:canonical]).should eq("C")
+    (metadata_n[:canonical]).should eq("N")
+    (metadata_chebi[:canonical]).should eq("C")
 
     [metadata_m, metadata_n, metadata_chebi].each do |metadata|
-      expect_not_nil metadata[:strand]
-      expect_not_nil metadata[:implicit]
+      (metadata[:strand]).should_not be_nil
+      (metadata[:implicit]).should_not be_nil
     end
   end
 
@@ -229,8 +229,11 @@ describe BamBaseModGenerateTest do
   {% for method in BamBaseModGenerateTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamBaseModGenerateTest.new
-      run_spec_case(spec_case) do
+        spec_case.setup
+      begin
         spec_case.{{ method.name.id }}
+      ensure
+        spec_case.teardown
       end
     end
   {% end %}
@@ -240,7 +243,7 @@ describe BamBaseModChebiIntegrationTest do
   {% for method in BamBaseModChebiIntegrationTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamBaseModChebiIntegrationTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
       end
     end

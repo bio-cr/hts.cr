@@ -1,63 +1,6 @@
 require "spec"
 require "../src/hts"
 
-class HTSSpecCase
-  def setup
-  end
-
-  def teardown
-  end
-end
-
-def run_spec_case(spec_case : HTSSpecCase, &)
-  spec_case.setup
-  begin
-    yield
-  ensure
-    spec_case.teardown
-  end
-end
-
-def expect_equal(expected, actual)
-  actual.should eq expected
-end
-
-def expect_true(actual, message = nil)
-  actual.should be_true
-end
-
-def expect_false(actual)
-  actual.should be_false
-end
-
-def expect_nil(actual)
-  actual.should be_nil
-end
-
-def expect_not_nil(actual)
-  actual.should_not be_nil
-end
-
-def expect_instance_of(klass : T.class, actual) forall T
-  actual.is_a?(T).should be_true
-end
-
-def expect_includes(collection, value)
-  (collection.nil? ? false : collection.includes?(value)).should be_true
-end
-
-def expect_same(expected, actual)
-  actual.same?(expected).should be_true
-end
-
-def expect_in_delta(expected, actual, delta)
-  (actual - expected).abs.should be <= delta
-end
-
-def expect_raises(&)
-  expect_raises(Exception) { yield }
-end
-
 BAM_FLAG_METHODS = %w[
   paired?
   proper_pair?

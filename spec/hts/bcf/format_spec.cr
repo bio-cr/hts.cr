@@ -1,7 +1,7 @@
 require "../../spec_helper"
 require "../../../src/hts/bcf"
 
-class BcfFormatTest < HTSSpecCase
+class BcfFormatTest
   def with_temp_character_format_vcf(&)
     file = File.tempfile("format_character_test", ".vcf")
     path = file.path || raise "tempfile path is nil"
@@ -167,11 +167,11 @@ class BcfFormatTest < HTSSpecCase
   end
 
   def test_get_int
-    expect_equal([172, 93, 0], format.get_int("PL"))
+    (format.get_int("PL")).should eq([172, 93, 0])
   end
 
   def test_get_string
-    expect_equal(["1/1"], format.get_string("GT"))
+    (format.get_string("GT")).should eq(["1/1"])
   end
 
   def test_character_format_is_routed_through_string
@@ -179,17 +179,17 @@ class BcfFormatTest < HTSSpecCase
       HTS::Bcf.open(path) do |bcf|
         format = bcf.first.format
 
-        expect_equal(:string, bcf.header.format_type("CH"))
-        expect_equal(:string, bcf.header.format_type("ST"))
-        expect_equal(["ALPHA", "BETA"], format.get_string("ST"))
-        expect_equal(["A", "Z"], format.get_string("CH"))
-        expect_nil format.get_string("MISS")
+        (bcf.header.format_type("CH")).should eq(:string)
+        (bcf.header.format_type("ST")).should eq(:string)
+        (format.get_string("ST")).should eq(["ALPHA", "BETA"])
+        (format.get_string("CH")).should eq(["A", "Z"])
+        (format.get_string("MISS")).should be_nil
       end
     end
   end
 
   def test_get_genotypes
-    expect_equal([4, 4], format.get_genotypes)
+    (format.get_genotypes).should eq([4, 4])
   end
 
   def test_multisample_gt_and_flat_numeric_buffers
@@ -197,26 +197,26 @@ class BcfFormatTest < HTSSpecCase
       HTS::Bcf.open(path) do |bcf|
         format = bcf.first.format
 
-        expect_equal(["0/1", "1/1"], format.get_string("GT"))
-        expect_equal([2, 4, 4, 4], format.get_genotypes)
-        expect_equal([10, 20, 30, 40, 50, 60], format.get_int("PL"))
+        (format.get_string("GT")).should eq(["0/1", "1/1"])
+        (format.get_genotypes).should eq([2, 4, 4, 4])
+        (format.get_int("PL")).should eq([10, 20, 30, 40, 50, 60])
 
         ints = format.get_int("IV") || raise "IV should be present"
-        expect_equal(4, ints.size)
-        expect_equal(10, ints[0])
-        expect_equal(1, HTS::LibHTS2.bcf_int32_is_vector_end(ints[1]))
-        expect_equal(1, HTS::LibHTS2.bcf_int32_is_missing(ints[2]))
-        expect_equal(1, HTS::LibHTS2.bcf_int32_is_vector_end(ints[3]))
+        (ints.size).should eq(4)
+        (ints[0]).should eq(10)
+        (HTS::LibHTS2.bcf_int32_is_vector_end(ints[1])).should eq(1)
+        (HTS::LibHTS2.bcf_int32_is_missing(ints[2])).should eq(1)
+        (HTS::LibHTS2.bcf_int32_is_vector_end(ints[3])).should eq(1)
 
         floats = format.get_float("FV") || raise "FV should be present"
-        expect_equal(4, floats.size)
-        expect_equal(1.5_f32, floats[0])
-        expect_equal(1, HTS::LibHTS2.bcf_float_is_vector_end(floats[1]))
-        expect_equal(1, HTS::LibHTS2.bcf_float_is_missing(floats[2]))
-        expect_equal(1, HTS::LibHTS2.bcf_float_is_vector_end(floats[3]))
+        (floats.size).should eq(4)
+        (floats[0]).should eq(1.5_f32)
+        (HTS::LibHTS2.bcf_float_is_vector_end(floats[1])).should eq(1)
+        (HTS::LibHTS2.bcf_float_is_missing(floats[2])).should eq(1)
+        (HTS::LibHTS2.bcf_float_is_vector_end(floats[3])).should eq(1)
 
-        expect_nil format.get_int("MISSI")
-        expect_nil format.get_float("MISSF")
+        (format.get_int("MISSI")).should be_nil
+        (format.get_float("MISSF")).should be_nil
       end
     end
   end
@@ -227,26 +227,26 @@ class BcfFormatTest < HTSSpecCase
         format = bcf.first.format
         raw = format.get_genotypes || raise "GT should be present"
 
-        expect_equal(8, raw.size)
-        expect_equal(0, HTS::LibHTS2.bcf_gt_allele(raw[0]))
-        expect_equal(1, HTS::LibHTS2.bcf_gt_allele(raw[1]))
-        expect_equal(1, HTS::LibHTS2.bcf_gt_is_phased(raw[1]))
-        expect_equal(0, HTS::LibHTS2.bcf_gt_is_missing(raw[2]))
-        expect_equal(0, HTS::LibHTS2.bcf_gt_is_missing(raw[3]))
-        expect_equal(1, HTS::LibHTS2.bcf_gt_allele(raw[6]))
-        expect_equal(1, HTS::LibHTS2.bcf_gt_is_vector_end(raw[7]))
-        expect_equal(["0|1", "0/1", "./.", "1"], format.get_string("GT"))
+        (raw.size).should eq(8)
+        (HTS::LibHTS2.bcf_gt_allele(raw[0])).should eq(0)
+        (HTS::LibHTS2.bcf_gt_allele(raw[1])).should eq(1)
+        (HTS::LibHTS2.bcf_gt_is_phased(raw[1])).should eq(1)
+        (HTS::LibHTS2.bcf_gt_is_missing(raw[2])).should eq(0)
+        (HTS::LibHTS2.bcf_gt_is_missing(raw[3])).should eq(0)
+        (HTS::LibHTS2.bcf_gt_allele(raw[6])).should eq(1)
+        (HTS::LibHTS2.bcf_gt_is_vector_end(raw[7])).should eq(1)
+        (format.get_string("GT")).should eq(["0|1", "0/1", "./.", "1"])
       end
     end
   end
 
   def test_low_level_contract
-    expect_nil format.get_int("NO_SUCH_TAG")
-    expect_nil format.get_float("NO_SUCH_TAG")
-    expect_nil format.get_string("NO_SUCH_TAG")
+    (format.get_int("NO_SUCH_TAG")).should be_nil
+    (format.get_float("NO_SUCH_TAG")).should be_nil
+    (format.get_string("NO_SUCH_TAG")).should be_nil
 
     ex = expect_raises(HTS::Bcf::FormatTypeError) { format.get_float("PL") }
-    expect_equal "Tag PL is not float FORMAT field", ex.message
+    (ex.message).should eq("Tag PL is not float FORMAT field")
   end
 
   def test_format_flag_is_unsupported
@@ -256,7 +256,7 @@ class BcfFormatTest < HTSSpecCase
     header.append("##FORMAT=<ID=BAD,Number=0,Type=Flag,Description=\"Unsupported\">")
     header.add_sample("S1")
 
-    expect_equal(:flag, header.format_type("BAD"))
+    (header.format_type("BAD")).should eq(:flag)
 
     record = HTS::Bcf::Record.new(header)
     record.rid = HTS::LibHTS2.bcf_hdr_name2id(header, "1")
@@ -264,7 +264,7 @@ class BcfFormatTest < HTSSpecCase
     format = record.format
 
     ex = expect_raises(HTS::Bcf::UnsupportedFormatOperationError) { format.get_string("BAD") }
-    expect_equal "FORMAT flag fields are not supported: BAD", ex.message
+    (ex.message).should eq("FORMAT flag fields are not supported: BAD")
   end
 
   def test_update_methods_round_trip
@@ -293,14 +293,14 @@ class BcfFormatTest < HTSSpecCase
         HTS::Bcf.open(output_path) do |verify_bcf|
           format = verify_bcf.first.format
 
-          expect_equal([11, 22], format.get_int("GQ"))
-          expect_equal(["LEFT", "RIGHT"], format.get_string("ST"))
-          expect_equal(["0/0", "1|1"], format.get_string("GT"))
+          (format.get_int("GQ")).should eq([11, 22])
+          (format.get_string("ST")).should eq(["LEFT", "RIGHT"])
+          (format.get_string("GT")).should eq(["0/0", "1|1"])
 
           floats = format.get_float("TF") || raise "TF should be present"
-          expect_equal(2, floats.size)
-          expect_in_delta(1.25_f32, floats[0], 0.001)
-          expect_in_delta(2.75_f32, floats[1], 0.001)
+          (floats.size).should eq(2)
+          ((floats[0]) - (1.25_f32)).abs.should be <= 0.001
+          ((floats[1]) - (2.75_f32)).abs.should be <= 0.001
         end
       end
     end
@@ -313,8 +313,8 @@ class BcfFormatTest < HTSSpecCase
           record = input_bcf.first
           format = record.format
 
-          expect_equal(true, format.delete("ST"))
-          expect_equal(false, format.delete("ST"))
+          (format.delete("ST")).should eq(true)
+          (format.delete("ST")).should eq(false)
 
           HTS::Bcf.open(output_path, "w") do |output_bcf|
             output_bcf.write_header(input_bcf.header)
@@ -323,7 +323,7 @@ class BcfFormatTest < HTSSpecCase
         end
 
         HTS::Bcf.open(output_path) do |verify_bcf|
-          expect_nil verify_bcf.first.format.get_string("ST")
+          (verify_bcf.first.format.get_string("ST")).should be_nil
         end
       end
     end
@@ -335,7 +335,7 @@ class BcfFormatTest < HTSSpecCase
         format = bcf.first.format
 
         ex = expect_raises(Exception) { format.update_int("GQ", [1, 2, 3]) }
-        expect_equal "FORMAT values for GQ must be divisible by sample count (2)", ex.message
+        (ex.message).should eq("FORMAT values for GQ must be divisible by sample count (2)")
       end
     end
   end
@@ -346,7 +346,7 @@ class BcfFormatTest < HTSSpecCase
         format = bcf.first.format
 
         ex = expect_raises(Exception) { format.update_string("ST", "solo") }
-        expect_equal "FORMAT string values for ST must provide one entry per sample (2)", ex.message
+        (ex.message).should eq("FORMAT string values for ST must provide one entry per sample (2)")
       end
     end
   end
@@ -356,7 +356,7 @@ describe BcfFormatTest do
   {% for method in BcfFormatTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfFormatTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
       end
     end

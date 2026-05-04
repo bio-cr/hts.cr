@@ -1,7 +1,7 @@
 require "../../spec_helper"
 require "../../../src/hts/bam"
 
-class BamFlagTest < HTSSpecCase
+class BamFlagTest
   def setup
     @flag = HTS::Bam::Flag.new(4095)
     @flag_zero = HTS::Bam::Flag.new(0)
@@ -29,56 +29,55 @@ class BamFlagTest < HTSSpecCase
   # BAM_FSUPPLEMENTARY = 2048
 
   def test_value
-    expect_equal(4095, flag.value)
-    expect_equal(0, flag_zero.value)
+    (flag.value).should eq(4095)
+    (flag_zero.value).should eq(0)
   end
 
   {% for name in BAM_FLAG_METHODS %}
     def test_{{name.id}}
-      expect_equal true, flag.{{name.id}}
-      expect_equal false, flag_zero.{{name.id}}
+      (flag.{{name.id}}).should eq(true)
+      (flag_zero.{{name.id}}).should eq(false)
     end
   {% end %}
 
   def test_bitwise_and
-    expect_equal 1024, (flag & 1024).value
-    expect_equal 0, (flag_zero & 1024).value
+    ((flag & 1024).value).should eq(1024)
+    ((flag_zero & 1024).value).should eq(0)
   end
 
   def test_bitwise_or
-    expect_equal 4095, (flag | 1024).value
-    expect_equal 1024, (flag_zero | 1024).value
+    ((flag | 1024).value).should eq(4095)
+    ((flag_zero | 1024).value).should eq(1024)
   end
 
   def test_bitwise_xor
-    expect_equal 3071, (flag ^ 1024).value
-    expect_equal 1024, (flag_zero ^ 1024).value
+    ((flag ^ 1024).value).should eq(3071)
+    ((flag_zero ^ 1024).value).should eq(1024)
   end
 
   def test_bitwise_not
-    expect_equal 61440, (~flag).value
-    expect_equal 65535, (~flag_zero).value
+    ((~flag).value).should eq(61440)
+    ((~flag_zero).value).should eq(65535)
   end
 
   def test_bitwise_shift_left
-    expect_equal 8190, (flag << 1).value
-    expect_equal 0, (flag_zero << 1).value
+    ((flag << 1).value).should eq(8190)
+    ((flag_zero << 1).value).should eq(0)
   end
 
   def test_bitwise_shift_right
-    expect_equal 2047, (flag >> 1).value
-    expect_equal 0, (flag_zero >> 1).value
+    ((flag >> 1).value).should eq(2047)
+    ((flag_zero >> 1).value).should eq(0)
   end
 
   def test_to_i
-    expect_equal 4095, flag.to_i
-    expect_equal 0, flag_zero.to_i
+    (flag.to_i).should eq(4095)
+    (flag_zero.to_i).should eq(0)
   end
 
   def test_to_s
-    expect_equal "PAIRED,PROPER_PAIR,UNMAP,MUNMAP,REVERSE,MREVERSE,READ1,READ2,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY",
-      flag.to_s
-    expect_equal "", flag_zero.to_s
+    (flag.to_s).should eq("PAIRED,PROPER_PAIR,UNMAP,MUNMAP,REVERSE,MREVERSE,READ1,READ2,SECONDARY,QCFAIL,DUP,SUPPLEMENTARY")
+    (flag_zero.to_s).should eq("")
   end
 end
 
@@ -86,7 +85,8 @@ describe BamFlagTest do
   {% for method in BamFlagTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamFlagTest.new
-      run_spec_case(spec_case) do
+        spec_case.setup
+      begin
         spec_case.{{ method.name.id }}
       end
     end

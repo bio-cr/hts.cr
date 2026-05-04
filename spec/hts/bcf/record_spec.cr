@@ -1,7 +1,7 @@
 require "../../spec_helper"
 require "../../../src/hts/bcf"
 
-class BcfRecordTest < HTSSpecCase
+class BcfRecordTest
   def test_bcf_path
     File.expand_path("../../fixtures/test.bcf", __DIR__)
   end
@@ -14,107 +14,106 @@ class BcfRecordTest < HTSSpecCase
   end
 
   def test_rid
-    expect_equal 0, var1.rid
+    (var1.rid).should eq(0)
   end
 
   def test_rid_set
     var = var1.clone
-    expect_equal 0, var.rid
+    (var.rid).should eq(0)
     var.rid = 1
-    expect_equal 1, var.rid
+    (var.rid).should eq(1)
     var.rid = 0
-    expect_equal 0, var.rid
+    (var.rid).should eq(0)
   end
 
   def test_chrom
-    expect_equal "poo", var1.chrom
+    (var1.chrom).should eq("poo")
   end
 
   def test_pos
-    expect_equal 2125, var1.pos
+    (var1.pos).should eq(2125)
   end
 
   def test_pos_set
     var = var1.clone
-    expect_equal 2125, var.pos
+    (var.pos).should eq(2125)
     var.pos = 2126
-    expect_equal 2126, var.pos
+    (var.pos).should eq(2126)
     var.pos = 2125
-    expect_equal 2125, var.pos
+    (var.pos).should eq(2125)
   end
 
   def test_endpos
-    expect_equal 2126, var1.endpos
+    (var1.endpos).should eq(2126)
   end
 
   def test_id
-    expect_equal ".", var1.id
+    (var1.id).should eq(".")
   end
 
   def test_id_set
     var = var1.clone
-    expect_equal ".", var.id
+    (var.id).should eq(".")
     var.id = "asterite"
-    expect_equal "asterite", var.id
+    (var.id).should eq("asterite")
     var.id = "."
-    expect_equal ".", var.id
+    (var.id).should eq(".")
   end
 
   def test_clear_id
     var = var1.clone
-    expect_equal ".", var.id
+    (var.id).should eq(".")
     var.id = "Ary"
-    expect_equal "Ary", var.id
+    (var.id).should eq("Ary")
     var.clear_id
-    expect_equal ".", var.id
+    (var.id).should eq(".")
   end
 
   def test_filter
-    expect_equal "PASS", var1.filter
+    (var1.filter).should eq("PASS")
   end
 
   def test_qual
-    expect_equal 142.41574_f32, var1.qual
+    (var1.qual).should eq(142.41574_f32)
   end
 
   def test_qual_set
     var = var1.clone
-    expect_equal 142.41574_f32, var.qual
+    (var.qual).should eq(142.41574_f32)
     var.qual = 100
-    expect_equal 100, var.qual
+    (var.qual).should eq(100)
     var.qual = 142.41574_f32
-    expect_equal 142.41574_f32, var.qual
+    (var.qual).should eq(142.41574_f32)
   end
 
   def test_ref
-    expect_equal "T", var1.ref
+    (var1.ref).should eq("T")
   end
 
   def test_alt
-    expect_equal ["C"], var1.alt
+    (var1.alt).should eq(["C"])
   end
 
   def test_alleles
-    expect_equal ["T", "C"], var1.alleles
+    (var1.alleles).should eq(["T", "C"])
   end
 
   def test_info
-    expect_instance_of HTS::Bcf::Info, var1.info
+    (var1.info).should be_a(HTS::Bcf::Info)
   end
 
   def test_format
-    expect_instance_of HTS::Bcf::Format, var1.format
+    (var1.format).should be_a(HTS::Bcf::Format)
   end
 
   def test_to_s
-    expect_equal "poo\t2126\t.\tT\tC\t142.416\t.\tDP=31;VDB=0.673439;SGB=-0.69311;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,14,17;MQ=60\tGT:PL\t1/1:172,93,0\n",
-      var1.to_s
+    (var1.to_s).should eq("poo\t2126\t.\tT\tC\t142.416\t.\tDP=31;VDB=0.673439;SGB=-0.69311;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,14,17;MQ=60\tGT:PL\t1/1:172,93,0\n")
   end
 
   def test_clone
     var = var1
     var2 = var.clone
-    expect_equal var.to_s, var2.to_s
+    (var2.to_s).should eq(var.to_s)
   end
 end
 
@@ -122,7 +121,7 @@ describe BcfRecordTest do
   {% for method in BcfRecordTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfRecordTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
       end
     end

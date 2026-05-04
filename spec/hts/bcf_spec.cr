@@ -1,7 +1,7 @@
 require "../spec_helper"
 require "../../src/hts/bcf"
 
-class BcfTest < HTSSpecCase
+class BcfTest
   include TestBcfMultisampleHelper
 
   def teardown
@@ -46,9 +46,9 @@ class BcfTest < HTSSpecCase
 
   def test_new
     b = HTS::Bcf.new(test_bcf_path)
-    expect_instance_of HTS::Bcf, b
+    (b).should be_a(HTS::Bcf)
     b.close
-    expect_equal true, b.closed?
+    (b.closed?).should eq(true)
   end
 
   # def test_new_with_block
@@ -59,44 +59,44 @@ class BcfTest < HTSSpecCase
 
   def test_open
     b = HTS::Bcf.open(test_bcf_path)
-    expect_instance_of HTS::Bcf, b
+    (b).should be_a(HTS::Bcf)
     b.close
-    expect_equal true, b.closed?
+    (b.closed?).should eq(true)
   end
 
   def test_open_with_block
     f = HTS::Bcf.open(test_bcf_path) do |b|
-      expect_instance_of HTS::Bcf, b
+      (b).should be_a(HTS::Bcf)
     end
-    expect_equal true, f.closed?
+    (f.closed?).should eq(true)
   end
 
   def test_file_name
-    expect_equal test_bcf_path, bcf.file_name
+    (bcf.file_name).should eq(test_bcf_path)
   end
 
   def test_header
-    expect_instance_of HTS::Bcf::Header, bcf.header
+    (bcf.header).should be_a(HTS::Bcf::Header)
   end
 
   def test_mode
-    expect_equal "r", bcf.mode
+    (bcf.mode).should eq("r")
   end
 
   def test_file_format
-    expect_equal "Bcf", bcf.file_format
+    (bcf.file_format).should eq("Bcf")
   end
 
   def test_file_format_version
-    expect_equal "2.2", bcf.file_format_version
+    (bcf.file_format_version).should eq("2.2")
   end
 
   def test_nsamples
-    expect_equal 1, bcf.nsamples
+    (bcf.nsamples).should eq(1)
   end
 
   def test_samples
-    expect_equal ["poo.sort.bam"], bcf.samples
+    (bcf.samples).should eq(["poo.sort.bam"])
   end
 
   def test_initialize_no_file_bcf
@@ -107,9 +107,9 @@ class BcfTest < HTSSpecCase
     with_temp_multisample_bcf do |path|
       subset_bcf = HTS::Bcf.new(path, subset: ["B"])
 
-      expect_equal ["B"], subset_bcf.samples
-      expect_equal 1, subset_bcf.nsamples
-      expect_equal ["0/1"], subset_bcf.first.format.get_string("GT")
+      (subset_bcf.samples).should eq(["B"])
+      (subset_bcf.nsamples).should eq(1)
+      (subset_bcf.first.format.get_string("GT")).should eq(["0/1"])
     ensure
       subset_bcf.try &.close
     end
@@ -119,8 +119,8 @@ class BcfTest < HTSSpecCase
     ex = expect_raises(HTS::Bcf::MissingIndexError) do
       bcf.query("poo:4000-4100") { |_| }
     end
-    expect_includes ex.message, test_bcf_path
-    expect_includes ex.message, "Query requires an index"
+    (ex.message.to_s).should contain(test_bcf_path)
+    (ex.message.to_s).should contain("Query requires an index")
   end
 
   def test_query_region
@@ -128,7 +128,7 @@ class BcfTest < HTSSpecCase
     indexed_bcf.query("poo:4000-4500") do |record|
       positions << record.pos
     end
-    expect_equal [4020, 4309, 4336], positions
+    (positions).should eq([4020, 4309, 4336])
   end
 
   def test_query_region_copy
@@ -136,7 +136,7 @@ class BcfTest < HTSSpecCase
     indexed_bcf.query("poo:4000-4500", copy: true) do |record|
       positions << record.pos
     end
-    expect_equal [4020, 4309, 4336], positions
+    (positions).should eq([4020, 4309, 4336])
   end
 
   def test_query_tid_numeric
@@ -145,7 +145,7 @@ class BcfTest < HTSSpecCase
     indexed_bcf.query(tid, 3999_i64, 4500_i64) do |record|
       positions << record.pos
     end
-    expect_equal [4020, 4309, 4336], positions
+    (positions).should eq([4020, 4309, 4336])
   end
 
   def test_query_chrom_numeric
@@ -153,7 +153,7 @@ class BcfTest < HTSSpecCase
     indexed_bcf.query("poo", 4000_i64, 4500_i64) do |record|
       positions << record.pos
     end
-    expect_equal [4020, 4309, 4336], positions
+    (positions).should eq([4020, 4309, 4336])
   end
 
   def test_query_multi_regions
@@ -161,7 +161,7 @@ class BcfTest < HTSSpecCase
     indexed_bcf.query(["poo:4000-4100", "poo:4300-4400"]) do |record|
       positions << record.pos
     end
-    expect_equal [4020, 4309, 4336], positions
+    (positions).should eq([4020, 4309, 4336])
   end
 
   def test_query_multi_regions_copy
@@ -169,83 +169,83 @@ class BcfTest < HTSSpecCase
     indexed_bcf.query(["poo:4000-4100", "poo:4300-4400"], copy: true) do |record|
       positions << record.pos
     end
-    expect_equal [4020, 4309, 4336], positions
+    (positions).should eq([4020, 4309, 4336])
   end
 
   def test_query_invalid_region_message
     ex = expect_raises(HTS::Bcf::QueryError) do
       indexed_bcf.query("unknown:1-10") { |_| }
     end
-    expect_includes ex.message, "unknown:1-10"
-    expect_includes ex.message, test_bcf_path
+    (ex.message.to_s).should contain("unknown:1-10")
+    (ex.message.to_s).should contain(test_bcf_path)
   end
 
   def test_query_invalid_chrom_message
     ex = expect_raises(ArgumentError) do
       indexed_bcf.query("unknown", 1_i64, 10_i64) { |_| }
     end
-    expect_includes ex.message, "Unknown reference name"
-    expect_includes ex.message, test_bcf_path
+    (ex.message.to_s).should contain("Unknown reference name")
+    (ex.message.to_s).should contain(test_bcf_path)
   end
 
   def test_each
     bcf.each do |record|
-      expect_instance_of HTS::Bcf::Record, record
+      (record).should be_a(HTS::Bcf::Record)
     end
   end
 
   def test_each_copy
     bcf.each(copy: true) do |record|
-      expect_instance_of HTS::Bcf::Record, record
+      (record).should be_a(HTS::Bcf::Record)
     end
   end
 
   def test_chrom
     act = bcf.chrom
     exp = bcf.map(&.chrom)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_pos
     act = bcf.pos
     exp = bcf.map(&.pos)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_endpos
     act = bcf.endpos
     exp = bcf.map(&.endpos)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_id
     act = bcf.id
     exp = bcf.map(&.id)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_ref
     act = bcf.ref
     exp = bcf.map(&.ref)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_alt
     act = bcf.alt
     exp = bcf.map(&.alt)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_qual
     act = bcf.qual
     exp = bcf.map(&.qual)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 
   def test_filter
     act = bcf.filter
     exp = bcf.map(&.filter)
-    expect_equal exp, act
+    (act).should eq(exp)
   end
 end
 
@@ -253,8 +253,10 @@ describe BcfTest do
   {% for method in BcfTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
+      ensure
+        spec_case.teardown
       end
     end
   {% end %}

@@ -1,7 +1,7 @@
 require "../spec_helper"
 require "../../src/hts/tabix"
 
-class TabixTest < HTSSpecCase
+class TabixTest
   # Simple sorted VCF data (CHROM, POS 1-based, …).
   # Header lines (beginning with '#') are skipped by tabix when querying.
   VCF_LINES = [
@@ -46,47 +46,47 @@ class TabixTest < HTSSpecCase
 
   def test_open_and_close
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      expect_false tbx.closed?
+      (tbx.closed?).should be_false
     end
   end
 
   def test_index_loaded
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      expect_true tbx.index_loaded?
+      (tbx.index_loaded?).should be_true
     end
   end
 
   def test_seqnames
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      expect_equal ["poo"], tbx.seqnames
+      (tbx.seqnames).should eq(["poo"])
     end
   end
 
   def test_name2id_known
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      expect_equal 0, tbx.name2id("poo")
+      (tbx.name2id("poo")).should eq(0)
     end
   end
 
   def test_name2id_unknown
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      expect_equal -1, tbx.name2id("nonexistent")
+      (tbx.name2id("nonexistent")).should eq(-1)
     end
   end
 
   def test_seqnames_requires_index
     without_index do |tbx|
       ex = expect_raises(HTS::Tabix::MissingIndexError) { tbx.seqnames }
-      expect_includes ex.message, @vcf_gz
-      expect_includes ex.message, "seqnames requires an index"
+      (ex.message.to_s).should contain(@vcf_gz)
+      (ex.message.to_s).should contain("seqnames requires an index")
     end
   end
 
   def test_name2id_requires_index
     without_index do |tbx|
       ex = expect_raises(HTS::Tabix::MissingIndexError) { tbx.name2id("poo") }
-      expect_includes ex.message, @vcf_gz
-      expect_includes ex.message, "name2id requires an index"
+      (ex.message.to_s).should contain(@vcf_gz)
+      (ex.message.to_s).should contain("name2id requires an index")
     end
   end
 
@@ -95,8 +95,8 @@ class TabixTest < HTSSpecCase
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo:150-250") { |f| results << f }
-      expect_equal 1, results.size
-      expect_equal "200", results[0][1]
+      (results.size).should eq(1)
+      (results[0][1]).should eq("200")
     end
   end
 
@@ -105,7 +105,7 @@ class TabixTest < HTSSpecCase
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo:100-300") { |f| results << f }
-      expect_equal 3, results.size
+      (results.size).should eq(3)
     end
   end
 
@@ -114,7 +114,7 @@ class TabixTest < HTSSpecCase
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo:1-3,00") { |f| results << f }
-      expect_equal 3, results.size
+      (results.size).should eq(3)
     end
   end
 
@@ -123,7 +123,7 @@ class TabixTest < HTSSpecCase
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo") { |f| results << f }
-      expect_equal 5, results.size
+      (results.size).should eq(5)
     end
   end
 
@@ -132,8 +132,8 @@ class TabixTest < HTSSpecCase
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo", 149, 201) { |f| results << f }
-      expect_equal 1, results.size
-      expect_equal "200", results[0][1]
+      (results.size).should eq(1)
+      (results[0][1]).should eq("200")
     end
   end
 
@@ -142,17 +142,17 @@ class TabixTest < HTSSpecCase
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo", 99, 299) { |f| results << f }
-      expect_equal 2, results.size
+      (results.size).should eq(2)
     end
   end
 
   def test_query_fields
     HTS::Tabix.open(@vcf_gz) do |tbx|
       tbx.query("poo:100-100") do |fields|
-        expect_equal "poo", fields[0]
-        expect_equal "100", fields[1]
-        expect_equal "A", fields[3]
-        expect_equal "T", fields[4]
+        (fields[0]).should eq("poo")
+        (fields[1]).should eq("100")
+        (fields[3]).should eq("A")
+        (fields[4]).should eq("T")
       end
     end
   end
@@ -162,8 +162,8 @@ class TabixTest < HTSSpecCase
       ex = expect_raises(HTS::Tabix::MissingIndexError) do
         tbx.query("poo:100-100") { |_| }
       end
-      expect_includes ex.message, @vcf_gz
-      expect_includes ex.message, "query requires an index"
+      (ex.message.to_s).should contain(@vcf_gz)
+      (ex.message.to_s).should contain("query requires an index")
     end
   end
 
@@ -172,8 +172,8 @@ class TabixTest < HTSSpecCase
       ex = expect_raises(HTS::Tabix::QueryError) do
         tbx.query("unknown:1-10") { |_| }
       end
-      expect_includes ex.message, "unknown:1-10"
-      expect_includes ex.message, @vcf_gz
+      (ex.message.to_s).should contain("unknown:1-10")
+      (ex.message.to_s).should contain(@vcf_gz)
     end
   end
 
@@ -182,8 +182,8 @@ class TabixTest < HTSSpecCase
       ex = expect_raises(ArgumentError) do
         tbx.query("unknown", 0, 10) { |_| }
       end
-      expect_includes ex.message, "Unknown reference name"
-      expect_includes ex.message, @vcf_gz
+      (ex.message.to_s).should contain("Unknown reference name")
+      (ex.message.to_s).should contain(@vcf_gz)
     end
   end
 
@@ -192,7 +192,7 @@ class TabixTest < HTSSpecCase
       ex = expect_raises(ArgumentError) do
         tbx.query("poo", -1, 10) { |_| }
       end
-      expect_includes ex.message, "must be >= 0"
+      (ex.message.to_s).should contain("must be >= 0")
     end
   end
 
@@ -201,7 +201,7 @@ class TabixTest < HTSSpecCase
   def test_build_index_class_method
     # build_index creates a .tbi file next to the input
     tbi = "#{@vcf_gz}.tbi"
-    expect_true File.exists?(tbi)
+    (File.exists?(tbi)).should be_true
   end
 end
 
@@ -209,8 +209,11 @@ describe TabixTest do
   {% for method in TabixTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = TabixTest.new
-      run_spec_case(spec_case) do
+        spec_case.setup
+      begin
         spec_case.{{ method.name.id }}
+      ensure
+        spec_case.teardown
       end
     end
   {% end %}

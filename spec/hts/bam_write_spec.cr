@@ -1,7 +1,7 @@
 require "../spec_helper"
 require "../../src/hts/bam"
 
-class BamWriteTest < HTSSpecCase
+class BamWriteTest
   TEMP_DIR = File.expand_path("../fixtures", __DIR__)
 
   def temp_path(filename : String) : String
@@ -42,7 +42,7 @@ class BamWriteTest < HTSSpecCase
 
   # Placeholder test to verify structure
   def test_setup_works
-    expect_equal true, true
+    (true).should eq(true)
   end
 
   # Test basic BAM writing and reading back
@@ -91,11 +91,11 @@ class BamWriteTest < HTSSpecCase
     end
     bam_in.close
 
-    expect_equal 2, records.size
-    expect_equal "read1", records[0].qname
-    expect_equal 100, records[0].pos
-    expect_equal "read2", records[1].qname
-    expect_equal 200, records[1].pos
+    (records.size).should eq(2)
+    (records[0].qname).should eq("read1")
+    (records[0].pos).should eq(100)
+    (records[1].qname).should eq("read2")
+    (records[1].pos).should eq(200)
   end
 
   # Test SAM format writing
@@ -131,8 +131,8 @@ class BamWriteTest < HTSSpecCase
     end
     bam_in.close
 
-    expect_equal 1, count
-    expect_equal "sam_read", first_qname
+    (count).should eq(1)
+    (first_qname).should eq("sam_read")
   end
 
   # Test block form with automatic close
@@ -157,13 +157,13 @@ class BamWriteTest < HTSSpecCase
       bam
     end
 
-    expect_true result.closed?
+    (result.closed?).should be_true
 
     # Verify content
     HTS::Bam.open(path) do |bam|
       records = [] of String
       bam.each { |r| records << r.qname }
-      expect_equal ["block_read"], records
+      (records).should eq(["block_read"])
     end
   end
 
@@ -206,7 +206,7 @@ class BamWriteTest < HTSSpecCase
         HTS::Bam.open(path) do |bam|
           count = 0
           bam.query("chr1:150-350") { |_| count += 1 }
-          expect_equal 2, count # reads at 200 and 300
+          count.should eq(2) # reads at 200 and 300
         end
       end
     rescue ex
@@ -235,7 +235,7 @@ class BamWriteTest < HTSSpecCase
     )
 
     ex = expect_raises(Exception) { bam.write(rec) }
-    expect_true ex.message.try &.includes?("Header not written")
+    (ex.message.try &.includes?("Header not written")).should be_true
     bam.close
   end
 
@@ -256,7 +256,7 @@ class BamWriteTest < HTSSpecCase
         qual: [20_u8] * 5
       )
     end
-    expect_true ex.message.try &.includes?("Unknown reference")
+    (ex.message.try &.includes?("Unknown reference")).should be_true
   end
 
   # Test error: invalid path
@@ -264,7 +264,7 @@ class BamWriteTest < HTSSpecCase
     ex = expect_raises(Exception) do
       HTS::Bam.open("/nonexistent/directory/file.bam", "wb")
     end
-    expect_true ex.message.try &.includes?("Failed to open")
+    (ex.message.try &.includes?("Failed to open")).should be_true
   end
 
   # Test with mate pair information
@@ -295,11 +295,11 @@ class BamWriteTest < HTSSpecCase
     # Read back and verify
     HTS::Bam.open(path) do |bam|
       bam.each do |aln|
-        expect_equal "paired_read", aln.qname
-        expect_equal 99, aln.flag.value
-        expect_equal "chr2", aln.mate_chrom
-        expect_equal 500, aln.mate_pos
-        expect_equal 450, aln.insert_size
+        (aln.qname).should eq("paired_read")
+        (aln.flag.value).should eq(99)
+        (aln.mate_chrom).should eq("chr2")
+        (aln.mate_pos).should eq(500)
+        (aln.insert_size).should eq(450)
       end
     end
   end
@@ -309,8 +309,10 @@ describe BamWriteTest do
   {% for method in BamWriteTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamWriteTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
+      ensure
+        spec_case.teardown
       end
     end
   {% end %}

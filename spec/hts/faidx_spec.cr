@@ -1,7 +1,7 @@
 require "../spec_helper"
 require "../../src/hts/faidx"
 
-class FaidxTest < HTSSpecCase
+class FaidxTest
   FASTQ_TEXT = [
     "@chr1_read1",
     "TTGGATACCATTCCCCACAAAGGTACATAATGATGTCCTC",
@@ -53,71 +53,71 @@ class FaidxTest < HTSSpecCase
 
   def test_new
     f = HTS::Faidx.new(fasta_path)
-    expect_instance_of HTS::Faidx, f
+    (f).should be_a(HTS::Faidx)
     f.close
   end
 
   def test_open
     f = HTS::Faidx.open(fasta_path)
-    expect_instance_of HTS::Faidx, f
+    (f).should be_a(HTS::Faidx)
     f.close
   end
 
   def test_open_with_block
     HTS::Faidx.open(fasta_path) do |f|
-      expect_instance_of HTS::Faidx, f
+      (f).should be_a(HTS::Faidx)
     end
   end
 
   def test_file_name
-    expect_equal fasta_path, fasta.file_name
+    (fasta.file_name).should eq(fasta_path)
   end
 
   def test_format
-    expect_equal :fasta, fasta.format
-    expect_equal :fastq, fastq.format
+    (fasta.format).should eq(:fasta)
+    (fastq.format).should eq(:fastq)
   end
 
   def test_closed
-    expect_false fasta.closed?
+    (fasta.closed?).should be_false
     fasta.close
-    expect_true fasta.closed?
+    (fasta.closed?).should be_true
   end
 
   def test_size
-    expect_equal 5, fasta.size
+    (fasta.size).should eq(5)
   end
 
   def test_length
-    expect_equal 5, fasta.length
+    (fasta.length).should eq(5)
   end
 
   def test_names
-    expect_equal ["chr1", "chr2", "chr3", "chr4", "chr5"], fasta.names
+    (fasta.names).should eq(["chr1", "chr2", "chr3", "chr4", "chr5"])
   end
 
   def test_has_seq
-    expect_true fasta.has_seq?("chr1")
-    expect_false fasta.has_seq?("chrX")
+    (fasta.has_seq?("chr1")).should be_true
+    (fasta.has_seq?("chrX")).should be_false
   end
 
   def test_seq_len
-    expect_equal 500, fasta.seq_len("chr1")
+    (fasta.seq_len("chr1")).should eq(500)
     expect_raises(ArgumentError) { fasta.seq_len("chrX") }
   end
 
   def test_fetch_seq
-    expect_equal "TTGTGGAGAC", fasta.fetch_seq("chr1", 0, 9)
-    expect_equal "ACTTAGTTGA", fasta.fetch_seq("chr2", 10, 19)
+    (fasta.fetch_seq("chr1", 0, 9)).should eq("TTGTGGAGAC")
+    (fasta.fetch_seq("chr2", 10, 19)).should eq("ACTTAGTTGA")
   end
 
   def test_fetch_full_sequence
-    expect_equal 500, fasta.fetch_seq("chr1").size
+    (fasta.fetch_seq("chr1").size).should eq(500)
   end
 
   def test_fetch_qual
-    expect_equal "2222222222222222222222222222222222222222", fastq.fetch_qual("chr1_read1")
-    expect_equal "22222", fastq.fetch_qual("chr1_read1", 0, 4)
+    (fastq.fetch_qual("chr1_read1")).should eq("2222222222222222222222222222222222222222")
+    (fastq.fetch_qual("chr1_read1", 0, 4)).should eq("22222")
   end
 
   def test_fetch_qual_on_fasta_raises
@@ -145,7 +145,7 @@ class FaidxTest < HTSSpecCase
     file.close
     begin
       HTS::Faidx.build_index(file.path)
-      expect_true File.exists?("#{file.path}.fai")
+      (File.exists?("#{file.path}.fai")).should be_true
     ensure
       File.delete(file.path) if File.exists?(file.path)
       File.delete("#{file.path}.fai") if File.exists?("#{file.path}.fai")
@@ -158,8 +158,11 @@ describe FaidxTest do
   {% for method in FaidxTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = FaidxTest.new
-      run_spec_case(spec_case) do
+        spec_case.setup
+      begin
         spec_case.{{ method.name.id }}
+      ensure
+        spec_case.teardown
       end
     end
   {% end %}

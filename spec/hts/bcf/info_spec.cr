@@ -1,7 +1,7 @@
 require "../../spec_helper"
 require "../../../src/hts/bcf"
 
-class BcfInfoTest < HTSSpecCase
+class BcfInfoTest
   def with_temp_bcf(&)
     file = File.tempfile("info_test", ".bcf")
     path = file.path || raise "tempfile path is nil"
@@ -67,9 +67,9 @@ class BcfInfoTest < HTSSpecCase
   end
 
   def test_get_int
-    expect_equal([31], info.get_int("DP"))
-    expect_equal([0.673439_f32], info.get_float("VDB"))
-    expect_equal([0, 0, 14, 17], info.get_int("DP4"))
+    (info.get_int("DP")).should eq([31])
+    (info.get_float("VDB")).should eq([0.673439_f32])
+    (info.get_int("DP4")).should eq([0, 0, 14, 17])
   end
 
   def test_int64_and_character_info
@@ -77,39 +77,39 @@ class BcfInfoTest < HTSSpecCase
       HTS::Bcf.open(path) do |bcf|
         record_info = bcf.first.info
 
-        expect_equal([42, Int32::MIN], record_info.get_int("MIX"))
-        expect_equal([42, nil], record_info.get_int_opt("MIX"))
-        expect_equal([42_i64, Int64::MIN], record_info.get_int64("MIX"))
-        expect_equal([42_i64, nil], record_info.get_int64_opt("MIX"))
+        (record_info.get_int("MIX")).should eq([42, Int32::MIN])
+        (record_info.get_int_opt("MIX")).should eq([42, nil])
+        (record_info.get_int64("MIX")).should eq([42_i64, Int64::MIN])
+        (record_info.get_int64_opt("MIX")).should eq([42_i64, nil])
         raw_float = record_info.get_float("FOPT") || raise "FOPT should be present"
-        expect_equal(2, raw_float.size)
-        expect_equal(1.5_f32, raw_float[0])
-        expect_equal(1, HTS::LibHTS2.bcf_float_is_missing(raw_float[1]))
-        expect_equal([1.5_f32, nil], record_info.get_float_opt("FOPT"))
-        expect_equal("Q", record_info.get_string("CH"))
-        expect_equal(:string, bcf.header.info_type("CH"))
-        expect_equal("Q", record_info["CH"])
+        (raw_float.size).should eq(2)
+        (raw_float[0]).should eq(1.5_f32)
+        (HTS::LibHTS2.bcf_float_is_missing(raw_float[1])).should eq(1)
+        (record_info.get_float_opt("FOPT")).should eq([1.5_f32, nil])
+        (record_info.get_string("CH")).should eq("Q")
+        (bcf.header.info_type("CH")).should eq(:string)
+        (record_info["CH"]).should eq("Q")
       end
     end
   end
 
   def test_bracket_access
-    expect_equal([31], info["DP"])
-    expect_equal([0.673439_f32], info["VDB"])
-    expect_equal(false, info["INDEL"])
+    (info["DP"]).should eq([31])
+    (info["VDB"]).should eq([0.673439_f32])
+    (info["INDEL"]).should eq(false)
 
     tag = "DP"
-    expect_equal([31], info[tag])
+    (info[tag]).should eq([31])
   end
 
   def test_low_level_contract
-    expect_nil info.get_int("NO_SUCH_TAG")
-    expect_nil info.get_int64("NO_SUCH_TAG")
-    expect_nil info.get_string("NO_SUCH_TAG")
-    expect_nil info.get_flag("NO_SUCH_TAG")
+    (info.get_int("NO_SUCH_TAG")).should be_nil
+    (info.get_int64("NO_SUCH_TAG")).should be_nil
+    (info.get_string("NO_SUCH_TAG")).should be_nil
+    (info.get_flag("NO_SUCH_TAG")).should be_nil
 
     ex = expect_raises(HTS::Bcf::InfoTypeError) { info.get_float("DP") }
-    expect_equal "Tag DP is not float INFO field", ex.message
+    (ex.message).should eq("Tag DP is not float INFO field")
   end
 
   def test_defined_but_absent_tags
@@ -117,29 +117,29 @@ class BcfInfoTest < HTSSpecCase
       HTS::Bcf.open(path) do |bcf|
         record_info = bcf.first.info
 
-        expect_nil record_info.get_int("ABSI")
-        expect_nil record_info.get_float("ABSF")
-        expect_nil record_info.get_string("ABSS")
-        expect_equal(false, record_info.get_flag("FLAG"))
+        (record_info.get_int("ABSI")).should be_nil
+        (record_info.get_float("ABSF")).should be_nil
+        (record_info.get_string("ABSS")).should be_nil
+        (record_info.get_flag("FLAG")).should eq(false)
       end
     end
   end
 
   def test_numeric_sentinel_helpers
-    expect_equal(1, HTS::LibHTS2.bcf_int32_is_missing(HTS::LibHTS2.bcf_int32_missing))
-    expect_equal(1, HTS::LibHTS2.bcf_int32_is_vector_end(HTS::LibHTS2.bcf_int32_vector_end))
-    expect_equal(0, HTS::LibHTS2.bcf_int32_is_missing(42))
-    expect_equal(0, HTS::LibHTS2.bcf_int32_is_vector_end(42))
+    (HTS::LibHTS2.bcf_int32_is_missing(HTS::LibHTS2.bcf_int32_missing)).should eq(1)
+    (HTS::LibHTS2.bcf_int32_is_vector_end(HTS::LibHTS2.bcf_int32_vector_end)).should eq(1)
+    (HTS::LibHTS2.bcf_int32_is_missing(42)).should eq(0)
+    (HTS::LibHTS2.bcf_int32_is_vector_end(42)).should eq(0)
 
-    expect_equal(1, HTS::LibHTS2.bcf_int64_is_missing(HTS::LibHTS2.bcf_int64_missing))
-    expect_equal(1, HTS::LibHTS2.bcf_int64_is_vector_end(HTS::LibHTS2.bcf_int64_vector_end))
-    expect_equal(0, HTS::LibHTS2.bcf_int64_is_missing(42_i64))
-    expect_equal(0, HTS::LibHTS2.bcf_int64_is_vector_end(42_i64))
+    (HTS::LibHTS2.bcf_int64_is_missing(HTS::LibHTS2.bcf_int64_missing)).should eq(1)
+    (HTS::LibHTS2.bcf_int64_is_vector_end(HTS::LibHTS2.bcf_int64_vector_end)).should eq(1)
+    (HTS::LibHTS2.bcf_int64_is_missing(42_i64)).should eq(0)
+    (HTS::LibHTS2.bcf_int64_is_vector_end(42_i64)).should eq(0)
 
-    expect_equal(1, HTS::LibHTS2.bcf_float_is_missing(HTS::LibHTS2.bcf_float_missing))
-    expect_equal(1, HTS::LibHTS2.bcf_float_is_vector_end(HTS::LibHTS2.bcf_float_vector_end))
-    expect_equal(0, HTS::LibHTS2.bcf_float_is_missing(1.5_f32))
-    expect_equal(0, HTS::LibHTS2.bcf_float_is_vector_end(1.5_f32))
+    (HTS::LibHTS2.bcf_float_is_missing(HTS::LibHTS2.bcf_float_missing)).should eq(1)
+    (HTS::LibHTS2.bcf_float_is_vector_end(HTS::LibHTS2.bcf_float_vector_end)).should eq(1)
+    (HTS::LibHTS2.bcf_float_is_missing(1.5_f32)).should eq(0)
+    (HTS::LibHTS2.bcf_float_is_vector_end(1.5_f32)).should eq(0)
   end
 
   def test_update_info_methods
@@ -149,22 +149,22 @@ class BcfInfoTest < HTSSpecCase
         info = record.info
 
         info.update_int("WINT", [10, 20])
-        expect_equal([10, 20], info.get_int("WINT"))
+        (info.get_int("WINT")).should eq([10, 20])
 
         ex = expect_raises(HTS::Bcf::UnsupportedInfoOperationError) { info.update_int64("W64", [(1_i64 << 40)]) }
-        expect_includes ex.message.to_s, "BCF_HT_LONG"
+        (ex.message.to_s).should contain("BCF_HT_LONG")
 
         info.update_float("WFLOAT", [0.25_f32, 0.5_f32])
-        expect_equal([0.25_f32, 0.5_f32], info.get_float("WFLOAT"))
+        (info.get_float("WFLOAT")).should eq([0.25_f32, 0.5_f32])
 
         info.update_string("WSTR", "hello")
-        expect_equal("hello", info.get_string("WSTR"))
+        (info.get_string("WSTR")).should eq("hello")
 
         info.update_flag("WFLAG", true)
-        expect_equal(true, info.get_flag("WFLAG"))
+        (info.get_flag("WFLAG")).should eq(true)
 
         info.update_flag("WFLAG", false)
-        expect_includes([true, false], info.get_flag("WFLAG"))
+        ([true, false]).should contain(info.get_flag("WFLAG"))
       end
     end
   end
@@ -176,20 +176,20 @@ class BcfInfoTest < HTSSpecCase
         info = record.info
 
         info.update_int("WINT", 7)
-        expect_equal([7], info.get_int("WINT"))
+        (info.get_int("WINT")).should eq([7])
 
         ex = expect_raises(HTS::Bcf::UnsupportedInfoOperationError) { info.update_int64("W64", (1_i64 << 39)) }
-        expect_includes ex.message.to_s, "BCF_HT_LONG"
+        (ex.message.to_s).should contain("BCF_HT_LONG")
 
         info.update_float("WFLOAT", 1.25)
-        expect_equal([1.25_f32], info.get_float("WFLOAT"))
+        (info.get_float("WFLOAT")).should eq([1.25_f32])
 
         info.update_string("WSTR", "bye")
-        expect_equal("bye", info.get_string("WSTR"))
+        (info.get_string("WSTR")).should eq("bye")
 
-        expect_equal(true, info.delete("WSTR"))
-        expect_nil(info.get_string("WSTR"))
-        expect_equal(false, info.delete("NO_SUCH_TAG"))
+        (info.delete("WSTR")).should eq(true)
+        (info.get_string("WSTR")).should be_nil
+        (info.delete("NO_SUCH_TAG")).should eq(false)
       end
     end
   end
@@ -199,7 +199,7 @@ describe BcfInfoTest do
   {% for method in BcfInfoTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfInfoTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
       end
     end

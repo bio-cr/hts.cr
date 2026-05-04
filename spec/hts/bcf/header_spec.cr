@@ -3,7 +3,7 @@ require "../../../src/hts/bcf"
 
 # require "digest/md5"
 
-class BcfHeaderTest < HTSSpecCase
+class BcfHeaderTest
   include TestBcfMultisampleHelper
 
   def teardown
@@ -23,41 +23,41 @@ class BcfHeaderTest < HTSSpecCase
   end
 
   def test_initialize
-    expect_instance_of HTS::Bcf::Header, HTS::Bcf::Header.new
+    (HTS::Bcf::Header.new).should be_a(HTS::Bcf::Header)
   end
 
   def test_get_version
-    expect_equal "VCFv4.2", hdr.get_version
+    (hdr.get_version).should eq("VCFv4.2")
   end
 
   def test_set_version
     hdr2 = hdr.clone
     hdr2.set_version("VCFv9.9")
-    expect_equal "VCFv9.9", hdr2.get_version
+    (hdr2.get_version).should eq("VCFv9.9")
   end
 
   def test_nsamples
-    expect_equal 1, hdr.nsamples
+    (hdr.nsamples).should eq(1)
   end
 
   def test_target_count
-    expect_equal 1, hdr.target_count
+    (hdr.target_count).should eq(1)
   end
 
   def test_target_name
-    expect_equal "poo", hdr.target_name(0)
+    (hdr.target_name(0)).should eq("poo")
   end
 
   def test_target_names
-    expect_equal ["poo"], hdr.target_names
+    (hdr.target_names).should eq(["poo"])
   end
 
   def test_get_tid
-    expect_equal 0, hdr.get_tid("poo")
+    (hdr.get_tid("poo")).should eq(0)
   end
 
   def test_samples
-    expect_equal ["poo.sort.bam"], hdr.samples
+    (hdr.samples).should eq(["poo.sort.bam"])
   end
 
   def test_subset_returns_new_header
@@ -65,9 +65,9 @@ class BcfHeaderTest < HTSSpecCase
       source = HTS::Bcf.new(path)
       subset = source.header.subset(["B"])
 
-      expect_equal ["A", "B"], source.header.samples
-      expect_equal ["B"], subset.samples
-      expect_equal 1, subset.nsamples
+      (source.header.samples).should eq(["A", "B"])
+      (subset.samples).should eq(["B"])
+      (subset.nsamples).should eq(1)
     ensure
       source.try &.close
     end
@@ -81,7 +81,7 @@ class BcfHeaderTest < HTSSpecCase
         source.header.subset(["missing"])
       end
 
-      expect_includes error.message, "missing"
+      (error.message.to_s).should contain("missing")
     ensure
       source.try &.close
     end
@@ -95,7 +95,7 @@ class BcfHeaderTest < HTSSpecCase
         source.header.subset(["A", "A"])
       end
 
-      expect_includes error.message, "Duplicate sample names"
+      (error.message.to_s).should contain("Duplicate sample names")
     ensure
       source.try &.close
     end
@@ -106,11 +106,11 @@ class BcfHeaderTest < HTSSpecCase
     hdr2.add_sample("kojix1", sync: false)
     hdr2.add_sample("kojix2", sync: false)
     hdr2.add_sample("kojix3", sync: false)
-    expect_equal 1, hdr2.nsamples
-    expect_equal ["poo.sort.bam"], hdr2.samples
+    (hdr2.nsamples).should eq(1)
+    (hdr2.samples).should eq(["poo.sort.bam"])
     hdr2.sync
-    expect_equal 4, hdr2.nsamples
-    expect_equal ["poo.sort.bam", "kojix1", "kojix2", "kojix3"], hdr2.samples
+    (hdr2.nsamples).should eq(4)
+    (hdr2.samples).should eq(["poo.sort.bam", "kojix1", "kojix2", "kojix3"])
   end
 
   def test_append_delete
@@ -122,11 +122,11 @@ class BcfHeaderTest < HTSSpecCase
   def test_to_s
     # md5 = Digest::MD5.hexdigest(bcf.header.to_s)
     # exp = "ca7d2c7ac2a51e4f2b2b88004615e98b"
-    # expect_equal exp, md5
+    # (md5).should eq(exp)
   end
 
   def test_clone
-    expect_instance_of HTS::Bcf::Header, hdr.clone
+    (hdr.clone).should be_a(HTS::Bcf::Header)
   end
 
   def test_edit_batches_sync
@@ -138,19 +138,19 @@ class BcfHeaderTest < HTSSpecCase
       header.add_filter("BatchFilter", description: "batch-added")
     end
 
-    expect_equal ["poo.sort.bam", "kojix4", "kojix5"], hdr2.samples
-    expect_true hdr2.to_s.includes?("##FILTER=<ID=BatchFilter,Description=\"batch-added\">")
+    (hdr2.samples).should eq(["poo.sort.bam", "kojix4", "kojix5"])
+    (hdr2.to_s.includes?("##FILTER=<ID=BatchFilter,Description=\"batch-added\">")).should be_true
   end
 
   def test_add_and_remove_contig
     h = HTS::Bcf::Header.new
     h.add_contig("chr1", length: 1000, assembly: "GRCh38")
 
-    expect_equal ["chr1"], h.target_names
-    expect_true h.to_s.includes?("##contig=<ID=chr1,length=1000,assembly=GRCh38>")
+    (h.target_names).should eq(["chr1"])
+    (h.to_s.includes?("##contig=<ID=chr1,length=1000,assembly=GRCh38>")).should be_true
 
-    expect_equal true, h.remove_contig("chr1")
-    expect_equal [] of String, h.target_names
+    (h.remove_contig("chr1")).should eq(true)
+    (h.target_names).should eq([] of String)
   end
 
   def test_add_update_remove_info_and_format
@@ -158,18 +158,18 @@ class BcfHeaderTest < HTSSpecCase
     h.add_info("DP", number: 1, type: :int, description: "Total depth")
     h.add_format("GT", number: 1, type: :string, description: "Genotype")
 
-    expect_true h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total depth\">")
-    expect_true h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
+    (h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total depth\">")).should be_true
+    (h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")).should be_true
 
     h.update_info("DP", number: 1, type: :int, description: "Read depth")
     h.update_format("GT", number: 1, type: :string, description: "GT field")
-    expect_true h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Read depth\">")
-    expect_true h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"GT field\">")
+    (h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Read depth\">")).should be_true
+    (h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"GT field\">")).should be_true
 
-    expect_equal true, h.remove_info("DP")
-    expect_equal true, h.remove_format("GT")
-    expect_false h.to_s.includes?("##INFO=<ID=DP")
-    expect_false h.to_s.includes?("##FORMAT=<ID=GT")
+    (h.remove_info("DP")).should eq(true)
+    (h.remove_format("GT")).should eq(true)
+    (h.to_s.includes?("##INFO=<ID=DP")).should be_false
+    (h.to_s.includes?("##FORMAT=<ID=GT")).should be_false
   end
 
   def test_add_meta_and_filter
@@ -177,11 +177,11 @@ class BcfHeaderTest < HTSSpecCase
     h.add_meta("source", "myCaller")
     h.add_filter("LowQual", description: "Low quality")
 
-    expect_true h.to_s.includes?("##source=myCaller")
-    expect_true h.to_s.includes?("##FILTER=<ID=LowQual,Description=\"Low quality\">")
+    (h.to_s.includes?("##source=myCaller")).should be_true
+    (h.to_s.includes?("##FILTER=<ID=LowQual,Description=\"Low quality\">")).should be_true
 
-    expect_equal true, h.remove_filter("LowQual")
-    expect_false h.to_s.includes?("LowQual")
+    (h.remove_filter("LowQual")).should eq(true)
+    (h.to_s.includes?("LowQual")).should be_false
   end
 end
 
@@ -189,8 +189,10 @@ describe BcfHeaderTest do
   {% for method in BcfHeaderTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfHeaderTest.new
-      run_spec_case(spec_case) do
+      begin
         spec_case.{{ method.name.id }}
+      ensure
+        spec_case.teardown
       end
     end
   {% end %}
