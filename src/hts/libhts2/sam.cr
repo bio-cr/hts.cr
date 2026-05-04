@@ -92,7 +92,10 @@ module HTS
     def sam_itr_next(htsfp, itr, r)
       # FIXME: check if htsfp is compressed BGZF
       raise "Null iterator" if itr.null?
-      # FIXME: check multi
+      # htslib's sam_itr_next is a static inline wrapper that dispatches
+      # multi-region iterators through hts_itr_multi_next.
+      return LibHTS.hts_itr_multi_next(htsfp, itr, r) if (itr.value.bitfields & 0x10) != 0
+
       LibHTS.hts_itr_next(htsfp.value.fp.bgzf, itr, r, htsfp)
     end
   end

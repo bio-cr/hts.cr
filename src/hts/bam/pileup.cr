@@ -103,6 +103,11 @@ module HTS
         end
       end
 
+      # Open a Pileup iterator using keyword arguments, matching Mpileup.
+      def self.open(bam : Bam, *, region : String? = nil, maxcnt : Int32? = nil, &)
+        open(bam, region, maxcnt) { |pileup| yield pileup }
+      end
+
       # Create a Pileup iterator
       # @param bam [HTS::Bam]
       # @param region [String, nil] Optional region string (e.g., "chr1:1000-2000", requires index)

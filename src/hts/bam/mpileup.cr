@@ -27,8 +27,8 @@ module HTS
       @overlaps : Bool
 
       # Open an Mpileup iterator with block (RAII style)
-      def self.open(inputs : Array(Bam), maxcnt : Int32? = nil, overlaps : Bool = false, *, region : String? = nil, &)
-        mpileup = new(inputs, maxcnt, overlaps, region: region)
+      def self.open(inputs : Array(Bam), maxcnt : Int32? = nil, overlaps : Bool = false, *, region : String? = nil, regions : Array(String)? = nil, &)
+        mpileup = new(inputs, maxcnt, overlaps, region: region, regions: regions)
         begin
           yield mpileup
         ensure
@@ -36,24 +36,29 @@ module HTS
         end
       end
 
+      # Open an Mpileup iterator using keyword arguments.
+      def self.open(inputs : Array(Bam), *, maxcnt : Int32? = nil, overlaps : Bool = false, region : String? = nil, regions : Array(String)? = nil, &)
+        open(inputs, maxcnt, overlaps, region: region, regions: regions) { |mpileup| yield mpileup }
+      end
+
       # Accept Array(Bam). If region is set, it uses SAM-style 1-based inclusive
-      # coordinates and each input must already have an index loaded.
-      def initialize(inputs : Array(Bam), @maxcnt : Int32? = nil, overlaps : Bool = false, *, region : String? = nil)
+      # coordinates and each input must already have an index loaded. If regions
+      # is set, htslib's multi-region iterator is used and overlapping records
+      # are returned once.
+      def initialize(inputs : Array(Bam), @maxcnt : Int32? = nil, overlaps : Bool = false, *, region : String? = nil, regions : Array(String)? = nil)
         raise ArgumentError.new("inputs must not be empty") if inputs.empty?
 
         @bams = inputs
         @n_inputs = inputs.size
         @overlaps = overlaps
 
-        if region
-          raise ArgumentError.new("region must not be empty") if region.empty?
-        end
+        validate_regions!(region, regions)
 
         begin
           # Build per-input data blocks
           @data_blocks = Array(Pointer(InputData)).new(@n_inputs)
           @bams.each do |bam|
-            itr = build_iterator(bam, region)
+            itr = build_iterator(bam, region, regions)
             block = Pointer(InputData).malloc(1)
             block.value = InputData.new(
               bam.to_unsafe,
@@ -159,9 +164,19 @@ module HTS
         close
       end
 
-      private def build_iterator(bam : Bam, region : String?) : LibHTS::HtsItrT*
-        return Pointer(LibHTS::HtsItrT).null if region.nil?
-        reg = region.not_nil!
+      private def validate_regions!(region : String?, regions : Array(String)?) : Nil
+        raise ArgumentError.new("region and regions cannot both be specified") if region && regions
+        raise ArgumentError.new("region must not be empty") if region && region.empty?
+        return unless region_list = regions
+
+        raise ArgumentError.new("regions must not be empty") if region_list.empty?
+        region_list.each_with_index do |reg, index|
+          raise ArgumentError.new("regions[#{index}] must not be empty") if reg.empty?
+        end
+      end
+
+      private def build_iterator(bam : Bam, region : String?, regions : Array(String)?) : LibHTS::HtsItrT*
+        return Pointer(LibHTS::HtsItrT).null if region.nil? && regions.nil?
 
         unless bam.index_loaded?
           raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.")
@@ -170,15 +185,31 @@ module HTS
         idx = bam.load_index
         raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.") if idx.null?
 
-        itr = LibHTS.sam_itr_querys(idx, bam.header, reg)
+        itr =
+          if region_list = regions
+            query_multi_region_iterator(idx, bam, region_list)
+          elsif single_region = region
+            LibHTS.sam_itr_querys(idx, bam.header, single_region)
+          else
+            Pointer(LibHTS::HtsItrT).null
+          end
         if itr.null?
           LibHTS.hts_idx_destroy(idx)
-          raise Bam::QueryError.new("Failed to create an iterator for region #{reg.inspect} in #{bam.file_name}. Check the region syntax, that the reference exists in the header, and that the index matches the file.")
+          target = regions || region
+          raise Bam::QueryError.new("Failed to create an iterator for region #{target.inspect} in #{bam.file_name}. Check the region syntax, that the reference exists in the header, and that the index matches the file.")
         end
 
         @idxs << idx
         @itrs << itr
         itr
+      end
+
+      private def query_multi_region_iterator(idx : LibHTS::HtsIdxT, bam : Bam, regions : Array(String)) : LibHTS::HtsItrT*
+        regarray = Pointer(LibC::Char*).malloc(regions.size)
+        regions.each_with_index do |reg, index|
+          regarray[index] = reg.to_unsafe
+        end
+        LibHTS.sam_itr_regarray(idx, bam.header, regarray, regions.size.to_u32)
       end
     end
   end

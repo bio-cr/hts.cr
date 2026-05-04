@@ -43,6 +43,22 @@ class BamPileupSmokeTest
       end
     end
   end
+
+  def test_pileup_open_with_keyword_region
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    HTS::Bam.open(path) do |bam|
+      HTS::Bam::Pileup.open(bam, region: "chr2:350-700", maxcnt: 1000) do |plp|
+        first_col = nil
+        plp.each do |col|
+          first_col ||= col
+          break
+        end
+
+        (first_col).should_not be_nil
+        (first_col.not_nil!.depth >= 0).should be_true
+      end
+    end
+  end
 end
 
 describe BamPileupSmokeTest do

@@ -35,7 +35,7 @@ class BamMpileupSmokeTest
     path = File.expand_path("../../fixtures/moo.bam", __DIR__)
     b1 = HTS::Bam.new(path)
     b2 = HTS::Bam.new(path)
-    mp = HTS::Bam::Mpileup.new([b1, b2], 1000, true, region: "chr2:350-700")
+    mp = HTS::Bam::Mpileup.new([b1, b2], maxcnt: 1000, overlaps: true, region: "chr2:350-700")
     begin
       first = nil
       mp.each do |cols|
@@ -61,7 +61,7 @@ class BamMpileupSmokeTest
     b1 = HTS::Bam.new(path)
     b2 = HTS::Bam.new(path)
     begin
-      HTS::Bam::Mpileup.open([b1, b2], 1000, true, region: "chr2:350-700") do |mp|
+      HTS::Bam::Mpileup.open([b1, b2], maxcnt: 1000, overlaps: true, region: "chr2:350-700") do |mp|
         first = nil
         mp.each do |cols|
           first ||= cols
@@ -72,6 +72,27 @@ class BamMpileupSmokeTest
         (first.not_nil!.size).should eq(2)
       end
     ensure
+      b1.close
+      b2.close
+    end
+  end
+
+  def test_multipileup_with_regions
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    b1 = HTS::Bam.new(path)
+    b2 = HTS::Bam.new(path)
+    mp = HTS::Bam::Mpileup.new([b1, b2], maxcnt: 1000, overlaps: true, regions: ["chr2:350-700"])
+    begin
+      first = nil
+      mp.each do |cols|
+        first ||= cols
+        break
+      end
+
+      (first).should_not be_nil
+      (first.not_nil!.size).should eq(2)
+    ensure
+      mp.close
       b1.close
       b2.close
     end
@@ -89,6 +110,42 @@ class BamMpileupSmokeTest
     begin
       expect_raises(ArgumentError, "region must not be empty") do
         HTS::Bam::Mpileup.new([bam], region: "")
+      end
+    ensure
+      bam.close
+    end
+  end
+
+  def test_rejects_empty_regions
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    bam = HTS::Bam.new(path)
+    begin
+      expect_raises(ArgumentError, "regions must not be empty") do
+        HTS::Bam::Mpileup.new([bam], regions: [] of String)
+      end
+    ensure
+      bam.close
+    end
+  end
+
+  def test_rejects_empty_region_entry
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    bam = HTS::Bam.new(path)
+    begin
+      expect_raises(ArgumentError, "regions[1] must not be empty") do
+        HTS::Bam::Mpileup.new([bam], regions: ["chr1:100-200", ""])
+      end
+    ensure
+      bam.close
+    end
+  end
+
+  def test_rejects_region_and_regions_together
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    bam = HTS::Bam.new(path)
+    begin
+      expect_raises(ArgumentError, "region and regions cannot both be specified") do
+        HTS::Bam::Mpileup.new([bam], region: "chr1:100-200", regions: ["chr2:350-700"])
       end
     ensure
       bam.close
