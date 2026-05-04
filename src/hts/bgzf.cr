@@ -57,21 +57,22 @@ module HTS
       str.m = 0
       str.s = Pointer(LibC::Char).null
 
-      if bgzf_fp.null?
-        # Fall back to HTS file reading
-        result = LibHTS.hts_getline(@hts_file, delimiter.ord, pointerof(str))
-        return nil if result < 0
-      else
-        result = LibHTS.bgzf_getline(bgzf_fp, delimiter.ord, pointerof(str))
-        return nil if result < 0
-      end
+      begin
+        result =
+          if bgzf_fp.null?
+            # Fall back to HTS file reading
+            LibHTS.hts_getline(@hts_file, delimiter.ord, pointerof(str))
+          else
+            LibHTS.bgzf_getline(bgzf_fp, delimiter.ord, pointerof(str))
+          end
 
-      if str.s.null?
-        nil
-      else
-        line = String.new(str.s, str.l)
-        LibC.free(str.s)
-        line
+        if result < 0 || str.s.null?
+          nil
+        else
+          String.new(str.s, str.l)
+        end
+      ensure
+        LibC.free(str.s) unless str.s.null?
       end
     end
 
