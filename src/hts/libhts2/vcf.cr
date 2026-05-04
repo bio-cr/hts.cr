@@ -272,5 +272,14 @@ module HTS
     #     LibHTS::BcfIdpair.size * int_id # offset
     #   )[:val][:info][type] >> 12
     # end
+
+    # Crystal equivalent of htslib's bcf_hdr_id2type() macro.
+    def bcf_hdr_id2type(hdr, type, int_id)
+      entry = Pointer(LibHTS::BcfIdpairT).new(
+        (hdr.to_unsafe.value.id[BCF_DT_ID]).address +
+        sizeof(LibHTS::BcfIdpairT) * int_id
+      )
+      ((entry.value.val.value.info[type] >> 4) & 0xf).to_i
+    end
   end
 end

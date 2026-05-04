@@ -426,13 +426,7 @@ module HTS
         id = LibHTS.bcf_hdr_id2int(@bcf_hdr, LibHTS2::BCF_DT_ID, tag)
         return nil if id < 0
 
-        entry = Pointer(LibHTS::BcfIdpairT).new(
-          (@bcf_hdr.value.id[LibHTS2::BCF_DT_ID]).address +
-          sizeof(LibHTS::BcfIdpairT) * id
-        )
-        descriptor = entry.value.val.value.info[header_line_type]
-
-        case ((descriptor >> 4) & 0xf).to_i
+        case LibHTS2.bcf_hdr_id2type(self, header_line_type, id)
         when LibHTS2::BCF_HT_FLAG
           :flag
         when LibHTS2::BCF_HT_INT

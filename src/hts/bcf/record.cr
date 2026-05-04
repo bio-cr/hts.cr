@@ -95,7 +95,7 @@ module HTS
 
       def alt
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
-        n = @bcf1.value.n_info_allele.bits(16..31)
+        n = n_allele
         Array(String).new(n - 1) do |i|
           String.new @bcf1.value.d.allele[i + 1]
         end
@@ -103,7 +103,7 @@ module HTS
 
       def alleles
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
-        n = @bcf1.value.n_info_allele.bits(16..31)
+        n = n_allele
         Array(String).new(n) do |i|
           String.new @bcf1.value.d.allele[i]
         end
@@ -145,6 +145,12 @@ module HTS
       # garbage collection
       def finalize
         LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
+      end
+
+      private def n_allele : Int32
+        # htslib exposes n_allele as a C bitfield. Crystal cannot bind C
+        # bitfields directly, so the binding stores n_info/n_allele packed.
+        @bcf1.value.n_info_allele.bits(16..31).to_i32
       end
     end
   end
