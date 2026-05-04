@@ -345,8 +345,17 @@ module HTS
     private def each_record_copy(&)
       check_closed
 
-      while LibHTS.sam_read1(@hts_file, header, bam1 = LibHTS.bam_init1) != -1
-        yield Record.new(header, bam1)
+      bam1 = LibHTS.bam_init1
+      begin
+        while LibHTS.sam_read1(@hts_file, header, bam1) != -1
+          record = Record.new(header, bam1)
+          # Ownership moved to Record; keep ensure from destroying it.
+          bam1 = Pointer(LibHTS::Bam1T).null
+          yield record
+          bam1 = LibHTS.bam_init1
+        end
+      ensure
+        LibHTS.bam_destroy1(bam1) unless bam1.null?
       end
     end
 
@@ -488,11 +497,18 @@ module HTS
     private def iterate_iterator(qiter, copy, & : HTS::Bam::Record ->)
       if copy
         bam1 = LibHTS.bam_init1
-        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-        while slen > 0
-          yield Record.new(header, bam1)
-          bam1 = LibHTS.bam_init1
+        begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+          while slen > 0
+            record = Record.new(header, bam1)
+            # Ownership moved to Record; keep ensure from destroying it.
+            bam1 = Pointer(LibHTS::Bam1T).null
+            yield record
+            bam1 = LibHTS.bam_init1
+            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+          end
+        ensure
+          LibHTS.bam_destroy1(bam1) unless bam1.null?
         end
       else
         bam1 = LibHTS.bam_init1

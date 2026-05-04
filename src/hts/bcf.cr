@@ -208,10 +208,19 @@ module HTS
 
     private def each_record_copy(&)
       check_closed
-      while LibHTS.bcf_read(@hts_file, header_for_reading, bcf1 = LibHTS.bcf_init) != -1
-        record = Bcf::Record.new(header, bcf1)
-        apply_subset!(record)
-        yield record
+
+      bcf1 = LibHTS.bcf_init
+      begin
+        while LibHTS.bcf_read(@hts_file, header_for_reading, bcf1) != -1
+          record = Bcf::Record.new(header, bcf1)
+          # Ownership moved to Record; keep ensure from destroying it.
+          bcf1 = Pointer(LibHTS::Bcf1T).null
+          apply_subset!(record)
+          yield record
+          bcf1 = LibHTS.bcf_init
+        end
+      ensure
+        LibHTS.bcf_destroy(bcf1) unless bcf1.null?
       end
     end
 
@@ -302,13 +311,19 @@ module HTS
     private def iterate_query_iterator(qiter, copy, & : HTS::Bcf::Record ->)
       if copy
         bcf1 = LibHTS.bcf_init
-        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
-        while slen >= 0
-          record = Bcf::Record.new(header, bcf1)
-          apply_subset!(record)
-          yield record
-          bcf1 = LibHTS.bcf_init
+        begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+          while slen >= 0
+            record = Bcf::Record.new(header, bcf1)
+            # Ownership moved to Record; keep ensure from destroying it.
+            bcf1 = Pointer(LibHTS::Bcf1T).null
+            apply_subset!(record)
+            yield record
+            bcf1 = LibHTS.bcf_init
+            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+          end
+        ensure
+          LibHTS.bcf_destroy(bcf1) unless bcf1.null?
         end
       else
         bcf1 = LibHTS.bcf_init
