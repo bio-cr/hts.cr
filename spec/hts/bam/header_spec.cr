@@ -1,7 +1,7 @@
-require "minitest/autorun"
+require "../../spec_helper"
 require "../../../src/hts/bam"
 
-class BamHeaderTest < Minitest::Test
+class BamHeaderTest < HTSSpecCase
   def teardown
     @bam.try &.close
   end
@@ -38,49 +38,49 @@ class BamHeaderTest < Minitest::Test
   def test_parse
     s = bam.header.to_s
     b = HTS::Bam::Header.parse(s)
-    assert_instance_of HTS::Bam::Header, b
-    assert_equal s, b.to_s
+    expect_instance_of HTS::Bam::Header, b
+    expect_equal s, b.to_s
   end
 
   def test_parse_rejects_invalid_header_text
-    ex = assert_raises(ArgumentError) { HTS::Bam::Header.parse("not-a-sam-header") }
-    assert_includes ex.message.to_s, "Failed to parse SAM header text"
+    ex = expect_raises(ArgumentError) { HTS::Bam::Header.parse("not-a-sam-header") }
+    expect_includes ex.message.to_s, "Failed to parse SAM header text"
   end
 
   def test_initialize
-    assert_instance_of HTS::Bam::Header, HTS::Bam::Header.new
+    expect_instance_of HTS::Bam::Header, HTS::Bam::Header.new
   end
 
   def test_target_count
-    assert_equal(1, bam.header.target_count)
+    expect_equal(1, bam.header.target_count)
   end
 
   def test_target_name
-    assert_equal("poo", bam.header.target_name(0))
+    expect_equal("poo", bam.header.target_name(0))
   end
 
   def test_target_name_rejects_invalid_tid
-    ex = assert_raises(ArgumentError) { bam.header.target_name(99) }
-    assert_includes ex.message.to_s, "Unknown target id 99"
+    ex = expect_raises(ArgumentError) { bam.header.target_name(99) }
+    expect_includes ex.message.to_s, "Unknown target id 99"
   end
 
   def test_target_names
-    assert_equal(["poo"], bam.header.target_names)
+    expect_equal(["poo"], bam.header.target_names)
   end
 
   def test_target_len
-    assert_equal([5000], bam.header.target_len)
+    expect_equal([5000], bam.header.target_len)
   end
 
   def test_get_tid
-    assert_equal 0, bam.header.get_tid("poo")
+    expect_equal 0, bam.header.get_tid("poo")
   end
 
   def test_add_pg
     header = HTS::Bam::Header.parse(minimal_header_text)
     header.add_pg("meowtools", "CL", "meow -n 3")
 
-    assert normalize_header(header.to_s).includes?("@PG\tID:meowtools\tPN:meowtools\tCL:meow -n 3\n")
+    expect_true normalize_header(header.to_s).includes?("@PG\tID:meowtools\tPN:meowtools\tCL:meow -n 3\n")
   end
 
   def test_add_pg_generates_unique_id
@@ -94,7 +94,7 @@ class BamHeaderTest < Minitest::Test
 
     header.add_pg("samtools", "CL", "samtools view -H")
 
-    assert normalize_header(header.to_s).includes?("@PG\tID:samtools.1\tPN:samtools\tCL:samtools view -H\n")
+    expect_true normalize_header(header.to_s).includes?("@PG\tID:samtools.1\tPN:samtools\tCL:samtools view -H\n")
   end
 
   def test_add_pg_with_parent
@@ -108,21 +108,21 @@ class BamHeaderTest < Minitest::Test
 
     header.add_pg("sort", "PP", "align", "CL", "samtools sort")
 
-    assert normalize_header(header.to_s).includes?("@PG\tID:sort\tPN:sort\tPP:align\tCL:samtools sort\n")
+    expect_true normalize_header(header.to_s).includes?("@PG\tID:sort\tPN:sort\tPP:align\tCL:samtools sort\n")
   end
 
   def test_add_pg_rejects_odd_tag_count
     header = HTS::Bam::Header.parse(minimal_header_text)
 
-    ex = assert_raises(ArgumentError) { header.add_pg("meowtools", "CL") }
-    assert ex.message.try &.includes?("key/value pairs")
+    ex = expect_raises(ArgumentError) { header.add_pg("meowtools", "CL") }
+    expect_true ex.message.try &.includes?("key/value pairs")
   end
 
   def test_add_pg_rejects_unknown_parent
     header = HTS::Bam::Header.parse(minimal_header_text)
 
-    ex = assert_raises(ArgumentError) { header.add_pg("meowtools", "PP", "missing") }
-    assert ex.message.try &.includes?("Unknown PG parent")
+    ex = expect_raises(ArgumentError) { header.add_pg("meowtools", "PP", "missing") }
+    expect_true ex.message.try &.includes?("Unknown PG parent")
   end
 
   def test_update_hd
@@ -130,39 +130,39 @@ class BamHeaderTest < Minitest::Test
 
     header.update_hd(version: "1.7", group_order: "query")
 
-    assert normalize_header(header.to_s).includes?("@HD\tVN:1.7\tSO:coordinate\tGO:query\n")
+    expect_true normalize_header(header.to_s).includes?("@HD\tVN:1.7\tSO:coordinate\tGO:query\n")
   end
 
   def test_add_update_remove_sq
     header = HTS::Bam::Header.parse(minimal_header_text)
 
     header.add_sq("chr2", 2000, assembly: "GRCh38")
-    assert_equal 2, header.count_lines("SQ")
-    assert_equal "chr2", header.line_name("SQ", 1)
-    assert_equal "2000", header.find_tag("SQ", "SN", "chr2", "LN")
+    expect_equal 2, header.count_lines("SQ")
+    expect_equal "chr2", header.line_name("SQ", 1)
+    expect_equal "2000", header.find_tag("SQ", "SN", "chr2", "LN")
 
     header.update_sq("chr2", md5: "abc123")
-    assert_equal "abc123", header.find_tag("SQ", "SN", "chr2", "M5")
+    expect_equal "abc123", header.find_tag("SQ", "SN", "chr2", "M5")
 
-    assert_equal true, header.remove_sq("chr2")
-    assert_nil header.find_line("SQ", "SN", "chr2")
+    expect_equal true, header.remove_sq("chr2")
+    expect_nil header.find_line("SQ", "SN", "chr2")
   end
 
   def test_add_update_remove_rg
     header = HTS::Bam::Header.parse(rg_header_text)
 
     header.add_rg("rg2", sample: "sample2", platform: "ILLUMINA")
-    assert_equal 2, header.count_lines("RG")
-    assert_equal "sample2", header.find_tag("RG", "ID", "rg2", "SM")
+    expect_equal 2, header.count_lines("RG")
+    expect_equal "sample2", header.find_tag("RG", "ID", "rg2", "SM")
 
     header.update_rg("rg2", description: "tumor")
-    assert_equal "tumor", header.find_tag("RG", "ID", "rg2", "DS")
+    expect_equal "tumor", header.find_tag("RG", "ID", "rg2", "DS")
 
-    assert_equal true, header.delete_tag("RG", "ID", "rg2", "DS")
-    assert_nil header.find_tag("RG", "ID", "rg2", "DS")
+    expect_equal true, header.delete_tag("RG", "ID", "rg2", "DS")
+    expect_nil header.find_tag("RG", "ID", "rg2", "DS")
 
-    assert_equal true, header.remove_rg("rg2")
-    assert_nil header.find_line("RG", "ID", "rg2")
+    expect_equal true, header.remove_rg("rg2")
+    expect_nil header.find_line("RG", "ID", "rg2")
   end
 
   def test_to_s
@@ -174,11 +174,22 @@ class BamHeaderTest < Minitest::Test
 
     TEXT
     header_text = header_text.gsub(/\r\n/, "\n") # for Windows
-    assert_equal header_text, bam.header.to_s
+    expect_equal header_text, bam.header.to_s
   end
 
   def test_clone
     hdr2 = bam.header.clone
-    assert_instance_of HTS::Bam::Header, hdr2
+    expect_instance_of HTS::Bam::Header, hdr2
   end
+end
+
+describe BamHeaderTest do
+  {% for method in BamHeaderTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = BamHeaderTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

@@ -48,9 +48,9 @@ jobs:
         if: matrix.os != 'windows'
         run: |
           export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
-          crystal test/run_all.cr -- --chaos --paralel 4 --verbose
+          crystal spec --order random --verbose
       - name: Run tests (MinGW64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
         run: |
-          crystal test/run_all.cr -- --chaos --paralel 4 --verbose
+          crystal spec --order random --verbose

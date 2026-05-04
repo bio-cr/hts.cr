@@ -107,7 +107,7 @@ The Crystal language is suited for creating efficient command-line tools. The Ru
 
     git clone https://github.com/bio-cr/hts.cr
     cd hts.cr
-    crystal run test/run_all.cr
+    crystal spec
 
 HTS.cr is a work-in-progress library, and pull requests such as small typo fixes are welcome.
 

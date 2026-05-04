@@ -1,10 +1,9 @@
-require "minitest/autorun"
+require "../../spec_helper"
 require "../../../src/hts/bcf"
-require "./multisample_helper"
 
 # require "digest/md5"
 
-class BcfHeaderTest < Minitest::Test
+class BcfHeaderTest < HTSSpecCase
   include TestBcfMultisampleHelper
 
   def teardown
@@ -24,41 +23,41 @@ class BcfHeaderTest < Minitest::Test
   end
 
   def test_initialize
-    assert_instance_of HTS::Bcf::Header, HTS::Bcf::Header.new
+    expect_instance_of HTS::Bcf::Header, HTS::Bcf::Header.new
   end
 
   def test_get_version
-    assert_equal "VCFv4.2", hdr.get_version
+    expect_equal "VCFv4.2", hdr.get_version
   end
 
   def test_set_version
     hdr2 = hdr.clone
     hdr2.set_version("VCFv9.9")
-    assert_equal "VCFv9.9", hdr2.get_version
+    expect_equal "VCFv9.9", hdr2.get_version
   end
 
   def test_nsamples
-    assert_equal 1, hdr.nsamples
+    expect_equal 1, hdr.nsamples
   end
 
   def test_target_count
-    assert_equal 1, hdr.target_count
+    expect_equal 1, hdr.target_count
   end
 
   def test_target_name
-    assert_equal "poo", hdr.target_name(0)
+    expect_equal "poo", hdr.target_name(0)
   end
 
   def test_target_names
-    assert_equal ["poo"], hdr.target_names
+    expect_equal ["poo"], hdr.target_names
   end
 
   def test_get_tid
-    assert_equal 0, hdr.get_tid("poo")
+    expect_equal 0, hdr.get_tid("poo")
   end
 
   def test_samples
-    assert_equal ["poo.sort.bam"], hdr.samples
+    expect_equal ["poo.sort.bam"], hdr.samples
   end
 
   def test_subset_returns_new_header
@@ -66,9 +65,9 @@ class BcfHeaderTest < Minitest::Test
       source = HTS::Bcf.new(path)
       subset = source.header.subset(["B"])
 
-      assert_equal ["A", "B"], source.header.samples
-      assert_equal ["B"], subset.samples
-      assert_equal 1, subset.nsamples
+      expect_equal ["A", "B"], source.header.samples
+      expect_equal ["B"], subset.samples
+      expect_equal 1, subset.nsamples
     ensure
       source.try &.close
     end
@@ -78,11 +77,11 @@ class BcfHeaderTest < Minitest::Test
     with_temp_multisample_bcf do |path|
       source = HTS::Bcf.new(path)
 
-      error = assert_raises(HTS::Bcf::UnknownSampleError) do
+      error = expect_raises(HTS::Bcf::UnknownSampleError) do
         source.header.subset(["missing"])
       end
 
-      assert_includes error.message, "missing"
+      expect_includes error.message, "missing"
     ensure
       source.try &.close
     end
@@ -92,11 +91,11 @@ class BcfHeaderTest < Minitest::Test
     with_temp_multisample_bcf do |path|
       source = HTS::Bcf.new(path)
 
-      error = assert_raises(HTS::Bcf::SubsetError) do
+      error = expect_raises(HTS::Bcf::SubsetError) do
         source.header.subset(["A", "A"])
       end
 
-      assert_includes error.message, "Duplicate sample names"
+      expect_includes error.message, "Duplicate sample names"
     ensure
       source.try &.close
     end
@@ -107,11 +106,11 @@ class BcfHeaderTest < Minitest::Test
     hdr2.add_sample("kojix1", sync: false)
     hdr2.add_sample("kojix2", sync: false)
     hdr2.add_sample("kojix3", sync: false)
-    assert_equal 1, hdr2.nsamples
-    assert_equal ["poo.sort.bam"], hdr2.samples
+    expect_equal 1, hdr2.nsamples
+    expect_equal ["poo.sort.bam"], hdr2.samples
     hdr2.sync
-    assert_equal 4, hdr2.nsamples
-    assert_equal ["poo.sort.bam", "kojix1", "kojix2", "kojix3"], hdr2.samples
+    expect_equal 4, hdr2.nsamples
+    expect_equal ["poo.sort.bam", "kojix1", "kojix2", "kojix3"], hdr2.samples
   end
 
   def test_append_delete
@@ -123,11 +122,11 @@ class BcfHeaderTest < Minitest::Test
   def test_to_s
     # md5 = Digest::MD5.hexdigest(bcf.header.to_s)
     # exp = "ca7d2c7ac2a51e4f2b2b88004615e98b"
-    # assert_equal exp, md5
+    # expect_equal exp, md5
   end
 
   def test_clone
-    assert_instance_of HTS::Bcf::Header, hdr.clone
+    expect_instance_of HTS::Bcf::Header, hdr.clone
   end
 
   def test_edit_batches_sync
@@ -139,19 +138,19 @@ class BcfHeaderTest < Minitest::Test
       header.add_filter("BatchFilter", description: "batch-added")
     end
 
-    assert_equal ["poo.sort.bam", "kojix4", "kojix5"], hdr2.samples
-    assert hdr2.to_s.includes?("##FILTER=<ID=BatchFilter,Description=\"batch-added\">")
+    expect_equal ["poo.sort.bam", "kojix4", "kojix5"], hdr2.samples
+    expect_true hdr2.to_s.includes?("##FILTER=<ID=BatchFilter,Description=\"batch-added\">")
   end
 
   def test_add_and_remove_contig
     h = HTS::Bcf::Header.new
     h.add_contig("chr1", length: 1000, assembly: "GRCh38")
 
-    assert_equal ["chr1"], h.target_names
-    assert h.to_s.includes?("##contig=<ID=chr1,length=1000,assembly=GRCh38>")
+    expect_equal ["chr1"], h.target_names
+    expect_true h.to_s.includes?("##contig=<ID=chr1,length=1000,assembly=GRCh38>")
 
-    assert_equal true, h.remove_contig("chr1")
-    assert_equal [] of String, h.target_names
+    expect_equal true, h.remove_contig("chr1")
+    expect_equal [] of String, h.target_names
   end
 
   def test_add_update_remove_info_and_format
@@ -159,18 +158,18 @@ class BcfHeaderTest < Minitest::Test
     h.add_info("DP", number: 1, type: :int, description: "Total depth")
     h.add_format("GT", number: 1, type: :string, description: "Genotype")
 
-    assert h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total depth\">")
-    assert h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
+    expect_true h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total depth\">")
+    expect_true h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
 
     h.update_info("DP", number: 1, type: :int, description: "Read depth")
     h.update_format("GT", number: 1, type: :string, description: "GT field")
-    assert h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Read depth\">")
-    assert h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"GT field\">")
+    expect_true h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Read depth\">")
+    expect_true h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"GT field\">")
 
-    assert_equal true, h.remove_info("DP")
-    assert_equal true, h.remove_format("GT")
-    refute h.to_s.includes?("##INFO=<ID=DP")
-    refute h.to_s.includes?("##FORMAT=<ID=GT")
+    expect_equal true, h.remove_info("DP")
+    expect_equal true, h.remove_format("GT")
+    expect_false h.to_s.includes?("##INFO=<ID=DP")
+    expect_false h.to_s.includes?("##FORMAT=<ID=GT")
   end
 
   def test_add_meta_and_filter
@@ -178,10 +177,21 @@ class BcfHeaderTest < Minitest::Test
     h.add_meta("source", "myCaller")
     h.add_filter("LowQual", description: "Low quality")
 
-    assert h.to_s.includes?("##source=myCaller")
-    assert h.to_s.includes?("##FILTER=<ID=LowQual,Description=\"Low quality\">")
+    expect_true h.to_s.includes?("##source=myCaller")
+    expect_true h.to_s.includes?("##FILTER=<ID=LowQual,Description=\"Low quality\">")
 
-    assert_equal true, h.remove_filter("LowQual")
-    refute h.to_s.includes?("LowQual")
+    expect_equal true, h.remove_filter("LowQual")
+    expect_false h.to_s.includes?("LowQual")
   end
+end
+
+describe BcfHeaderTest do
+  {% for method in BcfHeaderTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = BcfHeaderTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

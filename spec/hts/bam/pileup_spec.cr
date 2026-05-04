@@ -1,7 +1,7 @@
-require "minitest/autorun"
+require "../../spec_helper"
 require "../../../src/hts/bam"
 
-class BamPileupSmokeTest < Minitest::Test
+class BamPileupSmokeTest < HTSSpecCase
   def test_pileup_yields_columns
     path = File.expand_path("../../fixtures/moo.bam", __DIR__)
     HTS::Bam.open(path) do |bam|
@@ -29,17 +29,28 @@ class BamPileupSmokeTest < Minitest::Test
         plp.close
       end
 
-      refute_nil first_col
-      assert_instance_of HTS::Bam::Pileup::Column, first_col
-      assert first_col.not_nil!.tid.is_a?(Int32) || first_col.not_nil!.tid.is_a?(Int64)
-      assert first_col.not_nil!.pos.is_a?(Int64) || first_col.not_nil!.pos.is_a?(Int32)
-      assert first_col.not_nil!.depth >= 0
+      expect_not_nil first_col
+      expect_instance_of HTS::Bam::Pileup::Column, first_col
+      expect_true first_col.not_nil!.tid.is_a?(Int32) || first_col.not_nil!.tid.is_a?(Int64)
+      expect_true first_col.not_nil!.pos.is_a?(Int64) || first_col.not_nil!.pos.is_a?(Int32)
+      expect_true first_col.not_nil!.depth >= 0
 
       # Alignment wrapper basic behaviors (verified before close)
       if first_col.not_nil!.depth > 0
-        assert_same rec1, rec2
-        assert_instance_of HTS::Bam::Record, rec1
+        expect_same rec1, rec2
+        expect_instance_of HTS::Bam::Record, rec1
       end
     end
   end
+end
+
+describe BamPileupSmokeTest do
+  {% for method in BamPileupSmokeTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = BamPileupSmokeTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

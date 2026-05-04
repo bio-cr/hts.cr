@@ -1,7 +1,7 @@
-require "minitest/autorun"
+require "../spec_helper"
 require "../../src/hts/bam"
 
-class BamTest < Minitest::Test
+class BamTest < HTSSpecCase
   def teardown
     # close files
     {% for format in ["bam", "sam", "cram"] %}
@@ -49,59 +49,59 @@ class BamTest < Minitest::Test
       
       def test_new_{{ft}}
         b = HTS::Bam.new(path_{{ft}})
-        assert_instance_of HTS::Bam, b
+        expect_instance_of HTS::Bam, b
         b.close
-        assert_equal true, b.closed?
+        expect_equal true, b.closed?
       end
 
       def test_open_{{ft}}
         b = HTS::Bam.open(path_{{ft}})
-        assert_instance_of HTS::Bam, b
-        assert_equal false, b.closed?
+        expect_instance_of HTS::Bam, b
+        expect_equal false, b.closed?
         b.close
-        assert_equal true, b.closed?
-        assert_nil b.close
+        expect_equal true, b.closed?
+        expect_nil b.close
       end
 
       def test_open_{{ft}}_with_block
         f = HTS::Bam.open(path_{{ft}}) do |b|
-          assert_instance_of HTS::Bam, b
+          expect_instance_of HTS::Bam, b
         end
-        assert_equal true, f.closed?
+        expect_equal true, f.closed?
       end
 
       {% if format == "bam" %}
       # FIXME: Cram dose not have cram_tell
       def test_tell_{{ft}}
-        assert_equal 21889024, {{ft}}.tell
+        expect_equal 21889024, {{ft}}.tell
       end
       {% end %}
 
       {% if format == "sam" %}
       # FIXME: Cram dose not have cram_tell
       def test_tell_{{ft}}
-        assert_equal 134, {{ft}}.tell
+        expect_equal 134, {{ft}}.tell
       end
       {% end %}
 
       def test_file_name_{{ft}}
-        assert_equal path_{{ft}}.to_s, {{ft}}.file_name
+        expect_equal path_{{ft}}.to_s, {{ft}}.file_name
       end
 
       def test_mode_{{ft}}
-        assert_equal "r", {{ft}}.mode
+        expect_equal "r", {{ft}}.mode
       end
 
       def test_header_{{ft}}
-        assert_instance_of HTS::Bam::Header, {{ft}}.header
+        expect_instance_of HTS::Bam::Header, {{ft}}.header
       end
 
       def test_file_format_{{ft}}
-        assert_equal {{format}}.capitalize, {{ft}}.file_format
+        expect_equal {{format}}.capitalize, {{ft}}.file_format
       end
 
       def test_file_format_version_{{ft}}
-        assert_includes ["1", "1.6", "3.0"], {{ft}}.file_format_version
+        expect_includes ["1", "1.6", "3.0"], {{ft}}.file_format_version
       end
 
       {% if format != "sam" %}
@@ -110,7 +110,7 @@ class BamTest < Minitest::Test
           {{ft}}.query("chr2:350-700") do |aln|
             arr << aln.pos
           end
-          assert_equal [341, 658], arr
+          expect_equal [341, 658], arr
         end
 
         def test_query_copy_{{ft}}
@@ -118,7 +118,7 @@ class BamTest < Minitest::Test
           {{ft}}.query("chr2:350-700", copy: true) do |aln|
             arr << aln.pos
           end
-          assert_equal [341, 658], arr
+          expect_equal [341, 658], arr
         end
 
         # New: numeric tid query should produce identical positions.
@@ -126,12 +126,12 @@ class BamTest < Minitest::Test
           arr = [] of Int64
           # Resolve tid from header (reference name to integer id)
           tid = {{ft}}.header.get_tid("chr2")
-          assert tid >= 0, "Expected valid tid for chr2"
+          expect_true tid >= 0, "Expected valid tid for chr2"
           # Convert 1-based inclusive 350-700 to 0-based half-open => [349, 700)
           {{ft}}.query(tid, 349_i64, 700_i64) do |aln|
             arr << aln.pos
           end
-          assert_equal [341, 658], arr
+          expect_equal [341, 658], arr
         end
 
         # New: chromosome name + numeric coordinates variant
@@ -141,7 +141,7 @@ class BamTest < Minitest::Test
           {{ft}}.query("chr2", 350_i64, 700_i64) do |aln|
             arr << aln.pos
           end
-          assert_equal [341, 658], arr
+          expect_equal [341, 658], arr
         end
 
         def test_query_multi_regions_{{ft}}
@@ -149,8 +149,8 @@ class BamTest < Minitest::Test
           {{ft}}.query(["chr1:100-200", "chr2:350-700"]) do |aln|
             arr << aln.pos
           end
-          assert_includes arr, 341
-          assert_includes arr, 658
+          expect_includes arr, 341
+          expect_includes arr, 658
         end
 
         def test_query_multi_regions_copy_{{ft}}
@@ -158,8 +158,8 @@ class BamTest < Minitest::Test
           {{ft}}.query(["chr1:100-200", "chr2:350-700"], copy: true) do |aln|
             arr << aln.pos
           end
-          assert_includes arr, 341
-          assert_includes arr, 658
+          expect_includes arr, 341
+          expect_includes arr, 658
         end
 
         def test_query_single_region_array_{{ft}}
@@ -167,7 +167,7 @@ class BamTest < Minitest::Test
           {{ft}}.query(["chr2:350-700"]) do |aln|
             arr << aln.pos
           end
-          assert_equal [341, 658], arr
+          expect_equal [341, 658], arr
         end
       {% end %}
 
@@ -175,23 +175,23 @@ class BamTest < Minitest::Test
         c = 0
         {{ft}}.each do |aln|
           c += 1
-          assert_instance_of HTS::Bam::Record, aln
+          expect_instance_of HTS::Bam::Record, aln
         end
-        assert_equal 10, c
+        expect_equal 10, c
       end
 
       def test_each_copy_{{ft}}
         c = 0
         {{ft}}.each(copy: true) do |aln|
           c += 1
-          assert_instance_of HTS::Bam::Record, aln
+          expect_instance_of HTS::Bam::Record, aln
         end
-        assert_equal 10, c
+        expect_equal 10, c
       end
 
       def test_qname_{{ft}}
         b = HTS::Bam.new(path_{{ft}})
-        assert_equal 10, b.qname.size
+        expect_equal 10, b.qname.size
         b.close
       end
 
@@ -199,7 +199,7 @@ class BamTest < Minitest::Test
   {% end %}
 
   def test_initialize_no_file_bam
-    assert_raises { HTS::Bam.new("/tmp/no_such_file") }
+    expect_raises { HTS::Bam.new("/tmp/no_such_file") }
   end
 
   def test_file_level_aux_int
@@ -208,7 +208,7 @@ class BamTest < Minitest::Test
     bam_string.each do |aln|
       expected << aln.aux.get_int("NM")
     end
-    assert_equal expected, values
+    expect_equal expected, values
   end
 
   def test_file_level_aux_string
@@ -217,7 +217,7 @@ class BamTest < Minitest::Test
     bam_string.each do |aln|
       expected << aln.aux.get_string("MC")
     end
-    assert_equal expected, values
+    expect_equal expected, values
   end
 
   def test_file_level_aux_runtime_fallback
@@ -226,7 +226,7 @@ class BamTest < Minitest::Test
     bam_string.each do |aln|
       expected << aln.aux["NM"]
     end
-    assert_equal expected, values
+    expect_equal expected, values
   end
 
   def test_each_aux_int
@@ -234,7 +234,7 @@ class BamTest < Minitest::Test
     bam_string.each_aux_int("NM") do |value|
       values << value
     end
-    assert_equal bam_string.aux_int("NM"), values
+    expect_equal bam_string.aux_int("NM"), values
   end
 
   def test_each_aux_runtime_fallback
@@ -242,37 +242,48 @@ class BamTest < Minitest::Test
     bam_string.each_aux("MC") do |value|
       values << value
     end
-    assert_equal bam_string.aux("MC"), values
+    expect_equal bam_string.aux("MC"), values
   end
 
   def test_query_requires_index_for_sam
-    ex = assert_raises(HTS::Bam::MissingIndexError) do
+    ex = expect_raises(HTS::Bam::MissingIndexError) do
       sam_string.query("chr1:1-10") { |_| }
     end
-    assert_includes ex.message, path_sam_string
-    assert_includes ex.message, "Query requires an index"
+    expect_includes ex.message, path_sam_string
+    expect_includes ex.message, "Query requires an index"
   end
 
   def test_query_invalid_region_message_bam
-    ex = assert_raises(HTS::Bam::QueryError) do
+    ex = expect_raises(HTS::Bam::QueryError) do
       bam_string.query("chrX:1-10") { |_| }
     end
-    assert_includes ex.message, "chrX:1-10"
-    assert_includes ex.message, path_bam_string
+    expect_includes ex.message, "chrX:1-10"
+    expect_includes ex.message, path_bam_string
   end
 
   def test_query_invalid_tid_message_bam
-    ex = assert_raises(ArgumentError) do
+    ex = expect_raises(ArgumentError) do
       bam_string.query(-1, 0_i64, 10_i64) { |_| }
     end
-    assert_includes ex.message, "tid (-1)"
+    expect_includes ex.message, "tid (-1)"
   end
 
   def test_query_invalid_chrom_message_bam
-    ex = assert_raises(ArgumentError) do
+    ex = expect_raises(ArgumentError) do
       bam_string.query("chrX", 1_i64, 10_i64) { |_| }
     end
-    assert_includes ex.message, path_bam_string
-    assert_includes ex.message, "Unknown reference name"
+    expect_includes ex.message, path_bam_string
+    expect_includes ex.message, "Unknown reference name"
   end
+end
+
+describe BamTest do
+  {% for method in BamTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = BamTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

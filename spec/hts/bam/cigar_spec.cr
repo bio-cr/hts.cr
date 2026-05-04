@@ -1,7 +1,7 @@
-require "minitest/autorun"
+require "../../spec_helper"
 require "../../../src/hts/bam"
 
-class BamCigarTest < Minitest::Test
+class BamCigarTest < HTSSpecCase
   def test_bam_path
     File.expand_path("../../fixtures/moo.bam", __DIR__)
   end
@@ -14,15 +14,15 @@ class BamCigarTest < Minitest::Test
   end
 
   def test_initialize
-    assert_instance_of HTS::Bam::Cigar, cigar9
+    expect_instance_of HTS::Bam::Cigar, cigar9
   end
 
   def test_each
-    assert_equal [{'M', 28}, {'I', 1}, {'M', 11}], cigar9.to_a
+    expect_equal [{'M', 28}, {'I', 1}, {'M', 11}], cigar9.to_a
   end
 
   def test_to_s
-    assert_equal "28M1I11M", cigar9.to_s
+    expect_equal "28M1I11M", cigar9.to_s
   end
 
   # --- Integrated encode/decode tests ---
@@ -34,7 +34,7 @@ class BamCigarTest < Minitest::Test
       (1_u32 << 4) | 1_u32,  # I
       (11_u32 << 4) | 0_u32, # M
     ]
-    assert_equal expected, words
+    expect_equal expected, words
   end
 
   def test_encode_from_string
@@ -44,7 +44,7 @@ class BamCigarTest < Minitest::Test
       (1_u32 << 4) | 1_u32,  # I
       (11_u32 << 4) | 0_u32, # M
     ]
-    assert_equal expected, words
+    expect_equal expected, words
   end
 
   def test_decode_each_and_to_s_roundtrip
@@ -63,35 +63,46 @@ class BamCigarTest < Minitest::Test
     ptr = words.to_unsafe
     cig = HTS::Bam::Cigar.new(ptr, words.size.to_u32)
 
-    assert_equal [
+    expect_equal [
       {'M', 1_u32}, {'I', 2_u32}, {'D', 3_u32}, {'N', 4_u32}, {'S', 5_u32},
       {'H', 6_u32}, {'P', 7_u32}, {'=', 8_u32}, {'X', 9_u32}, {'B', 10_u32},
     ], cig.to_a
 
-    assert_equal "1M2I3D4N5S6H7P8=9X10B", cig.to_s
+    expect_equal "1M2I3D4N5S6H7P8=9X10B", cig.to_s
   end
 
   def test_initialize_from_string
     cig = HTS::Bam::Cigar.new("28M1I11M")
-    assert_equal [{'M', 28_u32}, {'I', 1_u32}, {'M', 11_u32}], cig.to_a
-    assert_equal "28M1I11M", cig.to_s
+    expect_equal [{'M', 28_u32}, {'I', 1_u32}, {'M', 11_u32}], cig.to_a
+    expect_equal "28M1I11M", cig.to_s
   end
 
   def test_initialize_from_ops
     cig = HTS::Bam::Cigar.new([{'M', 2_u32}, {'D', 3_u32}, {'S', 4_u32}])
-    assert_equal [{'M', 2_u32}, {'D', 3_u32}, {'S', 4_u32}], cig.to_a
-    assert_equal "2M3D4S", cig.to_s
+    expect_equal [{'M', 2_u32}, {'D', 3_u32}, {'S', 4_u32}], cig.to_a
+    expect_equal "2M3D4S", cig.to_s
   end
 
   def test_encode_raises_on_missing_length_before_op
-    assert_raises(ArgumentError) do
+    expect_raises(ArgumentError) do
       HTS::Bam::Cigar.encode("M")
     end
   end
 
   def test_encode_raises_on_trailing_length
-    assert_raises(ArgumentError) do
+    expect_raises(ArgumentError) do
       HTS::Bam::Cigar.encode("10")
     end
   end
+end
+
+describe BamCigarTest do
+  {% for method in BamCigarTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = BamCigarTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

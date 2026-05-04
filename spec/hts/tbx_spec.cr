@@ -1,7 +1,7 @@
-require "minitest/autorun"
+require "../spec_helper"
 require "../../src/hts/tabix"
 
-class TabixTest < Minitest::Test
+class TabixTest < HTSSpecCase
   # Simple sorted VCF data (CHROM, POS 1-based, …).
   # Header lines (beginning with '#') are skipped by tabix when querying.
   VCF_LINES = [
@@ -46,47 +46,47 @@ class TabixTest < Minitest::Test
 
   def test_open_and_close
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      refute tbx.closed?
+      expect_false tbx.closed?
     end
   end
 
   def test_index_loaded
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      assert tbx.index_loaded?
+      expect_true tbx.index_loaded?
     end
   end
 
   def test_seqnames
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      assert_equal ["poo"], tbx.seqnames
+      expect_equal ["poo"], tbx.seqnames
     end
   end
 
   def test_name2id_known
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      assert_equal 0, tbx.name2id("poo")
+      expect_equal 0, tbx.name2id("poo")
     end
   end
 
   def test_name2id_unknown
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      assert_equal -1, tbx.name2id("nonexistent")
+      expect_equal -1, tbx.name2id("nonexistent")
     end
   end
 
   def test_seqnames_requires_index
     without_index do |tbx|
-      ex = assert_raises(HTS::Tabix::MissingIndexError) { tbx.seqnames }
-      assert_includes ex.message, @vcf_gz
-      assert_includes ex.message, "seqnames requires an index"
+      ex = expect_raises(HTS::Tabix::MissingIndexError) { tbx.seqnames }
+      expect_includes ex.message, @vcf_gz
+      expect_includes ex.message, "seqnames requires an index"
     end
   end
 
   def test_name2id_requires_index
     without_index do |tbx|
-      ex = assert_raises(HTS::Tabix::MissingIndexError) { tbx.name2id("poo") }
-      assert_includes ex.message, @vcf_gz
-      assert_includes ex.message, "name2id requires an index"
+      ex = expect_raises(HTS::Tabix::MissingIndexError) { tbx.name2id("poo") }
+      expect_includes ex.message, @vcf_gz
+      expect_includes ex.message, "name2id requires an index"
     end
   end
 
@@ -95,8 +95,8 @@ class TabixTest < Minitest::Test
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo:150-250") { |f| results << f }
-      assert_equal 1, results.size
-      assert_equal "200", results[0][1]
+      expect_equal 1, results.size
+      expect_equal "200", results[0][1]
     end
   end
 
@@ -105,7 +105,7 @@ class TabixTest < Minitest::Test
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo:100-300") { |f| results << f }
-      assert_equal 3, results.size
+      expect_equal 3, results.size
     end
   end
 
@@ -114,7 +114,7 @@ class TabixTest < Minitest::Test
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo:1-3,00") { |f| results << f }
-      assert_equal 3, results.size
+      expect_equal 3, results.size
     end
   end
 
@@ -123,7 +123,7 @@ class TabixTest < Minitest::Test
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo") { |f| results << f }
-      assert_equal 5, results.size
+      expect_equal 5, results.size
     end
   end
 
@@ -132,8 +132,8 @@ class TabixTest < Minitest::Test
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo", 149, 201) { |f| results << f }
-      assert_equal 1, results.size
-      assert_equal "200", results[0][1]
+      expect_equal 1, results.size
+      expect_equal "200", results[0][1]
     end
   end
 
@@ -142,57 +142,57 @@ class TabixTest < Minitest::Test
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
       tbx.query("poo", 99, 299) { |f| results << f }
-      assert_equal 2, results.size
+      expect_equal 2, results.size
     end
   end
 
   def test_query_fields
     HTS::Tabix.open(@vcf_gz) do |tbx|
       tbx.query("poo:100-100") do |fields|
-        assert_equal "poo", fields[0]
-        assert_equal "100", fields[1]
-        assert_equal "A", fields[3]
-        assert_equal "T", fields[4]
+        expect_equal "poo", fields[0]
+        expect_equal "100", fields[1]
+        expect_equal "A", fields[3]
+        expect_equal "T", fields[4]
       end
     end
   end
 
   def test_query_requires_index
     without_index do |tbx|
-      ex = assert_raises(HTS::Tabix::MissingIndexError) do
+      ex = expect_raises(HTS::Tabix::MissingIndexError) do
         tbx.query("poo:100-100") { |_| }
       end
-      assert_includes ex.message, @vcf_gz
-      assert_includes ex.message, "query requires an index"
+      expect_includes ex.message, @vcf_gz
+      expect_includes ex.message, "query requires an index"
     end
   end
 
   def test_query_invalid_region_message
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      ex = assert_raises(HTS::Tabix::QueryError) do
+      ex = expect_raises(HTS::Tabix::QueryError) do
         tbx.query("unknown:1-10") { |_| }
       end
-      assert_includes ex.message, "unknown:1-10"
-      assert_includes ex.message, @vcf_gz
+      expect_includes ex.message, "unknown:1-10"
+      expect_includes ex.message, @vcf_gz
     end
   end
 
   def test_query_invalid_chrom_message
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      ex = assert_raises(ArgumentError) do
+      ex = expect_raises(ArgumentError) do
         tbx.query("unknown", 0, 10) { |_| }
       end
-      assert_includes ex.message, "Unknown reference name"
-      assert_includes ex.message, @vcf_gz
+      expect_includes ex.message, "Unknown reference name"
+      expect_includes ex.message, @vcf_gz
     end
   end
 
   def test_query_negative_start
     HTS::Tabix.open(@vcf_gz) do |tbx|
-      ex = assert_raises(ArgumentError) do
+      ex = expect_raises(ArgumentError) do
         tbx.query("poo", -1, 10) { |_| }
       end
-      assert_includes ex.message, "must be >= 0"
+      expect_includes ex.message, "must be >= 0"
     end
   end
 
@@ -201,6 +201,17 @@ class TabixTest < Minitest::Test
   def test_build_index_class_method
     # build_index creates a .tbi file next to the input
     tbi = "#{@vcf_gz}.tbi"
-    assert File.exists?(tbi)
+    expect_true File.exists?(tbi)
   end
+end
+
+describe TabixTest do
+  {% for method in TabixTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = TabixTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

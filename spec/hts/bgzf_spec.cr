@@ -1,8 +1,8 @@
-require "minitest/autorun"
+require "../spec_helper"
 require "../../src/hts/bgzf"
 require "../../src/hts/tabix"
 
-class BgzfTest < Minitest::Test
+class BgzfTest < HTSSpecCase
   def test_create_bgzf_instance
     # Test with a simple text file first
     test_file = File.tempfile("test", ".txt")
@@ -12,9 +12,9 @@ class BgzfTest < Minitest::Test
 
     # Test reading
     HTS::Bgzf.open(test_file.path, "r") do |bgzf|
-      assert_instance_of HTS::Bgzf, bgzf
-      assert_equal test_file.path.to_s, bgzf.file_name
-      assert_equal "r", bgzf.mode
+      expect_instance_of HTS::Bgzf, bgzf
+      expect_equal test_file.path.to_s, bgzf.file_name
+      expect_equal "r", bgzf.mode
     end
 
     test_file.delete
@@ -38,17 +38,17 @@ class BgzfTest < Minitest::Test
       HTS::Bgzf.open(test_file.path, "r") do |bgzf|
         if bgzf.is_bgzf?
           line1 = bgzf.gets
-          assert_equal "Line 1", line1
+          expect_equal "Line 1", line1
 
           line2 = bgzf.gets
-          assert_equal "Line 2", line2
+          expect_equal "Line 2", line2
 
           line3 = bgzf.gets
-          assert_equal "Line 3", line3
+          expect_equal "Line 3", line3
 
           # EOF should return nil
           eof_line = bgzf.gets
-          assert_nil eof_line
+          expect_nil eof_line
         end
       end
     end
@@ -80,10 +80,10 @@ class BgzfTest < Minitest::Test
     end
 
     if lines.size > 0
-      assert_equal 3, lines.size
-      assert_equal "Line A", lines[0]
-      assert_equal "Line B", lines[1]
-      assert_equal "Line C", lines[2]
+      expect_equal 3, lines.size
+      expect_equal "Line A", lines[0]
+      expect_equal "Line B", lines[1]
+      expect_equal "Line C", lines[2]
     end
 
     test_file.delete
@@ -104,17 +104,17 @@ class BgzfTest < Minitest::Test
     HTS::Bgzf.open(test_file.path, "r") do |bgzf|
       if bgzf.is_bgzf?
         char1 = bgzf.getc
-        assert_equal 'A', char1
+        expect_equal 'A', char1
 
         char2 = bgzf.getc
-        assert_equal 'B', char2
+        expect_equal 'B', char2
 
         char3 = bgzf.getc
-        assert_equal 'C', char3
+        expect_equal 'C', char3
 
         # EOF should return nil
         eof_char = bgzf.getc
-        assert_nil eof_char
+        expect_nil eof_char
       end
     end
 
@@ -136,11 +136,11 @@ class BgzfTest < Minitest::Test
     HTS::Bgzf.open(test_file.path, "r") do |bgzf|
       if bgzf.is_bgzf?
         bytes = bgzf.read(5)
-        assert_equal "Hello".to_slice, bytes
+        expect_equal "Hello".to_slice, bytes
 
         # Reading beyond EOF should return empty bytes
         empty_bytes = bgzf.read(10)
-        assert_equal Bytes.empty, empty_bytes
+        expect_equal Bytes.empty, empty_bytes
       end
     end
 
@@ -155,7 +155,7 @@ class BgzfTest < Minitest::Test
     HTS::Bgzf.open(test_file.path, "wz") do |bgzf|
       if bgzf.is_bgzf?
         bytes_written = bgzf.write("Hello, BGZF!")
-        assert bytes_written > 0
+        expect_true bytes_written > 0
         bgzf.flush
       end
     end
@@ -164,7 +164,7 @@ class BgzfTest < Minitest::Test
     HTS::Bgzf.open(test_file.path, "r") do |bgzf|
       if bgzf.is_bgzf?
         data = bgzf.read(100)
-        assert_equal "Hello, BGZF!", String.new(data)
+        expect_equal "Hello, BGZF!", String.new(data)
       end
     end
 
@@ -195,9 +195,9 @@ class BgzfTest < Minitest::Test
     end
 
     if lines.size > 0
-      assert_equal 2, lines.size
-      assert_equal "First line", lines[0]
-      assert_equal "Second line", lines[1]
+      expect_equal 2, lines.size
+      expect_equal "First line", lines[0]
+      expect_equal "Second line", lines[1]
     end
 
     test_file.delete
@@ -210,7 +210,7 @@ class BgzfTest < Minitest::Test
     HTS::Bgzf.open(test_file.path, "wz") do |bgzf|
       if bgzf.is_bgzf?
         bgzf.write("test data")
-        assert bgzf.is_bgzf?
+        expect_true bgzf.is_bgzf?
       end
     end
 
@@ -223,7 +223,7 @@ class BgzfTest < Minitest::Test
 
     HTS::Bgzf.open(test_file.path, "wz") do |bgzf|
       level = bgzf.compression_level
-      assert level >= -1 # -1 means no compression info available
+      expect_true level >= -1 # -1 means no compression info available
     end
 
     test_file.delete
@@ -237,8 +237,8 @@ class BgzfTest < Minitest::Test
     test_file.close
 
     HTS::Tabix.open(test_file.path, "r") do |tabix|
-      assert tabix.is_a?(HTS::Bgzf)
-      assert tabix.is_a?(HTS::Hts)
+      expect_true tabix.is_a?(HTS::Bgzf)
+      expect_true tabix.is_a?(HTS::Hts)
 
       # BGZFから継承したメソッドが使用可能
       lines = [] of String
@@ -246,9 +246,20 @@ class BgzfTest < Minitest::Test
         lines << line.chomp
       end
 
-      assert_equal 2, lines.size
+      expect_equal 2, lines.size
     end
 
     test_file.delete
   end
+end
+
+describe BgzfTest do
+  {% for method in BgzfTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+    it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
+      spec_case = BgzfTest.new
+      run_spec_case(spec_case) do
+        spec_case.{{ method.name.id }}
+      end
+    end
+  {% end %}
 end

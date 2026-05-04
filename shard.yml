@@ -4,8 +4,4 @@ version: 0.1.3
 authors:
   - kojix2 <2xijok@gmail.com>
 
-development_dependencies:
-  minitest:
-    github: ysbaddaden/minitest.cr
-
 license: MIT
