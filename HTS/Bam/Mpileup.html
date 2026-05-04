@@ -429,7 +429,7 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/f84c1ab4638df0fabe362ec0b05a203eaf363b36/src/hts/bam/mpileup.cr#L5" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/96294cb7d31d6cc3b29543890a37fa517786bb70/src/hts/bam/mpileup.cr#L5" target="_blank">
         hts/bam/mpileup.cr
       </a>
     
@@ -452,9 +452,9 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>)</a>
+        <a href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>)</a>
         
-          <div class="summary"><p>Minimal constructor: accept Array(Bam).</p></div>
+          <div class="summary"><p>Accept Array(Bam).</p></div>
         
       </li>
     
@@ -473,7 +473,7 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, &)</a>
+        <a href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, &)</a>
         
           <div class="summary"><p>Open an Mpileup iterator with block (RAII style)</p></div>
         
@@ -569,23 +569,24 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false)-class-method">
+    <div class="entry-detail" id="new(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,*,region:String|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>)
+        def self.<strong>new</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Minimal constructor: accept Array(Bam). (String inputs or regions can be added later.)</p>
+          <p>Accept Array(Bam). If region is set, it uses SAM-style 1-based inclusive
+coordinates and each input must already have an index loaded.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/f84c1ab4638df0fabe362ec0b05a203eaf363b36/src/hts/bam/mpileup.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/96294cb7d31d6cc3b29543890a37fa517786bb70/src/hts/bam/mpileup.cr#L41" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -602,12 +603,12 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="open(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,&amp;)-class-method">
+    <div class="entry-detail" id="open(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,*,region:String|Nil=nil,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, &)
+        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, &)
 
-        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2C%26%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -618,7 +619,7 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/f84c1ab4638df0fabe362ec0b05a203eaf363b36/src/hts/bam/mpileup.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/96294cb7d31d6cc3b29543890a37fa517786bb70/src/hts/bam/mpileup.cr#L30" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -648,7 +649,7 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/f84c1ab4638df0fabe362ec0b05a203eaf363b36/src/hts/bam/mpileup.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/96294cb7d31d6cc3b29543890a37fa517786bb70/src/hts/bam/mpileup.cr#L145" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -669,7 +670,7 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/f84c1ab4638df0fabe362ec0b05a203eaf363b36/src/hts/bam/mpileup.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/96294cb7d31d6cc3b29543890a37fa517786bb70/src/hts/bam/mpileup.cr#L104" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -685,7 +686,7 @@ Yields an Array of Pileup::Column (one per input) for each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/f84c1ab4638df0fabe362ec0b05a203eaf363b36/src/hts/bam/mpileup.cr#L140" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/96294cb7d31d6cc3b29543890a37fa517786bb70/src/hts/bam/mpileup.cr#L158" target="_blank">View source</a>]
         
       </div>
     </div>
