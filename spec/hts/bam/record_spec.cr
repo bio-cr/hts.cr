@@ -117,12 +117,24 @@ class BamRecordTest
     (aln1.chrom).should eq("poo")
   end
 
+  def test_chrom_invalid_tid
+    aln = aln1
+    aln.tid = 999
+    (aln.chrom).should eq("")
+  end
+
   def test_contig
     (aln1.contig).should eq("poo")
   end
 
   def test_mate_chrom
     (aln1.mate_chrom).should eq("poo")
+  end
+
+  def test_mate_chrom_invalid_tid
+    aln = aln1
+    aln.mtid = 999
+    (aln.mate_chrom).should eq("")
   end
 
   def test_mate_contig

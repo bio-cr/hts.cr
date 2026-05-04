@@ -147,7 +147,10 @@ module HTS
       def chrom
         return "" if tid == -1
 
-        String.new LibHTS.sam_hdr_tid2name(@header, tid)
+        name = LibHTS.sam_hdr_tid2name(@header, tid)
+        return "" if name.null?
+
+        String.new(name)
       end
 
       # returns the mate chromosome or '' if not mapped.
@@ -159,7 +162,10 @@ module HTS
       def mate_chrom
         return "" if mtid == -1
 
-        String.new LibHTS.sam_hdr_tid2name(@header, mtid)
+        name = LibHTS.sam_hdr_tid2name(@header, mtid)
+        return "" if name.null?
+
+        String.new(name)
       end
 
       def mate_contig
