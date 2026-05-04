@@ -54,19 +54,18 @@ module HTS
         LibHTS.bcf_update_id(@header, @bcf1, ".")
       end
 
-      def filter
+      def filters : Array(String)
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FLT)
         d = @bcf1.value.d
         n_flt = d.n_flt
 
         case n_flt
         when 0
-          "PASS"
+          ["PASS"]
         when 1
           i = d.flt.value
-          String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, i)
+          [String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, i)]
         when 2..
-          # FIXME note tested yet and may contain bugs
           Array(String).new(n_flt) do |i|
             j = d.flt[i]
             String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, j)
@@ -74,6 +73,11 @@ module HTS
         else
           raise "unexpected number of filters. n_flt: #{n_flt}"
         end
+      end
+
+      # VCF FILTER can contain multiple values, so keep the return type stable.
+      def filter : Array(String)
+        filters
       end
 
       def qual

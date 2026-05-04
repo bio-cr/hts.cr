@@ -70,7 +70,11 @@ class BcfRecordTest
   end
 
   def test_filter
-    (var1.filter).should eq("PASS")
+    (var1.filter).should eq(["PASS"])
+  end
+
+  def test_filters
+    (var1.filters).should eq(["PASS"])
   end
 
   def test_qual
