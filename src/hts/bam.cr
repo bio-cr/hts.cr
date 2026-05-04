@@ -422,6 +422,8 @@ module HTS
 
     # Multi-region query. This currently uses sequential single-region iterators.
     # It preserves the same copy semantics as the single-region query.
+    # Records overlapping multiple regions may be yielded more than once;
+    # regions are not merged or deduplicated.
     def query(regions : Array(String), copy = false, &)
       check_closed
       raise ArgumentError.new("regions must not be empty") if regions.empty?
