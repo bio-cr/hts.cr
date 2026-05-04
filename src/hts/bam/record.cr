@@ -46,14 +46,14 @@ module HTS
 
         r = LibHTS.bam_set1(
           @bam1,
-          qname.bytesize, qname.to_unsafe.as(LibC::Char*),
+          qname.bytesize, qname,
           flag.to_u16,
           tid, pos,
           mapq.to_u8,
           cigar_words.size, cigar_words.to_unsafe,
           mtid, mpos, isize,
-          seq.bytesize, seq.to_unsafe.as(LibC::Char*),
-          qual.to_unsafe.as(LibC::Char*),
+          seq.bytesize, seq,
+          qual,
           0
         )
         raise "Failed to build record via bam_set1" if r < 0

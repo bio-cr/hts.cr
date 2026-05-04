@@ -76,7 +76,7 @@ module HTS
 
       def update_string(tag : String, value : String)
         validate_tag!(tag)
-        check_update_rc!(LibHTS.bam_aux_update_str(@bam1, tag_to_static_array(tag), value.bytesize + 1, value.to_unsafe.as(LibC::Char*)), tag)
+        check_update_rc!(LibHTS.bam_aux_update_str(@bam1, tag_to_static_array(tag), value.bytesize + 1, value), tag)
         self
       end
 

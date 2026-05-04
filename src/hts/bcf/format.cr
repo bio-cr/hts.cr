@@ -46,7 +46,7 @@ module HTS
         ensure_expected_format_type!(tag, :string, "string")
         validate_string_sample_count!(tag, values.size)
 
-        encoded = values.map { |value| value.to_unsafe.as(LibC::Char*) }
+        encoded = values.map(&.to_unsafe)
         hdr = @record.header
         rec = @record
         rc = LibHTS.bcf_update_format_string(hdr, rec, tag, encoded.to_unsafe, encoded.size)

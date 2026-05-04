@@ -134,7 +134,7 @@ module HTS
         encoded_samples = [] of Pointer(LibC::Char)
 
         unless names.empty?
-          encoded_samples = names.map { |name| name.to_unsafe.as(LibC::Char*) }
+          encoded_samples = names.map(&.to_unsafe)
           sample_ptrs = encoded_samples.to_unsafe
           imap_buffer = Pointer(Int32).malloc(names.size)
         end
