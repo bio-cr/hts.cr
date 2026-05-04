@@ -42,6 +42,8 @@ module HTS
         @header = header
         @bam1 = LibHTS.bam_init1
 
+        raise ArgumentError.new("qual length must equal sequence length") unless qual.size == seq.bytesize
+
         r = LibHTS.bam_set1(
           @bam1,
           qname.bytesize, qname.to_unsafe.as(LibC::Char*),

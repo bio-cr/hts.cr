@@ -14,6 +14,28 @@ class BamRecordTest < Minitest::Test
     r
   end
 
+  def minimal_header : HTS::Bam::Header
+    HTS::Bam::Header.parse("@HD\tVN:1.6\tSO:unknown\n@SQ\tSN:chr1\tLN:1000\n")
+  end
+
+  def test_initialize_rejects_short_qual
+    error = assert_raises(ArgumentError) do
+      HTS::Bam::Record.new(
+        minimal_header,
+        "read1",
+        0,
+        0,
+        0_i64,
+        60,
+        HTS::Bam::Cigar.encode("4M"),
+        "ACGT",
+        [30_u8, 30_u8, 30_u8]
+      )
+    end
+
+    assert_equal "qual length must equal sequence length", error.message
+  end
+
   def test_qname
     assert_equal "poo_3290_3833_2:0:0_2:0:0_119", aln1.qname
   end
