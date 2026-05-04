@@ -83,11 +83,11 @@ module HTS
 
       # Write the string
       bytes_written = LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
-      return bytes_written if bytes_written < 0
+      raise IO::Error.new("Failed to write BGZF data") if bytes_written < 0
 
       # Write newline
       newline_written = LibHTS.bgzf_write(bgzf_fp, "\n".to_unsafe, 1)
-      return newline_written if newline_written < 0
+      raise IO::Error.new("Failed to write BGZF newline") if newline_written < 0
 
       bytes_written + newline_written
     end
@@ -114,7 +114,10 @@ module HTS
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       raise "Not a BGZF file" if bgzf_fp.null?
 
-      LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
+      bytes_written = LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.bytesize)
+      raise IO::Error.new("Failed to write BGZF data") if bytes_written < 0
+
+      bytes_written
     end
 
     def write(data : Bytes) : Int64
@@ -122,7 +125,10 @@ module HTS
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       raise "Not a BGZF file" if bgzf_fp.null?
 
-      LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.size)
+      bytes_written = LibHTS.bgzf_write(bgzf_fp, data.to_unsafe, data.size)
+      raise IO::Error.new("Failed to write BGZF data") if bytes_written < 0
+
+      bytes_written
     end
 
     def flush : Int32
