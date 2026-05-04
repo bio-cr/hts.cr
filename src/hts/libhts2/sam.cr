@@ -90,13 +90,19 @@ module HTS
     end
 
     def sam_itr_next(htsfp, itr, r)
-      # FIXME: check if htsfp is compressed BGZF
       raise "Null iterator" if itr.null?
+
+      flags = htsfp.value.flags
+      is_cram = (flags & 0x8) != 0
+      is_bgzf = (flags & 0x10) != 0
+      raise "File is not BGZF or CRAM" unless is_bgzf || is_cram
+
       # htslib's sam_itr_next is a static inline wrapper that dispatches
       # multi-region iterators through hts_itr_multi_next.
       return LibHTS.hts_itr_multi_next(htsfp, itr, r) if (itr.value.bitfields & 0x10) != 0
 
-      LibHTS.hts_itr_next(htsfp.value.fp.bgzf, itr, r, htsfp)
+      bgzf = is_bgzf ? htsfp.value.fp.bgzf : Pointer(LibHTS::Bgzf).null
+      LibHTS.hts_itr_next(bgzf, itr, r, htsfp)
     end
   end
 end

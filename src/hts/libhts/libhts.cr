@@ -561,7 +561,6 @@ module HTS
     fun sam_itr_querys(idx : HtsIdxT, hdr : SamHdrT*, region : LibC::Char*) : HtsItrT*
     fun sam_itr_regions(idx : HtsIdxT, hdr : SamHdrT*, reglist : HtsReglistT*, regcount : LibC::UInt) : HtsItrT*
     fun sam_itr_regarray(idx : HtsIdxT, hdr : SamHdrT*, regarray : LibC::Char**, regcount : LibC::UInt) : HtsItrT*
-    fun sam_itr_next(htsfp : HtsFile*, itr : HtsItrT*, r : Bam1T*) : LibC::Int
     fun sam_parse_region(h : SamHdrT*, s : LibC::Char*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*, flags : LibC::Int) : LibC::Char*
     fun sam_open_mode(mode : LibC::Char*, fn : LibC::Char*, format : LibC::Char*) : LibC::Int
     fun sam_open_mode_opts(fn : LibC::Char*, mode : LibC::Char*, format : LibC::Char*) : LibC::Char*
