@@ -16,6 +16,8 @@ module HTS
 
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @bcf_hdr = LibHTS.bcf_hdr_read(hts_file)
+        raise "Failed to read BCF/VCF header" if @bcf_hdr.null?
+
         @sync_depth = 0
         @sync_needed = false
         @subset_samples = nil
@@ -26,6 +28,8 @@ module HTS
       # for clone
       def initialize(bcf_hdr : Pointer(HTS::LibHTS::BcfHdrT))
         @bcf_hdr = bcf_hdr
+        raise ArgumentError.new("BCF/VCF header pointer must not be null") if @bcf_hdr.null?
+
         @sync_depth = 0
         @sync_needed = false
         @subset_samples = nil
@@ -35,6 +39,8 @@ module HTS
 
       def initialize
         @bcf_hdr = LibHTS.bcf_hdr_init("w")
+        raise "Failed to initialize BCF/VCF header" if @bcf_hdr.null?
+
         @sync_depth = 0
         @sync_needed = false
         @subset_samples = nil
