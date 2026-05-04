@@ -276,9 +276,9 @@ module HTS
         kstr.s = Pointer(LibC::Char).null
 
         begin
-          unless LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
-            raise "Failed to format header"
-          end
+          rc = LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
+          raise "Failed to format header" if rc < 0
+
           io << (String.new kstr.s)
         ensure
           LibC.free(kstr.s) unless kstr.s.null?
