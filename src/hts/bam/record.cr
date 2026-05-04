@@ -356,6 +356,8 @@ module HTS
       def clone
         # Duplicate bam1 and use references for header.
         bam1 = LibHTS.bam_dup1(@bam1)
+        raise "bam_dup1 failed" if bam1.null?
+
         self.class.new(@header, bam1)
       end
 

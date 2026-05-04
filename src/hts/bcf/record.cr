@@ -133,6 +133,8 @@ module HTS
       def clone
         # Duplicate bcf1 and use reference for header.
         bcf1 = LibHTS.bcf_dup(@bcf1)
+        raise "bcf_dup failed" if bcf1.null?
+
         self.class.new(@header, bcf1)
       end
 
