@@ -16,18 +16,19 @@ module HTS
       end
 
       @bams : Array(Bam)
-      @owned_bams : Array(Bam) = [] of Bam
       @iter : LibHTS::BamMplpT?
       @cb : LibHTS::BamPlpAutoF? # keepalive
       @data_blocks : Array(Pointer(InputData)) = [] of Pointer(InputData)
       @data_array : Pointer(Pointer(Void))? # pointer to array of per-input data pointers
+      @itrs : Array(LibHTS::HtsItrT*) = [] of LibHTS::HtsItrT*
+      @idxs : Array(LibHTS::HtsIdxT) = [] of LibHTS::HtsIdxT
       @n_inputs : Int32
       @maxcnt : Int32?
       @overlaps : Bool
 
       # Open an Mpileup iterator with block (RAII style)
-      def self.open(inputs : Array(Bam), maxcnt : Int32? = nil, overlaps : Bool = false, &)
-        mpileup = new(inputs, maxcnt, overlaps)
+      def self.open(inputs : Array(Bam), maxcnt : Int32? = nil, overlaps : Bool = false, *, region : String? = nil, &)
+        mpileup = new(inputs, maxcnt, overlaps, region: region)
         begin
           yield mpileup
         ensure
@@ -35,54 +36,67 @@ module HTS
         end
       end
 
-      # Minimal constructor: accept Array(Bam). (String inputs or regions can be added later.)
-      def initialize(inputs : Array(Bam), @maxcnt : Int32? = nil, overlaps : Bool = false)
+      # Accept Array(Bam). If region is set, it uses SAM-style 1-based inclusive
+      # coordinates and each input must already have an index loaded.
+      def initialize(inputs : Array(Bam), @maxcnt : Int32? = nil, overlaps : Bool = false, *, region : String? = nil)
+        raise ArgumentError.new("inputs must not be empty") if inputs.empty?
+
         @bams = inputs
         @n_inputs = inputs.size
         @overlaps = overlaps
 
-        # Build per-input data blocks
-        @data_blocks = Array(Pointer(InputData)).new(@n_inputs)
-        @bams.each do |bam|
-          block = Pointer(InputData).malloc(1)
-          block.value = InputData.new(
-            bam.to_unsafe,
-            bam.header.to_unsafe,
-            Pointer(LibHTS::HtsItrT).null
-          )
-          @data_blocks << block
+        if region
+          raise ArgumentError.new("region must not be empty") if region.empty?
         end
 
-        # Make contiguous array of void* pointers to pass to bam_mplp_init
-        @data_array = Pointer(Pointer(Void)).malloc(@n_inputs)
-        i = 0
-        while i < @n_inputs
-          # Store as void*
-          @data_array.not_nil![i] = @data_blocks[i].as(Void*)
-          i += 1
-        end
-
-        # Shared callback used for all inputs
-        @cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
-          id = data.as(Pointer(InputData)).value
-          if id.itr.null?
-            r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
-            r >= 0 ? 0 : -1
-          else
-            r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
-            r >= 0 ? 0 : -1
+        begin
+          # Build per-input data blocks
+          @data_blocks = Array(Pointer(InputData)).new(@n_inputs)
+          @bams.each do |bam|
+            itr = build_iterator(bam, region)
+            block = Pointer(InputData).malloc(1)
+            block.value = InputData.new(
+              bam.to_unsafe,
+              bam.header.to_unsafe,
+              itr
+            )
+            @data_blocks << block
           end
-        }
 
-        @iter = LibHTS.bam_mplp_init(@n_inputs, @cb.not_nil!, @data_array.not_nil!.as(Void**))
-        raise "bam_mplp_init failed" if @iter.nil? || @iter.not_nil!.as(Void*).null?
+          # Make contiguous array of void* pointers to pass to bam_mplp_init
+          @data_array = Pointer(Pointer(Void)).malloc(@n_inputs)
+          i = 0
+          while i < @n_inputs
+            # Store as void*
+            @data_array.not_nil![i] = @data_blocks[i].as(Void*)
+            i += 1
+          end
 
-        if cnt = @maxcnt
-          LibHTS.bam_mplp_set_maxcnt(@iter.not_nil!, cnt)
-        end
-        if @overlaps
-          rc = LibHTS.bam_mplp_init_overlaps(@iter.not_nil!)
-          raise "bam_mplp_init_overlaps failed" if rc < 0
+          # Shared callback used for all inputs
+          @cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
+            id = data.as(Pointer(InputData)).value
+            if id.itr.null?
+              r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
+              r >= 0 ? 0 : -1
+            else
+              r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
+              r >= 0 ? 0 : -1
+            end
+          }
+
+          @iter = LibHTS.bam_mplp_init(@n_inputs, @cb.not_nil!, @data_array.not_nil!.as(Void**))
+          raise "bam_mplp_init failed" if @iter.nil? || @iter.not_nil!.as(Void*).null?
+
+          if cnt = @maxcnt
+            LibHTS.bam_mplp_set_maxcnt(@iter.not_nil!, cnt)
+          end
+          if @overlaps
+            rc = LibHTS.bam_mplp_init_overlaps(@iter.not_nil!)
+            raise "bam_mplp_init_overlaps failed" if rc < 0
+          end
+        rescue ex
+          close
+          raise ex
         end
       end
 
@@ -133,12 +147,38 @@ module HTS
           LibHTS.bam_mplp_destroy(iter)
           @iter = nil
         end
+        @itrs.each { |itr| LibHTS.hts_itr_destroy(itr) unless itr.null? }
+        @itrs.clear
+        @idxs.each { |idx| LibHTS.hts_idx_destroy(idx) unless idx.null? }
+        @idxs.clear
         # Note: @data_blocks and @data_array are GC-managed (via Pointer.malloc)
         # and will be automatically freed by the GC.
       end
 
       def finalize
         close
+      end
+
+      private def build_iterator(bam : Bam, region : String?) : LibHTS::HtsItrT*
+        return Pointer(LibHTS::HtsItrT).null if region.nil?
+        reg = region.not_nil!
+
+        unless bam.index_loaded?
+          raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.")
+        end
+
+        idx = bam.load_index
+        raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.") if idx.null?
+
+        itr = LibHTS.sam_itr_querys(idx, bam.header, reg)
+        if itr.null?
+          LibHTS.hts_idx_destroy(idx)
+          raise Bam::QueryError.new("Failed to create an iterator for region #{reg.inspect} in #{bam.file_name}. Check the region syntax, that the reference exists in the header, and that the index matches the file.")
+        end
+
+        @idxs << idx
+        @itrs << itr
+        itr
       end
     end
   end
