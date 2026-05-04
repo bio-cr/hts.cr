@@ -387,7 +387,8 @@
     Overview
   </h2>
 
-  <p>Thin wrapper around a single bam_pileup1_t entry</p>
+  <p>Thin wrapper around a single bam_pileup1_t entry.
+Small fields are copied so they remain valid after the iterator moves on.</p>
 
 
 
@@ -414,7 +415,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L41" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L42" target="_blank">
         hts/bam/pileup.cr
       </a>
     
@@ -460,6 +461,11 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#bitfields%3AUInt32-instance-method" class="signature"><strong>#bitfields</strong> : UInt32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#del%3F%3ABool-instance-method" class="signature"><strong>#del?</strong> : Bool</a>
         
           <div class="summary"><p>Bitfield helpers</p></div>
@@ -474,21 +480,17 @@
       <li class="entry-summary">
         <a href="#indel%3AInt32-instance-method" class="signature"><strong>#indel</strong> : Int32</a>
         
-          <div class="summary"><p>Indel length (0 no indel, &gt;0 insertion, &lt;0 deletion)</p></div>
-        
       </li>
     
       <li class="entry-summary">
         <a href="#query_pos%3AInt32-instance-method" class="signature"><strong>#query_pos</strong> : Int32</a>
-        
-          <div class="summary"><p>0-based query position</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#record%3ABam%3A%3ARecord-instance-method" class="signature"><strong>#record</strong> : Bam::Record</a>
         
-          <div class="summary"><p>Lazily duplicates the underlying bam1_t to return a safe Record</p></div>
+          <div class="summary"><p>Lazily duplicates the underlying bam1_t to avoid copying every read.</p></div>
         
       </li>
     
@@ -557,7 +559,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -578,6 +580,22 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="bitfields:UInt32-instance-method">
+      <div class="signature">
+        
+        def <strong>bitfields</strong> : UInt32
+
+        <a class="method-permalink" href="#bitfields%3AUInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="del?:Bool-instance-method">
       <div class="signature">
         
@@ -594,7 +612,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L60" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -610,7 +628,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L61" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -623,15 +641,10 @@
         <a class="method-permalink" href="#indel%3AInt32-instance-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>Indel length (0 no indel, &gt;0 insertion, &lt;0 deletion)</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L55" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -644,15 +657,10 @@
         <a class="method-permalink" href="#query_pos%3AInt32-instance-method">#</a>
       </div>
       
-        <div class="doc">
-          
-          <p>0-based query position</p>
-        </div>
-      
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -667,13 +675,14 @@
       
         <div class="doc">
           
-          <p>Lazily duplicates the underlying bam1_t to return a safe Record</p>
+          <p>Lazily duplicates the underlying bam1_t to avoid copying every read.
+Call this before the pileup iterator advances or closes.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L77" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L75" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -689,7 +698,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L72" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L69" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -705,7 +714,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/aa0a55334d861904885b2b6eec258bf1cbcd09c8/src/hts/bam/pileup.cr#L68" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/50a9940cfc6f4618d263589ec53f36c9ef7cddbb/src/hts/bam/pileup.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
