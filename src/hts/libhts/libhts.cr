@@ -145,7 +145,7 @@ module HTS
     end
     fun hts_get_log_level : HtsLogLevel
     fun hts_log(severity : HtsLogLevel, context : LibC::Char*, format : LibC::Char*, ...)
-    alias CramFd = Void*
+    type CramFd = Void
 
     struct SamHdrT
       n_targets : Int32T
@@ -681,14 +681,14 @@ module HTS
       CramCompFqz      =  7
       CramCompTok3     =  8
     end
-    fun cram_fd_get_header(fd : CramFd) : SamHdrT*
-    fun cram_fd_set_header(fd : CramFd, hdr : SamHdrT*)
-    fun cram_fd_get_version(fd : CramFd) : LibC::Int
-    fun cram_fd_set_version(fd : CramFd, vers : LibC::Int)
-    fun cram_major_vers(fd : CramFd) : LibC::Int
-    fun cram_minor_vers(fd : CramFd) : LibC::Int
-    fun cram_fd_get_fp(fd : CramFd) : HFile*
-    fun cram_fd_set_fp(fd : CramFd, fp : HFile*)
+    fun cram_fd_get_header(fd : CramFd*) : SamHdrT*
+    fun cram_fd_set_header(fd : CramFd*, hdr : SamHdrT*)
+    fun cram_fd_get_version(fd : CramFd*) : LibC::Int
+    fun cram_fd_set_version(fd : CramFd*, vers : LibC::Int)
+    fun cram_major_vers(fd : CramFd*) : LibC::Int
+    fun cram_minor_vers(fd : CramFd*) : LibC::Int
+    fun cram_fd_get_fp(fd : CramFd*) : HFile*
+    fun cram_fd_set_fp(fd : CramFd*, fp : HFile*)
     fun cram_container_get_length(c : CramContainer) : Int32T
     fun cram_container_set_length(c : CramContainer, length : Int32T)
     fun cram_container_get_num_blocks(c : CramContainer) : Int32T
@@ -697,7 +697,7 @@ module HTS
     fun cram_container_set_landmarks(c : CramContainer, num_landmarks : Int32T, landmarks : Int32T*)
     fun cram_container_get_num_records(c : CramContainer) : Int32T
     fun cram_container_get_num_bases(c : CramContainer) : Int32T
-    fun cram_container_is_empty(fd : CramFd) : LibC::Int
+    fun cram_container_is_empty(fd : CramFd*) : LibC::Int
     fun cram_block_get_content_id(b : CramBlock) : Int32T
     fun cram_block_get_comp_size(b : CramBlock) : Int32T
     fun cram_block_get_uncomp_size(b : CramBlock) : Int32T
@@ -725,14 +725,14 @@ module HTS
     fun cram_block_get_method(b : CramBlock) : CramBlockMethod
     fun cram_expand_method(data : Void*, size : LibC::SizeT, comp : CramBlockMethod) : Void*
     fun cram_block_size(b : CramBlock) : Uint32T
-    fun cram_transcode_rg(in : CramFd, out : CramFd, c : CramContainer, nrg : LibC::Int, in_rg : LibC::Int*, out_rg : LibC::Int*) : LibC::Int
-    fun cram_copy_slice(in : CramFd, out : CramFd, num_slice : Int32T) : LibC::Int
-    fun cram_decode_slice_header(fd : CramFd, b : CramBlock) : CramBlockSliceHdr*
+    fun cram_transcode_rg(in : CramFd*, out : CramFd*, c : CramContainer, nrg : LibC::Int, in_rg : LibC::Int*, out_rg : LibC::Int*) : LibC::Int
+    fun cram_copy_slice(in : CramFd*, out : CramFd*, num_slice : Int32T) : LibC::Int
+    fun cram_decode_slice_header(fd : CramFd*, b : CramBlock) : CramBlockSliceHdr*
     fun cram_free_slice_header(hdr : CramBlockSliceHdr*)
     fun cram_slice_hdr_get_coords(h : CramBlockSliceHdr*, refid : LibC::Int*, start : HtsPosT*, span : HtsPosT*)
     fun cram_slice_hdr_get_embed_ref_id(h : CramBlockSliceHdr*) : LibC::Int
     fun cram_slice_hdr_get_num_blocks(hdr : CramBlockSliceHdr*) : Int32T
-    fun cram_decode_compression_header(fd : CramFd, b : CramBlock) : CramBlockCompressionHdr*
+    fun cram_decode_compression_header(fd : CramFd*, b : CramBlock) : CramBlockCompressionHdr*
     fun cram_free_compression_header(hdr : CramBlockCompressionHdr*)
     fun cram_update_cid2ds_map(hdr : CramBlockCompressionHdr*, cid2ds : CramCid2dsT*) : CramCid2dsT*
     fun cram_cid2ds_query(c2d : CramCid2dsT*, content_id : LibC::Int, n : LibC::Int*) : LibC::Int*
@@ -741,30 +741,30 @@ module HTS
     fun cram_codec_get_content_ids(c : CramCodec*, ids : LibC::Int[2])
     fun cram_codec_describe(c : CramCodec*, ks : KstringT*) : LibC::Int
     fun cram_new_block(content_type : CramContentType, content_id : LibC::Int) : CramBlock
-    fun cram_read_block(fd : CramFd) : CramBlock
-    fun cram_write_block(fd : CramFd, b : CramBlock) : LibC::Int
+    fun cram_read_block(fd : CramFd*) : CramBlock
+    fun cram_write_block(fd : CramFd*, b : CramBlock) : LibC::Int
     fun cram_free_block(b : CramBlock)
     fun cram_uncompress_block(b : CramBlock) : LibC::Int
-    fun cram_compress_block(fd : CramFd, b : CramBlock, metrics : CramMetrics, method : LibC::Int, level : LibC::Int) : LibC::Int
-    fun cram_compress_block2(fd : CramFd, s : CramSlice, b : CramBlock, metrics : CramMetrics, method : LibC::Int, level : LibC::Int) : LibC::Int
+    fun cram_compress_block(fd : CramFd*, b : CramBlock, metrics : CramMetrics, method : LibC::Int, level : LibC::Int) : LibC::Int
+    fun cram_compress_block2(fd : CramFd*, s : CramSlice, b : CramBlock, metrics : CramMetrics, method : LibC::Int, level : LibC::Int) : LibC::Int
     fun cram_new_container(nrec : LibC::Int, nslice : LibC::Int) : CramContainer
     fun cram_free_container(c : CramContainer)
-    fun cram_read_container(fd : CramFd) : CramContainer
-    fun cram_write_container(fd : CramFd, h : CramContainer) : LibC::Int
-    fun cram_store_container(fd : CramFd, c : CramContainer, dat : LibC::Char*, size : LibC::Int*) : LibC::Int
+    fun cram_read_container(fd : CramFd*) : CramContainer
+    fun cram_write_container(fd : CramFd*, h : CramContainer) : LibC::Int
+    fun cram_store_container(fd : CramFd*, c : CramContainer, dat : LibC::Char*, size : LibC::Int*) : LibC::Int
     fun cram_container_size(c : CramContainer) : LibC::Int
-    fun cram_open(filename : LibC::Char*, mode : LibC::Char*) : CramFd
-    fun cram_dopen(fp : HFile*, filename : LibC::Char*, mode : LibC::Char*) : CramFd
-    fun cram_close(fd : CramFd) : LibC::Int
-    fun cram_seek(fd : CramFd, offset : OffT, whence : LibC::Int) : LibC::Int
-    fun cram_flush(fd : CramFd) : LibC::Int
-    fun cram_eof(fd : CramFd) : LibC::Int
-    fun cram_set_option(fd : CramFd, opt : HtsFmtOption, ...) : LibC::Int
-    fun cram_set_voption(fd : CramFd, opt : HtsFmtOption, args : VaList) : LibC::Int
+    fun cram_open(filename : LibC::Char*, mode : LibC::Char*) : CramFd*
+    fun cram_dopen(fp : HFile*, filename : LibC::Char*, mode : LibC::Char*) : CramFd*
+    fun cram_close(fd : CramFd*) : LibC::Int
+    fun cram_seek(fd : CramFd*, offset : OffT, whence : LibC::Int) : LibC::Int
+    fun cram_flush(fd : CramFd*) : LibC::Int
+    fun cram_eof(fd : CramFd*) : LibC::Int
+    fun cram_set_option(fd : CramFd*, opt : HtsFmtOption, ...) : LibC::Int
+    fun cram_set_voption(fd : CramFd*, opt : HtsFmtOption, args : VaList) : LibC::Int
     alias X__GnucVaList = LibC::VaList
     alias VaList = X__GnucVaList
-    fun cram_set_header(fd : CramFd, hdr : SamHdrT*) : LibC::Int
-    fun cram_check_eof = cram_check_EOF(fd : CramFd) : LibC::Int
+    fun cram_set_header(fd : CramFd*, hdr : SamHdrT*) : LibC::Int
+    fun cram_check_eof = cram_check_EOF(fd : CramFd*) : LibC::Int
     fun sam_hdr_parse_(hdr : LibC::Char*, len : LibC::SizeT) : SamHdr*
     alias SamHdr = SamHdrT
     fun sam_hdr_free(hdr : SamHdr*)
