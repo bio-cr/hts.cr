@@ -1,2 +1,13 @@
-*               text=auto
-test/fixtures/* text eol=lf
+* text=auto
+
+# Fixture indexes store byte offsets, so text fixtures must remain LF on
+# Windows checkouts. Binary HTS fixtures must never be newline-normalized.
+spec/fixtures/*.fa text eol=lf
+spec/fixtures/*.fai text eol=lf
+spec/fixtures/*.sam text eol=lf
+spec/fixtures/*.vcf text eol=lf
+spec/fixtures/*.bam binary
+spec/fixtures/*.bai binary
+spec/fixtures/*.bcf binary
+spec/fixtures/*.cram binary
+spec/fixtures/*.crai binary
