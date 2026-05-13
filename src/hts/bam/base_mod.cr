@@ -194,16 +194,25 @@ module HTS
       end
 
       # Query info about a specific modification code
-      def query_type(code : Int32 | String)
+      def query_type(code : Int32)
         check_closed!
         ensure_parsed!
-        code_i = code.is_a?(String) ? code[0].ord : code
         # canonical is written via char*; allocate a single byte buffer
         canonical_ch = uninitialized LibC::Char
-        ret = LibHTS.bam_mods_query_type(@state, code_i, out strand, out implicit, pointerof(canonical_ch))
+        ret = LibHTS.bam_mods_query_type(@state, code, out strand, out implicit, pointerof(canonical_ch))
         return nil if ret < 0
         canonical = (canonical_ch.to_u8).chr.to_s
         {canonical: canonical, strand: strand, implicit: implicit != 0}
+      end
+
+      def query_type(code : Char)
+        query_type(code.ord)
+      end
+
+      def query_type(code : String)
+        raise ArgumentError.new("modification code string must contain exactly one character") unless code.size == 1
+
+        query_type(code[0])
       end
 
       # Query info about i-th modification type

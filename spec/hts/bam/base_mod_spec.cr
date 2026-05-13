@@ -44,8 +44,9 @@ class BamBaseModGenerateTest
     bam_path = create_test_bam_with_modifications
     verify_tags_preserved_in_bam(bam_path)
 
-    @bam = HTS::Bam.open(bam_path)
-    record = @bam.not_nil!.first? || raise "No record in BAM"
+    bam = HTS::Bam.open(bam_path)
+    @bam = bam
+    record = bam.first? || raise "No record in BAM"
 
     base_mod = HTS::Bam::BaseMod.new(record)
     base_mod.parse
@@ -97,11 +98,13 @@ class BamBaseModGenerateTest
     (types.includes?('m'.ord)).should be_true
     (types.includes?('a'.ord)).should be_true
 
-    qt_m = base_mod.query_type('m'.ord)
-    qt_a = base_mod.query_type('a'.ord)
+    qt_m = base_mod.query_type('m'.ord) || raise "Missing 'm' metadata"
+    qt_a = base_mod.query_type('a'.ord) || raise "Missing 'a' metadata"
+    qt_m_char = base_mod.query_type('m') || raise "Missing 'm' metadata"
 
-    (qt_m.not_nil![:canonical]).should eq("C")
-    (qt_a.not_nil![:canonical]).should eq("A")
+    (qt_m[:canonical]).should eq("C")
+    (qt_a[:canonical]).should eq("A")
+    (qt_m_char[:canonical]).should eq("C")
   end
 
   private def verify_modification_qualities(base_mod : HTS::Bam::BaseMod)
@@ -262,6 +265,18 @@ describe HTS::Bam::BaseMod do
     expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.at_pos(0) }
     expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.modification_types }
     expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.query_type("m") }
+  ensure
+    base_mod.try &.close
+    bam.try &.close
+  end
+
+  it "rejects multi-character query type strings" do
+    bam = HTS::Bam.open(File.expand_path("../../fixtures/moo.bam", __DIR__))
+    record = bam.first? || raise "No record in BAM"
+    base_mod = HTS::Bam::BaseMod.new(record)
+
+    error = expect_raises(ArgumentError) { base_mod.query_type("mm") }
+    (error.message).should eq("modification code string must contain exactly one character")
   ensure
     base_mod.try &.close
     bam.try &.close
