@@ -236,6 +236,39 @@ class BamRecordTest
     (aln1.qual_string).should eq("2" * 70)
   end
 
+  def test_qual_string_missing_quality
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M"),
+      "ACGT",
+      [0xff_u8, 0xff_u8, 0xff_u8, 0xff_u8]
+    )
+
+    (aln.qual_string).should eq("*")
+  end
+
+  def test_qual_string_rejects_partially_missing_quality
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M"),
+      "ACGT",
+      [30_u8, 0xff_u8, 30_u8, 30_u8]
+    )
+
+    error = expect_raises(ArgumentError) { aln.qual_string }
+    (error.message).should eq("missing base quality cannot be represented in QUAL string")
+  end
+
   def test_base_qual
     (aln1.base_qual(0)).should eq(17)
     (aln1.base_qual(-1)).should eq(17)

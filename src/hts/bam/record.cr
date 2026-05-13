@@ -262,7 +262,11 @@ module HTS
 
       def qual_string
         q_ptr = LibHTS2.bam_get_qual(@bam1)
-        slice = Slice.new(self.len) { |i| (q_ptr[i] + 33).to_u8 }
+        return "" if self.len == 0
+        return "*" if self.len.times.all? { |i| q_ptr[i] == 0xff }
+        raise ArgumentError.new("missing base quality cannot be represented in QUAL string") if self.len.times.any? { |i| q_ptr[i] == 0xff }
+
+        slice = Slice.new(self.len) { |i| (q_ptr[i].to_i + 33).to_u8 }
         String.new(slice)
       end
 
