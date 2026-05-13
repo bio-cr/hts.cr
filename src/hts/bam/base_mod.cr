@@ -104,6 +104,7 @@ module HTS
       # Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1)
       # Default to reporting unchecked modifications so we see MM/ML content without strict validation.
       def parse(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED) : Int32
+        check_closed!
         ret = LibHTS.bam_parse_basemod2(@record, @state, flags)
         raise Error.new("Failed to parse base modifications") if ret < 0
         @parsed = true
@@ -111,6 +112,7 @@ module HTS
       end
 
       def ensure_parsed!(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED)
+        check_closed!
         return if @parsed
         raise Error.new("BaseMod is not parsed. Call parse first.") unless @auto_parse
         parse(flags)
@@ -127,6 +129,7 @@ module HTS
 
       # Get modifications at a specific query position (0-based); returns nil if none
       def at_pos(position : Int32, max_mods : Int32 = 10) : Position?
+        check_closed!
         reparse_or_parse!
 
         ensure_buffer_capacity(max_mods)
@@ -144,6 +147,7 @@ module HTS
 
       # Iterate over all positions with modifications
       def each(max_mods : Int32 = 10, &block : Position ->)
+        check_closed!
         reparse_or_parse!
 
         ensure_buffer_capacity(max_mods)
@@ -177,6 +181,7 @@ module HTS
 
       # List of modification codes (positive char codes or negative ChEBI)
       def modification_types : Array(Int32)
+        check_closed!
         ensure_parsed!
         codes_ptr = LibHTS.bam_mods_recorded(@state, out ntype)
         return [] of Int32 if ntype <= 0 || codes_ptr.null?
@@ -190,8 +195,9 @@ module HTS
 
       # Query info about a specific modification code
       def query_type(code : Int32 | String)
+        check_closed!
         ensure_parsed!
-        code_i = code.is_a?(String) ? code.ord : code
+        code_i = code.is_a?(String) ? code[0].ord : code
         # canonical is written via char*; allocate a single byte buffer
         canonical_ch = uninitialized LibC::Char
         ret = LibHTS.bam_mods_query_type(@state, code_i, out strand, out implicit, pointerof(canonical_ch))
@@ -222,6 +228,10 @@ module HTS
         items = [] of String
         each { |pos| items << pos.to_s }
         io << "#<HTS::Bam::BaseMod #{items.join(' ')}>"
+      end
+
+      private def check_closed!
+        raise Error.new("BaseMod is closed") if @closed
       end
 
       private def build_position(position : Int32, mods_ptr : Pointer(LibHTS::HtsBaseMod), n_mods : Int32) : Position

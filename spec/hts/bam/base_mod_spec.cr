@@ -249,3 +249,21 @@ describe BamBaseModChebiIntegrationTest do
     end
   {% end %}
 end
+
+describe HTS::Bam::BaseMod do
+  it "raises when queried after close" do
+    bam = HTS::Bam.open(File.expand_path("../../fixtures/moo.bam", __DIR__))
+    record = bam.first? || raise "No record in BAM"
+    base_mod = HTS::Bam::BaseMod.new(record)
+    base_mod.close
+
+    expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.parse }
+    expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.each { } }
+    expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.at_pos(0) }
+    expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.modification_types }
+    expect_raises(HTS::Bam::BaseMod::Error, "BaseMod is closed") { base_mod.query_type("m") }
+  ensure
+    base_mod.try &.close
+    bam.try &.close
+  end
+end
