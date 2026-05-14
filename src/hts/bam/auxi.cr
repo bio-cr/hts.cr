@@ -32,6 +32,20 @@ module HTS
         end
       end
 
+      # Iterate over all auxiliary tags with original BAM type information.
+      def each_with_type(&block)
+        aux_ptr = LibHTS.bam_aux_first(@bam1)
+        while !aux_ptr.null?
+          tag = String.new(aux_ptr - 2, 2)
+          value, original_type = parse_aux_value_with_type(aux_ptr)
+          if original_type
+            type = original_type == 'B' ? "B:#{(aux_ptr + 1).value.chr}" : original_type.to_s
+            yield tag, type, value
+          end
+          aux_ptr = LibHTS.bam_aux_next(@bam1, aux_ptr)
+        end
+      end
+
       # Array-style access to specific tags
       def [](tag : String)
         get_aux_value(tag)

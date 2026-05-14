@@ -344,6 +344,37 @@ class BamRecordTest
     (tags2).should eq(tags1)
   end
 
+  def test_aux_each_with_type
+    aln = aln1
+    seen = {} of String => {String, HTS::Bam::AuxValue}
+
+    aln.aux.each_with_type do |tag, type, value|
+      seen[tag] = {type, value}
+    end
+
+    (seen["MC"]).should eq({"Z", "70M"})
+    (seen["AS"]).should eq({"C", 0_i64})
+    (seen["XS"]).should eq({"C", 0_i64})
+  end
+
+  def test_aux_each_with_type_for_updated_tags
+    aln = aln1
+    aln.aux.update_char("XA", 'Q')
+    aln.aux.update_int8("X1", -3)
+    aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
+    aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
+
+    seen = {} of String => {String, HTS::Bam::AuxValue}
+    aln.aux.each_with_type do |tag, type, value|
+      seen[tag] = {type, value}
+    end
+
+    (seen["XA"]).should eq({"A", 'Q'})
+    (seen["X1"]).should eq({"c", -3_i64})
+    (seen["XB"]).should eq({"B:C", [1_i64, 2_i64, 3_i64]})
+    (seen["XF"]).should eq({"B:f", [1.25, 2.5]})
+  end
+
   def test_aux_int
     aln = aln1
     (aln.aux_int("AS")).should eq(0)
