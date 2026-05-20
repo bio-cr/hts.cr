@@ -72,16 +72,17 @@ module HTS
           end
 
           # Make contiguous array of void* pointers to pass to bam_mplp_init
-          @data_array = Pointer(Pointer(Void)).malloc(@n_inputs)
+          data_array = Pointer(Pointer(Void)).malloc(@n_inputs)
+          @data_array = data_array
           i = 0
           while i < @n_inputs
             # Store as void*
-            @data_array.not_nil![i] = @data_blocks[i].as(Void*)
+            data_array[i] = @data_blocks[i].as(Void*)
             i += 1
           end
 
           # Shared callback used for all inputs
-          @cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
+          cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
             id = data.as(Pointer(InputData)).value
             if id.itr.null?
               r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
@@ -91,15 +92,17 @@ module HTS
               r >= 0 ? 0 : -1
             end
           }
+          @cb = cb
 
-          @iter = LibHTS.bam_mplp_init(@n_inputs, @cb.not_nil!, @data_array.not_nil!.as(Void**))
-          raise "bam_mplp_init failed" if @iter.nil? || @iter.not_nil!.as(Void*).null?
+          iter = LibHTS.bam_mplp_init(@n_inputs, cb, data_array.as(Void**))
+          raise "bam_mplp_init failed" if iter.nil? || iter.as(Void*).null?
+          @iter = iter
 
           if cnt = @maxcnt
-            LibHTS.bam_mplp_set_maxcnt(@iter.not_nil!, cnt)
+            LibHTS.bam_mplp_set_maxcnt(iter, cnt)
           end
           if @overlaps
-            rc = LibHTS.bam_mplp_init_overlaps(@iter.not_nil!)
+            rc = LibHTS.bam_mplp_init_overlaps(iter)
             raise "bam_mplp_init_overlaps failed" if rc < 0
           end
         rescue ex
@@ -109,8 +112,8 @@ module HTS
       end
 
       # Iterate and yield per-position columns array (aligned by tid,pos across inputs)
-      def each(&block : Array(HTS::Bam::Pileup::Column) ->) : Nil
-        return unless (iter = @iter)
+      def each(& : Array(HTS::Bam::Pileup::Column) ->) : Nil
+        return unless iter = @iter
 
         tid = 0
         pos = 0_i64

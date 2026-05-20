@@ -122,7 +122,7 @@ class BcfRecordTest
 end
 
 describe BcfRecordTest do
-  {% for method in BcfRecordTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BcfRecordTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfRecordTest.new
       begin

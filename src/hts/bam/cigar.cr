@@ -31,9 +31,9 @@ module HTS
       end
 
       def each(&)
-        @c.each do |c|
-          op = LibHTS2.bam_cigar_opchr(c)
-          len = LibHTS2.bam_cigar_oplen(c)
+        @c.each do |cigar_op|
+          op = LibHTS2.bam_cigar_opchr(cigar_op)
+          len = LibHTS2.bam_cigar_oplen(cigar_op)
           yield({op, len})
         end
       end
@@ -53,13 +53,13 @@ module HTS
       def self.encode(cigar_str : String) : Array(UInt32)
         res = [] of UInt32
         num = 0_u32
-        cigar_str.each_char do |ch|
-          if ch.ascii_number?
+        cigar_str.each_char do |char|
+          if char.ascii_number?
             # keep calculations in UInt32 domain to avoid unions
-            num = num * 10_u32 + (ch.ord - '0'.ord).to_u32
+            num = num * 10_u32 + (char.ord - '0'.ord).to_u32
           else
-            raise ArgumentError.new("Invalid CIGAR: length missing before '#{ch}'") if num == 0
-            code = op_code(ch)
+            raise ArgumentError.new("Invalid CIGAR: length missing before '#{char}'") if num == 0
+            code = op_code(char)
             res << ((num << 4) | code).to_u32
             num = 0
           end

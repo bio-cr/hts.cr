@@ -162,7 +162,7 @@ class BamWriteTest
     # Verify content
     HTS::Bam.open(path) do |bam|
       records = [] of String
-      bam.each { |r| records << r.qname }
+      bam.each { |record| records << record.qname }
       (records).should eq(["block_read"])
     end
   end
@@ -306,7 +306,7 @@ class BamWriteTest
 end
 
 describe BamWriteTest do
-  {% for method in BamWriteTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BamWriteTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamWriteTest.new
       begin

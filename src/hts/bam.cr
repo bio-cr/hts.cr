@@ -113,7 +113,7 @@ module HTS
 
       # Set start position to 0 for CRAM files
       flags = @hts_file.value.flags
-      if (flags & "1000".to_i(2) != 0) # cram
+      if flags & "1000".to_i(2) != 0 # cram
         @start_position = 0_i64
       else
         @start_position = tell
@@ -339,7 +339,7 @@ module HTS
     # Ensure collected records are independent and safe after iteration ends.
     def to_a : Array(Record)
       ary = [] of Record
-      each(copy: true) { |r| ary << r }
+      each(copy: true) { |record| ary << record }
       ary
     end
 
@@ -421,7 +421,7 @@ module HTS
       qiter = LibHTS.sam_itr_querys(@idx, header, region)
       raise_region_query_error(region) if qiter.null?
       begin
-        iterate_iterator(qiter, copy) { |r| yield r }
+        iterate_iterator(qiter, copy) { |record| yield record }
       ensure
         LibHTS.hts_itr_destroy(qiter)
       end
@@ -438,7 +438,7 @@ module HTS
 
       regions.each_with_index do |region, index|
         raise ArgumentError.new("regions[#{index}] must not be empty") if region.empty?
-        query(region, copy) { |r| yield r }
+        query(region, copy) { |record| yield record }
       end
     end
 
@@ -462,7 +462,7 @@ module HTS
       qiter = LibHTS.sam_itr_queryi(@idx, tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
-        iterate_iterator(qiter, copy) { |r| yield r }
+        iterate_iterator(qiter, copy) { |record| yield record }
       ensure
         LibHTS.hts_itr_destroy(qiter)
       end
@@ -478,7 +478,7 @@ module HTS
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
       # Convert 1-based inclusive [beg, end] to 0-based half-open [beg - 1, end).
-      query(tid, beg - 1, end_pos, copy) { |r| yield r }
+      query(tid, beg - 1, end_pos, copy) { |record| yield record }
     end
 
     private def ensure_query_index! : Nil

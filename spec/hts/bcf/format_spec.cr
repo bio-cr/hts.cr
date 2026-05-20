@@ -353,7 +353,7 @@ class BcfFormatTest
 end
 
 describe BcfFormatTest do
-  {% for method in BcfFormatTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BcfFormatTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfFormatTest.new
       begin

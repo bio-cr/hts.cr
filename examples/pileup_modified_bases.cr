@@ -9,10 +9,10 @@ require "../src/hts"
 
 region = nil.as(String?)
 
-parser = OptionParser.parse do |p|
-  p.banner = "Usage: pileup_modified_bases [options] <in.bam|in.cram>"
-  p.on("-r REGION", "--region=REGION", "Region (e.g., chr1:100-200)") { |v| region = v }
-  p.on("-h", "--help", "Show help") { puts p; exit 0 }
+parser = OptionParser.parse do |parser_config|
+  parser_config.banner = "Usage: pileup_modified_bases [options] <in.bam|in.cram>"
+  parser_config.on("-r REGION", "--region=REGION", "Region (e.g., chr1:100-200)") { |value| region = value }
+  parser_config.on("-h", "--help", "Show help") { puts parser_config; exit 0 }
 end
 
 if ARGV.size != 1

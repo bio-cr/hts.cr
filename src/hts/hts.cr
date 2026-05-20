@@ -80,9 +80,9 @@ module HTS
     def seek(offset)
       # FIXME: Use bit fields
       flags = @hts_file.value.flags
-      if (flags & "1000".to_i(2) != 0) # cram
+      if flags & "1000".to_i(2) != 0 # cram
         LibHTS.cram_seek(@hts_file.value.fp.cram, offset, IO::Seek::Set)
-      elsif (flags & "10000".to_i(2) != 0) # bgzf
+      elsif flags & "10000".to_i(2) != 0 # bgzf
         LibHTS.bgzf_seek(@hts_file.value.fp.bgzf, offset, IO::Seek::Set)
       else # hfile
         LibHTS.hseek(@hts_file.value.fp.hfile, offset, IO::Seek::Set)
@@ -91,11 +91,11 @@ module HTS
 
     def tell
       flags = @hts_file.value.flags
-      if (flags & "1000".to_i(2) != 0) # cram
+      if flags & "1000".to_i(2) != 0 # cram
         # LibHTS.cram_tell(@hts_file.value.fp.cram)
         # "cram_tell is not implemented"
         nil
-      elsif (flags & "10000".to_i(2) != 0) # bgzf
+      elsif flags & "10000".to_i(2) != 0 # bgzf
         LibHTS2.bgzf_tell(@hts_file.value.fp.bgzf).to_i64
       else # hfile
         LibHTS2.htell(@hts_file.value.fp.hfile).to_i64
@@ -104,7 +104,7 @@ module HTS
 
     def rewind
       flags = @hts_file.value.flags
-      if (flags & "1000".to_i(2) != 0) # cram
+      if flags & "1000".to_i(2) != 0 # cram
         # For CRAM files, seek directly to the beginning (tell is not available)
         r = LibHTS.cram_seek(@hts_file.value.fp.cram, 0, IO::Seek::Set)
         raise "Failed to rewind CRAM file: #{r}" if r < 0

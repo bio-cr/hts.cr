@@ -40,7 +40,7 @@ class FaidxTest
   end
 
   def fastq_path
-    @fastq_path.not_nil!
+    @fastq_path || raise "fastq path is not initialized"
   end
 
   def fasta
@@ -64,8 +64,8 @@ class FaidxTest
   end
 
   def test_open_with_block
-    HTS::Faidx.open(fasta_path) do |f|
-      (f).should be_a(HTS::Faidx)
+    HTS::Faidx.open(fasta_path) do |faidx|
+      (faidx).should be_a(HTS::Faidx)
     end
   end
 
@@ -155,7 +155,7 @@ class FaidxTest
 end
 
 describe FaidxTest do
-  {% for method in FaidxTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in FaidxTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = FaidxTest.new
         spec_case.setup

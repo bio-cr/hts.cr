@@ -341,7 +341,7 @@ module HTS
       end
 
       private def compose_subset_imap(imap : Array(Int32)) : Array(Int32)
-        base_imap = @subset_imap || Array(Int32).new(samples.size) { |index| index.to_i32 }
+        base_imap = @subset_imap || Array(Int32).new(samples.size, &.to_i32)
         imap.map { |index| base_imap[index] }
       end
 

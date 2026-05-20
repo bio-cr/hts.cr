@@ -33,7 +33,7 @@ module HTS
       end
 
       # Iterate over all auxiliary tags
-      def each(&block)
+      def each(&)
         aux_ptr = LibHTS.bam_aux_first(@bam1)
         while !aux_ptr.null?
           tag = String.new(aux_ptr - 2, 2)
@@ -44,7 +44,7 @@ module HTS
       end
 
       # Iterate over all auxiliary tags with original BAM type information.
-      def each_with_type(&block)
+      def each_with_type(&)
         aux_ptr = LibHTS.bam_aux_first(@bam1)
         while !aux_ptr.null?
           tag = String.new(aux_ptr - 2, 2)
@@ -294,7 +294,7 @@ module HTS
         check_update_rc!(LibHTS.bam_aux_append(@bam1, tag_array, type.ord.to_u8, len, data), tag)
       end
 
-      private def update_array_numeric(tag : String, tag_array : StaticArray(UInt8, 2), subtype : Char, values : Array(Number), &block)
+      private def update_array_numeric(tag : String, tag_array : StaticArray(UInt8, 2), subtype : Char, values : Array(Number), &)
         converted = values.map { |value| yield value }
         items = converted.size.to_u32
 

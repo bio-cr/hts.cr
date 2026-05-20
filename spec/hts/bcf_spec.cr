@@ -65,8 +65,8 @@ class BcfTest
   end
 
   def test_open_with_block
-    f = HTS::Bcf.open(test_bcf_path) do |b|
-      (b).should be_a(HTS::Bcf)
+    f = HTS::Bcf.open(test_bcf_path) do |bcf|
+      (bcf).should be_a(HTS::Bcf)
     end
     (f.closed?).should eq(true)
   end
@@ -250,7 +250,7 @@ class BcfTest
 end
 
 describe BcfTest do
-  {% for method in BcfTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BcfTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfTest.new
       begin

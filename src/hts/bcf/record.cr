@@ -66,8 +66,8 @@ module HTS
           i = d.flt.value
           [String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, i)]
         when 2..
-          Array(String).new(n_flt) do |i|
-            j = d.flt[i]
+          Array(String).new(n_flt) do |index|
+            j = d.flt[index]
             String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, j)
           end
         else

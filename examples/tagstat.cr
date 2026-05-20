@@ -13,7 +13,7 @@ class TagStatEntry
   getter examples : Array(String)
   getter example_keys : Set(String)
   getter distinct_values : Set(String)
-  property distinct_overflow : Bool
+  property? distinct_overflow : Bool
 
   def initialize(@tag : String, @type : String)
     @reads = 0_i64
@@ -29,13 +29,13 @@ limit = 3
 distinct_limit = 10_000
 threads = 0
 
-parser = OptionParser.parse do |p|
-  p.banner = "Usage: tagstat [options] <in.bam|in.cram>"
-  p.on("--json", "Output JSON instead of TSV") { json_output = true }
-  p.on("--limit N", "Maximum number of examples per tag/type (default: #{limit})") { |v| limit = v.to_i }
-  p.on("--distinct-limit N", "Maximum distinct values to track exactly (default: #{distinct_limit})") { |v| distinct_limit = v.to_i }
-  p.on("-t N", "--threads N", "Number of threads for BAM/CRAM decoding") { |v| threads = v.to_i }
-  p.on("-h", "--help", "Show help") { puts p; exit 0 }
+parser = OptionParser.parse do |parser_config|
+  parser_config.banner = "Usage: tagstat [options] <in.bam|in.cram>"
+  parser_config.on("--json", "Output JSON instead of TSV") { json_output = true }
+  parser_config.on("--limit N", "Maximum number of examples per tag/type (default: #{limit})") { |value| limit = value.to_i }
+  parser_config.on("--distinct-limit N", "Maximum distinct values to track exactly (default: #{distinct_limit})") { |value| distinct_limit = value.to_i }
+  parser_config.on("-t N", "--threads N", "Number of threads for BAM/CRAM decoding") { |value| threads = value.to_i }
+  parser_config.on("-h", "--help", "Show help") { puts parser_config; exit 0 }
 end
 
 if ARGV.size != 1
@@ -99,7 +99,7 @@ HTS::Bam.open(input, threads: threads) do |bam|
         stat.example_keys << example
       end
 
-      next if stat.distinct_overflow
+      next if stat.distinct_overflow?
 
       distinct_key = distinct_value_key(value)
       stat.distinct_values << distinct_key
@@ -111,7 +111,7 @@ HTS::Bam.open(input, threads: threads) do |bam|
   end
 end
 
-rows = stats.values.sort_by { |stat| {-stat.reads, stat.tag, stat.type} }
+rows = stats.values.sort_by! { |stat| {-stat.reads, stat.tag, stat.type} }
 
 if json_output
   puts JSON.build(indent: "  ") { |json|
@@ -125,7 +125,7 @@ if json_output
               json.field "type", row.type
               json.field "reads", row.reads
               json.field "percent", total_reads.zero? ? 0.0 : (row.reads * 100.0 / total_reads).round(1)
-              json.field "distinct", row.distinct_overflow ? ">#{distinct_limit}" : row.distinct_values.size
+              json.field "distinct", row.distinct_overflow? ? ">#{distinct_limit}" : row.distinct_values.size
               json.field "examples", row.examples
             end
           end
@@ -137,7 +137,7 @@ else
   puts %w[tag type reads percent distinct examples].join('\t')
   rows.each do |row|
     percent = total_reads.zero? ? 0.0 : (row.reads * 100.0 / total_reads)
-    distinct = row.distinct_overflow ? ">#{distinct_limit}" : row.distinct_values.size.to_s
+    distinct = row.distinct_overflow? ? ">#{distinct_limit}" : row.distinct_values.size.to_s
     puts [
       row.tag,
       row.type,

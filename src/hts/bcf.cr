@@ -202,7 +202,7 @@ module HTS
     # Ensure collected records are independent and safe after iteration ends.
     def to_a : Array(Bcf::Record)
       ary = [] of Bcf::Record
-      each(copy: true) { |r| ary << r }
+      each(copy: true) { |record| ary << record }
       ary
     end
 

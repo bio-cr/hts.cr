@@ -16,7 +16,7 @@ class BamBaseModGenerateTest
     @bam.try &.close
     if tmp = @tmpdir
       begin
-        Dir.glob(File.join(tmp, "*")).each { |f| File.delete(f) rescue nil }
+        Dir.glob(File.join(tmp, "*")).each { |file| File.delete(file) rescue nil }
         Dir.delete(tmp)
       rescue
       end
@@ -89,7 +89,7 @@ class BamBaseModGenerateTest
   end
 
   private def verify_modification_positions(base_mod : HTS::Bam::BaseMod)
-    positions = base_mod.to_a.map(&.position).sort
+    positions = base_mod.to_a.map(&.position).sort!
     (positions).should eq([1, 8, 13])
   end
 
@@ -108,7 +108,7 @@ class BamBaseModGenerateTest
   end
 
   private def verify_modification_qualities(base_mod : HTS::Bam::BaseMod)
-    qualities = base_mod.to_a.flat_map { |p| p.modifications.map(&.qual) }.sort
+    qualities = base_mod.to_a.flat_map { |position| position.modifications.map(&.qual) }.sort!
     (qualities).should eq([150, 180, 200])
   end
 
@@ -176,10 +176,10 @@ class BamBaseModChebiIntegrationTest
   private def verify_chebi_modification_positions(base_mod : HTS::Bam::BaseMod)
     modifications = base_mod.to_a
 
-    total_count = modifications.sum { |p| p.modifications.size }
+    total_count = modifications.sum(&.modifications.size)
     (total_count).should eq(8)
 
-    positions = modifications.map(&.position).uniq.sort
+    positions = modifications.map(&.position).uniq!.sort!
     (positions).should eq([6, 15, 17, 19, 20, 31, 34])
   end
 
@@ -216,7 +216,7 @@ class BamBaseModChebiIntegrationTest
   end
 
   private def build_position_to_codes_map(base_mod : HTS::Bam::BaseMod)
-    position_codes = Hash(Int32, Array(Int32)).new { |h, k| h[k] = [] of Int32 }
+    position_codes = Hash(Int32, Array(Int32)).new { |hash, key| hash[key] = [] of Int32 }
 
     base_mod.each do |position|
       position.modifications.each do |mod|
@@ -229,7 +229,7 @@ class BamBaseModChebiIntegrationTest
 end
 
 describe BamBaseModGenerateTest do
-  {% for method in BamBaseModGenerateTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BamBaseModGenerateTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamBaseModGenerateTest.new
         spec_case.setup
@@ -243,7 +243,7 @@ describe BamBaseModGenerateTest do
 end
 
 describe BamBaseModChebiIntegrationTest do
-  {% for method in BamBaseModChebiIntegrationTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BamBaseModChebiIntegrationTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamBaseModChebiIntegrationTest.new
       begin

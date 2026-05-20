@@ -15,16 +15,16 @@ class BamMpileupSmokeTest
         seen += 1
         break if seen >= 3
       end
-      (first).should_not be_nil
-      (first.not_nil!.size).should eq(2)
-      first.not_nil!.each do |col|
+      first_columns = first || raise "no mpileup columns yielded"
+      (first_columns.size).should eq(2)
+      first_columns.each do |col|
         (col).should be_a(HTS::Bam::Pileup::Column)
         (col.tid.is_a?(Int32) || col.tid.is_a?(Int64)).should be_true
         (col.pos.is_a?(Int64) || col.pos.is_a?(Int32)).should be_true
         (col.depth >= 0).should be_true
       end
     ensure
-      # Close Mpileup and input BAMs (not owned by Mpileup)
+      # Close Mpileup and input files (not owned by Mpileup)
       mp.close
       b1.close
       b2.close
@@ -43,9 +43,9 @@ class BamMpileupSmokeTest
         break
       end
 
-      (first).should_not be_nil
-      (first.not_nil!.size).should eq(2)
-      first.not_nil!.each do |col|
+      first_columns = first || raise "no mpileup columns yielded"
+      (first_columns.size).should eq(2)
+      first_columns.each do |col|
         (col).should be_a(HTS::Bam::Pileup::Column)
         (col.depth >= 0).should be_true
       end
@@ -61,15 +61,15 @@ class BamMpileupSmokeTest
     b1 = HTS::Bam.new(path)
     b2 = HTS::Bam.new(path)
     begin
-      HTS::Bam::Mpileup.open([b1, b2], maxcnt: 1000, overlaps: true, region: "chr2:350-700") do |mp|
+      HTS::Bam::Mpileup.open([b1, b2], maxcnt: 1000, overlaps: true, region: "chr2:350-700") do |mpileup|
         first = nil
-        mp.each do |cols|
+        mpileup.each do |cols|
           first ||= cols
           break
         end
 
-        (first).should_not be_nil
-        (first.not_nil!.size).should eq(2)
+        first_columns = first || raise "no mpileup columns yielded"
+        (first_columns.size).should eq(2)
       end
     ensure
       b1.close
@@ -89,8 +89,8 @@ class BamMpileupSmokeTest
         break
       end
 
-      (first).should_not be_nil
-      (first.not_nil!.size).should eq(2)
+      first_columns = first || raise "no mpileup columns yielded"
+      (first_columns.size).should eq(2)
     ensure
       mp.close
       b1.close
@@ -172,7 +172,7 @@ class BamMpileupSmokeTest
 end
 
 describe BamMpileupSmokeTest do
-  {% for method in BamMpileupSmokeTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BamMpileupSmokeTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamMpileupSmokeTest.new
       begin

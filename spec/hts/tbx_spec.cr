@@ -94,7 +94,7 @@ class TabixTest
   def test_query_string_single_record
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
-      tbx.query("poo:150-250") { |f| results << f }
+      tbx.query("poo:150-250") { |feature| results << feature }
       (results.size).should eq(1)
       (results[0][1]).should eq("200")
     end
@@ -104,7 +104,7 @@ class TabixTest
   def test_query_string_multiple_records
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
-      tbx.query("poo:100-300") { |f| results << f }
+      tbx.query("poo:100-300") { |feature| results << feature }
       (results.size).should eq(3)
     end
   end
@@ -113,7 +113,7 @@ class TabixTest
   def test_query_string_with_commas
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
-      tbx.query("poo:1-3,00") { |f| results << f }
+      tbx.query("poo:1-3,00") { |feature| results << feature }
       (results.size).should eq(3)
     end
   end
@@ -122,7 +122,7 @@ class TabixTest
   def test_query_string_whole_chromosome
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
-      tbx.query("poo") { |f| results << f }
+      tbx.query("poo") { |feature| results << feature }
       (results.size).should eq(5)
     end
   end
@@ -131,7 +131,7 @@ class TabixTest
   def test_query_numeric_single_record
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
-      tbx.query("poo", 149, 201) { |f| results << f }
+      tbx.query("poo", 149, 201) { |feature| results << feature }
       (results.size).should eq(1)
       (results[0][1]).should eq("200")
     end
@@ -141,7 +141,7 @@ class TabixTest
   def test_query_numeric_two_records
     HTS::Tabix.open(@vcf_gz) do |tbx|
       results = [] of Array(String)
-      tbx.query("poo", 99, 299) { |f| results << f }
+      tbx.query("poo", 99, 299) { |feature| results << feature }
       (results.size).should eq(2)
     end
   end
@@ -206,7 +206,7 @@ class TabixTest
 end
 
 describe TabixTest do
-  {% for method in TabixTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in TabixTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = TabixTest.new
         spec_case.setup

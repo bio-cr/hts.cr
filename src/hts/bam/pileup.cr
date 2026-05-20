@@ -167,8 +167,9 @@ module HTS
         end
 
         # Prepare callback user data block
-        @udata = Pointer(InputData).malloc(1)
-        @udata.not_nil!.value = InputData.new(
+        udata = Pointer(InputData).malloc(1)
+        @udata = udata
+        udata.value = InputData.new(
           @bam.to_unsafe,
           @hdr.to_unsafe,
           itr_ptr
@@ -177,7 +178,7 @@ module HTS
         # Read function compatible with bam_plp_init
         # Expected return values:
         #   0 on success, -1 on EOF, < -1 on non-recoverable errors
-        @cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
+        cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
           id = data.as(Pointer(InputData)).value
           if id.itr.null?
             # Whole-file path: sam_read1 returns -1 on EOF or error (no finer error code)
@@ -189,23 +190,25 @@ module HTS
             r >= 0 ? 0 : r
           end
         }
+        @cb = cb
 
         # Create pileup iterator
-        @plp = LibHTS.bam_plp_init(@cb.not_nil!, @udata.not_nil!.as(Void*))
-        raise "bam_plp_init failed" if @plp.nil? || @plp.not_nil!.as(Void*).null?
+        plp = LibHTS.bam_plp_init(cb, udata.as(Void*))
+        raise "bam_plp_init failed" if plp.nil? || plp.as(Void*).null?
+        @plp = plp
         if cnt = @maxcnt
-          LibHTS.bam_plp_set_maxcnt(@plp.not_nil!, cnt)
+          LibHTS.bam_plp_set_maxcnt(plp, cnt)
         end
       end
 
       # Iterate over pileup columns
-      def each(&block : Column ->) : Nil
-        return unless (plp = @plp)
+      def each(& : Column ->) : Nil
+        return unless plp = @plp
 
         tid = 0
         pos = 0_i64
         n = 0
-        while true
+        loop do
           plp1 = LibHTS.bam_plp64_auto(plp, pointerof(tid), pointerof(pos), pointerof(n))
           if plp1.null?
             # bam_plp64_auto sets n = 0 on EOF, n < 0 on error

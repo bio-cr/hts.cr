@@ -30,9 +30,10 @@ class BamPileupSmokeTest
             first_qname = aln.qname
 
             unless aln.del? || aln.refskip?
-              (first_base).should eq(rec1.not_nil!.base(aln.query_pos))
-              (first_base_qual).should eq(rec1.not_nil!.base_qual(aln.query_pos))
-              (first_qname).should eq(rec1.not_nil!.qname)
+              record = rec1 || raise "missing copied record"
+              (first_base).should eq(record.base(aln.query_pos))
+              (first_base_qual).should eq(record.base_qual(aln.query_pos))
+              (first_qname).should eq(record.qname)
             end
           end
           seen += 1
@@ -42,17 +43,17 @@ class BamPileupSmokeTest
         plp.close
       end
 
-      (first_col).should_not be_nil
-      (first_col).should be_a(HTS::Bam::Pileup::Column)
-      (first_col.not_nil!.tid.is_a?(Int32) || first_col.not_nil!.tid.is_a?(Int64)).should be_true
-      (first_col.not_nil!.pos.is_a?(Int64) || first_col.not_nil!.pos.is_a?(Int32)).should be_true
-      (first_col.not_nil!.depth >= 0).should be_true
+      column = first_col || raise "no pileup column yielded"
+      (column).should be_a(HTS::Bam::Pileup::Column)
+      (column.tid.is_a?(Int32) || column.tid.is_a?(Int64)).should be_true
+      (column.pos.is_a?(Int64) || column.pos.is_a?(Int32)).should be_true
+      (column.depth >= 0).should be_true
 
       # Copied alignment metadata remains available after close.
-      if first_col.not_nil!.depth > 0
-        (first_col.not_nil!.alignments.first.query_pos).should eq(first_query_pos)
-        (first_col.not_nil!.alignments.first.base).should eq(first_base)
-        (first_col.not_nil!.alignments.first.base_qual).should eq(first_base_qual)
+      if column.depth > 0
+        (column.alignments.first.query_pos).should eq(first_query_pos)
+        (column.alignments.first.base).should eq(first_base)
+        (column.alignments.first.base_qual).should eq(first_base_qual)
         (rec2).same?(rec1).should be_true
         (rec1).should be_a(HTS::Bam::Record)
       end
@@ -69,15 +70,15 @@ class BamPileupSmokeTest
           break
         end
 
-        (first_col).should_not be_nil
-        (first_col.not_nil!.depth >= 0).should be_true
+        column = first_col || raise "no pileup column yielded"
+        (column.depth >= 0).should be_true
       end
     end
   end
 end
 
 describe BamPileupSmokeTest do
-  {% for method in BamPileupSmokeTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BamPileupSmokeTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamPileupSmokeTest.new
       begin

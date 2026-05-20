@@ -10,13 +10,13 @@ require "../src/hts"
 out_path = ARGV[0]? || File.expand_path("./out.bcf", __DIR__)
 
 header = HTS::Bcf::Header.new
-header.edit do |h|
-  h.set_version("VCFv4.3")
-  h.add_contig("ref", length: 1000)
-  h.add_info("DP", number: 1, type: :int, description: "Read depth")
-  h.add_format("GT", number: 1, type: :string, description: "Genotype")
-  h.add_format("GQ", number: 1, type: :int, description: "Genotype quality")
-  h.add_sample("sample1")
+header.edit do |edited_header|
+  edited_header.set_version("VCFv4.3")
+  edited_header.add_contig("ref", length: 1000)
+  edited_header.add_info("DP", number: 1, type: :int, description: "Read depth")
+  edited_header.add_format("GT", number: 1, type: :string, description: "Genotype")
+  edited_header.add_format("GQ", number: 1, type: :int, description: "Genotype quality")
+  edited_header.add_sample("sample1")
 end
 
 HTS::Bcf.open(out_path, "wb") do |bcf|

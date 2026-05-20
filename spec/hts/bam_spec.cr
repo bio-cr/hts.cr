@@ -46,7 +46,7 @@ class BamTest
       def {{ft}}
         @{{ft}} ||= HTS::Bam.open(path_{{ft}})
       end
-      
+
       def test_new_{{ft}}
         b = HTS::Bam.new(path_{{ft}})
         (b).should be_a(HTS::Bam)
@@ -278,7 +278,7 @@ class BamTest
 end
 
 describe BamTest do
-  {% for method in BamTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BamTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BamTest.new
       begin

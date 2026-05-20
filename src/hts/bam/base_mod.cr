@@ -42,7 +42,7 @@ module HTS
         end
 
         def to_s(io : IO) : Nil
-          if (p = probability)
+          if p = probability
             io << "#{canonical}->#{code}(#{p.round(3)})"
           else
             io << "#{canonical}->#{code}"
@@ -59,11 +59,11 @@ module HTS
         end
 
         def methylated? : Bool
-          @modifications.any? { |m| m.code == "m" }
+          @modifications.any? { |modification| modification.code == "m" }
         end
 
         def hydroxymethylated? : Bool
-          @modifications.any? { |m| m.code == "h" }
+          @modifications.any? { |modification| modification.code == "h" }
         end
 
         def to_s(io : IO) : Nil
@@ -144,7 +144,7 @@ module HTS
       end
 
       # Iterate over all positions with modifications
-      def each(max_mods : Int32 = 10, &block : Position ->)
+      def each(max_mods : Int32 = 10, & : Position ->)
         check_closed!
         reparse_or_parse!
 

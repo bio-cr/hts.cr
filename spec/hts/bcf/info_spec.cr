@@ -196,7 +196,7 @@ class BcfInfoTest
 end
 
 describe BcfInfoTest do
-  {% for method in BcfInfoTest.methods.select { |method| method.name.stringify.starts_with?("test_") } %}
+  {% for method in BcfInfoTest.methods.select(&.name.stringify.starts_with?("test_")) %}
     it {{ method.name.stringify[5..].gsub(/_/, " ") }} do
       spec_case = BcfInfoTest.new
       begin
