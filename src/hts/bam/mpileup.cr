@@ -2,6 +2,9 @@ module HTS
   class Bam < Hts
     # High-level mpileup iterator over multiple BAM/CRAM inputs.
     # Yields an Array of Pileup::Column (one per input) for each position.
+    # Columns contain the same Pileup::Alignment objects as single-input pileup;
+    # use Alignment#base, #base_qual, and #qname in hot paths before falling back
+    # to Alignment#record.
     class Mpileup
       include Enumerable(Array(HTS::Bam::Pileup::Column))
 

@@ -8,9 +8,13 @@ class BamPileupSmokeTest
       seen = 0
       first_col = nil
       first_query_pos = nil
+      first_base = nil
+      first_base_qual = nil
+      first_qname = nil
       plp = HTS::Bam::Pileup.new(bam, maxcnt: 1000)
-      # Alignment metadata is copied into Crystal values, but record() still
-      # lazily reads the htslib pileup entry and must be called before close.
+      # Alignment metadata and per-position base calls are copied into Crystal
+      # values, but record() still duplicates the htslib record and must be
+      # called before close.
       rec1 = nil
       rec2 = nil
       begin
@@ -21,6 +25,15 @@ class BamPileupSmokeTest
             first_query_pos = aln.query_pos
             rec1 = aln.record
             rec2 = aln.record
+            first_base = aln.base
+            first_base_qual = aln.base_qual
+            first_qname = aln.qname
+
+            unless aln.del? || aln.refskip?
+              (first_base).should eq(rec1.not_nil!.base(aln.query_pos))
+              (first_base_qual).should eq(rec1.not_nil!.base_qual(aln.query_pos))
+              (first_qname).should eq(rec1.not_nil!.qname)
+            end
           end
           seen += 1
           break if seen >= 3
@@ -38,6 +51,8 @@ class BamPileupSmokeTest
       # Copied alignment metadata remains available after close.
       if first_col.not_nil!.depth > 0
         (first_col.not_nil!.alignments.first.query_pos).should eq(first_query_pos)
+        (first_col.not_nil!.alignments.first.base).should eq(first_base)
+        (first_col.not_nil!.alignments.first.base_qual).should eq(first_base_qual)
         (rec2).same?(rec1).should be_true
         (rec1).should be_a(HTS::Bam::Record)
       end

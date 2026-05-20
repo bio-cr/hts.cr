@@ -45,19 +45,12 @@ def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?, thr
           next n_refskip += 1 if aln.refskip?
           next n_del += 1 if aln.del?
 
-          qpos = aln.query_pos
-          seq = aln.record.seq
-
-          if qpos >= 0 && qpos < seq.size
-            case seq[qpos].upcase
-            when 'A' then a += 1
-            when 'C' then c += 1
-            when 'G' then g += 1
-            when 'T' then t += 1
-            else          n += 1
-            end
-          else
-            n += 1
+          case aln.base.try(&.upcase)
+          when 'A' then a += 1
+          when 'C' then c += 1
+          when 'G' then g += 1
+          when 'T' then t += 1
+          else          n += 1
           end
         end
 

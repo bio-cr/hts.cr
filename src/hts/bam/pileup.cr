@@ -43,14 +43,31 @@ module HTS
         @entry : Pointer(LibHTS::BamPileup1T)
         @header : Bam::Header
         @record : Bam::Record?
+        @qname : String?
         getter query_pos : Int32
         getter indel : Int32
         getter bitfields : UInt32
+        getter base : Char?
+        getter base_qual : UInt8?
 
         def initialize(@entry : Pointer(LibHTS::BamPileup1T), @header : Bam::Header)
           @query_pos = @entry.value.qpos
           @indel = @entry.value.indel
           @bitfields = @entry.value.bitfields
+          @base = nil
+          @base_qual = nil
+
+          unless del? || refskip?
+            b = bam1
+            unless b.null?
+              if @query_pos >= 0 && @query_pos < b.value.core.l_qseq
+                seq = LibHTS2.bam_get_seq(b)
+                qual = LibHTS2.bam_get_qual(b)
+                @base = Bam::Record::SEQ_NT16_STR[LibHTS2.bam_seqi(seq, @query_pos)]
+                @base_qual = qual[@query_pos]
+              end
+            end
+          end
         end
 
         # Bitfield helpers
@@ -70,17 +87,34 @@ module HTS
           (@bitfields & 0x8) != 0
         end
 
-        # Lazily duplicates the underlying bam1_t to avoid copying every read.
+        # Query name for the underlying read without duplicating the full record.
+        # Call this before the pileup iterator advances or closes.
+        def qname : String
+          if name = @qname
+            return name
+          end
+          b = bam1
+          raise "null bam1_t" if b.null?
+          @qname = String.new(LibHTS2.bam_get_qname(b))
+        end
+
+        # Lazily duplicates the underlying bam1_t. This is convenient but
+        # relatively expensive in pileup hot paths; prefer direct accessors such
+        # as `base`, `base_qual`, and `qname` when possible.
         # Call this before the pileup iterator advances or closes.
         def record : Bam::Record
           if rec = @record
             return rec
           end
-          b = @entry.value.b
+          b = bam1
           raise "null bam1_t" if b.null?
           dup = LibHTS.bam_dup1(b)
           raise "bam_dup1 failed" if dup.null?
           @record = Bam::Record.new(@header, dup)
+        end
+
+        private def bam1 : LibHTS::Bam1T*
+          @entry.value.b
         end
       end
 
