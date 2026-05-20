@@ -360,14 +360,15 @@ module HTS
     end
 
     private def apply_subset!(record : Bcf::Record) : Nil
-      current_header = @header
-      return unless current_header
-      return unless current_header.subset?
+      output_header = @header
+      return unless output_header
+      return unless output_header.subset?
 
-      rc = LibHTS.bcf_subset(current_header, record, current_header.subset_sample_count, current_header.subset_imap_buffer)
+      source_header = @read_header || output_header
+      rc = LibHTS.bcf_subset(source_header, record, output_header.subset_sample_count, output_header.subset_imap_buffer)
       return if rc >= 0
 
-      raise SubsetError.new("Failed to subset samples #{current_header.subset_samples.inspect} while reading #{@file_name}")
+      raise SubsetError.new("Failed to subset samples #{output_header.subset_samples.inspect} while reading #{@file_name}")
     end
 
     define_getter :chrom

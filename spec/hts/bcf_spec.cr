@@ -26,6 +26,52 @@ class BcfTest
     File.expand_path("../fixtures/test.bcf.csi.tmp", __DIR__)
   end
 
+  private def with_temp_three_sample_bcf(&)
+    file = File.tempfile("three_sample_subset_test", ".bcf")
+    path = file.path || raise "tempfile path is nil"
+    begin
+      file.close
+
+      header = HTS::Bcf::Header.new
+      header.set_version("VCFv4.3")
+      header.append("##contig=<ID=1,length=100>")
+      header.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
+      header.append("##FORMAT=<ID=GQ,Number=1,Type=Integer,Description=\"Genotype quality\">")
+      header.add_sample("A", sync: false)
+      header.add_sample("B", sync: false)
+      header.add_sample("C", sync: true)
+
+      HTS::Bcf.open(path, "wb") do |bcf|
+        bcf.write_header(header)
+
+        record = HTS::Bcf::Record.new(header)
+        record.rid = HTS::LibHTS2.bcf_hdr_name2id(header, "1")
+        record.pos = 9
+
+        rc = HTS::LibHTS.bcf_update_alleles_str(header, record, "A,C")
+        raise "bcf_update_alleles_str failed (rc=#{rc})" if rc < 0
+
+        genotypes = [
+          HTS::LibHTS2.bcf_gt_unphased(0), HTS::LibHTS2.bcf_gt_unphased(0),
+          HTS::LibHTS2.bcf_gt_unphased(0), HTS::LibHTS2.bcf_gt_unphased(1),
+          HTS::LibHTS2.bcf_gt_unphased(1), HTS::LibHTS2.bcf_gt_unphased(1),
+        ]
+        rc = HTS::LibHTS2.bcf_update_genotypes(header, record, genotypes.to_unsafe, genotypes.size)
+        raise "bcf_update_genotypes failed (rc=#{rc})" if rc < 0
+
+        gq = [10, 20, 30]
+        rc = HTS::LibHTS2.bcf_update_format_int32(header, record, "GQ", gq.to_unsafe, gq.size)
+        raise "bcf_update_format_int32 failed for GQ (rc=#{rc})" if rc < 0
+
+        bcf << record
+      end
+
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def bcf
     @bcf ||= HTS::Bcf.new(test_bcf_path)
   end
@@ -110,6 +156,33 @@ class BcfTest
       (subset_bcf.samples).should eq(["B"])
       (subset_bcf.nsamples).should eq(1)
       (subset_bcf.first.format.get_string("GT")).should eq(["0/1"])
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
+  def test_subset_records_use_source_header_mapping
+    with_temp_three_sample_bcf do |path|
+      subset_bcf = HTS::Bcf.new(path, subset: ["C", "A"])
+      record = subset_bcf.first
+
+      (subset_bcf.samples).should eq(["C", "A"])
+      (subset_bcf.nsamples).should eq(2)
+      (record.format.get_string("GT")).should eq(["1/1", "0/0"])
+      (record.format.get_int("GQ")).should eq([30, 10])
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
+  def test_subset_records_use_source_header_mapping_with_copy
+    with_temp_three_sample_bcf do |path|
+      subset_bcf = HTS::Bcf.new(path, subset: ["B", "A"])
+      record = subset_bcf.to_a.first
+
+      (subset_bcf.samples).should eq(["B", "A"])
+      (record.format.get_string("GT")).should eq(["0/1", "0/0"])
+      (record.format.get_int("GQ")).should eq([20, 10])
     ensure
       subset_bcf.try &.close
     end
