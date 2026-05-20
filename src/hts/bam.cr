@@ -1,5 +1,6 @@
 require "./libhts"
 require "./version"
+require "./error"
 
 require "./hts"
 require "./bam/header"
@@ -347,13 +348,16 @@ module HTS
 
       bam1 = LibHTS.bam_init1
       begin
-        while LibHTS.sam_read1(@hts_file, header, bam1) != -1
+        ret = LibHTS.sam_read1(@hts_file, header, bam1)
+        while ret >= 0
           record = Record.new(header, bam1)
           # Ownership moved to Record; keep ensure from destroying it.
           bam1 = Pointer(LibHTS::Bam1T).null
           yield record
           bam1 = LibHTS.bam_init1
+          ret = LibHTS.sam_read1(@hts_file, header, bam1)
         end
+        raise HTS::Error.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
       ensure
         LibHTS.bam_destroy1(bam1) unless bam1.null?
       end
@@ -364,9 +368,12 @@ module HTS
 
       bam1 = LibHTS.bam_init1
       record = Record.new(header, bam1)
-      while LibHTS.sam_read1(@hts_file, header, bam1) != -1
+      ret = LibHTS.sam_read1(@hts_file, header, bam1)
+      while ret >= 0
         yield record
+        ret = LibHTS.sam_read1(@hts_file, header, bam1)
       end
+      raise HTS::Error.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
     end
 
     private def collect_aux_values(& : Record -> T) : Array(T) forall T

@@ -211,14 +211,17 @@ module HTS
 
       bcf1 = LibHTS.bcf_init
       begin
-        while LibHTS.bcf_read(@hts_file, header_for_reading, bcf1) != -1
+        ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
+        while ret >= 0
           record = Bcf::Record.new(header, bcf1)
           # Ownership moved to Record; keep ensure from destroying it.
           bcf1 = Pointer(LibHTS::Bcf1T).null
           apply_subset!(record)
           yield record
           bcf1 = LibHTS.bcf_init
+          ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
         end
+        raise Error.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
       ensure
         LibHTS.bcf_destroy(bcf1) unless bcf1.null?
       end
@@ -228,10 +231,13 @@ module HTS
       check_closed
       bcf1 = LibHTS.bcf_init
       record = Bcf::Record.new(header, bcf1)
-      while LibHTS.bcf_read(@hts_file, header_for_reading, bcf1) != -1
+      ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
+      while ret >= 0
         apply_subset!(record)
         yield record
+        ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
       end
+      raise Error.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
     end
 
     def query(region : String, copy = false, &)
