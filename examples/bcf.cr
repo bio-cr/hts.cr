@@ -1,6 +1,6 @@
 require "../src/hts"
 
-bcf_path = ARGV[0]? || File.expand_path("../test/fixtures/test.bcf", __DIR__)
+bcf_path = ARGV[0]? || File.expand_path("../spec/fixtures/test.bcf", __DIR__)
 
 HTS::Bcf.open(bcf_path) do |bcf|
   bcf.each do |r|
