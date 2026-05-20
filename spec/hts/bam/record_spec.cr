@@ -297,7 +297,6 @@ class BamRecordTest
     (aln.aux("MC")).should eq("70M")
     (aln.aux("AS")).should eq(0)
     (aln.aux("XS")).should eq(0)
-    (aln.aux("Tanuki")).should be_nil
   end
 
   def test_aux_each
@@ -319,7 +318,6 @@ class BamRecordTest
     (aln.aux["MC"]).should eq("70M")
     (aln.aux["AS"]).should eq(0)
     (aln.aux["XS"]).should eq(0)
-    (aln.aux["Tanuki"]).should be_nil
   end
 
   def test_aux_type_specific_methods
@@ -327,8 +325,6 @@ class BamRecordTest
     (aln.aux.get_int("AS")).should eq(0)
     (aln.aux.get_int("XS")).should eq(0)
     (aln.aux.get_string("MC")).should eq("70M")
-    (aln.aux.get_int("Tanuki")).should be_nil
-    (aln.aux.get_string("Tanuki")).should be_nil
   end
 
   def test_aux_iteration_consistency
@@ -388,13 +384,24 @@ class BamRecordTest
     (aln.aux_string("MC")).should eq("70M")
   end
 
-  def test_aux_type_specific_methods_return_nil_for_missing_tag
+  def test_aux_type_specific_methods_return_nil_for_missing_valid_tag
     aln = aln1
 
-    (aln.aux_int("Tanuki")).should be_nil
-    (aln.aux_float("Tanuki")).should be_nil
-    (aln.aux_string("Tanuki")).should be_nil
-    (aln.aux_char("Tanuki")).should be_nil
+    (aln.aux_int("ZZ")).should be_nil
+    (aln.aux_float("ZZ")).should be_nil
+    (aln.aux_string("ZZ")).should be_nil
+    (aln.aux_char("ZZ")).should be_nil
+  end
+
+  def test_aux_readers_raise_for_invalid_tag
+    aln = aln1
+
+    ["N", "LONG", "1A", "A_", "あ"].each do |tag|
+      expect_raises(ArgumentError) { aln.aux(tag) }
+      expect_raises(ArgumentError) { aln.aux[tag] }
+      expect_raises(ArgumentError) { aln.aux.get_int(tag) }
+      expect_raises(ArgumentError) { aln.aux.get_string(tag) }
+    end
   end
 
   def test_aux_to_s
@@ -457,6 +464,9 @@ class BamRecordTest
     aln = aln1
 
     expect_raises(ArgumentError) { aln.aux.update_int("TOO", 1) }
+    expect_raises(ArgumentError) { aln.aux.update_int("1A", 1) }
+    expect_raises(ArgumentError) { aln.aux.update_int("A_", 1) }
+    expect_raises(ArgumentError) { aln.aux.update_int("あ", 1) }
     expect_raises(ArgumentError) { aln.aux.update_hex("XH", "XYZ") }
     expect_raises(ArgumentError) { aln.aux.update_hex("XH", "ABC") }
     expect_raises(ArgumentError) { aln.aux.update_int8("X1", 128) }

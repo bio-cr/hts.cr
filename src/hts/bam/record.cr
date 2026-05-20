@@ -293,8 +293,7 @@ module HTS
       end
 
       private def get_aux_pointer(str)
-        b = str.bytes
-        str2 = StaticArray(UInt8, 2).new { |i| b[i] }
+        str2 = Bam.aux_tag_to_static_array(str)
         LibHTS.bam_aux_get(@bam1, str2)
       end
 
