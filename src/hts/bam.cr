@@ -508,7 +508,7 @@ module HTS
         bam1 = LibHTS.bam_init1
         begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          while slen > 0
+          while slen >= 0
             record = Record.new(header, bam1)
             # Ownership moved to Record; keep ensure from destroying it.
             bam1 = Pointer(LibHTS::Bam1T).null
@@ -516,6 +516,7 @@ module HTS
             bam1 = LibHTS.bam_init1
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
           end
+          raise HTS::Error.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
         ensure
           LibHTS.bam_destroy1(bam1) unless bam1.null?
         end
@@ -523,10 +524,11 @@ module HTS
         bam1 = LibHTS.bam_init1
         record = Record.new(header, bam1)
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-        while slen > 0
+        while slen >= 0
           yield record
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         end
+        raise HTS::Error.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
       end
     end
   end

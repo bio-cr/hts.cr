@@ -332,6 +332,7 @@ module HTS
             bcf1 = LibHTS.bcf_init
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
           end
+          raise Error.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
         ensure
           LibHTS.bcf_destroy(bcf1) unless bcf1.null?
         end
@@ -344,6 +345,7 @@ module HTS
           yield record
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         end
+        raise Error.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
       end
     end
 
