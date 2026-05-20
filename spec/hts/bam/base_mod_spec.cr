@@ -254,6 +254,39 @@ describe BamBaseModChebiIntegrationTest do
 end
 
 describe HTS::Bam::BaseMod do
+  it "returns all modifications when a position has more modifications than the buffer" do
+    file = File.tempfile("base_mod_many_mods", ".sam")
+    path = file.path || raise "tempfile path is nil"
+    qualities = (11..21).to_a
+    codes = "abcdefghijk"
+
+    begin
+      file << "@HD\tVN:1.6\tSO:unknown\n"
+      file << "@SQ\tSN:ref\tLN:1000\n"
+      file << "r1\t0\tref\t1\t60\t1M\t*\t0\t0\tC\t*\tMM:Z:C+#{codes},0;\tML:B:C,#{qualities.join(",")}\n"
+      file.close
+
+      HTS::Bam.open(path) do |bam|
+        record = bam.first? || raise "No record in SAM"
+        base_mod = HTS::Bam::BaseMod.new(record)
+
+        at_pos = base_mod.at_pos(0, max_mods: 10) || raise "Missing base modifications at position 0"
+        (at_pos.position).should eq(0)
+        (at_pos.modifications.map(&.code)).should eq(codes.chars.map(&.to_s))
+        (at_pos.modifications.map(&.qual)).should eq(qualities)
+
+        positions = base_mod.to_a
+        (positions.size).should eq(1)
+        (positions[0].position).should eq(0)
+        (positions[0].modifications.map(&.code)).should eq(codes.chars.map(&.to_s))
+        (positions[0].modifications.map(&.qual)).should eq(qualities)
+      end
+    ensure
+      file.close unless file.closed?
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   it "raises when queried after close" do
     bam = HTS::Bam.open(File.expand_path("../../fixtures/moo.bam", __DIR__))
     record = bam.first? || raise "No record in BAM"

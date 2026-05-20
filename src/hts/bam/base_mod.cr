@@ -138,9 +138,7 @@ module HTS
         return nil if ret <= 0
         # If the buffer was too small, re-fetch with the exact needed size to avoid truncation
         if ret > max_mods
-          ensure_buffer_capacity(ret)
-          mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
-          ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, ret)
+          return fetch_position_from_fresh_state(position, ret)
         end
         build_position(position, mods_ptr, ret)
       end
@@ -157,11 +155,7 @@ module HTS
           break if ret <= 0
           # If more mods exist than the buffer size, fetch the full set for this position
           if ret > max_mods
-            ensure_buffer_capacity(ret)
-            mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
-            # Use at_qpos API to re-read all modifications at this query position
-            full = LibHTS.bam_mods_at_qpos(@record, pos, @state, mods_ptr, ret)
-            yield build_position(pos, mods_ptr, full)
+            yield fetch_position_from_fresh_state(pos, ret)
           else
             yield build_position(pos, mods_ptr, ret)
           end
@@ -249,6 +243,29 @@ module HTS
           Modification.new(m.modified_base, m.canonical_base, m.strand, m.qual)
         end
         Position.new(position, modifications)
+      end
+
+      private def fetch_position_from_fresh_state(position : Int32, max_mods : Int32) : Position
+        state = LibHTS.hts_base_mod_state_alloc
+        raise Error.new("Failed to allocate hts_base_mod_state") if state.null?
+
+        begin
+          ret = LibHTS.bam_parse_basemod2(@record, state, HTS_MOD_REPORT_UNCHECKED)
+          raise Error.new("Failed to parse base modifications") if ret < 0
+
+          ensure_buffer_capacity(max_mods)
+          mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
+          ret = LibHTS.bam_mods_at_qpos(@record, position, state, mods_ptr, max_mods)
+          raise Error.new("Failed to read base modifications at query position #{position}") if ret < 0
+
+          if ret > max_mods
+            return fetch_position_from_fresh_state(position, ret)
+          end
+
+          build_position(position, mods_ptr, ret)
+        ensure
+          LibHTS.hts_base_mod_state_free(state) unless state.null?
+        end
       end
 
       # Ensure the reusable buffer has at least `max_mods` capacity
