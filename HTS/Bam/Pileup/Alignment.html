@@ -415,7 +415,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L42" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L42" target="_blank">
         hts/bam/pileup.cr
       </a>
     
@@ -461,6 +461,16 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#base%3AChar%7CNil-instance-method" class="signature"><strong>#base</strong> : Char | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#base_qual%3AUInt8%7CNil-instance-method" class="signature"><strong>#base_qual</strong> : UInt8 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#bitfields%3AUInt32-instance-method" class="signature"><strong>#bitfields</strong> : UInt32</a>
         
       </li>
@@ -483,6 +493,13 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#qname%3AString-instance-method" class="signature"><strong>#qname</strong> : String</a>
+        
+          <div class="summary"><p>Query name for the underlying read without duplicating the full record.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#query_pos%3AInt32-instance-method" class="signature"><strong>#query_pos</strong> : Int32</a>
         
       </li>
@@ -490,7 +507,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <li class="entry-summary">
         <a href="#record%3ABam%3A%3ARecord-instance-method" class="signature"><strong>#record</strong> : Bam::Record</a>
         
-          <div class="summary"><p>Lazily duplicates the underlying bam1_t to avoid copying every read.</p></div>
+          <div class="summary"><p>Lazily duplicates the underlying bam1_t.</p></div>
         
       </li>
     
@@ -559,7 +576,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -580,6 +597,38 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="base:Char|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>base</strong> : Char | Nil
+
+        <a class="method-permalink" href="#base%3AChar%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L50" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="base_qual:UInt8|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>base_qual</strong> : UInt8 | Nil
+
+        <a class="method-permalink" href="#base_qual%3AUInt8%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L51" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="bitfields:UInt32-instance-method">
       <div class="signature">
         
@@ -591,7 +640,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L49" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -612,7 +661,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L57" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -628,7 +677,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L61" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L78" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -644,7 +693,29 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="qname:String-instance-method">
+      <div class="signature">
+        
+        def <strong>qname</strong> : String
+
+        <a class="method-permalink" href="#qname%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Query name for the underlying read without duplicating the full record.
+Call this before the pileup iterator advances or closes.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L92" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -660,7 +731,7 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -675,14 +746,16 @@ Small fields are copied so they remain valid after the iterator moves on.</p>
       
         <div class="doc">
           
-          <p>Lazily duplicates the underlying bam1_t to avoid copying every read.
+          <p>Lazily duplicates the underlying bam1_t. This is convenient but
+relatively expensive in pileup hot paths; prefer direct accessors such
+as <code><a href="../../../HTS/Bam/Pileup/Alignment.html#base%3AChar%7CNil-instance-method">#base</a></code>, <code><a href="../../../HTS/Bam/Pileup/Alignment.html#base_qual%3AUInt8%7CNil-instance-method">#base_qual</a></code>, and <code><a href="../../../HTS/Bam/Pileup/Alignment.html#qname%3AString-instance-method">#qname</a></code> when possible.
 Call this before the pileup iterator advances or closes.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L75" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L105" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -698,7 +771,7 @@ Call this before the pileup iterator advances or closes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L86" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -714,7 +787,7 @@ Call this before the pileup iterator advances or closes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/68012272a34bbeea074201555d7b452f147ba1b6/src/hts/bam/pileup.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/a87157aca2c8eb1c326e8fd758837e2d868e3dc1/src/hts/bam/pileup.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>
