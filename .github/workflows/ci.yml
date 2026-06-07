@@ -47,10 +47,6 @@ jobs:
       - name: Format check
         if: matrix.os != 'windows'
         run: crystal tool format --check
-      - name: Format check (MinGW64)
-        if: matrix.os == 'windows'
-        shell: msys2 {0}
-        run: crystal tool format --check
       - name: Examples compile check
         if: matrix.os != 'windows'
         run: |
