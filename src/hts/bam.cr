@@ -54,49 +54,56 @@ module HTS
       @file_name = file_name.to_s
       @nthreads = threads
       @idx = LibHTS::HtsIdxT.null
+      @hts_file = Pointer(LibHTS::HtsFile).null
+      @header = uninitialized Bam::Header
 
-      # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
+      begin
+        # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @mode = self.class.normalize_mode(@mode)
-      index_name = self.class.default_index_name(@file_name, index)
+        @mode = self.class.normalize_mode(@mode)
+        index_name = self.class.default_index_name(@file_name, index)
 
-      self.class.build_index(file_name, index_name, 0, threads, false) if build_index && @mode[0] != 'w'
+        self.class.build_index(file_name, index_name, 0, threads, false) if build_index && @mode[0] != 'w'
 
-      @hts_file = LibHTS.hts_open(@file_name, @mode)
+        @hts_file = LibHTS.hts_open(@file_name, @mode)
 
-      raise "Failed to open file #{@file_name}" if @hts_file.null?
+        raise "Failed to open file #{@file_name}" if @hts_file.null?
 
-      fai = self.class.infer_cram_reference(@file_name, fai)
+        fai = self.class.infer_cram_reference(@file_name, fai)
 
-      if fai != ""
-        r = LibHTS.hts_set_fai_filename(@hts_file, fai)
-        r < 0 && raise "Failed to load fasta index: #{fai}"
-      end
-
-      set_threads(threads) if threads > 0
-
-      if @mode[0] == 'w'
-        # Defer index building until after close
-        if build_index
-          @auto_index_on_close = true
-          @index_name_on_close = index_name
+        if fai != ""
+          r = LibHTS.hts_set_fai_filename(@hts_file, fai)
+          r < 0 && raise "Failed to load fasta index: #{fai}"
         end
-        @idx = LibHTS::HtsIdxT.null
-        return
+
+        set_threads(threads) if threads > 0
+
+        if @mode[0] == 'w'
+          # Defer index building until after close
+          if build_index
+            @auto_index_on_close = true
+            @index_name_on_close = index_name
+          end
+          @idx = LibHTS::HtsIdxT.null
+          return
+        end
+
+        @header = Bam::Header.new(@hts_file)
+        @header_written = true
+
+        # Set start position to 0 for CRAM files
+        flags = @hts_file.value.flags
+        if flags & "1000".to_i(2) != 0 # cram
+          @start_position = 0_i64
+        else
+          @start_position = tell
+        end
+
+        @idx = load_index(index)
+      rescue ex
+        close rescue nil
+        raise ex
       end
-
-      @header = Bam::Header.new(@hts_file)
-      @header_written = true
-
-      # Set start position to 0 for CRAM files
-      flags = @hts_file.value.flags
-      if flags & "1000".to_i(2) != 0 # cram
-        @start_position = 0_i64
-      else
-        @start_position = tell
-      end
-
-      @idx = load_index(index)
     end
 
     protected def self.normalize_mode(mode : String) : String

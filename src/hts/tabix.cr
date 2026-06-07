@@ -34,17 +34,23 @@ module HTS
     def initialize(file_name : Path | String, @mode = "r", index = "", threads = 0, build_index = false)
       @file_name = file_name.to_s
       @idx = Pointer(LibHTS::TbxT).null
+      @hts_file = Pointer(LibHTS::HtsFile).null
 
-      # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
+      begin
+        # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
-      raise "Failed to open file #{@file_name}" if @hts_file.null?
+        @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
+        raise "Failed to open file #{@file_name}" if @hts_file.null?
 
-      set_threads(threads) if threads > 0
+        set_threads(threads) if threads > 0
 
-      build_index(index) if build_index
-      @idx = load_index(index)
-      @start_position = tell
+        build_index(index) if build_index
+        @idx = load_index(index)
+        @start_position = tell
+      rescue ex
+        close rescue nil
+        raise ex
+      end
     end
 
     # Build a tabix index for *file_name* on disk. Uses the VCF preset by default.

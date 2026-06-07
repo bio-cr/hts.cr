@@ -61,39 +61,45 @@ module HTS
       @idx = LibHTS::HtsIdxT.null
       @header = nil
       @read_header = nil
+      @hts_file = Pointer(LibHTS::HtsFile).null
 
-      # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
+      begin
+        # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @hts_file = LibHTS.hts_open(@file_name, @mode)
+        @hts_file = LibHTS.hts_open(@file_name, @mode)
 
-      raise OpenError.new("Failed to open file #{@file_name}") if @hts_file.null?
+        raise OpenError.new("Failed to open file #{@file_name}") if @hts_file.null?
 
-      set_threads(threads) if threads > 0
+        set_threads(threads) if threads > 0
 
-      if subset && @mode[0] == 'w'
-        raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
-      end
-
-      if @mode[0] == 'w'
-        # Defer index building until after close
-        if build_index
-          @auto_index_on_close = true
-          @index_name_on_close = index
+        if subset && @mode[0] == 'w'
+          raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
         end
-        return
+
+        if @mode[0] == 'w'
+          # Defer index building until after close
+          if build_index
+            @auto_index_on_close = true
+            @index_name_on_close = index
+          end
+          return
+        end
+
+        @read_header = Bcf::Header.new(@hts_file)
+        if source_header = @read_header
+          @header = subset ? source_header.subset(subset) : source_header
+        end
+        @header_written = true
+
+        build_index(index) if build_index
+
+        @idx = load_index(index)
+
+        @start_position = tell
+      rescue ex
+        close rescue nil
+        raise ex
       end
-
-      @read_header = Bcf::Header.new(@hts_file)
-      if source_header = @read_header
-        @header = subset ? source_header.subset(subset) : source_header
-      end
-      @header_written = true
-
-      build_index(index) if build_index
-
-      @idx = load_index(index)
-
-      @start_position = tell
     end
 
     # Build index for an on-disk file (callable even after close)

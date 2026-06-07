@@ -147,57 +147,64 @@ module HTS
       # @param region [String, nil] Optional region string (e.g., "chr1:1000-2000", requires index)
       # @param maxcnt [Int32, nil] Max per-position depth (capped)
       def initialize(@bam : Bam, region : String? = nil, @maxcnt : Int32? = nil)
-        @hdr = @bam.header
+        @hdr = uninitialized Bam::Header
 
-        # Build region iterator if specified
-        itr_ptr = Pointer(LibHTS::HtsItrT).null
-        if region
-          # Ensure we have an index; if not accessible, load a temporary one
-          raise "Index file is required to use region pileup" unless @bam.index_loaded?
+        begin
+          @hdr = @bam.header
 
-          # Load an index handle we can pass to htslib; keep it to destroy later
-          idx_ptr = @bam.load_index
-          raise "Index not available" if idx_ptr.null?
-          @idx_local = idx_ptr
+          # Build region iterator if specified
+          itr_ptr = Pointer(LibHTS::HtsItrT).null
+          if region
+            # Ensure we have an index; if not accessible, load a temporary one
+            raise "Index file is required to use region pileup" unless @bam.index_loaded?
 
-          # Create iterator from region string (1-based inclusive SAM-style)
-          itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)
-          raise "Failed to query region: #{region}" if itr_ptr.null?
-          @itr = itr_ptr
-        end
+            # Load an index handle we can pass to htslib; keep it to destroy later
+            idx_ptr = @bam.load_index
+            raise "Index not available" if idx_ptr.null?
+            @idx_local = idx_ptr
 
-        # Prepare callback user data block
-        udata = Pointer(InputData).malloc(1)
-        @udata = udata
-        udata.value = InputData.new(
-          @bam.to_unsafe,
-          @hdr.to_unsafe,
-          itr_ptr
-        )
-
-        # Read function compatible with bam_plp_init
-        # Expected return values:
-        #   0 on success, -1 on EOF, < -1 on non-recoverable errors
-        cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
-          id = data.as(Pointer(InputData)).value
-          if id.itr.null?
-            # Whole-file path: sam_read1 returns -1 on EOF or error (no finer error code)
-            r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
-            r >= 0 ? 0 : -1
-          else
-            # Region iterator path: sam_itr_next returns < -1 on error, -1 on EOF
-            r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
-            r >= 0 ? 0 : r
+            # Create iterator from region string (1-based inclusive SAM-style)
+            itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)
+            raise "Failed to query region: #{region}" if itr_ptr.null?
+            @itr = itr_ptr
           end
-        }
-        @cb = cb
 
-        # Create pileup iterator
-        plp = LibHTS.bam_plp_init(cb, udata.as(Void*))
-        raise "bam_plp_init failed" if plp.nil? || plp.as(Void*).null?
-        @plp = plp
-        if cnt = @maxcnt
-          LibHTS.bam_plp_set_maxcnt(plp, cnt)
+          # Prepare callback user data block
+          udata = Pointer(InputData).malloc(1)
+          @udata = udata
+          udata.value = InputData.new(
+            @bam.to_unsafe,
+            @hdr.to_unsafe,
+            itr_ptr
+          )
+
+          # Read function compatible with bam_plp_init
+          # Expected return values:
+          #   0 on success, -1 on EOF, < -1 on non-recoverable errors
+          cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
+            id = data.as(Pointer(InputData)).value
+            if id.itr.null?
+              # Whole-file path: sam_read1 returns -1 on EOF or error (no finer error code)
+              r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
+              r >= 0 ? 0 : -1
+            else
+              # Region iterator path: sam_itr_next returns < -1 on error, -1 on EOF
+              r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
+              r >= 0 ? 0 : r
+            end
+          }
+          @cb = cb
+
+          # Create pileup iterator
+          plp = LibHTS.bam_plp_init(cb, udata.as(Void*))
+          raise "bam_plp_init failed" if plp.nil? || plp.as(Void*).null?
+          @plp = plp
+          if cnt = @maxcnt
+            LibHTS.bam_plp_set_maxcnt(plp, cnt)
+          end
+        rescue ex
+          close rescue nil
+          raise ex
         end
       end
 

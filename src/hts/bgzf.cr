@@ -24,16 +24,22 @@ module HTS
 
     def initialize(@file_name : Path | String, @mode = "r", threads = 0)
       @file_name = file_name.to_s || ""
+      @hts_file = Pointer(LibHTS::HtsFile).null
 
-      # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
+      begin
+        # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
+        @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
 
-      raise "Failed to open file #{@file_name}" if @hts_file.null?
+        raise "Failed to open file #{@file_name}" if @hts_file.null?
 
-      set_threads(threads) if threads > 0
+        set_threads(threads) if threads > 0
 
-      @start_position = tell
+        @start_position = tell
+      rescue ex
+        close rescue nil
+        raise ex
+      end
     end
 
     # Standard IO methods
