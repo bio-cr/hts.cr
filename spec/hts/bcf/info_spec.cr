@@ -96,7 +96,7 @@ class BcfInfoTest
   def test_bracket_access
     (info["DP"]).should eq([31])
     (info["VDB"]).should eq([0.673439_f32])
-    (info["INDEL"]).should eq(false)
+    (info["INDEL"]).should be_false
 
     tag = "DP"
     (info[tag]).should eq([31])
@@ -120,7 +120,7 @@ class BcfInfoTest
         (record_info.get_int("ABSI")).should be_nil
         (record_info.get_float("ABSF")).should be_nil
         (record_info.get_string("ABSS")).should be_nil
-        (record_info.get_flag("FLAG")).should eq(false)
+        (record_info.get_flag("FLAG")).should be_false
       end
     end
   end
@@ -161,7 +161,7 @@ class BcfInfoTest
         (info.get_string("WSTR")).should eq("hello")
 
         info.update_flag("WFLAG", true)
-        (info.get_flag("WFLAG")).should eq(true)
+        (info.get_flag("WFLAG")).should be_true
 
         info.update_flag("WFLAG", false)
         ([true, false]).should contain(info.get_flag("WFLAG"))
@@ -187,9 +187,9 @@ class BcfInfoTest
         info.update_string("WSTR", "bye")
         (info.get_string("WSTR")).should eq("bye")
 
-        (info.delete("WSTR")).should eq(true)
+        (info.delete("WSTR")).should be_true
         (info.get_string("WSTR")).should be_nil
-        (info.delete("NO_SUCH_TAG")).should eq(false)
+        (info.delete("NO_SUCH_TAG")).should be_false
       end
     end
   end

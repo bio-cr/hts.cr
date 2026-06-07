@@ -114,7 +114,7 @@ end
 rows = stats.values.sort_by! { |stat| {-stat.reads, stat.tag, stat.type} }
 
 if json_output
-  puts JSON.build(indent: "  ") { |json|
+  json_text = JSON.build(indent: "  ") do |json|
     json.object do
       json.field "total_reads", total_reads
       json.field "tags" do
@@ -132,7 +132,8 @@ if json_output
         end
       end
     end
-  }
+  end
+  puts json_text
 else
   puts %w[tag type reads percent distinct examples].join('\t')
   rows.each do |row|

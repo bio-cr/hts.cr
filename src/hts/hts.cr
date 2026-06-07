@@ -2,7 +2,7 @@ require "./libhts"
 
 module HTS
   class Hts
-    @start_position : (Int64 | Nil)
+    @start_position : Int64?
 
     macro define_getter(name)
       def {{ name.id }}
@@ -65,6 +65,11 @@ module HTS
       @hts_file.null?
     end
 
+    def threads=(n)
+      set_threads(n)
+    end
+
+    # ameba:disable Naming/AccessorMethodName
     def set_threads(n)
       if n > 0
         r = LibHTS.hts_set_threads(@hts_file, n)
@@ -72,6 +77,8 @@ module HTS
         @nthreads = n
       end
     end
+
+    # ameba:enable Naming/AccessorMethodName
 
     private def check_closed
       raise IO::Error.new("Closed stream") if closed?

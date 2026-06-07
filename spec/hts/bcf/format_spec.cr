@@ -313,8 +313,8 @@ class BcfFormatTest
           record = input_bcf.first
           format = record.format
 
-          (format.delete("ST")).should eq(true)
-          (format.delete("ST")).should eq(false)
+          (format.delete("ST")).should be_true
+          (format.delete("ST")).should be_false
 
           HTS::Bcf.open(output_path, "w") do |output_bcf|
             output_bcf.write_header(input_bcf.header)

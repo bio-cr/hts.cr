@@ -52,16 +52,24 @@ module HTS
         @bcf_hdr
       end
 
-      def get_version
+      def version
         String.new LibHTS.bcf_hdr_get_version(@bcf_hdr)
       end
 
-      def set_version(version)
+      def version=(version)
         rc = LibHTS.bcf_hdr_set_version(@bcf_hdr, version)
         raise "Failed to set VCF header version" if rc < 0
         mark_sync_needed!
         sync_if_needed!
         self
+      end
+
+      def get_version
+        version
+      end
+
+      def set_version(version)
+        self.version = version
       end
 
       def nsamples
@@ -424,7 +432,7 @@ module HTS
 
       private def tag_type(tag : String, header_line_type : Int32)
         id = LibHTS.bcf_hdr_id2int(@bcf_hdr, LibHTS2::BCF_DT_ID, tag)
-        return nil if id < 0
+        return if id < 0
 
         case LibHTS2.bcf_hdr_id2type(self, header_line_type, id)
         when LibHTS2::BCF_HT_FLAG

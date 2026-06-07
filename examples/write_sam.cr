@@ -11,9 +11,9 @@ out_path = ARGV[0]? || File.expand_path("./out.sam", __DIR__)
 
 # Build a minimal SAM header
 header_text = <<-SAM
-@HD\tVN:1.6\tSO:unknown
-@SQ\tSN:ref\tLN:1000
-SAM
+  @HD\tVN:1.6\tSO:unknown
+  @SQ\tSN:ref\tLN:1000
+  SAM
 
 header = HTS::Bam::Header.parse(header_text)
 

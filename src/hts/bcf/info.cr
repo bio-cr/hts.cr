@@ -4,8 +4,10 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
+      alias InfoValue = (Array(Int32) | Array(Float32) | String | Bool)?
+
       # Character INFO fields are routed through the string path.
-      def [](tag : String) : Array(Int32) | Array(Float32) | String | Bool | Nil
+      def [](tag : String) : InfoValue
         case @record.header.info_type(tag)
         when :flag
           get_flag(tag)
@@ -25,7 +27,7 @@ module HTS
         r = @record
         rc = LibHTS2.bcf_get_info_int32(hdr, r, tag, pointerof(dst), pointerof(ndst))
         rc = normalize_info_rc(rc, tag, "integer")
-        return nil unless rc
+        return unless rc
         begin
           res = dst.as(Pointer(Int32))
           Array(Int32).new(rc) { |i| res[i] }
@@ -41,7 +43,7 @@ module HTS
         r = @record
         rc = LibHTS2.bcf_get_info_int64(hdr, r, tag, pointerof(dst), pointerof(ndst))
         rc = normalize_info_rc(rc, tag, "integer")
-        return nil unless rc
+        return unless rc
         begin
           res = dst.as(Pointer(Int64))
           Array(Int64).new(rc) { |i| res[i] }
@@ -52,13 +54,13 @@ module HTS
 
       def get_int_opt(tag) : Array(Int32?)?
         ints = get_int(tag)
-        return nil unless ints
+        return unless ints
         ints.map { |v| LibHTS2.bcf_int32_is_missing(v) != 0 ? nil : v }
       end
 
       def get_int64_opt(tag) : Array(Int64?)?
         ints = get_int64(tag)
-        return nil unless ints
+        return unless ints
         ints.map { |v| LibHTS2.bcf_int64_is_missing(v) != 0 ? nil : v }
       end
 
@@ -69,7 +71,7 @@ module HTS
         r = @record
         rc = LibHTS2.bcf_get_info_float(hdr, r, tag, pointerof(dst), pointerof(ndst))
         rc = normalize_info_rc(rc, tag, "float")
-        return nil unless rc
+        return unless rc
         begin
           res = dst.as(Pointer(Float32))
           Array(Float32).new(rc) { |i| res[i] }
@@ -80,7 +82,7 @@ module HTS
 
       def get_float_opt(tag) : Array(Float32?)?
         floats = get_float(tag)
-        return nil unless floats
+        return unless floats
         floats.map { |v| LibHTS2.bcf_float_is_missing(v) != 0 ? nil : v }
       end
 
@@ -91,7 +93,7 @@ module HTS
         r = @record
         rc = LibHTS2.bcf_get_info_string(hdr, r, tag, pointerof(dst), pointerof(ndst))
         rc = normalize_info_rc(rc, tag, "string")
-        return nil unless rc
+        return unless rc
         begin
           String.new dst.as(Pointer(UInt8))
         ensure

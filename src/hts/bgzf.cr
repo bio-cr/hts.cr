@@ -41,10 +41,10 @@ module HTS
     def getc : Char?
       check_closed
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
-      return nil if bgzf_fp.null?
+      return if bgzf_fp.null?
 
       result = LibHTS.bgzf_getc(bgzf_fp)
-      return nil if result < 0
+      return if result < 0
       result.chr
     end
 
@@ -167,9 +167,16 @@ module HTS
       LibHTS.bgzf_compression(bgzf_fp)
     end
 
-    def is_bgzf? : Bool
+    def bgzf? : Bool
       !LibHTS.hts_get_bgzfp(@hts_file).null?
     end
+
+    # ameba:disable Naming/PredicateName
+    def is_bgzf? : Bool
+      bgzf?
+    end
+
+    # ameba:enable Naming/PredicateName
 
     # Override seek and tell for BGZF-specific behavior
     def seek(offset)

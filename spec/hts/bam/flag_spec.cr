@@ -34,9 +34,9 @@ class BamFlagTest
   end
 
   {% for name in BAM_FLAG_METHODS %}
-    def test_{{name.id}}
-      (flag.{{name.id}}).should eq(true)
-      (flag_zero.{{name.id}}).should eq(false)
+    def test_{{ name.id }}
+      (flag.{{ name.id }}).should eq(true)
+      (flag_zero.{{ name.id }}).should eq(false)
     end
   {% end %}
 

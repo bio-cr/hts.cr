@@ -149,7 +149,7 @@ class BcfHeaderTest
     (h.target_names).should eq(["chr1"])
     (h.to_s.includes?("##contig=<ID=chr1,length=1000,assembly=GRCh38>")).should be_true
 
-    (h.remove_contig("chr1")).should eq(true)
+    (h.remove_contig("chr1")).should be_true
     (h.target_names).should eq([] of String)
   end
 
@@ -166,8 +166,8 @@ class BcfHeaderTest
     (h.to_s.includes?("##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Read depth\">")).should be_true
     (h.to_s.includes?("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"GT field\">")).should be_true
 
-    (h.remove_info("DP")).should eq(true)
-    (h.remove_format("GT")).should eq(true)
+    (h.remove_info("DP")).should be_true
+    (h.remove_format("GT")).should be_true
     (h.to_s.includes?("##INFO=<ID=DP")).should be_false
     (h.to_s.includes?("##FORMAT=<ID=GT")).should be_false
   end
@@ -180,7 +180,7 @@ class BcfHeaderTest
     (h.to_s.includes?("##source=myCaller")).should be_true
     (h.to_s.includes?("##FILTER=<ID=LowQual,Description=\"Low quality\">")).should be_true
 
-    (h.remove_filter("LowQual")).should eq(true)
+    (h.remove_filter("LowQual")).should be_true
     (h.to_s.includes?("LowQual")).should be_false
   end
 end

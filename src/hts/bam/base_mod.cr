@@ -37,7 +37,7 @@ module HTS
 
         # 0.0..1.0 probability, or nil if unknown (-1)
         def probability : Float64?
-          return nil if @qual == -1
+          return if @qual == -1
           @qual / 256.0
         end
 
@@ -135,7 +135,7 @@ module HTS
         ensure_buffer_capacity(max_mods)
         mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
         ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, max_mods)
-        return nil if ret <= 0
+        return if ret <= 0
         # If the buffer was too small, re-fetch with the exact needed size to avoid truncation
         if ret > max_mods
           return fetch_position_from_fresh_state(position, ret)
@@ -194,7 +194,7 @@ module HTS
         # canonical is written via char*; allocate a single byte buffer
         canonical_ch = uninitialized LibC::Char
         ret = LibHTS.bam_mods_query_type(@state, code, out strand, out implicit, pointerof(canonical_ch))
-        return nil if ret < 0
+        return if ret < 0
         canonical = (canonical_ch.to_u8).chr.to_s
         {canonical: canonical, strand: strand, implicit: implicit != 0}
       end
@@ -214,7 +214,7 @@ module HTS
         ensure_parsed!
         canonical_ch = uninitialized LibC::Char
         ret = LibHTS.bam_mods_queryi(@state, index, out strand, out implicit, pointerof(canonical_ch))
-        return nil if ret < 0
+        return if ret < 0
         types = modification_types
         canonical = (canonical_ch.to_u8).chr.to_s
         {code: types[index], canonical: canonical, strand: strand, implicit: implicit != 0}

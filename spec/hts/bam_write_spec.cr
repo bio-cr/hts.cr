@@ -36,15 +36,15 @@ class BamWriteTest
   # Helper: Generate minimal BAM header with @HD and @SQ lines
   private def minimal_header_text : String
     <<-HEADER
-    @HD\tVN:1.6\tSO:coordinate
-    @SQ\tSN:chr1\tLN:1000
-    @SQ\tSN:chr2\tLN:2000
-    HEADER
+      @HD\tVN:1.6\tSO:coordinate
+      @SQ\tSN:chr1\tLN:1000
+      @SQ\tSN:chr2\tLN:2000
+      HEADER
   end
 
   # Placeholder test to verify structure
   def test_setup_works
-    (true).should eq(true)
+    (true).should be_true
   end
 
   # Test basic BAM writing and reading back

@@ -109,7 +109,7 @@ module HTS
 
         rc = LibHTS2.bcf_get_format_char(hdr, rec, tag, pointerof(dst), pointerof(ndst))
         rc = normalize_format_rc(rc, tag, "string")
-        return nil unless rc
+        return unless rc
 
         fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
         raise FormatReadError.new("Failed to inspect FORMAT/#{tag}") if fmt.null?
@@ -132,7 +132,7 @@ module HTS
         end
       end
 
-      def get_genotypes : Array(Int32)?
+      def genotypes : Array(Int32)?
         ndst = 0
         dst = Pointer(Void).null
         hdr = @record.header
@@ -140,7 +140,7 @@ module HTS
 
         rc = LibHTS2.bcf_get_genotypes(hdr, rec, pointerof(dst), pointerof(ndst))
         rc = normalize_format_rc(rc, "GT", "genotype")
-        return nil unless rc
+        return unless rc
 
         begin
           res = dst.as(Pointer(Int32))
@@ -150,27 +150,34 @@ module HTS
         end
       end
 
+      # ameba:disable Naming/AccessorMethodName
+      def get_genotypes : Array(Int32)?
+        genotypes
+      end
+
+      # ameba:enable Naming/AccessorMethodName
+
       private def get_int_samples(tag : String) : Array(Array(Int32))?
         values = get_int(tag)
-        return nil unless values
+        return unless values
         split_integer_samples(values)
       end
 
       private def get_int_samples_opt(tag : String) : Array(Array(Int32?))?
         values = get_int(tag)
-        return nil unless values
+        return unless values
         split_integer_samples_opt(values)
       end
 
       private def get_float_samples(tag : String) : Array(Array(Float32))?
         values = get_float(tag)
-        return nil unless values
+        return unless values
         split_float_samples(values)
       end
 
       private def get_float_samples_opt(tag : String) : Array(Array(Float32?))?
         values = get_float(tag)
-        return nil unless values
+        return unless values
         split_float_samples_opt(values)
       end
 
@@ -183,7 +190,7 @@ module HTS
         rc = LibHTS.bcf_get_format_values(hdr, rec, tag, pointerof(dst), pointerof(ndst), type)
         expected_type = value_type == Float32 ? "float" : "integer"
         rc = normalize_format_rc(rc, tag, expected_type)
-        return nil unless rc
+        return unless rc
 
         begin
           res = dst.as(Pointer(T))
@@ -252,13 +259,13 @@ module HTS
 
       private def get_genotype_samples : Array(Array(Int32))?
         encoded = get_genotypes
-        return nil unless encoded
+        return unless encoded
         split_sample_values(encoded).map { |sample_values| trim_genotype_vector_end(sample_values) }
       end
 
       private def decode_genotypes : Array(String)?
         sample_values = get_genotype_samples
-        return nil unless sample_values
+        return unless sample_values
         sample_values.map { |values| decode_genotype_sample(values) }
       end
 

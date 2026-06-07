@@ -65,25 +65,25 @@ module HTS
       # Type-specific access methods
       def get_int(tag : String)
         aux_ptr = get_aux_pointer(tag)
-        return nil if aux_ptr.null?
+        return if aux_ptr.null?
         LibHTS.bam_aux2i(aux_ptr)
       end
 
       def get_float(tag : String)
         aux_ptr = get_aux_pointer(tag)
-        return nil if aux_ptr.null?
+        return if aux_ptr.null?
         LibHTS.bam_aux2f(aux_ptr)
       end
 
       def get_string(tag : String)
         aux_ptr = get_aux_pointer(tag)
-        return nil if aux_ptr.null?
+        return if aux_ptr.null?
         String.new LibHTS.bam_aux2_z(aux_ptr)
       end
 
       def get_char(tag : String)
         aux_ptr = get_aux_pointer(tag)
-        return nil if aux_ptr.null?
+        return if aux_ptr.null?
         LibHTS.bam_aux2_a(aux_ptr).chr
       end
 
@@ -214,7 +214,7 @@ module HTS
 
       # Parse auxiliary value based on its type
       private def parse_aux_value(aux_ptr)
-        return nil if aux_ptr.null?
+        return if aux_ptr.null?
 
         t = aux_ptr.value
         case t
@@ -228,8 +228,6 @@ module HTS
           LibHTS.bam_aux2_a(aux_ptr).chr
         when 'B'
           parse_aux_array(aux_ptr) # Basic array type support
-        else
-          nil # Return nil for unknown types to allow continuation
         end
       rescue
         nil
@@ -251,8 +249,6 @@ module HTS
                   LibHTS.bam_aux2_a(aux_ptr).chr
                 when 'B'
                   parse_aux_array(aux_ptr)
-                else
-                  nil
                 end
 
         {value, original_type}
@@ -310,7 +306,7 @@ module HTS
       # Get auxiliary value for specific tag
       private def get_aux_value(tag)
         aux_ptr = get_aux_pointer(tag)
-        return nil if aux_ptr.null?
+        return if aux_ptr.null?
         parse_aux_value(aux_ptr)
       end
 
@@ -323,31 +319,32 @@ module HTS
           value, original_type = parse_aux_value_with_type(aux_ptr)
 
           if value && original_type
-            # HTSlib sam_format_aux1 compliant type mapping
-            type_str = case original_type
-                       when 'c', 'C', 's', 'S', 'i', 'I' then "i" # All integer types output as "i:"
-                       when 'f'                          then "f"
-                       when 'd'                          then "d" # Non-standard but supported
-                       when 'A'                          then "A"
-                       when 'Z'                          then "Z"
-                       when 'H'                          then "H"
-                       when 'B'                          then "B:#{(aux_ptr + 1).value.chr}" # Array type with element type
-                       else                                   "?"
-                       end
-
-            # Format value according to type
-            formatted_value = case original_type
-                              when 'B' then value.is_a?(Array) ? value.join(",") : value.to_s # Array formatting
-                              else          value.to_s
-                              end
-
             io.print "\t" if flag
-            io.print "#{tag}:#{type_str}:#{formatted_value}"
+            io.print "#{tag}:#{format_aux_type(original_type, aux_ptr)}:#{format_aux_value(original_type, value)}"
             flag = true
           end
 
           aux_ptr = LibHTS.bam_aux_next(@bam1, aux_ptr)
         end
+      end
+
+      private def format_aux_type(original_type : Char, aux_ptr) : String
+        case original_type
+        when 'c', 'C', 's', 'S', 'i', 'I'
+          "i"
+        when 'f', 'd', 'A', 'Z', 'H'
+          original_type.to_s
+        when 'B'
+          "B:#{(aux_ptr + 1).value.chr}"
+        else
+          "?"
+        end
+      end
+
+      private def format_aux_value(original_type : Char, value) : String
+        return value.join(",") if original_type == 'B' && value.is_a?(Array)
+
+        value.to_s
       end
     end
   end

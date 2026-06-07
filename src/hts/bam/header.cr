@@ -37,7 +37,7 @@ module HTS
       def self.parse(text)
         sam_hdr = LibHTS.sam_hdr_parse(text.size, text)
         raise ArgumentError.new("Failed to parse SAM header text") if sam_hdr.null?
-        self.new sam_hdr
+        new sam_hdr
       end
 
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))

@@ -63,10 +63,10 @@ class BamBaseModGenerateTest
     # A positions (0-based): 0,4,8,12,16  -> A+a at position 8 (skip delta: 2)
     # ML has 3 values for the 3 modifications total
     sam_content = <<-SAM
-  @HD\tVN:1.6\tSO:unknown
-  @SQ\tSN:ref\tLN:1000
-  r1\t0\tref\t1\t60\t20M\t*\t0\t0\tACGTACGTACGTACGTACGT\t*\tMM:Z:C+m,0,2;A+a,2;\tML:B:C,200,150,180
-  SAM
+      @HD\tVN:1.6\tSO:unknown
+      @SQ\tSN:ref\tLN:1000
+      r1\t0\tref\t1\t60\t20M\t*\t0\t0\tACGTACGTACGTACGTACGT\t*\tMM:Z:C+m,0,2;A+a,2;\tML:B:C,200,150,180
+      SAM
 
     File.write(sam_path, sam_content)
 

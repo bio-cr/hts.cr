@@ -23,10 +23,9 @@ end
 fname = ARGV[0]
 
 HTS::Bam.open(fname, threads: nthreads) do |bam|
-  puts bam.map(&.tid)
-    .tally
-    .map { |tid, num|
-      chrom = tid == -1 ? "*" : bam.header.target_name(tid)
-      "#{chrom}\t#{num}"
-    }.join("\n")
+  counts = bam.map(&.tid).tally.map do |tid, num|
+    chrom = tid == -1 ? "*" : bam.header.target_name(tid)
+    "#{chrom}\t#{num}"
+  end
+  puts counts.join("\n")
 end

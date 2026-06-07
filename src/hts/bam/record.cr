@@ -229,7 +229,7 @@ module HTS
       def seq
         r = LibHTS2.bam_get_seq(@bam1)
         String.build do |seq|
-          (self.len).times do |i|
+          (len).times do |i|
             seq << SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
           end
         end
@@ -245,8 +245,8 @@ module HTS
 
       # return only the base of the requested index "i" of the query sequence.
       def base(n)
-        n += self.len if n < 0
-        return '.' if (n >= self.len) || (n < 0) # eg. base(-1000)
+        n += len if n < 0
+        return '.' if (n >= len) || (n < 0) # eg. base(-1000)
 
         r = LibHTS2.bam_get_seq(@bam1)
         SEQ_NT16_STR[LibHTS2.bam_seqi(r, n)]
@@ -255,25 +255,25 @@ module HTS
       # return the base qualities
       def qual
         q_ptr = LibHTS2.bam_get_qual(@bam1)
-        Array.new(self.len) do |i|
+        Array.new(len) do |i|
           q_ptr[i]
         end
       end
 
       def qual_string
         q_ptr = LibHTS2.bam_get_qual(@bam1)
-        return "" if self.len == 0
-        return "*" if self.len.times.all? { |i| q_ptr[i] == 0xff }
-        raise ArgumentError.new("missing base quality cannot be represented in QUAL string") if self.len.times.any? { |i| q_ptr[i] == 0xff }
+        return "" if len == 0
+        return "*" if len.times.all? { |i| q_ptr[i] == 0xff }
+        raise ArgumentError.new("missing base quality cannot be represented in QUAL string") if len.times.any? { |i| q_ptr[i] == 0xff }
 
-        slice = Slice.new(self.len) { |i| (q_ptr[i].to_i + 33).to_u8 }
+        slice = Slice.new(len) { |i| (q_ptr[i].to_i + 33).to_u8 }
         String.new(slice)
       end
 
       # return only the base quality of the requested index "i" of the query sequence.
       def base_qual(n)
-        n += self.len if n < 0
-        return 0 if (n >= self.len) || (n < 0) # eg. base_qual(-1000)
+        n += len if n < 0
+        return 0 if (n >= len) || (n < 0) # eg. base_qual(-1000)
 
         q_ptr = LibHTS2.bam_get_qual(@bam1)
         q_ptr[n]
@@ -300,7 +300,7 @@ module HTS
       # Access individual auxiliary tag by name (existing method)
       def aux(str)
         ax = get_aux_pointer(str)
-        return nil if ax.null?
+        return if ax.null?
 
         # A (character), B (general array),
         # f (real number), H (hexadecimal array),

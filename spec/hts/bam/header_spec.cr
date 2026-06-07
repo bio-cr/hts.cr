@@ -12,19 +12,19 @@ class BamHeaderTest
 
   private def minimal_header_text : String
     <<-TEXT
-    @HD\tVN:1.6\tSO:coordinate
-    @SQ\tSN:chr1\tLN:1000
+      @HD\tVN:1.6\tSO:coordinate
+      @SQ\tSN:chr1\tLN:1000
 
-    TEXT
+      TEXT
   end
 
   private def rg_header_text : String
     <<-TEXT
-    @HD\tVN:1.6\tSO:coordinate
-    @SQ\tSN:chr1\tLN:1000
-    @RG\tID:rg1\tSM:sample1
+      @HD\tVN:1.6\tSO:coordinate
+      @SQ\tSN:chr1\tLN:1000
+      @RG\tID:rg1\tSM:sample1
 
-    TEXT
+      TEXT
   end
 
   def test_bam_path
@@ -85,11 +85,11 @@ class BamHeaderTest
 
   def test_add_pg_generates_unique_id
     header_text = <<-TEXT
-    @HD\tVN:1.6\tSO:coordinate
-    @SQ\tSN:chr1\tLN:1000
-    @PG\tID:samtools\tPN:samtools
+      @HD\tVN:1.6\tSO:coordinate
+      @SQ\tSN:chr1\tLN:1000
+      @PG\tID:samtools\tPN:samtools
 
-    TEXT
+      TEXT
     header = HTS::Bam::Header.parse(header_text)
 
     header.add_pg("samtools", "CL", "samtools view -H")
@@ -99,11 +99,11 @@ class BamHeaderTest
 
   def test_add_pg_with_parent
     header_text = <<-TEXT
-    @HD\tVN:1.6\tSO:coordinate
-    @SQ\tSN:chr1\tLN:1000
-    @PG\tID:align\tPN:align
+      @HD\tVN:1.6\tSO:coordinate
+      @SQ\tSN:chr1\tLN:1000
+      @PG\tID:align\tPN:align
 
-    TEXT
+      TEXT
     header = HTS::Bam::Header.parse(header_text)
 
     header.add_pg("sort", "PP", "align", "CL", "samtools sort")
@@ -144,7 +144,7 @@ class BamHeaderTest
     header.update_sq("chr2", md5: "abc123")
     (header.find_tag("SQ", "SN", "chr2", "M5")).should eq("abc123")
 
-    (header.remove_sq("chr2")).should eq(true)
+    (header.remove_sq("chr2")).should be_true
     (header.find_line("SQ", "SN", "chr2")).should be_nil
   end
 
@@ -158,21 +158,21 @@ class BamHeaderTest
     header.update_rg("rg2", description: "tumor")
     (header.find_tag("RG", "ID", "rg2", "DS")).should eq("tumor")
 
-    (header.delete_tag("RG", "ID", "rg2", "DS")).should eq(true)
+    (header.delete_tag("RG", "ID", "rg2", "DS")).should be_true
     (header.find_tag("RG", "ID", "rg2", "DS")).should be_nil
 
-    (header.remove_rg("rg2")).should eq(true)
+    (header.remove_rg("rg2")).should be_true
     (header.find_line("RG", "ID", "rg2")).should be_nil
   end
 
   def test_to_s
     header_text = <<-TEXT
-    @HD	VN:1.3	SO:coordinate
-    @SQ	SN:poo	LN:5000
-    @PG	ID:bwa	PN:bwa	VN:0.7.17-r1188	CL:bwa mem poo.fa poos_1.fq poos_2.fq
-    @PG	ID:samtools	PN:samtools	PP:bwa	VN:1.10-96-gcc4e1a6	CL:samtools sort -o poo.sort.bam b.bam
+      @HD	VN:1.3	SO:coordinate
+      @SQ	SN:poo	LN:5000
+      @PG	ID:bwa	PN:bwa	VN:0.7.17-r1188	CL:bwa mem poo.fa poos_1.fq poos_2.fq
+      @PG	ID:samtools	PN:samtools	PP:bwa	VN:1.10-96-gcc4e1a6	CL:samtools sort -o poo.sort.bam b.bam
 
-    TEXT
+      TEXT
     header_text = header_text.gsub(/\r\n/, "\n") # for Windows
     (bam.header.to_s).should eq(header_text)
   end

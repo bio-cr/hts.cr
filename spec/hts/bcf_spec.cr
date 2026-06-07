@@ -94,7 +94,7 @@ class BcfTest
     b = HTS::Bcf.new(test_bcf_path)
     (b).should be_a(HTS::Bcf)
     b.close
-    (b.closed?).should eq(true)
+    (b.closed?).should be_true
   end
 
   # def test_new_with_block
@@ -107,14 +107,14 @@ class BcfTest
     b = HTS::Bcf.open(test_bcf_path)
     (b).should be_a(HTS::Bcf)
     b.close
-    (b.closed?).should eq(true)
+    (b.closed?).should be_true
   end
 
   def test_open_with_block
     f = HTS::Bcf.open(test_bcf_path) do |bcf|
       (bcf).should be_a(HTS::Bcf)
     end
-    (f.closed?).should eq(true)
+    (f.closed?).should be_true
   end
 
   def test_file_name

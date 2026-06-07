@@ -375,7 +375,7 @@ class BamRecordTest
     aln = aln1
     (aln.aux_int("AS")).should eq(0)
     (aln.aux_int("XS")).should eq(0)
-    a = [] of (Int64 | Nil)
+    a = [] of Int64?
     ((a << aln.aux_int("AS"))).should eq([0])
   end
 

@@ -17,7 +17,7 @@ module HTS
 
     class MissingIndexError < QueryError; end
 
-    alias AuxValue = Int64 | Float64 | String | Char | Array(Int64) | Array(Float64) | Nil
+    alias AuxValue = (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64))?
 
     include Enumerable(Record)
 
@@ -57,25 +57,8 @@ module HTS
 
       # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
-      # PySAM-compatible mode handling
-      # Do NOT force 'b' for write: "w" should be SAM text like PySAM.
-      # Apply small compatibility mappings observed in PySAM:
-      # - "wbu" => "wb0" (htslib handles wb0; wbu may not work)
-      # - "rU"  => "rb"  (uppercase U is not recognized by htslib)
-      case @mode
-      when "wbu"
-        @mode = "wb0"
-      when "rU"
-        @mode = "rb"
-      end
-
-      index_name = if index != ""
-                     index
-                   elsif @file_name.ends_with?(".cram")
-                     "#{@file_name}.crai"
-                   else
-                     "#{@file_name}.bai"
-                   end
+      @mode = self.class.normalize_mode(@mode)
+      index_name = self.class.default_index_name(@file_name, index)
 
       self.class.build_index(file_name, index_name, 0, threads, false) if build_index && @mode[0] != 'w'
 
@@ -83,21 +66,7 @@ module HTS
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
 
-      # Auto-detect and set reference for CRAM files
-      if fai == "" && @file_name.ends_with?(".cram")
-        # Remote URL case: avoid File.join which introduces backslashes on Windows
-        if @file_name.starts_with?("http://") || @file_name.starts_with?("https://")
-          # Replace only the trailing .cram with .fa to keep URL separators intact
-          potential_ref = @file_name.gsub(/\.cram\z/, ".fa")
-          fai = potential_ref
-        else
-          # Local file case: construct a sibling .fa path and use it only if it exists
-          base_name = File.basename(@file_name, ".cram")
-          dir_name = File.dirname(@file_name)
-          potential_ref = File.join(dir_name, "#{base_name}.fa")
-          fai = potential_ref if File.exists?(potential_ref)
-        end
-      end
+      fai = self.class.infer_cram_reference(@file_name, fai)
 
       if fai != ""
         r = LibHTS.hts_set_fai_filename(@hts_file, fai)
@@ -128,6 +97,38 @@ module HTS
       end
 
       @idx = load_index(index)
+    end
+
+    protected def self.normalize_mode(mode : String) : String
+      # PySAM-compatible mode handling. Do not force 'b' for write:
+      # "w" should be SAM text like PySAM.
+      case mode
+      when "wbu" then "wb0"
+      when "rU"  then "rb"
+      else            mode
+      end
+    end
+
+    protected def self.default_index_name(file_name : String, index : String) : String
+      return index unless index.empty?
+      return "#{file_name}.crai" if file_name.ends_with?(".cram")
+
+      "#{file_name}.bai"
+    end
+
+    protected def self.infer_cram_reference(file_name : String, fai : String) : String
+      return fai unless fai.empty? && file_name.ends_with?(".cram")
+
+      if remote_file?(file_name)
+        file_name.gsub(/\.cram\z/, ".fa")
+      else
+        potential_ref = File.join(File.dirname(file_name), "#{File.basename(file_name, ".cram")}.fa")
+        File.exists?(potential_ref) ? potential_ref : fai
+      end
+    end
+
+    protected def self.remote_file?(file_name : String) : Bool
+      file_name.starts_with?("http://") || file_name.starts_with?("https://")
     end
 
     # Class method: build index for any file on disk (even after close)
@@ -257,25 +258,25 @@ module HTS
       mate_pos
     end
 
-    def aux_int(tag : String) : Array(Int64 | Nil)
+    def aux_int(tag : String) : Array(Int64?)
       collect_aux_values do |record|
         record.aux.get_int(tag)
       end
     end
 
-    def aux_float(tag : String) : Array(Float64 | Nil)
+    def aux_float(tag : String) : Array(Float64?)
       collect_aux_values do |record|
         record.aux.get_float(tag)
       end
     end
 
-    def aux_string(tag : String) : Array(String | Nil)
+    def aux_string(tag : String) : Array(String?)
       collect_aux_values do |record|
         record.aux.get_string(tag)
       end
     end
 
-    def aux_char(tag : String) : Array(Char | Nil)
+    def aux_char(tag : String) : Array(Char?)
       collect_aux_values do |record|
         record.aux.get_char(tag)
       end
@@ -413,7 +414,7 @@ module HTS
       self
     end
 
-    private def restore_aux_position(position : Int64 | Nil) : Nil
+    private def restore_aux_position(position : Int64?) : Nil
       if position.nil?
         STDERR.puts "Warning: #{@file_name} is not seekable"
       else

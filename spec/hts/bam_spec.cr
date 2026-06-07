@@ -6,7 +6,7 @@ class BamTest
     # close files
     {% for format in ["bam", "sam", "cram"] %}
       {% for type in ["string", "path", "uri"] %}
-        @{{format.id}}_{{type.id}}.try &.close
+        @{{ format.id }}_{{ type.id }}.try &.close
       {% end %}
     {% end %}
 
@@ -32,10 +32,10 @@ class BamTest
     temp_file.close
 
     header_text = <<-HEADER
-    @HD\tVN:1.6\tSO:coordinate
-    @SQ\tSN:chr1\tLN:1000
-    @SQ\tSN:chr2\tLN:2000
-    HEADER
+      @HD\tVN:1.6\tSO:coordinate
+      @SQ\tSN:chr1\tLN:1000
+      @SQ\tSN:chr2\tLN:2000
+      HEADER
     header = HTS::Bam::Header.parse(header_text)
 
     HTS::Bam.open(temp_path, "wb") do |bam|
@@ -91,35 +91,35 @@ class BamTest
   end
 
   {% for format in ["bam", "sam", "cram"] %}
-    def path_{{format.id}}_string
-      File.expand_path("../fixtures/moo.{{format.id}}", __DIR__)
+    def path_{{ format.id }}_string
+      File.expand_path("../fixtures/moo.{{ format.id }}", __DIR__)
     end
 
-    def path_{{format.id}}_path
-      Path[path_{{format.id}}_string]
+    def path_{{ format.id }}_path
+      Path[path_{{ format.id }}_string]
     end
 
-    def path_{{format.id}}_uri
-      "https://raw.githubusercontent.com/bio-cr/hts.cr/develop/spec/fixtures/moo.{{format.id}}"
+    def path_{{ format.id }}_uri
+      "https://raw.githubusercontent.com/bio-cr/hts.cr/develop/spec/fixtures/moo.{{ format.id }}"
     end
   {% end %}
 
   {% for format in ["bam", "sam", "cram"] %}
     {% for type in ["string", "path", "uri"] %}
       {% ft = ("#{format.id}_#{type.id}").id %}
-      def {{ft}}
-        @{{ft}} ||= HTS::Bam.open(path_{{ft}})
+      def {{ ft }}
+        @{{ ft }} ||= HTS::Bam.open(path_{{ ft }})
       end
 
-      def test_new_{{ft}}
-        b = HTS::Bam.new(path_{{ft}})
+      def test_new_{{ ft }}
+        b = HTS::Bam.new(path_{{ ft }})
         (b).should be_a(HTS::Bam)
         b.close
         (b.closed?).should eq(true)
       end
 
-      def test_open_{{ft}}
-        b = HTS::Bam.open(path_{{ft}})
+      def test_open_{{ ft }}
+        b = HTS::Bam.open(path_{{ ft }})
         (b).should be_a(HTS::Bam)
         (b.closed?).should eq(false)
         b.close
@@ -127,8 +127,8 @@ class BamTest
         (b.close).should be_nil
       end
 
-      def test_open_{{ft}}_with_block
-        f = HTS::Bam.open(path_{{ft}}) do |b|
+      def test_open_{{ ft }}_with_block
+        f = HTS::Bam.open(path_{{ ft }}) do |b|
           (b).should be_a(HTS::Bam)
         end
         (f.closed?).should eq(true)
@@ -136,125 +136,125 @@ class BamTest
 
       {% if format == "bam" %}
       # FIXME: Cram dose not have cram_tell
-      def test_tell_{{ft}}
-        ({{ft}}.tell).should eq(21889024)
+      def test_tell_{{ ft }}
+        ({{ ft }}.tell).should eq(21889024)
       end
       {% end %}
 
       {% if format == "sam" %}
       # FIXME: Cram dose not have cram_tell
-      def test_tell_{{ft}}
-        ({{ft}}.tell).should eq(134)
+      def test_tell_{{ ft }}
+        ({{ ft }}.tell).should eq(134)
       end
       {% end %}
 
-      def test_file_name_{{ft}}
-        ({{ft}}.file_name).should eq(path_{{ft}}.to_s)
+      def test_file_name_{{ ft }}
+        ({{ ft }}.file_name).should eq(path_{{ ft }}.to_s)
       end
 
-      def test_mode_{{ft}}
-        ({{ft}}.mode).should eq("r")
+      def test_mode_{{ ft }}
+        ({{ ft }}.mode).should eq("r")
       end
 
-      def test_header_{{ft}}
-        ({{ft}}.header).should be_a(HTS::Bam::Header)
+      def test_header_{{ ft }}
+        ({{ ft }}.header).should be_a(HTS::Bam::Header)
       end
 
-      def test_file_format_{{ft}}
-        ({{ft}}.file_format).should eq({{format}}.capitalize)
+      def test_file_format_{{ ft }}
+        ({{ ft }}.file_format).should eq({{ format }}.capitalize)
       end
 
-      def test_file_format_version_{{ft}}
-        (["1", "1.6", "3.0"]).should contain({{ft}}.file_format_version)
+      def test_file_format_version_{{ ft }}
+        (["1", "1.6", "3.0"]).should contain({{ ft }}.file_format_version)
       end
 
       {% if format != "sam" %}
-        def test_query_{{ft}}
+        def test_query_{{ ft }}
           arr = [] of Int64
-          {{ft}}.query("chr2:350-700") do |aln|
+          {{ ft }}.query("chr2:350-700") do |aln|
             arr << aln.pos
           end
           (arr).should eq([341, 658])
         end
 
-        def test_query_copy_{{ft}}
+        def test_query_copy_{{ ft }}
           arr = [] of Int64
-          {{ft}}.query("chr2:350-700", copy: true) do |aln|
+          {{ ft }}.query("chr2:350-700", copy: true) do |aln|
             arr << aln.pos
           end
           (arr).should eq([341, 658])
         end
 
         # New: numeric tid query should produce identical positions.
-        def test_query_tid_numeric_{{ft}}
+        def test_query_tid_numeric_{{ ft }}
           arr = [] of Int64
           # Resolve tid from header (reference name to integer id)
-          tid = {{ft}}.header.get_tid("chr2")
+          tid = {{ ft }}.header.get_tid("chr2")
           (tid >= 0).should be_true
           # Convert 1-based inclusive 350-700 to 0-based half-open => [349, 700)
-          {{ft}}.query(tid, 349_i64, 700_i64) do |aln|
+          {{ ft }}.query(tid, 349_i64, 700_i64) do |aln|
             arr << aln.pos
           end
           (arr).should eq([341, 658])
         end
 
         # New: chromosome name + numeric coordinates variant
-        def test_query_chrom_numeric_{{ft}}
+        def test_query_chrom_numeric_{{ ft }}
           arr = [] of Int64
           # chr2, 350-700 uses 1-based inclusive coordinates like region strings.
-          {{ft}}.query("chr2", 350_i64, 700_i64) do |aln|
+          {{ ft }}.query("chr2", 350_i64, 700_i64) do |aln|
             arr << aln.pos
           end
           (arr).should eq([341, 658])
         end
 
-        def test_query_multi_regions_{{ft}}
+        def test_query_multi_regions_{{ ft }}
           arr = [] of Int64
-          {{ft}}.query(["chr1:100-200", "chr2:350-700"]) do |aln|
+          {{ ft }}.query(["chr1:100-200", "chr2:350-700"]) do |aln|
             arr << aln.pos
           end
           (arr).should contain(341)
           (arr).should contain(658)
         end
 
-        def test_query_multi_regions_copy_{{ft}}
+        def test_query_multi_regions_copy_{{ ft }}
           arr = [] of Int64
-          {{ft}}.query(["chr1:100-200", "chr2:350-700"], copy: true) do |aln|
+          {{ ft }}.query(["chr1:100-200", "chr2:350-700"], copy: true) do |aln|
             arr << aln.pos
           end
           (arr).should contain(341)
           (arr).should contain(658)
         end
 
-        def test_query_single_region_array_{{ft}}
+        def test_query_single_region_array_{{ ft }}
           arr = [] of Int64
-          {{ft}}.query(["chr2:350-700"]) do |aln|
+          {{ ft }}.query(["chr2:350-700"]) do |aln|
             arr << aln.pos
           end
           (arr).should eq([341, 658])
         end
       {% end %}
 
-      def test_each_{{ft}}
+      def test_each_{{ ft }}
         c = 0
-        {{ft}}.each do |aln|
+        {{ ft }}.each do |aln|
           c += 1
           (aln).should be_a(HTS::Bam::Record)
         end
         (c).should eq(10)
       end
 
-      def test_each_copy_{{ft}}
+      def test_each_copy_{{ ft }}
         c = 0
-        {{ft}}.each(copy: true) do |aln|
+        {{ ft }}.each(copy: true) do |aln|
           c += 1
           (aln).should be_a(HTS::Bam::Record)
         end
         (c).should eq(10)
       end
 
-      def test_qname_{{ft}}
-        b = HTS::Bam.new(path_{{ft}})
+      def test_qname_{{ ft }}
+        b = HTS::Bam.new(path_{{ ft }})
         (b.qname.size).should eq(10)
         b.close
       end
@@ -282,8 +282,8 @@ class BamTest
   end
 
   def test_file_level_aux_int
-    values : Array(Int64 | Nil) = bam_string.aux_int("NM")
-    expected = [] of (Int64 | Nil)
+    values : Array(Int64?) = bam_string.aux_int("NM")
+    expected = [] of Int64?
     bam_string.each do |aln|
       expected << aln.aux.get_int("NM")
     end
@@ -291,8 +291,8 @@ class BamTest
   end
 
   def test_file_level_aux_string
-    values : Array(String | Nil) = bam_string.aux_string("MC")
-    expected = [] of (String | Nil)
+    values : Array(String?) = bam_string.aux_string("MC")
+    expected = [] of String?
     bam_string.each do |aln|
       expected << aln.aux.get_string("MC")
     end
@@ -309,7 +309,7 @@ class BamTest
   end
 
   def test_each_aux_int
-    values = [] of (Int64 | Nil)
+    values = [] of Int64?
     bam_string.each_aux_int("NM") do |value|
       values << value
     end
