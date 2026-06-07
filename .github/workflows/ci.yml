@@ -44,6 +44,22 @@ jobs:
         if: matrix.os == 'windows'
         shell: msys2 {0}
         run: shards install
+      - name: Format check
+        if: matrix.os != 'windows'
+        run: crystal tool format --check
+      - name: Format check (MinGW64)
+        if: matrix.os == 'windows'
+        shell: msys2 {0}
+        run: crystal tool format --check
+      - name: Examples compile check
+        if: matrix.os != 'windows'
+        run: |
+          for f in examples/*.cr; do crystal build "$f" --no-codegen; done
+      - name: Examples compile check (MinGW64)
+        if: matrix.os == 'windows'
+        shell: msys2 {0}
+        run: |
+          for f in examples/*.cr; do crystal build "$f" --no-codegen; done
       - name: Run tests
         if: matrix.os != 'windows'
         run: |
