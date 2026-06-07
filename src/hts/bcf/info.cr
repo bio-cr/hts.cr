@@ -127,7 +127,12 @@ module HTS
       end
 
       def update_int(tag : String, value : Int)
-        update_int(tag, [value.to_i32])
+        v = value.to_i32
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_info_int32(hdr, rec, tag, pointerof(v), 1)
+        check_update_rc!(rc, tag)
+        rc
       end
 
       def update_int(tag : String, values : Array(Int32))
@@ -139,7 +144,7 @@ module HTS
       end
 
       def update_int64(tag : String, value : Int)
-        update_int64(tag, [value.to_i64])
+        raise UnsupportedInfoOperationError.new("htslib backend does not implement int64 INFO update (BCF_HT_LONG)")
       end
 
       def update_int64(tag : String, values : Array(Int64))
@@ -148,7 +153,12 @@ module HTS
       end
 
       def update_float(tag : String, value : Number)
-        update_float(tag, [value.to_f32])
+        v = value.to_f32
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_info_float(hdr, rec, tag, pointerof(v), 1)
+        check_update_rc!(rc, tag)
+        rc
       end
 
       def update_float(tag : String, values : Array(Float32))

@@ -5,7 +5,17 @@ module HTS
       end
 
       def update_int(tag : String, value : Int)
-        update_int(tag, [value.to_i32])
+        raise UnsupportedFormatOperationError.new("Use update_genotypes for GT") if tag == "GT"
+
+        ensure_expected_format_type!(tag, :int, "integer")
+        validate_numeric_sample_count!(tag, 1)
+
+        v = value.to_i32
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_format_int32(hdr, rec, tag, pointerof(v), 1)
+        check_update_rc!(rc, tag)
+        rc
       end
 
       def update_int(tag : String, values : Array(Int32))
@@ -22,7 +32,15 @@ module HTS
       end
 
       def update_float(tag : String, value : Number)
-        update_float(tag, [value.to_f32])
+        ensure_expected_format_type!(tag, :float, "float")
+        validate_numeric_sample_count!(tag, 1)
+
+        v = value.to_f32
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_update_format_float(hdr, rec, tag, pointerof(v), 1)
+        check_update_rc!(rc, tag)
+        rc
       end
 
       def update_float(tag : String, values : Array(Float32))
