@@ -160,12 +160,9 @@ module HTS
       ref_count : Uint32T
     end
 
-    alias X__Int32T = LibC::Int
-    alias Int32T = X__Int32T
-    alias X__Uint32T = LibC::UInt
-    alias Uint32T = X__Uint32T
-    alias X__Int8T = LibC::Char
-    alias Int8T = X__Int8T
+    alias Int32T = Int32
+    alias Uint32T = UInt32
+    alias Int8T = Int8
     fun hts_resize_array_(x0 : LibC::SizeT, x1 : LibC::SizeT, x2 : LibC::SizeT, x3 : Void*, x4 : Void**, x5 : LibC::Int, x6 : LibC::Char*) : LibC::Int
     fun hts_lib_shutdown
     fun hts_free(ptr : Void*)
@@ -431,8 +428,7 @@ module HTS
     fun hts_idx_load2(fn : LibC::Char*, fnidx : LibC::Char*) : HtsIdxT
     fun hts_idx_load3(fn : LibC::Char*, fnidx : LibC::Char*, fmt : LibC::Int, flags : LibC::Int) : HtsIdxT
     fun hts_idx_get_meta(idx : HtsIdxT, l_meta : Uint32T*) : Uint8T*
-    alias X__Uint8T = UInt8
-    alias Uint8T = X__Uint8T
+    alias Uint8T = UInt8
     fun hts_idx_set_meta(idx : HtsIdxT, l_meta : Uint32T, meta : Uint8T*, is_copy : LibC::Int) : LibC::Int
     fun hts_idx_get_stat(idx : HtsIdxT, tid : LibC::Int, mapped : Uint64T*, unmapped : Uint64T*) : LibC::Int
     fun hts_idx_get_n_no_coor(idx : HtsIdxT) : Uint64T
@@ -531,8 +527,7 @@ module HTS
       isize : HtsPosT
     end
 
-    alias X__Uint16T = LibC::UShort
-    alias Uint16T = X__Uint16T
+    alias Uint16T = UInt16
     fun bam_destroy1(b : Bam1T*)
     fun bam_set_mempolicy(b : Bam1T*, policy : Uint32T)
     fun bam_get_mempolicy(b : Bam1T*) : Uint32T
@@ -761,8 +756,7 @@ module HTS
     fun cram_eof(fd : CramFd*) : LibC::Int
     fun cram_set_option(fd : CramFd*, opt : HtsFmtOption, ...) : LibC::Int
     fun cram_set_voption(fd : CramFd*, opt : HtsFmtOption, args : VaList) : LibC::Int
-    alias X__GnucVaList = LibC::VaList
-    alias VaList = X__GnucVaList
+    alias VaList = LibC::VaList
     fun cram_set_header(fd : CramFd*, hdr : SamHdrT*) : LibC::Int
     fun cram_check_eof = cram_check_EOF(fd : CramFd*) : LibC::Int
     fun sam_hdr_parse_(hdr : LibC::Char*, len : LibC::SizeT) : SamHdr*
