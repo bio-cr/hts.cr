@@ -287,7 +287,7 @@ module HTS
       Tbi               =     12
       Bed               =     13
       Htsget            =     14
-      Json              =     14
+      Json              =     14 # Deprecated alias of Htsget.
       EmptyFormat       =     15
       FastaFormat       =     16
       FastqFormat       =     17
