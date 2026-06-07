@@ -26,6 +26,22 @@ class BamTest
     end
   end
 
+  private def with_temp_bam_copy(&)
+    source_path = File.expand_path("../fixtures/moo.bam", __DIR__)
+    temp_file = File.tempfile("bam_build_index", ".bam")
+    temp_path = temp_file.path || raise "tempfile path is nil"
+    temp_file.close
+    File.copy(source_path, temp_path)
+
+    begin
+      yield temp_path
+    ensure
+      File.delete(temp_path) if File.exists?(temp_path)
+      index_path = "#{temp_path}.bai"
+      File.delete(index_path) if File.exists?(index_path)
+    end
+  end
+
   {% for format in ["bam", "sam", "cram"] %}
     def path_{{format.id}}_string
       File.expand_path("../fixtures/moo.{{format.id}}", __DIR__)
@@ -200,6 +216,21 @@ class BamTest
 
   def test_initialize_no_file_bam
     expect_raises(Exception) { HTS::Bam.new("/tmp/no_such_file") }
+  end
+
+  def test_initialize_build_index_loads_index
+    with_temp_bam_copy do |path|
+      bam = HTS::Bam.new(path, build_index: true)
+      begin
+        positions = [] of Int64
+        bam.query("chr2:350-700") do |aln|
+          positions << aln.pos
+        end
+        positions.should eq([341, 658])
+      ensure
+        bam.close
+      end
+    end
   end
 
   def test_file_level_aux_int

@@ -69,6 +69,8 @@ module HTS
         @mode = "rb"
       end
 
+      self.class.build_index(file_name, index, 0, threads, false) if build_index
+
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
       raise "Failed to open file #{@file_name}" if @hts_file.null?
@@ -109,8 +111,6 @@ module HTS
       @header = Bam::Header.new(@hts_file)
       @header_written = true
 
-      @idx = load_index(index)
-
       # Set start position to 0 for CRAM files
       flags = @hts_file.value.flags
       if flags & "1000".to_i(2) != 0 # cram
@@ -119,7 +119,7 @@ module HTS
         @start_position = tell
       end
 
-      build_index(index) if build_index
+      @idx = load_index(index)
     end
 
     # Class method: build index for any file on disk (even after close)
