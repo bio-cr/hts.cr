@@ -229,6 +229,19 @@ class BgzfTest
     test_file.delete
   end
 
+  def test_finalize_closes_file
+    test_file = File.tempfile("test", ".gz")
+    test_file.close
+
+    bgzf = HTS::Bgzf.open(test_file.path, "wz")
+    (bgzf.closed?).should be_false
+
+    bgzf.finalize
+    (bgzf.closed?).should be_true
+
+    test_file.delete
+  end
+
   def test_tabix_inherits_bgzf
     # Test that Tabix inherits from Bgzf
     test_file = File.tempfile("tabix_test", ".txt")

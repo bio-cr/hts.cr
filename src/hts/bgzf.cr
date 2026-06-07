@@ -139,6 +139,12 @@ module HTS
       LibHTS.bgzf_flush(bgzf_fp)
     end
 
+    def finalize
+      close unless closed?
+    rescue
+      nil
+    end
+
     # Iterator methods
 
     def each_line(delimiter = '\n', &)
