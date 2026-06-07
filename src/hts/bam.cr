@@ -69,7 +69,15 @@ module HTS
         @mode = "rb"
       end
 
-      self.class.build_index(file_name, index, 0, threads, false) if build_index
+      index_name = if index != ""
+        index
+      elsif @file_name.ends_with?(".cram")
+        "#{@file_name}.crai"
+      else
+        "#{@file_name}.bai"
+      end
+
+      self.class.build_index(file_name, index_name, 0, threads, false) if build_index && @mode[0] != 'w'
 
       @hts_file = LibHTS.hts_open(@file_name, @mode)
 
@@ -102,7 +110,7 @@ module HTS
         # Defer index building until after close
         if build_index
           @auto_index_on_close = true
-          @index_name_on_close = index
+          @index_name_on_close = index_name
         end
         @idx = LibHTS::HtsIdxT.null
         return

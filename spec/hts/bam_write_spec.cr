@@ -19,6 +19,8 @@ class BamWriteTest
       "temp_write_block.bam.bai",
       "temp_write_index.bam",
       "temp_write_index.bam.bai",
+      "temp_write_auto_index.bam",
+      "temp_write_auto_index.bam.bai",
       "temp_no_header.bam",
       "temp_no_header.bam.bai",
       "temp_mate.bam",
@@ -213,6 +215,39 @@ class BamWriteTest
       # Index building might fail - that's ok for this test
       # We're mainly testing that the write functionality works
       pending! "Index building failed (may require proper BAM sorting): #{ex.message}"
+    end
+  end
+
+  def test_write_build_index_on_close
+    path = temp_path("temp_write_auto_index.bam")
+    index_path = "#{path}.bai"
+    header = HTS::Bam::Header.parse(minimal_header_text)
+
+    HTS::Bam.open(path, "wb", build_index: true) do |bam|
+      bam.write_header(header)
+
+      [100_i64, 300_i64].each_with_index do |pos, i|
+        rec = HTS::Bam::Record.new(
+          header,
+          qname: "auto_index_read#{i}",
+          flag: 0_u16,
+          rname: "chr1",
+          pos: pos,
+          mapq: 60_u8,
+          cigar_str: "10M",
+          seq: "AAAAAAAAAA",
+          qual: [30_u8] * 10
+        )
+        bam.write(rec)
+      end
+    end
+
+    File.exists?(index_path).should be_true
+
+    HTS::Bam.open(path) do |bam|
+      positions = [] of Int64
+      bam.query("chr1:250-350") { |record| positions << record.pos }
+      positions.should eq([300])
     end
   end
 

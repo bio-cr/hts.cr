@@ -26,12 +26,60 @@ class BamTest
     end
   end
 
-  private def with_temp_bam_copy(&)
-    source_path = File.expand_path("../fixtures/moo.bam", __DIR__)
+  private def with_temp_indexable_bam(&)
     temp_file = File.tempfile("bam_build_index", ".bam")
     temp_path = temp_file.path || raise "tempfile path is nil"
     temp_file.close
-    File.copy(source_path, temp_path)
+
+    header_text = <<-HEADER
+    @HD\tVN:1.6\tSO:coordinate
+    @SQ\tSN:chr1\tLN:1000
+    @SQ\tSN:chr2\tLN:2000
+    HEADER
+    header = HTS::Bam::Header.parse(header_text)
+
+    HTS::Bam.open(temp_path, "wb") do |bam|
+      bam.write_header(header)
+
+      rec1 = HTS::Bam::Record.new(
+        header,
+        qname: "read1",
+        flag: 0_u16,
+        rname: "chr1",
+        pos: 100_i64,
+        mapq: 60_u8,
+        cigar_str: "10M",
+        seq: "ACGTACGTAC",
+        qual: [30_u8] * 10
+      )
+      bam.write(rec1)
+
+      rec2 = HTS::Bam::Record.new(
+        header,
+        qname: "read2",
+        flag: 0_u16,
+        rname: "chr2",
+        pos: 341_i64,
+        mapq: 40_u8,
+        cigar_str: "20M",
+        seq: "GGTTAAGCGGTTAAGCGGTT",
+        qual: [25_u8] * 20
+      )
+      bam.write(rec2)
+
+      rec3 = HTS::Bam::Record.new(
+        header,
+        qname: "read3",
+        flag: 0_u16,
+        rname: "chr2",
+        pos: 658_i64,
+        mapq: 40_u8,
+        cigar_str: "20M",
+        seq: "GGTTAAGCGGTTAAGCGGTT",
+        qual: [25_u8] * 20
+      )
+      bam.write(rec3)
+    end
 
     begin
       yield temp_path
@@ -219,7 +267,7 @@ class BamTest
   end
 
   def test_initialize_build_index_loads_index
-    with_temp_bam_copy do |path|
+    with_temp_indexable_bam do |path|
       bam = HTS::Bam.new(path, build_index: true)
       begin
         positions = [] of Int64
