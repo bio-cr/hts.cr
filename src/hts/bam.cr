@@ -70,12 +70,12 @@ module HTS
       end
 
       index_name = if index != ""
-        index
-      elsif @file_name.ends_with?(".cram")
-        "#{@file_name}.crai"
-      else
-        "#{@file_name}.bai"
-      end
+                     index
+                   elsif @file_name.ends_with?(".cram")
+                     "#{@file_name}.crai"
+                   else
+                     "#{@file_name}.bai"
+                   end
 
       self.class.build_index(file_name, index_name, 0, threads, false) if build_index && @mode[0] != 'w'
 
