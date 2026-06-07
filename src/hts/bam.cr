@@ -362,7 +362,7 @@ module HTS
     private def each_record_copy(&)
       check_closed
 
-      bam1 = LibHTS.bam_init1
+      bam1 = new_bam1!
       begin
         ret = LibHTS.sam_read1(@hts_file, header, bam1)
         while ret >= 0
@@ -370,7 +370,7 @@ module HTS
           # Ownership moved to Record; keep ensure from destroying it.
           bam1 = Pointer(LibHTS::Bam1T).null
           yield record
-          bam1 = LibHTS.bam_init1
+          bam1 = new_bam1!
           ret = LibHTS.sam_read1(@hts_file, header, bam1)
         end
         raise HTS::Error.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
@@ -382,7 +382,7 @@ module HTS
     private def each_record_reuse(&)
       check_closed
 
-      bam1 = LibHTS.bam_init1
+      bam1 = new_bam1!
       record = Record.new(header, bam1)
       ret = LibHTS.sam_read1(@hts_file, header, bam1)
       while ret >= 0
@@ -521,7 +521,7 @@ module HTS
 
     private def iterate_iterator(qiter, copy, & : HTS::Bam::Record ->)
       if copy
-        bam1 = LibHTS.bam_init1
+        bam1 = new_bam1!
         begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
           while slen >= 0
@@ -529,7 +529,7 @@ module HTS
             # Ownership moved to Record; keep ensure from destroying it.
             bam1 = Pointer(LibHTS::Bam1T).null
             yield record
-            bam1 = LibHTS.bam_init1
+            bam1 = new_bam1!
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
           end
           raise HTS::Error.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
@@ -537,7 +537,7 @@ module HTS
           LibHTS.bam_destroy1(bam1) unless bam1.null?
         end
       else
-        bam1 = LibHTS.bam_init1
+        bam1 = new_bam1!
         record = Record.new(header, bam1)
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         while slen >= 0
@@ -546,6 +546,12 @@ module HTS
         end
         raise HTS::Error.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
       end
+    end
+
+    private def new_bam1! : LibHTS::Bam1T*
+      bam1 = LibHTS.bam_init1
+      raise "bam_init1 failed" if bam1.null?
+      bam1
     end
   end
 end

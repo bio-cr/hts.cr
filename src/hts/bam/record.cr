@@ -14,7 +14,7 @@ module HTS
 
       def initialize(header : Bam::Header)
         @header = header
-        @bam1 = LibHTS.bam_init1
+        @bam1 = new_bam1!
       end
 
       def to_unsafe
@@ -40,7 +40,7 @@ module HTS
                      mpos : Int64 = 0_i64,
                      isize : Int64 = 0_i64)
         @header = header
-        @bam1 = LibHTS.bam_init1
+        @bam1 = new_bam1!
 
         raise ArgumentError.new("qual length must equal sequence length") unless qual.size == seq.bytesize
 
@@ -75,6 +75,12 @@ module HTS
         tid = header.get_tid(rname)
         raise "Unknown reference name: #{rname}" if tid < 0
         initialize(header, qname, flag, tid, pos, mapq, Cigar.encode(cigar_str), seq, qual, mtid, mpos, isize)
+      end
+
+      private def new_bam1! : LibHTS::Bam1T*
+        bam1 = LibHTS.bam_init1
+        raise "bam_init1 failed" if bam1.null?
+        bam1
       end
 
       # returns the query name.

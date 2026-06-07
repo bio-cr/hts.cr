@@ -215,7 +215,7 @@ module HTS
     private def each_record_copy(&)
       check_closed
 
-      bcf1 = LibHTS.bcf_init
+      bcf1 = new_bcf1!
       begin
         ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
         while ret >= 0
@@ -224,7 +224,7 @@ module HTS
           bcf1 = Pointer(LibHTS::Bcf1T).null
           apply_subset!(record)
           yield record
-          bcf1 = LibHTS.bcf_init
+          bcf1 = new_bcf1!
           ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
         end
         raise Error.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
@@ -235,7 +235,7 @@ module HTS
 
     private def each_record_reuse(&)
       check_closed
-      bcf1 = LibHTS.bcf_init
+      bcf1 = new_bcf1!
       record = Bcf::Record.new(header, bcf1)
       ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
       while ret >= 0
@@ -326,7 +326,7 @@ module HTS
 
     private def iterate_query_iterator(qiter, copy, & : HTS::Bcf::Record ->)
       if copy
-        bcf1 = LibHTS.bcf_init
+        bcf1 = new_bcf1!
         begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
           while slen >= 0
@@ -335,7 +335,7 @@ module HTS
             bcf1 = Pointer(LibHTS::Bcf1T).null
             apply_subset!(record)
             yield record
-            bcf1 = LibHTS.bcf_init
+            bcf1 = new_bcf1!
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
           end
           raise Error.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
@@ -343,7 +343,7 @@ module HTS
           LibHTS.bcf_destroy(bcf1) unless bcf1.null?
         end
       else
-        bcf1 = LibHTS.bcf_init
+        bcf1 = new_bcf1!
         record = Bcf::Record.new(header, bcf1)
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         while slen >= 0
@@ -353,6 +353,12 @@ module HTS
         end
         raise Error.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
       end
+    end
+
+    private def new_bcf1! : LibHTS::Bcf1T*
+      bcf1 = LibHTS.bcf_init
+      raise "bcf_init failed" if bcf1.null?
+      bcf1
     end
 
     private def header_for_reading : Bcf::Header

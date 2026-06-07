@@ -8,13 +8,19 @@ module HTS
 
       def initialize(header : Bcf::Header)
         @header = header
-        @bcf1 = LibHTS.bcf_init
+        @bcf1 = new_bcf1!
       end
 
       getter :header
 
       def to_unsafe
         @bcf1
+      end
+
+      private def new_bcf1! : LibHTS::Bcf1T*
+        bcf1 = LibHTS.bcf_init
+        raise "bcf_init failed" if bcf1.null?
+        bcf1
       end
 
       def rid
