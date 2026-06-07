@@ -109,11 +109,7 @@ The Crystal language is suited for creating efficient command-line tools. The Ru
     cd hts.cr
     crystal spec
 
-HTS.cr is a work-in-progress library, and pull requests such as small typo fixes are welcome.
-
-    Do you need commit rights to hts?
-    Do you want to get admin rights and take over the project?
-    Please feel free to contact us @kojix2.
+Bug reports and pull requests are welcome.
 
 ## Benchmark
 
