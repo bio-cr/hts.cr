@@ -363,9 +363,7 @@ module HTS
       begin
         ret = LibHTS.sam_read1(@hts_file, header, bam1)
         while ret >= 0
-          record = Record.new(header, bam1)
-          # Ownership moved to Record; keep ensure from destroying it.
-          bam1 = Pointer(LibHTS::Bam1T).null
+          record = Record.new(header, take_bam1!(pointerof(bam1)))
           yield record
           bam1 = new_bam1!
           ret = LibHTS.sam_read1(@hts_file, header, bam1)
@@ -522,9 +520,7 @@ module HTS
         begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
           while slen >= 0
-            record = Record.new(header, bam1)
-            # Ownership moved to Record; keep ensure from destroying it.
-            bam1 = Pointer(LibHTS::Bam1T).null
+            record = Record.new(header, take_bam1!(pointerof(bam1)))
             yield record
             bam1 = new_bam1!
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
@@ -548,6 +544,12 @@ module HTS
     private def new_bam1! : LibHTS::Bam1T*
       bam1 = LibHTS.bam_init1
       raise "bam_init1 failed" if bam1.null?
+      bam1
+    end
+
+    private def take_bam1!(slot : Pointer(LibHTS::Bam1T*)) : LibHTS::Bam1T*
+      bam1 = slot.value
+      slot.value = Pointer(LibHTS::Bam1T).null
       bam1
     end
   end

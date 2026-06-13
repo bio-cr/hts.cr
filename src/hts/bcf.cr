@@ -219,9 +219,7 @@ module HTS
       begin
         ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
         while ret >= 0
-          record = Bcf::Record.new(header, bcf1)
-          # Ownership moved to Record; keep ensure from destroying it.
-          bcf1 = Pointer(LibHTS::Bcf1T).null
+          record = Bcf::Record.new(header, take_bcf1!(pointerof(bcf1)))
           apply_subset!(record)
           yield record
           bcf1 = new_bcf1!
@@ -330,9 +328,7 @@ module HTS
         begin
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
           while slen >= 0
-            record = Bcf::Record.new(header, bcf1)
-            # Ownership moved to Record; keep ensure from destroying it.
-            bcf1 = Pointer(LibHTS::Bcf1T).null
+            record = Bcf::Record.new(header, take_bcf1!(pointerof(bcf1)))
             apply_subset!(record)
             yield record
             bcf1 = new_bcf1!
@@ -358,6 +354,12 @@ module HTS
     private def new_bcf1! : LibHTS::Bcf1T*
       bcf1 = LibHTS.bcf_init
       raise "bcf_init failed" if bcf1.null?
+      bcf1
+    end
+
+    private def take_bcf1!(slot : Pointer(LibHTS::Bcf1T*)) : LibHTS::Bcf1T*
+      bcf1 = slot.value
+      slot.value = Pointer(LibHTS::Bcf1T).null
       bcf1
     end
 
