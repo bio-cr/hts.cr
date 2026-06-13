@@ -140,12 +140,9 @@ module HTS
 
     # Class method: build index for any file on disk (even after close)
     def self.build_index(file_name : Path | String, index_name = "", min_shift = 0, threads = 0, verbose = true)
+      index_name = default_index_name(file_name.to_s, index_name)
       if verbose
-        if index_name == ""
-          STDERR.puts "Create index for #{file_name}"
-        else
-          STDERR.puts "Create index for #{file_name} to #{index_name}"
-        end
+        STDERR.puts "Create index for #{file_name} to #{index_name}"
       end
 
       case LibHTS.sam_index_build3(file_name.to_s, index_name, min_shift, threads)

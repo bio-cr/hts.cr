@@ -19,6 +19,8 @@ class BamWriteTest
       "temp_write_block.bam.bai",
       "temp_write_index.bam",
       "temp_write_index.bam.bai",
+      "temp_write_default_index.bam",
+      "temp_write_default_index.bam.bai",
       "temp_write_auto_index.bam",
       "temp_write_auto_index.bam.bai",
       "temp_no_header.bam",
@@ -249,6 +251,31 @@ class BamWriteTest
       bam.query("chr1:250-350") { |record| positions << record.pos }
       positions.should eq([300])
     end
+  end
+
+  def test_build_index_uses_default_index_name
+    path = temp_path("temp_write_default_index.bam")
+    index_path = "#{path}.bai"
+    header = HTS::Bam::Header.parse(minimal_header_text)
+
+    HTS::Bam.open(path, "wb") do |bam|
+      bam.write_header(header)
+      rec = HTS::Bam::Record.new(
+        header,
+        qname: "default_index_read",
+        flag: 0_u16,
+        rname: "chr1",
+        pos: 100_i64,
+        mapq: 60_u8,
+        cigar_str: "10M",
+        seq: "AAAAAAAAAA",
+        qual: [30_u8] * 10
+      )
+      bam.write(rec)
+    end
+
+    HTS::Bam.build_index(path, "", 0, 0, false)
+    File.exists?(index_path).should be_true
   end
 
   # Test error: write without header
