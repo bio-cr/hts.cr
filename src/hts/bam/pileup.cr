@@ -152,24 +152,8 @@ module HTS
         begin
           @hdr = @bam.header
 
-          # Build region iterator if specified
-          itr_ptr = Pointer(LibHTS::HtsItrT).null
-          if region
-            # Ensure we have an index; if not accessible, load a temporary one
-            raise "Index file is required to use region pileup" unless @bam.index_loaded?
+          itr_ptr = init_region_iterator(region)
 
-            # Load an index handle we can pass to htslib; keep it to destroy later
-            idx_ptr = @bam.load_index
-            raise "Index not available" if idx_ptr.null?
-            @idx_local = idx_ptr
-
-            # Create iterator from region string (1-based inclusive SAM-style)
-            itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)
-            raise "Failed to query region: #{region}" if itr_ptr.null?
-            @itr = itr_ptr
-          end
-
-          # Prepare callback user data block
           udata = Pointer(InputData).malloc(1)
           @udata = udata
           udata.value = InputData.new(
@@ -178,24 +162,9 @@ module HTS
             itr_ptr
           )
 
-          # Read function compatible with bam_plp_init
-          # Expected return values:
-          #   0 on success, -1 on EOF, < -1 on non-recoverable errors
-          cb = ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
-            id = data.as(Pointer(InputData)).value
-            if id.itr.null?
-              # Whole-file path: sam_read1 returns -1 on EOF or error (no finer error code)
-              r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
-              r >= 0 ? 0 : -1
-            else
-              # Region iterator path: sam_itr_next returns < -1 on error, -1 on EOF
-              r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
-              r >= 0 ? 0 : r
-            end
-          }
+          cb = pileup_read_callback
           @cb = cb
 
-          # Create pileup iterator
           plp = LibHTS.bam_plp_init(cb, udata.as(Void*))
           raise "bam_plp_init failed" if plp.nil? || plp.as(Void*).null?
           @plp = plp
@@ -260,6 +229,35 @@ module HTS
 
       def finalize
         close
+      end
+
+      private def init_region_iterator(region : String?) : LibHTS::HtsItrT*
+        itr_ptr = Pointer(LibHTS::HtsItrT).null
+        return itr_ptr unless region
+
+        raise "Index file is required to use region pileup" unless @bam.index_loaded?
+
+        idx_ptr = @bam.load_index
+        raise "Index not available" if idx_ptr.null?
+        @idx_local = idx_ptr
+
+        itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)
+        raise "Failed to query region: #{region}" if itr_ptr.null?
+        @itr = itr_ptr
+        itr_ptr
+      end
+
+      private def pileup_read_callback
+        ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
+          id = data.as(Pointer(InputData)).value
+          if id.itr.null?
+            r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
+            r >= 0 ? 0 : -1
+          else
+            r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
+            r >= 0 ? 0 : r
+          end
+        }
       end
     end
   end
