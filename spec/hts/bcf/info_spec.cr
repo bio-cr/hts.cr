@@ -9,7 +9,7 @@ class BcfInfoTest
       file.close
 
       header = HTS::Bcf::Header.new
-      header.set_version("VCFv4.3")
+      header.version = "VCFv4.3"
       header.append("##contig=<ID=1,length=5000000000>")
       header.append("##INFO=<ID=ABSI,Number=1,Type=Integer,Description=\"defined but absent integer\">")
       header.append("##INFO=<ID=ABSF,Number=1,Type=Float,Description=\"defined but absent float\">")

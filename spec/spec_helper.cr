@@ -24,7 +24,7 @@ module TestBcfMultisampleHelper
       file.close
 
       header = HTS::Bcf::Header.new
-      header.set_version("VCFv4.3")
+      header.version = "VCFv4.3"
       header.append("##contig=<ID=1,length=100>")
       header.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
       header.add_sample("A", sync: false)

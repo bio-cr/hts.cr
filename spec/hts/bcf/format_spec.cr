@@ -29,7 +29,7 @@ class BcfFormatTest
       file.close
 
       header = HTS::Bcf::Header.new
-      header.set_version("VCFv4.3")
+      header.version = "VCFv4.3"
       header.append("##contig=<ID=1,length=100>")
       header.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
       header.append("##FORMAT=<ID=PL,Number=G,Type=Integer,Description=\"Phred likelihoods\">")
@@ -87,7 +87,7 @@ class BcfFormatTest
       file.close
 
       header = HTS::Bcf::Header.new
-      header.set_version("VCFv4.3")
+      header.version = "VCFv4.3"
       header.append("##contig=<ID=1,length=100>")
       header.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
       header.add_sample("S1", sync: false)
@@ -251,7 +251,7 @@ class BcfFormatTest
 
   def test_format_flag_is_unsupported
     header = HTS::Bcf::Header.new
-    header.set_version("VCFv4.3")
+    header.version = "VCFv4.3"
     header.append("##contig=<ID=1,length=100>")
     header.append("##FORMAT=<ID=BAD,Number=0,Type=Flag,Description=\"Unsupported\">")
     header.add_sample("S1")

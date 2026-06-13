@@ -64,14 +64,6 @@ module HTS
         self
       end
 
-      def get_version
-        version
-      end
-
-      def set_version(version)
-        self.version = version
-      end
-
       def nsamples
         LibHTS2.bcf_hdr_nsamples(@bcf_hdr)
       end
@@ -143,17 +135,25 @@ module HTS
         names = normalize_subset_samples(sample_names)
         validate_subset_samples!(names)
 
-        sample_ptrs = Pointer(Pointer(LibC::Char)).null
-        imap_buffer = Pointer(Int32).null
-        encoded_samples = [] of Pointer(LibC::Char)
-
-        unless names.empty?
+        if names.empty?
+          imap_buffer = Pointer(Int32).null
+          subset_hdr = LibHTS.bcf_hdr_subset(
+            @bcf_hdr,
+            names.size,
+            Pointer(Pointer(LibC::Char)).null,
+            imap_buffer
+          )
+        else
           encoded_samples = names.map(&.to_unsafe)
-          sample_ptrs = encoded_samples.to_unsafe
           imap_buffer = Pointer(Int32).malloc(names.size)
+          subset_hdr = LibHTS.bcf_hdr_subset(
+            @bcf_hdr,
+            names.size,
+            encoded_samples.to_unsafe,
+            imap_buffer
+          )
         end
 
-        subset_hdr = LibHTS.bcf_hdr_subset(@bcf_hdr, names.size, sample_ptrs, imap_buffer)
         raise SubsetError.new("Failed to subset BCF header samples #{names.inspect}") if subset_hdr.null?
 
         header = self.class.new(subset_hdr)

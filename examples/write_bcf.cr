@@ -11,7 +11,7 @@ out_path = ARGV[0]? || File.expand_path("./out.bcf", __DIR__)
 
 header = HTS::Bcf::Header.new
 header.edit do |edited_header|
-  edited_header.set_version("VCFv4.3")
+  edited_header.version = "VCFv4.3"
   edited_header.add_contig("ref", length: 1000)
   edited_header.add_info("DP", number: 1, type: :int, description: "Read depth")
   edited_header.add_format("GT", number: 1, type: :string, description: "Genotype")

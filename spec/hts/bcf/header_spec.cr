@@ -26,14 +26,14 @@ class BcfHeaderTest
     (HTS::Bcf::Header.new).should be_a(HTS::Bcf::Header)
   end
 
-  def test_get_version
-    (hdr.get_version).should eq("VCFv4.2")
+  def test_version
+    (hdr.version).should eq("VCFv4.2")
   end
 
-  def test_set_version
+  def test_version_setter
     hdr2 = hdr.clone
-    hdr2.set_version("VCFv9.9")
-    (hdr2.get_version).should eq("VCFv9.9")
+    hdr2.version = "VCFv9.9"
+    (hdr2.version).should eq("VCFv9.9")
   end
 
   def test_nsamples
