@@ -2,10 +2,10 @@
 
 [![CI](https://github.com/bio-cr/hts.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-cr/hts.cr/actions/workflows/ci.yml)
 [![Slack](http://img.shields.io/badge/slack-bio--crystal-purple?labelColor=000000&logo=slack)](https://bio-crystal.slack.com/)
-[![Get invite to BioCrystal](http://img.shields.io/badge/Get_invite_to_BioCrystal-purple?labelColor=000000&logo=slack)](https://join.slack.com/t/bio-crystal/shared_invite/zt-tas46pww-JSEloonmn3Ma5eD2~VeT_g)
 [![Docs Latest](https://img.shields.io/badge/docs-latest-blue.svg)](https://bio-cr.github.io/hts.cr/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bio-cr/hts.cr)
 [![Lines of Code](https://img.shields.io/endpoint?url=https%3A%2F%2Ftokei.kojix2.net%2Fbadge%2Fgithub%2Fbio-cr%2Fhts.cr%2Flines)](https://tokei.kojix2.net/github/bio-cr/hts.cr)
+[![DOI](https://zenodo.org/badge/351622305.svg)](https://doi.org/10.5281/zenodo.6462533)
 
 HTS.cr provides [Crystal](https://github.com/crystal-lang/crystal) bindings for [HTSlib](https://github.com/samtools/htslib) that allow you to read and write file formats commonly used in genomics, such as [SAM, BAM, VCF, and BCF](http://samtools.github.io/hts-specs/).
 
