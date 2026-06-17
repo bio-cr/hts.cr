@@ -91,7 +91,9 @@ class BcfTest
   end
 
   def test_new
-    b = HTS::Bcf.new(test_bcf_path)
+    # test.bcf is an older fixture whose MQ header triggers an htslib warning.
+    # Keep errors visible while avoiding a warning-only line in normal spec output.
+    b = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
     (b).should be_a(HTS::Bcf)
     b.close
     (b.closed?).should be_true
@@ -146,7 +148,9 @@ class BcfTest
   end
 
   def test_initialize_no_file_bcf
-    expect_raises(HTS::Bcf::OpenError) { HTS::Bcf.new("/tmp/no_such_file") }
+    with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(HTS::Bcf::OpenError) { HTS::Bcf.new("/tmp/no_such_file") }
+    end
   end
 
   def test_initialize_with_subset

@@ -255,7 +255,14 @@ class BamTest
 
       def test_qname_{{ ft }}
         b = HTS::Bam.new(path_{{ ft }})
+        {% if format == "cram" %}
+        stderr = capture_stderr do
+          (b.qname.size).should eq(10)
+        end
+        (stderr).should contain("not seekable")
+        {% else %}
         (b.qname.size).should eq(10)
+        {% end %}
         b.close
       end
 
@@ -263,7 +270,9 @@ class BamTest
   {% end %}
 
   def test_initialize_no_file_bam
-    expect_raises(Exception) { HTS::Bam.new("/tmp/no_such_file") }
+    with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(Exception) { HTS::Bam.new("/tmp/no_such_file") }
+    end
   end
 
   def test_initialize_build_index_loads_index

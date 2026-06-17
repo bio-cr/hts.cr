@@ -43,7 +43,9 @@ class BamHeaderTest
   end
 
   def test_parse_rejects_invalid_header_text
-    ex = expect_raises(ArgumentError) { HTS::Bam::Header.parse("not-a-sam-header") }
+    ex = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(ArgumentError) { HTS::Bam::Header.parse("not-a-sam-header") }
+    end
     (ex.message.to_s).should contain("Failed to parse SAM header text")
   end
 

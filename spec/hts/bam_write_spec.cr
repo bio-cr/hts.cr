@@ -203,7 +203,7 @@ class BamWriteTest
     # Try to build index - may fail if BAM is not properly sorted
     # This is mainly to test the API works
     begin
-      HTS::Bam.build_index(path, "", 0, false)
+      HTS::Bam.build_index(path, "", 0, 0, false)
       # If successful, index file should exist
       if File.exists?(index_path)
         # Test querying
@@ -225,24 +225,27 @@ class BamWriteTest
     index_path = "#{path}.bai"
     header = HTS::Bam::Header.parse(minimal_header_text)
 
-    HTS::Bam.open(path, "wb", build_index: true) do |bam|
-      bam.write_header(header)
+    stderr = capture_stderr do
+      HTS::Bam.open(path, "wb", build_index: true) do |bam|
+        bam.write_header(header)
 
-      [100_i64, 300_i64].each_with_index do |pos, i|
-        rec = HTS::Bam::Record.new(
-          header,
-          qname: "auto_index_read#{i}",
-          flag: 0_u16,
-          rname: "chr1",
-          pos: pos,
-          mapq: 60_u8,
-          cigar_str: "10M",
-          seq: "AAAAAAAAAA",
-          qual: [30_u8] * 10
-        )
-        bam.write(rec)
+        [100_i64, 300_i64].each_with_index do |pos, i|
+          rec = HTS::Bam::Record.new(
+            header,
+            qname: "auto_index_read#{i}",
+            flag: 0_u16,
+            rname: "chr1",
+            pos: pos,
+            mapq: 60_u8,
+            cigar_str: "10M",
+            seq: "AAAAAAAAAA",
+            qual: [30_u8] * 10
+          )
+          bam.write(rec)
+        end
       end
     end
+    (stderr).should contain("Create index")
 
     File.exists?(index_path).should be_true
 
@@ -323,8 +326,10 @@ class BamWriteTest
 
   # Test error: invalid path
   def test_error_invalid_path
-    ex = expect_raises(Exception) do
-      HTS::Bam.open("/nonexistent/directory/file.bam", "wb")
+    ex = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(Exception) do
+        HTS::Bam.open("/nonexistent/directory/file.bam", "wb")
+      end
     end
     (ex.message.try &.includes?("Failed to open")).should be_true
   end

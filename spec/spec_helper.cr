@@ -1,6 +1,42 @@
 require "spec"
 require "../src/hts"
 
+# Temporarily change htslib's internal log level (hts_log, e.g. "[E::...]" / "[W::...]").
+def with_htslib_log_level(level : HTS::LibHTS::HtsLogLevel, &)
+  previous = HTS::LibHTS.hts_get_log_level
+  HTS::LibHTS.hts_set_log_level(level)
+  begin
+    yield
+  ensure
+    HTS::LibHTS.hts_set_log_level(previous)
+  end
+end
+
+# Redirect stderr to a temporary file and return everything written to it.
+# A tempfile is used
+# rather than /dev/null because the latter caused htslib reads to fail
+# (rc=-2) on macOS during testing.
+def capture_stderr(&) : String
+  original_stderr = STDERR.dup
+  temp = File.tempfile("hts_spec_stderr")
+  temp_path = temp.path
+
+  begin
+    STDERR.reopen(temp)
+    yield
+    STDERR.flush
+    temp.flush
+    temp.rewind
+    temp.gets_to_end
+  ensure
+    STDERR.flush rescue nil
+    STDERR.reopen(original_stderr)
+    original_stderr.close
+    temp.close
+    File.delete(temp_path) if temp_path && File.exists?(temp_path)
+  end
+end
+
 BAM_FLAG_METHODS = %w[
   paired?
   proper_pair?
