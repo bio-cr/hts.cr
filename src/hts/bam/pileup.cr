@@ -152,7 +152,12 @@ module HTS
         begin
           @hdr = @bam.header
 
-          itr_ptr = init_region_iterator(region)
+          itr_ptr =
+            if region_string = region
+              init_region_iterator(region_string)
+            else
+              Pointer(LibHTS::HtsItrT).null
+            end
 
           udata = Pointer(InputData).malloc(1)
           @udata = udata
@@ -231,10 +236,7 @@ module HTS
         close
       end
 
-      private def init_region_iterator(region : String?) : LibHTS::HtsItrT*
-        itr_ptr = Pointer(LibHTS::HtsItrT).null
-        return itr_ptr unless region
-
+      private def init_region_iterator(region : String) : LibHTS::HtsItrT*
         raise "Index file is required to use region pileup" unless @bam.index_loaded?
 
         idx_ptr = @bam.load_index
