@@ -56,6 +56,30 @@ class BgzfTest
     test_file.delete
   end
 
+  def test_gets_raises_on_read_error
+    test_file = File.tempfile("bad_bgzf_gets", ".gz")
+    path = test_file.path
+    test_file.close
+
+    begin
+      HTS::Bgzf.open(path, "wz") do |bgzf|
+        bgzf.puts("hello")
+        bgzf.puts("world")
+      end
+
+      size = File.size(path)
+      File.open(path, "r+") { |file| file.truncate(size - 10) }
+
+      HTS::Bgzf.open(path, "r") do |bgzf|
+        (bgzf.gets).should eq("hello")
+        (bgzf.gets).should eq("world")
+        expect_raises(HTS::Bgzf::ReadError) { bgzf.gets }
+      end
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def test_iterate_over_lines
     test_file = File.tempfile("test", ".gz")
     test_file.close
@@ -121,6 +145,31 @@ class BgzfTest
     test_file.delete
   end
 
+  def test_getc_raises_on_read_error
+    test_file = File.tempfile("bad_bgzf_getc", ".gz")
+    path = test_file.path
+    test_file.close
+
+    begin
+      HTS::Bgzf.open(path, "wz") do |bgzf|
+        bgzf.puts("hello")
+        bgzf.puts("world")
+      end
+
+      size = File.size(path)
+      File.open(path, "r+") { |file| file.truncate(size - 10) }
+
+      HTS::Bgzf.open(path, "r") do |bgzf|
+        "hello\nworld\n".each_char do |char|
+          (bgzf.getc).should eq(char)
+        end
+        expect_raises(HTS::Bgzf::ReadError) { bgzf.getc }
+      end
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def test_read_bytes_with_read
     test_file = File.tempfile("test", ".gz")
     test_file.close
@@ -169,6 +218,29 @@ class BgzfTest
     end
 
     test_file.delete
+  end
+
+  def test_close_raises_on_write_failure
+    return unless File.exists?("/dev/full")
+
+    bgzf = HTS::Bgzf.open("/dev/full", "wz")
+    bgzf.write("x" * 100_000)
+
+    expect_raises(HTS::Bgzf::WriteError) { bgzf.close }
+    (bgzf.closed?).should be_true
+  end
+
+  def test_block_open_prefers_body_exception_over_close_failure
+    return unless File.exists?("/dev/full")
+
+    ex = expect_raises(ArgumentError) do
+      HTS::Bgzf.open("/dev/full", "wz") do |bgzf|
+        bgzf.write("x" * 100_000)
+        raise ArgumentError.new("body failure")
+      end
+    end
+
+    (ex.message).should eq("body failure")
   end
 
   def test_write_lines_with_puts

@@ -3,6 +3,7 @@ require "./libhts"
 module HTS
   class Hts
     @start_position : Int64?
+    @mode : String = ""
 
     macro define_getter(name)
       def {{ name.id }}
@@ -87,8 +88,29 @@ module HTS
 
     protected def close_hts_file
       return if closed?
-      LibHTS.hts_close(@hts_file)
+      rc = LibHTS.hts_close(@hts_file)
       @hts_file = @hts_file.class.null
+      raise close_error if rc < 0 && close_error_fatal?
+    end
+
+    protected def close_error_fatal?
+      @mode.includes?('w') || @mode.includes?('a')
+    end
+
+    protected def close_error : Exception
+      CloseError.new("Failed to close file")
+    end
+
+    protected def self.close_after_yield(file, &)
+      begin
+        result = yield file
+      rescue ex
+        file.close rescue nil
+        raise ex
+      else
+        file.close
+        result
+      end
     end
 
     def seek(offset)

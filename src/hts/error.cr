@@ -10,4 +10,7 @@ module HTS
 
   class RewindError < Error
   end
+
+  class CloseError < Error
+  end
 end

@@ -21,11 +21,7 @@ module HTS
 
     def self.open(file_name : Path | String, mode = "r", index = "", threads = 0, build_index = false, preset = :vcf, &)
       file = new(file_name, mode, index, threads, build_index, preset)
-      begin
-        yield file
-      ensure
-        file.close
-      end
+      close_after_yield(file) { |handle| yield handle }
       file
     end
 
@@ -171,6 +167,8 @@ module HTS
 
     def finalize
       close unless closed?
+    rescue Exception
+      nil
     end
 
     private def query_by_coord(tid : Int32, beg : Int64, end_pos : Int64, &)

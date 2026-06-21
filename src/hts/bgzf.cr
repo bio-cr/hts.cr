@@ -30,11 +30,7 @@ module HTS
 
     def self.open(file_name : Path | String, mode = "r", threads = 0, &)
       file = new(file_name, mode, threads)
-      begin
-        yield file
-      ensure
-        file.close
-      end
+      close_after_yield(file) { |handle| yield handle }
     end
 
     def initialize(@file_name : Path | String, @mode = "r", threads = 0)
@@ -65,7 +61,9 @@ module HTS
       return if bgzf_fp.null?
 
       result = LibHTS.bgzf_getc(bgzf_fp)
-      return if result < 0
+      return if result == -1
+      raise ReadError.new("Failed to read character from BGZF file") if result <= -2
+
       result.chr
     end
 
@@ -87,8 +85,12 @@ module HTS
             LibHTS.bgzf_getline(bgzf_fp, delimiter.ord, pointerof(str))
           end
 
-        if result < 0 || str.s.null?
+        if result == -1
           nil
+        elsif result <= -2
+          raise ReadError.new("Failed to read line from #{@file_name}")
+        elsif str.s.null?
+          raise ReadError.new("Failed to read line from #{@file_name}")
         else
           String.new(str.s, str.l)
         end
@@ -157,7 +159,10 @@ module HTS
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       return 0 if bgzf_fp.null?
 
-      LibHTS.bgzf_flush(bgzf_fp)
+      rc = LibHTS.bgzf_flush(bgzf_fp)
+      raise WriteError.new("Failed to flush BGZF file #{@file_name}") if rc < 0
+
+      rc
     end
 
     def finalize
@@ -224,6 +229,10 @@ module HTS
       else
         LibHTS2.bgzf_tell(bgzf_fp)
       end
+    end
+
+    protected def close_error : Exception
+      WriteError.new("Failed to close BGZF file #{@file_name}")
     end
   end
 end

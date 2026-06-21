@@ -36,11 +36,7 @@ module HTS
     def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
                   threads = 0, build_index = false, &)
       file = new(file_name, mode, index, fai, threads, build_index)
-      begin
-        yield file
-      ensure
-        file.close
-      end
+      close_after_yield(file) { |handle| yield handle }
       file
     end
 
@@ -203,6 +199,12 @@ module HTS
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
       @idx = @idx.class.null
       close_hts_file
+    rescue Exception
+      nil
+    end
+
+    protected def close_error : Exception
+      WriteError.new("Failed to close BAM file #{@file_name}")
     end
 
     def fai=(fai)
