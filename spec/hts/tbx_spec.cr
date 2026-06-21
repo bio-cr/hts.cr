@@ -14,6 +14,12 @@ class TabixTest
     "poo\t500\t.\tA\tC\t.\t.\t.",
   ]
 
+  BED_LINES = [
+    "chr1\t0\t100\twide",
+    "chr1\t200\t300\tfar",
+    "chr2\t5\t15\tother",
+  ]
+
   @vcf_gz : String = ""
 
   def setup
@@ -224,6 +230,36 @@ class TabixTest
       plain.close rescue nil
       File.delete(path) if File.exists?(path)
       File.delete("#{path}.tbi") if File.exists?("#{path}.tbi")
+    end
+  end
+
+  def test_build_index_with_bed_preset
+    bed_gz = File.tempfile("tbx_bed", ".bed.gz")
+    path = bed_gz.path
+    bed_gz.close
+
+    begin
+      HTS::Bgzf.open(path, "wz") do |bgzf|
+        BED_LINES.each { |line| bgzf.puts(line) }
+      end
+
+      HTS::Tabix.build_index(path, verbose: false, preset: :bed)
+
+      HTS::Tabix.open(path) do |tbx|
+        results = [] of Array(String)
+        tbx.query("chr1:50-60") { |feature| results << feature }
+
+        (results).should eq([["chr1", "0", "100", "wide"]])
+      end
+    ensure
+      File.delete(path) if File.exists?(path)
+      File.delete("#{path}.tbi") if File.exists?("#{path}.tbi")
+    end
+  end
+
+  def test_build_index_rejects_unknown_preset
+    expect_raises(ArgumentError, /Unsupported tabix preset/) do
+      HTS::Tabix.build_index(@vcf_gz, verbose: false, preset: :unknown)
     end
   end
 end

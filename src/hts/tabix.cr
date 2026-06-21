@@ -15,12 +15,12 @@ module HTS
     getter :file_name
     getter :mode
 
-    def self.open(file_name : Path | String, mode = "r", index = "", threads = 0, build_index = false)
-      new(file_name, mode, index, threads, build_index)
+    def self.open(file_name : Path | String, mode = "r", index = "", threads = 0, build_index = false, preset = :vcf)
+      new(file_name, mode, index, threads, build_index, preset)
     end
 
-    def self.open(file_name : Path | String, mode = "r", index = "", threads = 0, build_index = false, &)
-      file = new(file_name, mode, index, threads, build_index)
+    def self.open(file_name : Path | String, mode = "r", index = "", threads = 0, build_index = false, preset = :vcf, &)
+      file = new(file_name, mode, index, threads, build_index, preset)
       begin
         yield file
       ensure
@@ -29,7 +29,7 @@ module HTS
       file
     end
 
-    def initialize(file_name : Path | String, @mode = "r", index = "", threads = 0, build_index = false)
+    def initialize(file_name : Path | String, @mode = "r", index = "", threads = 0, build_index = false, preset = :vcf)
       @file_name = file_name.to_s
       @idx = Pointer(LibHTS::TbxT).null
       @hts_file = Pointer(LibHTS::HtsFile).null
@@ -42,7 +42,7 @@ module HTS
 
         set_threads(threads) if threads > 0
 
-        build_index(index) if build_index
+        build_index(index, preset: preset) if build_index
         @idx = load_index(index)
         @start_position = tell
       rescue ex
@@ -52,7 +52,9 @@ module HTS
     end
 
     # Build a tabix index for *file_name* on disk. Uses the VCF preset by default.
-    def self.build_index(file_name : Path | String, index_name = "", min_shift = 0, threads = 0, verbose = true)
+    #
+    # Supported presets are `:vcf`, `:bed`, `:gff`, `:sam`, and `:psltbl`.
+    def self.build_index(file_name : Path | String, index_name = "", min_shift = 0, threads = 0, verbose = true, preset = :vcf)
       fn = file_name.to_s
       if verbose
         if index_name == ""
@@ -62,7 +64,7 @@ module HTS
         end
       end
 
-      conf = LibHTS.tbx_conf_vcf
+      conf = tabix_conf_for(preset)
       rc =
         if threads > 0
           LibHTS.tbx_index_build3(fn, index_name == "" ? Pointer(LibC::Char).null : index_name.to_unsafe, min_shift, threads, pointerof(conf))
@@ -81,8 +83,8 @@ module HTS
     end
 
     # Build a tabix index for this file. Delegates to the class method.
-    def build_index(index_name = "", min_shift = 0, verbose = true)
-      self.class.build_index(@file_name.to_s, index_name, min_shift, (@nthreads || 0), verbose)
+    def build_index(index_name = "", min_shift = 0, verbose = true, preset = :vcf)
+      self.class.build_index(@file_name.to_s, index_name, min_shift, (@nthreads || 0), verbose, preset)
       self
     end
 
@@ -210,6 +212,18 @@ module HTS
         raise ReadError.new("Failed to read tabix query record from #{@file_name} (rc=#{rc})") if rc < -1
       ensure
         LibC.free(r.s) unless r.s.null?
+      end
+    end
+
+    private def self.tabix_conf_for(preset)
+      case preset.to_s.downcase
+      when "vcf"    then LibHTS.tbx_conf_vcf
+      when "bed"    then LibHTS.tbx_conf_bed
+      when "gff"    then LibHTS.tbx_conf_gff
+      when "sam"    then LibHTS.tbx_conf_sam
+      when "psltbl" then LibHTS.tbx_conf_psltbl
+      else
+        raise ArgumentError.new("Unsupported tabix preset: #{preset.inspect}")
       end
     end
   end
