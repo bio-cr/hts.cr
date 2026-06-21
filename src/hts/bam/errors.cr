@@ -41,5 +41,8 @@ module HTS
 
     class AuxTypeError < AuxError
     end
+
+    class AuxUpdateError < AuxError
+    end
   end
 end
