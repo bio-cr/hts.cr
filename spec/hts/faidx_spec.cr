@@ -121,7 +121,7 @@ class FaidxTest
   end
 
   def test_fetch_qual_on_fasta_raises
-    expect_raises(Exception) { fasta.fetch_qual("chr1") }
+    expect_raises(HTS::Faidx::FileFormatError) { fasta.fetch_qual("chr1") }
   end
 
   def test_invalid_range

@@ -94,7 +94,7 @@ module HTS
             return name
           end
           b = bam1
-          raise "null bam1_t" if b.null?
+          raise PileupError.new("null bam1_t") if b.null?
           @qname = String.new(LibHTS2.bam_get_qname(b))
         end
 
@@ -107,9 +107,9 @@ module HTS
             return rec
           end
           b = bam1
-          raise "null bam1_t" if b.null?
+          raise PileupError.new("null bam1_t") if b.null?
           dup = LibHTS.bam_dup1(b)
-          raise "bam_dup1 failed" if dup.null?
+          raise PileupError.new("bam_dup1 failed") if dup.null?
           @record = Bam::Record.new(@header, dup)
         end
 
@@ -171,7 +171,7 @@ module HTS
           @cb = cb
 
           plp = LibHTS.bam_plp_init(cb, udata.as(Void*))
-          raise "bam_plp_init failed" if plp.nil? || plp.as(Void*).null?
+          raise PileupError.new("bam_plp_init failed") if plp.nil? || plp.as(Void*).null?
           @plp = plp
           if cnt = @maxcnt
             LibHTS.bam_plp_set_maxcnt(plp, cnt)
@@ -194,7 +194,7 @@ module HTS
           if plp1.null?
             # bam_plp64_auto sets n = 0 on EOF, n < 0 on error
             break if n >= 0
-            raise "HTSlib pileup error (bam_plp64_auto), n=#{n}"
+            raise PileupError.new("HTSlib pileup error (bam_plp64_auto), n=#{n}")
           end
 
           aligns = Array(Alignment).new(n)
@@ -237,14 +237,14 @@ module HTS
       end
 
       private def init_region_iterator(region : String) : LibHTS::HtsItrT*
-        raise "Index file is required to use region pileup" unless @bam.index_loaded?
+        raise MissingIndexError.new("Index file is required to use region pileup") unless @bam.index_loaded?
 
         idx_ptr = @bam.load_index
-        raise "Index not available" if idx_ptr.null?
+        raise MissingIndexError.new("Index not available") if idx_ptr.null?
         @idx_local = idx_ptr
 
         itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)
-        raise "Failed to query region: #{region}" if itr_ptr.null?
+        raise QueryError.new("Failed to query region: #{region}") if itr_ptr.null?
         @itr = itr_ptr
         itr_ptr
       end

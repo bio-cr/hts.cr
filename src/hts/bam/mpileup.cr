@@ -95,7 +95,7 @@ module HTS
           @cb = cb
 
           iter = LibHTS.bam_mplp_init(@n_inputs, cb, data_array.as(Void**))
-          raise "bam_mplp_init failed" if iter.nil? || iter.as(Void*).null?
+          raise MpileupError.new("bam_mplp_init failed") if iter.nil? || iter.as(Void*).null?
           @iter = iter
 
           if cnt = @maxcnt
@@ -103,7 +103,7 @@ module HTS
           end
           if @overlaps
             rc = LibHTS.bam_mplp_init_overlaps(iter)
-            raise "bam_mplp_init_overlaps failed" if rc < 0
+            raise MpileupError.new("bam_mplp_init_overlaps failed") if rc < 0
           end
         rescue ex
           close
@@ -124,7 +124,7 @@ module HTS
         loop do
           rc = LibHTS.bam_mplp64_auto(iter, pointerof(tid), pointerof(pos), n_plp, plp_arr)
           # Distinguish error from normal EOF
-          raise "bam_mplp64_auto failed" if rc < 0
+          raise MpileupError.new("bam_mplp64_auto failed") if rc < 0
           break if rc == 0
 
           cols = Array(HTS::Bam::Pileup::Column).new(@n_inputs)
@@ -132,7 +132,7 @@ module HTS
           while s < @n_inputs
             count = n_plp[s]
             # Defensive check against invalid counts
-            raise "Invalid pileup count: #{count} (input #{s})" if count < 0
+            raise MpileupError.new("Invalid pileup count: #{count} (input #{s})") if count < 0
 
             base_ptr = plp_arr[s]
             if count == 0 || base_ptr.null?

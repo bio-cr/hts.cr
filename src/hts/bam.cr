@@ -62,13 +62,13 @@ module HTS
 
         @hts_file = LibHTS.hts_open(@file_name, @mode)
 
-        raise "Failed to open file #{@file_name}" if @hts_file.null?
+        raise OpenError.new("Failed to open file #{@file_name}") if @hts_file.null?
 
         fai = self.class.infer_cram_reference(@file_name, fai)
 
         if fai != ""
           r = LibHTS.hts_set_fai_filename(@hts_file, fai)
-          r < 0 && raise "Failed to load fasta index: #{fai}"
+          raise FastaIndexError.new("Failed to load FASTA index: #{fai}") if r < 0
         end
 
         set_threads(threads) if threads > 0
@@ -142,11 +142,11 @@ module HTS
 
       case LibHTS.sam_index_build3(file_name.to_s, index_name, min_shift, threads)
       when 0 # successful
-      when -1 then raise "indexing failed"
-      when -2 then raise "opening #{file_name} failed"
-      when -3 then raise "format not indexable"
-      when -4 then raise "failed to create and/or save the index"
-      else         raise "unknown error"
+      when -1 then raise IndexError.new("Indexing failed for #{file_name}")
+      when -2 then raise OpenError.new("Opening #{file_name} failed while building index")
+      when -3 then raise IndexError.new("Format is not indexable: #{file_name}")
+      when -4 then raise IndexError.new("Failed to create and/or save the index for #{file_name}")
+      else         raise IndexError.new("Unknown error building index for #{file_name}")
       end
     end
 
@@ -163,11 +163,11 @@ module HTS
 
       case LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
       when 0 # successful
-      when -1 then raise "indexing failed"
-      when -2 then raise "opening #{@file_name} failed"
-      when -3 then raise "format not indexable"
-      when -4 then raise "failed to create and/or save the index"
-      else         raise "unknown error"
+      when -1 then raise IndexError.new("Indexing failed for #{@file_name}")
+      when -2 then raise OpenError.new("Opening #{@file_name} failed while building index")
+      when -3 then raise IndexError.new("Format is not indexable: #{@file_name}")
+      when -4 then raise IndexError.new("Failed to create and/or save the index for #{@file_name}")
+      else         raise IndexError.new("Unknown error building index for #{@file_name}")
       end
       self # for method chaining
     end
@@ -206,7 +206,7 @@ module HTS
     def fai=(fai)
       check_closed
       r = LibHTS.hts_set_fai_filename(@hts_file, fai)
-      r < 0 && raise "Failed to load fasta: #{fai}"
+      raise FastaIndexError.new("Failed to load FASTA: #{fai}") if r < 0
     end
 
     def write_header(header)
@@ -214,7 +214,7 @@ module HTS
 
       cloned_header = header.clone # Necessary. If not, it will cause segfault.
       r = LibHTS.sam_hdr_write(@hts_file, cloned_header)
-      raise "Failed to write SAM/BAM header" if r < 0
+      raise WriteError.new("Failed to write SAM/BAM header") if r < 0
 
       @header = cloned_header
       @header_written = true
@@ -227,10 +227,10 @@ module HTS
     def write(record)
       check_closed
       unless @header_written
-        raise "Header not written. Call write_header(header) first."
+        raise WriteError.new("Header not written. Call write_header(header) first.")
       end
       r = LibHTS.sam_write1(@hts_file, header, record)
-      raise "Failed to write record: #{record}" if r < 0
+      raise WriteError.new("Failed to write record: #{record}") if r < 0
     end
 
     def <<(record)
@@ -351,7 +351,7 @@ module HTS
           bam1 = new_bam1!
           ret = LibHTS.sam_read1(@hts_file, header, bam1)
         end
-        raise HTS::Error.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
+        raise ReadError.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
       ensure
         LibHTS.bam_destroy1(bam1) unless bam1.null?
       end
@@ -367,7 +367,7 @@ module HTS
         yield record
         ret = LibHTS.sam_read1(@hts_file, header, bam1)
       end
-      raise HTS::Error.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
+      raise ReadError.new("Failed to read SAM/BAM record from #{@file_name} (rc=#{ret})") if ret < -1
     end
 
     private def collect_aux_values(& : Record -> T) : Array(T) forall T
@@ -508,7 +508,7 @@ module HTS
             bam1 = new_bam1!
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
           end
-          raise HTS::Error.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
+          raise ReadError.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
         ensure
           LibHTS.bam_destroy1(bam1) unless bam1.null?
         end
@@ -520,13 +520,13 @@ module HTS
           yield record
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         end
-        raise HTS::Error.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
+        raise ReadError.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
       end
     end
 
     private def new_bam1! : LibHTS::Bam1T*
       bam1 = LibHTS.bam_init1
-      raise "bam_init1 failed" if bam1.null?
+      raise RecordError.new("bam_init1 failed") if bam1.null?
       bam1
     end
 

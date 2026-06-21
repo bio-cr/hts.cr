@@ -334,7 +334,7 @@ class BcfFormatTest
       HTS::Bcf.open(source_path) do |bcf|
         format = bcf.first.format
 
-        ex = expect_raises(Exception) { format.update_int("GQ", [1, 2, 3]) }
+        ex = expect_raises(HTS::Bcf::FormatUpdateError) { format.update_int("GQ", [1, 2, 3]) }
         (ex.message).should eq("FORMAT values for GQ must be divisible by sample count (2)")
       end
     end
@@ -345,7 +345,7 @@ class BcfFormatTest
       HTS::Bcf.open(source_path) do |bcf|
         format = bcf.first.format
 
-        ex = expect_raises(Exception) { format.update_string("ST", "solo") }
+        ex = expect_raises(HTS::Bcf::FormatUpdateError) { format.update_string("ST", "solo") }
         (ex.message).should eq("FORMAT string values for ST must provide one entry per sample (2)")
       end
     end

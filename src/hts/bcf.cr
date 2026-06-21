@@ -157,7 +157,7 @@ module HTS
 
       cloned_header = header.clone # Necessary. If not, it will cause segfault.
       r = LibHTS.bcf_hdr_write(@hts_file, cloned_header)
-      raise Error.new("Failed to write BCF/VCF header") if r < 0
+      raise WriteError.new("Failed to write BCF/VCF header") if r < 0
 
       @header = cloned_header
       @header_written = true
@@ -171,10 +171,10 @@ module HTS
       check_closed
       # Guard to ensure header was written before any record
       unless @header_written
-        raise Error.new("Header not written. Call write_header(header) first.")
+        raise WriteError.new("Header not written. Call write_header(header) first.")
       end
       r = LibHTS.bcf_write(@hts_file, header, var)
-      raise Error.new("Failed to write record") if r < 0
+      raise WriteError.new("Failed to write record") if r < 0
     end
 
     def <<(var)
@@ -225,7 +225,7 @@ module HTS
           bcf1 = new_bcf1!
           ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
         end
-        raise Error.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
+        raise ReadError.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
       ensure
         LibHTS.bcf_destroy(bcf1) unless bcf1.null?
       end
@@ -241,7 +241,7 @@ module HTS
         yield record
         ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
       end
-      raise Error.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
+      raise ReadError.new("Failed to read BCF/VCF record from #{@file_name} (rc=#{ret})") if ret < -1
     end
 
     def query(region : String, copy = false, &)
@@ -334,7 +334,7 @@ module HTS
             bcf1 = new_bcf1!
             slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
           end
-          raise Error.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
+          raise ReadError.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
         ensure
           LibHTS.bcf_destroy(bcf1) unless bcf1.null?
         end
@@ -347,13 +347,13 @@ module HTS
           yield record
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
         end
-        raise Error.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
+        raise ReadError.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
       end
     end
 
     private def new_bcf1! : LibHTS::Bcf1T*
       bcf1 = LibHTS.bcf_init
-      raise "bcf_init failed" if bcf1.null?
+      raise RecordError.new("bcf_init failed") if bcf1.null?
       bcf1
     end
 

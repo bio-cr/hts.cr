@@ -37,14 +37,14 @@ module HTS
     def file_format
       check_closed
       format = LibHTS.hts_get_format(@hts_file)
-      raise "Failed to inspect file format for #{@file_name}" if format.null?
+      raise FileFormatError.new("Failed to inspect file format for #{@file_name}") if format.null?
       format.value.format.to_s
     end
 
     def file_format_version
       check_closed
       format = LibHTS.hts_get_format(@hts_file)
-      raise "Failed to inspect file format version for #{@file_name}" if format.null?
+      raise FileFormatError.new("Failed to inspect file format version for #{@file_name}") if format.null?
       v = format.value.version
       major = v.major
       minor = v.minor
@@ -73,7 +73,7 @@ module HTS
     def set_threads(n)
       if n > 0
         r = LibHTS.hts_set_threads(@hts_file, n)
-        raise "Failed to set number of threads: #{n}" if r < 0
+        raise ThreadError.new("Failed to set number of threads: #{n}") if r < 0
         @nthreads = n
       end
     end
@@ -114,16 +114,16 @@ module HTS
       if flags & "1000".to_i(2) != 0 # cram
         # For CRAM files, seek directly to the beginning (tell is not available)
         r = LibHTS.cram_seek(@hts_file.value.fp.cram, 0, IO::Seek::Set)
-        raise "Failed to rewind CRAM file: #{r}" if r < 0
+        raise RewindError.new("Failed to rewind CRAM file: #{r}") if r < 0
         nil # Return nil as tell is not available
       else
         # bam / sam
         if start_position = @start_position
           r = seek(start_position)
-          raise "Failed to rewind: #{r}" if r < 0
+          raise RewindError.new("Failed to rewind: #{r}") if r < 0
           tell
         else
-          raise "Cannot rewind: no start position"
+          raise RewindError.new("Cannot rewind: no start position")
         end
       end
     end

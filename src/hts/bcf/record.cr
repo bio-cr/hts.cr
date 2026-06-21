@@ -19,7 +19,7 @@ module HTS
 
       private def new_bcf1! : LibHTS::Bcf1T*
         bcf1 = LibHTS.bcf_init
-        raise "bcf_init failed" if bcf1.null?
+        raise RecordError.new("bcf_init failed") if bcf1.null?
         bcf1
       end
 
@@ -77,7 +77,7 @@ module HTS
             String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, j)
           end
         else
-          raise "unexpected number of filters. n_flt: #{n_flt}"
+          raise RecordError.new("Unexpected number of filters. n_flt: #{n_flt}")
         end
       end
 
@@ -132,7 +132,7 @@ module HTS
         ksr.s = Pointer(LibC::Char).null
 
         begin
-          raise "Failed to format record" if LibHTS.vcf_format(@header, @bcf1, pointerof(ksr)) == -1
+          raise RecordError.new("Failed to format record") if LibHTS.vcf_format(@header, @bcf1, pointerof(ksr)) == -1
 
           io << (String.new ksr.s)
         ensure
@@ -143,7 +143,7 @@ module HTS
       def clone
         # Duplicate bcf1 and use reference for header.
         bcf1 = LibHTS.bcf_dup(@bcf1)
-        raise "bcf_dup failed" if bcf1.null?
+        raise RecordError.new("bcf_dup failed") if bcf1.null?
 
         self.class.new(@header, bcf1)
       end

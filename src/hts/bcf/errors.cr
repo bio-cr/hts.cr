@@ -15,7 +15,16 @@ module HTS
     class QueryError < Error
     end
 
+    class ReadError < Error
+    end
+
+    class WriteError < Error
+    end
+
     class HeaderError < Error
+    end
+
+    class RecordError < Error
     end
 
     class SubsetError < HeaderError

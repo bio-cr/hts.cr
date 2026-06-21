@@ -299,7 +299,7 @@ class BamWriteTest
       qual: [20_u8] * 5
     )
 
-    ex = expect_raises(Exception) { bam.write(rec) }
+    ex = expect_raises(HTS::Bam::WriteError) { bam.write(rec) }
     (ex.message.try &.includes?("Header not written")).should be_true
     bam.close
   end
@@ -308,7 +308,7 @@ class BamWriteTest
   def test_error_unknown_reference
     header = HTS::Bam::Header.parse(minimal_header_text)
 
-    ex = expect_raises(Exception) do
+    ex = expect_raises(ArgumentError) do
       HTS::Bam::Record.new(
         header,
         qname: "test",
@@ -327,7 +327,7 @@ class BamWriteTest
   # Test error: invalid path
   def test_error_invalid_path
     ex = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
-      expect_raises(Exception) do
+      expect_raises(HTS::Bam::OpenError) do
         HTS::Bam.open("/nonexistent/directory/file.bam", "wb")
       end
     end

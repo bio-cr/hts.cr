@@ -42,7 +42,7 @@ module HTS
 
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @sam_hdr = LibHTS.sam_hdr_read(hts_file)
-        raise "Failed to read SAM header" if @sam_hdr.null?
+        raise HeaderError.new("Failed to read SAM header") if @sam_hdr.null?
       end
 
       # for clone
@@ -53,7 +53,7 @@ module HTS
 
       def initialize
         @sam_hdr = LibHTS.sam_hdr_init
-        raise "Failed to initialize SAM header" if @sam_hdr.null?
+        raise HeaderError.new("Failed to initialize SAM header") if @sam_hdr.null?
       end
 
       def to_unsafe
@@ -83,7 +83,7 @@ module HTS
       def append(line : String)
         text = ensure_newline(line)
         rc = LibHTS.sam_hdr_add_lines(@sam_hdr, text, text.bytesize)
-        raise "Failed to append SAM header line" if rc < 0
+        raise HeaderError.new("Failed to append SAM header line") if rc < 0
         self
       end
 
@@ -171,7 +171,7 @@ module HTS
       def add_pg(name, *args)
         line = build_pg_line(name.to_s, args)
         result = LibHTS.sam_hdr_add_lines(@sam_hdr, line, line.bytesize)
-        raise "Failed to add @PG line" if result < 0
+        raise HeaderError.new("Failed to add @PG line") if result < 0
         self
       end
 

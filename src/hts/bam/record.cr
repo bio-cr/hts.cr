@@ -56,7 +56,7 @@ module HTS
           qual,
           0
         )
-        raise "Failed to build record via bam_set1" if r < 0
+        raise RecordError.new("Failed to build record via bam_set1") if r < 0
       end
 
       # Overload: rname + CIGAR as String
@@ -73,13 +73,13 @@ module HTS
                      mpos : Int64 = 0_i64,
                      isize : Int64 = 0_i64)
         tid = header.get_tid(rname)
-        raise "Unknown reference name: #{rname}" if tid < 0
+        raise ArgumentError.new("Unknown reference name: #{rname}") if tid < 0
         initialize(header, qname, flag, tid, pos, mapq, Cigar.encode(cigar_str), seq, qual, mtid, mpos, isize)
       end
 
       private def new_bam1! : LibHTS::Bam1T*
         bam1 = LibHTS.bam_init1
-        raise "bam_init1 failed" if bam1.null?
+        raise RecordError.new("bam_init1 failed") if bam1.null?
         bam1
       end
 
@@ -349,7 +349,7 @@ module HTS
         kstr.s = Pointer(LibC::Char).null
 
         begin
-          raise "Failed to format bam record" if LibHTS.sam_format1(@header, @bam1, pointerof(kstr)) == -1
+          raise RecordError.new("Failed to format BAM record") if LibHTS.sam_format1(@header, @bam1, pointerof(kstr)) == -1
 
           io << (String.new kstr.s)
         ensure
@@ -360,7 +360,7 @@ module HTS
       def clone
         # Duplicate bam1 and use references for header.
         bam1 = LibHTS.bam_dup1(@bam1)
-        raise "bam_dup1 failed" if bam1.null?
+        raise RecordError.new("bam_dup1 failed") if bam1.null?
 
         self.class.new(@header, bam1)
       end

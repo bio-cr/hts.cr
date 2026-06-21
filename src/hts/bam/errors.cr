@@ -15,6 +15,27 @@ module HTS
     class QueryError < Error
     end
 
+    class HeaderError < Error
+    end
+
+    class RecordError < Error
+    end
+
+    class ReadError < Error
+    end
+
+    class WriteError < Error
+    end
+
+    class FastaIndexError < Error
+    end
+
+    class PileupError < Error
+    end
+
+    class MpileupError < Error
+    end
+
     class AuxError < Error
     end
 

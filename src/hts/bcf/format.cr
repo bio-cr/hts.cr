@@ -236,18 +236,18 @@ module HTS
 
       private def validate_numeric_sample_count!(tag : String, value_count : Int32)
         sample_count = @record.header.nsamples
-        raise "FORMAT fields require at least one sample" if sample_count <= 0
+        raise FormatUpdateError.new("FORMAT fields require at least one sample") if sample_count <= 0
         return if value_count % sample_count == 0
 
-        raise "FORMAT values for #{tag} must be divisible by sample count (#{sample_count})"
+        raise FormatUpdateError.new("FORMAT values for #{tag} must be divisible by sample count (#{sample_count})")
       end
 
       private def validate_string_sample_count!(tag : String, value_count : Int32)
         sample_count = @record.header.nsamples
-        raise "FORMAT fields require at least one sample" if sample_count <= 0
+        raise FormatUpdateError.new("FORMAT fields require at least one sample") if sample_count <= 0
         return if value_count == sample_count
 
-        raise "FORMAT string values for #{tag} must provide one entry per sample (#{sample_count})"
+        raise FormatUpdateError.new("FORMAT string values for #{tag} must provide one entry per sample (#{sample_count})")
       end
 
       private def check_update_rc!(rc : Int32, tag : String)

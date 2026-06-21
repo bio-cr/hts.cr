@@ -324,7 +324,7 @@ module HTS
       end
 
       private def check_update_rc!(rc : Int32, tag : String)
-        raise "Failed to update AUX tag #{tag}" if rc < 0
+        raise AuxError.new("Failed to update AUX tag #{tag}") if rc < 0
       end
 
       private def ensure_aux_type!(tag : String, aux_ptr, expected_type : String, &)

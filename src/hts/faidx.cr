@@ -1,8 +1,24 @@
 require "./libhts"
 require "./version"
+require "./error"
 
 module HTS
   class Faidx
+    class Error < HTS::Error
+    end
+
+    class IndexError < Error
+    end
+
+    class OpenError < Error
+    end
+
+    class ReadError < Error
+    end
+
+    class FileFormatError < Error
+    end
+
     @fai : LibHTS::FaidxT
     @closed : Bool
     @format : Symbol
@@ -28,7 +44,7 @@ module HTS
       fai_ptr = fai_path ? fai_path.to_unsafe : Pointer(LibC::Char).null
       gzi_ptr = gzi_path ? gzi_path.to_unsafe : Pointer(LibC::Char).null
       r = LibHTS.fai_build3(file_name, fai_ptr, gzi_ptr)
-      raise "Failed to build faidx index for #{file_name}" if r != 0
+      raise IndexError.new("Failed to build faidx index for #{file_name}") if r != 0
     end
 
     def initialize(file_name : Path | String, *, format : Symbol = :auto, auto_build : Bool = true)
@@ -36,7 +52,7 @@ module HTS
       @format = resolve_format(@file_name, format)
       @fai = load_handle(@file_name, @format, auto_build)
       @closed = false
-      raise "Failed to load faidx for #{@file_name}" if @fai.null?
+      raise OpenError.new("Failed to load faidx for #{@file_name}") if @fai.null?
     end
 
     def to_unsafe
@@ -67,7 +83,7 @@ module HTS
       check_closed
       Array.new(size) do |i|
         name = LibHTS.faidx_iseq(@fai, i)
-        raise "Failed to load sequence name at index #{i} for #{@file_name}" if name.null?
+        raise ReadError.new("Failed to load sequence name at index #{i} for #{@file_name}") if name.null?
         String.new(name)
       end
     end
@@ -77,7 +93,7 @@ module HTS
       case LibHTS.faidx_has_seq(@fai, name.to_s)
       when 1 then true
       when 0 then false
-      else        raise "Unexpected return value from faidx_has_seq"
+      else        raise ReadError.new("Unexpected return value from faidx_has_seq")
       end
     end
 
@@ -159,7 +175,7 @@ module HTS
       ptr = LibHTS.faidx_fetch_seq64(@fai, name, start, stop, out len)
       case len
       when -2 then raise ArgumentError.new("Sequence not found: #{name}")
-      when -1 then raise "Failed to fetch sequence: #{name}:#{start}-#{stop}"
+      when -1 then raise ReadError.new("Failed to fetch sequence: #{name}:#{start}-#{stop}")
       end
       read_owned_string(ptr, len, "sequence")
     end
@@ -170,13 +186,13 @@ module HTS
       ptr = LibHTS.faidx_fetch_qual64(@fai, name, start, stop, out len)
       case len
       when -2 then raise ArgumentError.new("Sequence not found: #{name}")
-      when -1 then raise "Failed to fetch quality: #{name}:#{start}-#{stop}"
+      when -1 then raise ReadError.new("Failed to fetch quality: #{name}:#{start}-#{stop}")
       end
       read_owned_string(ptr, len, "quality")
     end
 
     private def read_owned_string(ptr : Pointer(LibC::Char), len : Int64, kind : String)
-      raise "Failed to fetch #{kind}" if ptr.null?
+      raise ReadError.new("Failed to fetch #{kind}") if ptr.null?
       begin
         String.new(ptr, len.to_i)
       ensure
@@ -193,7 +209,7 @@ module HTS
     end
 
     private def ensure_fastq!
-      raise "Quality is only available for FASTQ indexes" unless @format == :fastq
+      raise FileFormatError.new("Quality is only available for FASTQ indexes") unless @format == :fastq
     end
 
     private def check_closed

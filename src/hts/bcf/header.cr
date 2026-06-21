@@ -16,7 +16,7 @@ module HTS
 
       def initialize(hts_file : Pointer(HTS::LibHTS::HtsFile))
         @bcf_hdr = LibHTS.bcf_hdr_read(hts_file)
-        raise "Failed to read BCF/VCF header" if @bcf_hdr.null?
+        raise HeaderError.new("Failed to read BCF/VCF header") if @bcf_hdr.null?
 
         @sync_depth = 0
         @sync_needed = false
@@ -39,7 +39,7 @@ module HTS
 
       def initialize
         @bcf_hdr = LibHTS.bcf_hdr_init("w")
-        raise "Failed to initialize BCF/VCF header" if @bcf_hdr.null?
+        raise HeaderError.new("Failed to initialize BCF/VCF header") if @bcf_hdr.null?
 
         @sync_depth = 0
         @sync_needed = false
@@ -58,7 +58,7 @@ module HTS
 
       def version=(version)
         rc = LibHTS.bcf_hdr_set_version(@bcf_hdr, version)
-        raise "Failed to set VCF header version" if rc < 0
+        raise HeaderError.new("Failed to set VCF header version") if rc < 0
         mark_sync_needed!
         sync_if_needed!
         self
@@ -163,7 +163,7 @@ module HTS
 
       def add_sample(sample, sync : Bool = true)
         rc = LibHTS.bcf_hdr_add_sample(@bcf_hdr, sample)
-        raise "Failed to add sample #{sample}" if rc < 0
+        raise HeaderError.new("Failed to add sample #{sample}") if rc < 0
         mark_sync_needed!
         sync_if_needed! if sync
         self
@@ -171,7 +171,7 @@ module HTS
 
       def merge(hdr)
         merged = LibHTS.bcf_hdr_merge(@bcf_hdr, hdr)
-        raise "Failed to merge BCF headers" if merged.null?
+        raise HeaderError.new("Failed to merge BCF headers") if merged.null?
         mark_sync_needed!
         sync_if_needed!
         self
@@ -179,7 +179,7 @@ module HTS
 
       def sync
         rc = LibHTS.bcf_hdr_sync(@bcf_hdr)
-        raise "Failed to sync BCF header" if rc < 0
+        raise HeaderError.new("Failed to sync BCF header") if rc < 0
         @sync_needed = false
         self
       end
@@ -190,7 +190,7 @@ module HTS
 
       def append(line)
         rc = LibHTS.bcf_hdr_append(@bcf_hdr, line)
-        raise "Failed to append VCF header line" if rc < 0
+        raise HeaderError.new("Failed to append VCF header line") if rc < 0
         mark_sync_needed!
         self
       end
@@ -285,7 +285,7 @@ module HTS
 
         begin
           rc = LibHTS.bcf_hdr_format(@bcf_hdr, 0, pointerof(kstr))
-          raise "Failed to format header" if rc < 0
+          raise HeaderError.new("Failed to format header") if rc < 0
 
           io << (String.new kstr.s)
         ensure
@@ -462,7 +462,7 @@ module HTS
         when "GENOTYPE", "GEN"
           LibHTS2::BCF_HL_GEN
         else
-          raise "Unknown bcf_hl_type: #{bcf_hl_type}"
+          raise HeaderError.new("Unknown bcf_hl_type: #{bcf_hl_type}")
         end
       end
     end

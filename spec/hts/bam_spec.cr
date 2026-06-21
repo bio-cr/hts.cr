@@ -271,7 +271,7 @@ class BamTest
 
   def test_initialize_no_file_bam
     with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
-      expect_raises(Exception) { HTS::Bam.new("/tmp/no_such_file") }
+      expect_raises(HTS::Bam::OpenError) { HTS::Bam.new("/tmp/no_such_file") }
     end
   end
 
