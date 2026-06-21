@@ -6,6 +6,8 @@ require "../../../src/hts/bcf"
 class BcfHeaderTest
   include TestBcfMultisampleHelper
 
+  @bcf : HTS::Bcf?
+
   def teardown
     @bcf.try &.close
   end
@@ -15,7 +17,7 @@ class BcfHeaderTest
   end
 
   def bcf
-    @bcf ||= HTS::Bcf.new(test_bcf_path)
+    @bcf ||= with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
   end
 
   def hdr

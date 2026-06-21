@@ -7,7 +7,7 @@ class BcfRecordTest
   end
 
   def var1 : HTS::Bcf::Record
-    bcf = HTS::Bcf.new(test_bcf_path)
+    bcf = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
     v = bcf.first
     bcf.close
     v

@@ -160,7 +160,7 @@ class BcfFormatTest
   end
 
   def format : HTS::Bcf::Format
-    bcf = HTS::Bcf.new(test_bcf_path)
+    bcf = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
     rec = bcf.first
     bcf.close
     rec.format

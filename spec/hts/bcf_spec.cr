@@ -4,6 +4,9 @@ require "../../src/hts/bcf"
 class BcfTest
   include TestBcfMultisampleHelper
 
+  @bcf : HTS::Bcf?
+  @indexed_bcf : HTS::Bcf?
+
   def teardown
     @bcf.try &.close
     @indexed_bcf.try &.close
@@ -73,7 +76,7 @@ class BcfTest
   end
 
   def bcf
-    @bcf ||= HTS::Bcf.new(test_bcf_path)
+    @bcf ||= with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
   end
 
   def indexed_bcf : HTS::Bcf
@@ -81,7 +84,9 @@ class BcfTest
       indexed_bcf
     else
       HTS::Bcf.build_index(test_bcf_path, test_bcf_index_path, 14, 0, false)
-      @indexed_bcf = HTS::Bcf.new(test_bcf_path, "r", test_bcf_index_path)
+      @indexed_bcf = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) do
+        HTS::Bcf.new(test_bcf_path, "r", test_bcf_index_path)
+      end
       if indexed_bcf = @indexed_bcf
         indexed_bcf
       else
@@ -106,15 +111,17 @@ class BcfTest
   # end
 
   def test_open
-    b = HTS::Bcf.open(test_bcf_path)
+    b = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.open(test_bcf_path) }
     (b).should be_a(HTS::Bcf)
     b.close
     (b.closed?).should be_true
   end
 
   def test_open_with_block
-    f = HTS::Bcf.open(test_bcf_path) do |bcf|
-      (bcf).should be_a(HTS::Bcf)
+    f = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) do
+      HTS::Bcf.open(test_bcf_path) do |bcf|
+        (bcf).should be_a(HTS::Bcf)
+      end
     end
     (f.closed?).should be_true
   end

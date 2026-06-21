@@ -68,12 +68,14 @@ class BgzfTest
       end
 
       size = File.size(path)
-      File.open(path, "r+") { |file| file.truncate(size - 10) }
+      File.open(path, "r+", &.truncate(size - 10))
 
       HTS::Bgzf.open(path, "r") do |bgzf|
         (bgzf.gets).should eq("hello")
         (bgzf.gets).should eq("world")
-        expect_raises(HTS::Bgzf::ReadError) { bgzf.gets }
+        with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+          expect_raises(HTS::Bgzf::ReadError) { bgzf.gets }
+        end
       end
     ensure
       File.delete(path) if File.exists?(path)
@@ -157,13 +159,15 @@ class BgzfTest
       end
 
       size = File.size(path)
-      File.open(path, "r+") { |file| file.truncate(size - 10) }
+      File.open(path, "r+", &.truncate(size - 10))
 
       HTS::Bgzf.open(path, "r") do |bgzf|
         "hello\nworld\n".each_char do |char|
           (bgzf.getc).should eq(char)
         end
-        expect_raises(HTS::Bgzf::ReadError) { bgzf.getc }
+        with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+          expect_raises(HTS::Bgzf::ReadError) { bgzf.getc }
+        end
       end
     ensure
       File.delete(path) if File.exists?(path)
@@ -226,17 +230,21 @@ class BgzfTest
     bgzf = HTS::Bgzf.open("/dev/full", "wz")
     bgzf.write("x" * 100_000)
 
-    expect_raises(HTS::Bgzf::WriteError) { bgzf.close }
+    with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(HTS::Bgzf::WriteError) { bgzf.close }
+    end
     (bgzf.closed?).should be_true
   end
 
   def test_block_open_prefers_body_exception_over_close_failure
     return unless File.exists?("/dev/full")
 
-    ex = expect_raises(ArgumentError) do
-      HTS::Bgzf.open("/dev/full", "wz") do |bgzf|
-        bgzf.write("x" * 100_000)
-        raise ArgumentError.new("body failure")
+    ex = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(ArgumentError) do
+        HTS::Bgzf.open("/dev/full", "wz") do |bgzf|
+          bgzf.write("x" * 100_000)
+          raise ArgumentError.new("body failure")
+        end
       end
     end
 

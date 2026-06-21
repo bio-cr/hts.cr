@@ -102,15 +102,13 @@ module HTS
     end
 
     protected def self.close_after_yield(file, &)
-      begin
-        result = yield file
-      rescue ex
-        file.close rescue nil
-        raise ex
-      else
-        file.close
-        result
-      end
+      result = yield file
+    rescue ex
+      file.close rescue nil
+      raise ex
+    else
+      file.close
+      result
     end
 
     def seek(offset)

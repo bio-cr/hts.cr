@@ -60,7 +60,7 @@ class BcfInfoTest
   end
 
   def info : HTS::Bcf::Info
-    bcf = HTS::Bcf.new(test_bcf_path)
+    bcf = with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
     info = bcf.first.info
     bcf.close
     info
