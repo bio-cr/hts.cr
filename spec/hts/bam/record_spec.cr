@@ -355,7 +355,7 @@ class BamRecordTest
 
   def test_aux_each_with_type
     aln = aln1
-    seen = {} of String => {String, (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64) | Nil)}
+    seen = {} of String => {String, (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64))?}
 
     aln.aux.each_with_type do |tag, type, value|
       seen[tag] = {type, value}
@@ -373,7 +373,7 @@ class BamRecordTest
     aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
     aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
 
-    seen = {} of String => {String, (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64) | Nil)}
+    seen = {} of String => {String, (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64))?}
     aln.aux.each_with_type do |tag, type, value|
       seen[tag] = {type, value}
     end
