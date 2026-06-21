@@ -135,6 +135,7 @@ module HTS
         names = normalize_subset_samples(sample_names)
         validate_subset_samples!(names)
 
+        subset_imap = Slice(Int32).empty
         if names.empty?
           imap_buffer = Pointer(Int32).null
           subset_hdr = LibHTS.bcf_hdr_subset(
@@ -145,19 +146,20 @@ module HTS
           )
         else
           encoded_samples = names.map(&.to_unsafe)
-          imap_buffer = Pointer(Int32).malloc(names.size)
+          imap = Slice(Int32).new(names.size, 0)
           subset_hdr = LibHTS.bcf_hdr_subset(
             @bcf_hdr,
             names.size,
             encoded_samples.to_unsafe,
-            imap_buffer
+            imap.to_unsafe
           )
+          subset_imap = imap
         end
 
         raise SubsetError.new("Failed to subset BCF header samples #{names.inspect}") if subset_hdr.null?
 
         header = self.class.new(subset_hdr)
-        header.set_subset_state(names, compose_subset_imap(read_subset_imap(imap_buffer, names.size)))
+        header.set_subset_state(names, compose_subset_imap(subset_imap))
         header
       end
 
@@ -295,10 +297,8 @@ module HTS
 
       def clone
         header = self.class.new(LibHTS.bcf_hdr_dup(@bcf_hdr))
-        if subset_imap = @subset_imap
-          if subset_samples = @subset_samples
-            header.set_subset_state(subset_samples.dup, subset_imap.dup)
-          end
+        if (subset_imap = @subset_imap) && (subset_samples = @subset_samples)
+          header.set_subset_state(subset_samples.dup, subset_imap.dup)
         end
         header
       end
@@ -311,17 +311,13 @@ module HTS
         value ? value.to_unsafe : Pointer(LibC::Char).null
       end
 
-      protected def set_subset_state(samples : Array(String), imap : Array(Int32)) : Nil
-        @subset_samples = samples.dup
-        @subset_imap = imap.dup
-        if imap.empty?
-          @subset_imap_buffer = Pointer(Int32).null
-        else
-          @subset_imap_buffer = Pointer(Int32).malloc(imap.size)
-          imap.each_with_index do |value, index|
-            @subset_imap_buffer[index] = value
-          end
-        end
+      # Takes ownership of `samples` and `imap`; callers must pass freshly
+      # allocated collections. `@subset_imap_buffer` aliases `@subset_imap`'s
+      # backing memory, which stays alive through the stored slice.
+      protected def set_subset_state(samples : Array(String), imap : Slice(Int32)) : Nil
+        @subset_samples = samples
+        @subset_imap = imap
+        @subset_imap_buffer = imap.empty? ? Pointer(Int32).null : imap.to_unsafe
       end
 
       private def normalize_subset_samples(sample_names : Enumerable(String)) : Array(String)
@@ -342,14 +338,8 @@ module HTS
         end
       end
 
-      private def read_subset_imap(imap_buffer : Pointer(Int32), length : Int) : Array(Int32)
-        return [] of Int32 if length == 0
-
-        Array(Int32).new(length) { |index| imap_buffer[index] }
-      end
-
-      private def compose_subset_imap(imap : Array(Int32)) : Array(Int32)
-        base_imap = @subset_imap || Array(Int32).new(samples.size, &.to_i32)
+      private def compose_subset_imap(imap : Slice(Int32)) : Slice(Int32)
+        base_imap = @subset_imap || Slice(Int32).new(samples.size, &.to_i32)
         imap.map { |index| base_imap[index] }
       end
 
