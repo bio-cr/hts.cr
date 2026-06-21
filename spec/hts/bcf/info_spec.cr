@@ -88,25 +88,15 @@ class BcfInfoTest
         (record_info.get_float_opt("FOPT")).should eq([1.5_f32, nil])
         (record_info.get_string("CH")).should eq("Q")
         (bcf.header.info_type("CH")).should eq(:string)
-        (record_info["CH"]).should eq("Q")
       end
     end
   end
 
-  def test_bracket_access
-    (info["DP"]).should eq([31])
-    (info["VDB"]).should eq([0.673439_f32])
-    (info["INDEL"]).should be_false
-
-    tag = "DP"
-    (info[tag]).should eq([31])
-  end
-
   def test_low_level_contract
-    (info.get_int("NO_SUCH_TAG")).should be_nil
-    (info.get_int64("NO_SUCH_TAG")).should be_nil
-    (info.get_string("NO_SUCH_TAG")).should be_nil
-    (info.get_flag("NO_SUCH_TAG")).should be_nil
+    expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_int("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_int64("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_string("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_flag("NO_SUCH_TAG") }
 
     ex = expect_raises(HTS::Bcf::InfoTypeError) { info.get_float("DP") }
     (ex.message).should eq("Tag DP is not float INFO field")

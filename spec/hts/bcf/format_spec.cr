@@ -241,9 +241,9 @@ class BcfFormatTest
   end
 
   def test_low_level_contract
-    (format.get_int("NO_SUCH_TAG")).should be_nil
-    (format.get_float("NO_SUCH_TAG")).should be_nil
-    (format.get_string("NO_SUCH_TAG")).should be_nil
+    expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_int("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_float("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_string("NO_SUCH_TAG") }
 
     ex = expect_raises(HTS::Bcf::FormatTypeError) { format.get_float("PL") }
     (ex.message).should eq("Tag PL is not float FORMAT field")

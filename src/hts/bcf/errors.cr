@@ -30,6 +30,9 @@ module HTS
     class InfoError < FieldError
     end
 
+    class InfoDefinitionError < InfoError
+    end
+
     class InfoTypeError < InfoError
     end
 

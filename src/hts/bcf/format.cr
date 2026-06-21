@@ -264,7 +264,9 @@ module HTS
 
       private def normalize_format_rc(rc : Int32, tag : String, expected_type : String) : Int32?
         case rc
-        when -1, -3
+        when -1
+          raise FormatDefinitionError.new("FORMAT tag #{tag} not defined in header")
+        when -3
           nil
         when -2
           raise FormatTypeError.new("Tag #{tag} is not #{expected_type} FORMAT field")

@@ -4,22 +4,6 @@ module HTS
       def initialize(@record : Bcf::Record)
       end
 
-      alias InfoValue = (Array(Int32) | Array(Float32) | String | Bool)?
-
-      # Character INFO fields are routed through the string path.
-      def [](tag : String) : InfoValue
-        case @record.header.info_type(tag)
-        when :flag
-          get_flag(tag)
-        when :int
-          get_int(tag)
-        when :float
-          get_float(tag)
-        when :string
-          get_string(tag)
-        end
-      end
-
       def get_int(tag) : Array(Int32)?
         ndst = 0
         dst = Pointer(Void).null
@@ -114,7 +98,7 @@ module HTS
         when -3
           val = false
         when -1
-          val = nil
+          raise InfoDefinitionError.new("INFO tag #{tag} not defined in header")
         when -2
           raise InfoTypeError.new("Tag #{tag} is not a flag INFO field")
         when -4
@@ -208,7 +192,9 @@ module HTS
 
       private def normalize_info_rc(rc : Int32, tag : String, expected_type : String) : Int32?
         case rc
-        when -1, -3
+        when -1
+          raise InfoDefinitionError.new("INFO tag #{tag} not defined in header")
+        when -3
           nil
         when -2
           raise InfoTypeError.new("Tag #{tag} is not #{expected_type} INFO field")
