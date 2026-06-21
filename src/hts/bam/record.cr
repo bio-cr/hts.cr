@@ -258,6 +258,14 @@ module HTS
         SEQ_NT16_STR[LibHTS2.bam_seqi(r, n)]
       end
 
+      # Iterate over query sequence bases without building a String.
+      def each_base(&)
+        r = LibHTS2.bam_get_seq(@bam1)
+        len.times do |i|
+          yield SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
+        end
+      end
+
       # return the base qualities
       def qual
         q_ptr = LibHTS2.bam_get_qual(@bam1)

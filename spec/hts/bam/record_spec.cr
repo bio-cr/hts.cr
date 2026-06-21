@@ -228,6 +228,15 @@ class BamRecordTest
     (aln.base(-71)).should eq('.')
   end
 
+  def test_each_base
+    bases = [] of Char
+    aln1.each_base do |base|
+      bases << base
+    end
+
+    bases.should eq(aln1.seq.chars)
+  end
+
   def test_qual
     (aln1.qual).should eq([17] * 70)
   end
