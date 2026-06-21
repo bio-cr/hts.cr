@@ -855,7 +855,7 @@ module HTS
       nhrec : LibC::Int
       dirty : LibC::Int
       ntransl : LibC::Int
-      transl : LibC::Int[2]
+      transl : LibC::Int*[2]
       nsamples_ori : LibC::Int
       keep_samples : Uint8T*
       mem : KstringT
