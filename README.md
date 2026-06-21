@@ -68,7 +68,7 @@ HTS::Bcf.open(bcf_path) do |bcf|
       filter: r.filter,
       ref: r.ref,
       alt: r.alt,
-      info_dp: r.info["DP"],
+      info_dp: r.info.get_int("DP"),
       genotypes: r.format.get_string("GT")
   end
 end
