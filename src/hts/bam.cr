@@ -200,7 +200,9 @@ module HTS
     end
 
     def finalize
-      close unless closed?
+      LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      @idx = @idx.class.null
+      close_hts_file
     end
 
     def fai=(fai)
