@@ -308,29 +308,12 @@ class BamTest
     (values).should eq(expected)
   end
 
-  def test_file_level_aux_runtime_fallback
-    values : Array(HTS::Bam::AuxValue) = bam_string.aux("NM")
-    expected = [] of HTS::Bam::AuxValue
-    bam_string.each do |aln|
-      expected << aln.aux["NM"]
-    end
-    (values).should eq(expected)
-  end
-
   def test_each_aux_int
     values = [] of Int64?
     bam_string.each_aux_int("NM") do |value|
       values << value
     end
     (values).should eq(bam_string.aux_int("NM"))
-  end
-
-  def test_each_aux_runtime_fallback
-    values = [] of HTS::Bam::AuxValue
-    bam_string.each_aux("MC") do |value|
-      values << value
-    end
-    (values).should eq(bam_string.aux("MC"))
   end
 
   def test_query_requires_index_for_sam

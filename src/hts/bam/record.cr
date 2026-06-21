@@ -314,33 +314,6 @@ module HTS
         @bam1.value.core.flag = flag.value
       end
 
-      private def get_aux_pointer(str)
-        str2 = Bam.aux_tag_to_static_array(str)
-        LibHTS.bam_aux_get(@bam1, str2)
-      end
-
-      # Access individual auxiliary tag by name (existing method)
-      def aux(str)
-        ax = get_aux_pointer(str)
-        return if ax.null?
-
-        # A (character), B (general array),
-        # f (real number), H (hexadecimal array),
-        # i (integer), or Z (string).
-
-        t = ax.value
-        case t
-        when 'i', 'I', 'c', 'C', 's', 'S'
-          LibHTS.bam_aux2i(ax)
-        when 'f', 'd'
-          LibHTS.bam_aux2f(ax)
-        when 'Z', 'H'
-          String.new LibHTS.bam_aux2_z(ax)
-        when 'A'
-          LibHTS.bam_aux2_a(ax).chr
-        end
-      end
-
       # Return Aux object for iteration over all auxiliary tags
       def aux
         Aux.new(@bam1)

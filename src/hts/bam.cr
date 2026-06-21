@@ -17,8 +17,6 @@ module HTS
 
     class MissingIndexError < QueryError; end
 
-    alias AuxValue = (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64))?
-
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT
@@ -286,12 +284,6 @@ module HTS
       end
     end
 
-    def aux(tag : String) : Array(AuxValue)
-      collect_aux_values do |record|
-        record.aux[tag]
-      end
-    end
-
     define_iterator :qname
     define_iterator :flag
     define_iterator :chrom
@@ -328,12 +320,6 @@ module HTS
     def each_aux_char(tag : String, &)
       each_aux_value do |record|
         yield record.aux.get_char(tag)
-      end
-    end
-
-    def each_aux(tag : String, &)
-      each_aux_value do |record|
-        yield record.aux[tag]
       end
     end
 

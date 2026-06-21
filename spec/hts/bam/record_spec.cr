@@ -310,13 +310,6 @@ class BamRecordTest
     (aln.flag.value).should eq(133)
   end
 
-  def test_aux
-    aln = aln1
-    (aln.aux("MC")).should eq("70M")
-    (aln.aux("AS")).should eq(0)
-    (aln.aux("XS")).should eq(0)
-  end
-
   def test_aux_each
     aln = aln1
     aln.aux.each do |tag, value|
@@ -331,18 +324,20 @@ class BamRecordTest
     end
   end
 
-  def test_aux_bracket_access
-    aln = aln1
-    (aln.aux["MC"]).should eq("70M")
-    (aln.aux["AS"]).should eq(0)
-    (aln.aux["XS"]).should eq(0)
-  end
-
   def test_aux_type_specific_methods
     aln = aln1
     (aln.aux.get_int("AS")).should eq(0)
     (aln.aux.get_int("XS")).should eq(0)
     (aln.aux.get_string("MC")).should eq("70M")
+  end
+
+  def test_aux_type_specific_methods_raise_for_type_mismatch
+    aln = aln1
+
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_int("MC") }
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_float("MC") }
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_string("AS") }
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_char("AS") }
   end
 
   def test_aux_iteration_consistency
@@ -360,7 +355,7 @@ class BamRecordTest
 
   def test_aux_each_with_type
     aln = aln1
-    seen = {} of String => {String, HTS::Bam::AuxValue}
+    seen = {} of String => {String, (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64) | Nil)}
 
     aln.aux.each_with_type do |tag, type, value|
       seen[tag] = {type, value}
@@ -378,7 +373,7 @@ class BamRecordTest
     aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
     aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
 
-    seen = {} of String => {String, HTS::Bam::AuxValue}
+    seen = {} of String => {String, (Int64 | Float64 | String | Char | Array(Int64) | Array(Float64) | Nil)}
     aln.aux.each_with_type do |tag, type, value|
       seen[tag] = {type, value}
     end
@@ -415,8 +410,6 @@ class BamRecordTest
     aln = aln1
 
     ["N", "LONG", "1A", "A_", "あ"].each do |tag|
-      expect_raises(ArgumentError) { aln.aux(tag) }
-      expect_raises(ArgumentError) { aln.aux[tag] }
       expect_raises(ArgumentError) { aln.aux.get_int(tag) }
       expect_raises(ArgumentError) { aln.aux.get_string(tag) }
     end
@@ -472,10 +465,20 @@ class BamRecordTest
   def test_aux_update_array
     aln = aln1
     aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
-    (aln.aux["XB"]).should eq([1_i64, 2_i64, 3_i64])
+    (aln.aux.get_int_array("XB")).should eq([1_i64, 2_i64, 3_i64])
 
     aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
-    (aln.aux["XF"]).should eq([1.25, 2.5])
+    (aln.aux.get_float_array("XF")).should eq([1.25, 2.5])
+  end
+
+  def test_aux_array_readers_raise_for_type_mismatch
+    aln = aln1
+    aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
+    aln.aux.update_array("XF", [1.25, 2.5], subtype: 'f')
+
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_float_array("XB") }
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_int_array("XF") }
+    expect_raises(HTS::Bam::AuxTypeError) { aln.aux.get_int_array("AS") }
   end
 
   def test_aux_update_validation

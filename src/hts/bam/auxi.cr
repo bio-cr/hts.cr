@@ -2,6 +2,8 @@
 
 module HTS
   class Bam < Hts
+    class AuxTypeError < Exception; end
+
     AUX_TAG_PATTERN = /\A[A-Za-z][A-Za-z0-9]\z/
 
     def self.aux_tag_to_static_array(tag : String) : StaticArray(UInt8, 2)
@@ -24,10 +26,17 @@ module HTS
     #     puts "#{tag}: #{value}"
     #   end
     #
-    #   # Access specific tag
-    #   as_score = record.aux["AS"]
+    #   # Access specific tags with stable return types
+    #   as_score = record.aux.get_int("AS")
     class Aux
       # include Enumerable # DO NOT
+
+      AUX_INT_TYPES        = {'c'.ord.to_u8, 'C'.ord.to_u8, 's'.ord.to_u8, 'S'.ord.to_u8, 'i'.ord.to_u8, 'I'.ord.to_u8}
+      AUX_FLOAT_TYPES      = {'f'.ord.to_u8, 'd'.ord.to_u8}
+      AUX_STRING_TYPES     = {'Z'.ord.to_u8, 'H'.ord.to_u8}
+      AUX_ARRAY_TYPE       = 'B'.ord.to_u8
+      AUX_CHAR_TYPE        = 'A'.ord.to_u8
+      AUX_FLOAT_ARRAY_TYPE = 'f'.ord.to_u8
 
       def initialize(@bam1 : Pointer(LibHTS::Bam1T))
       end
@@ -57,34 +66,70 @@ module HTS
         end
       end
 
-      # Array-style access to specific tags
-      def [](tag : String)
-        get_aux_value(tag)
-      end
-
-      # Type-specific access methods
-      def get_int(tag : String)
+      # Returns the integer value for *tag*, `nil` when absent, and raises
+      # `AuxTypeError` when the tag exists with a non-integer type.
+      def get_int(tag : String) : Int64?
         aux_ptr = get_aux_pointer(tag)
         return if aux_ptr.null?
+        ensure_aux_type!(tag, aux_ptr, "integer") { |type| AUX_INT_TYPES.includes?(type) }
+
         LibHTS.bam_aux2i(aux_ptr)
       end
 
-      def get_float(tag : String)
+      # Returns the float value for *tag*, `nil` when absent, and raises
+      # `AuxTypeError` when the tag exists with a non-float type.
+      def get_float(tag : String) : Float64?
         aux_ptr = get_aux_pointer(tag)
         return if aux_ptr.null?
+        ensure_aux_type!(tag, aux_ptr, "float") { |type| AUX_FLOAT_TYPES.includes?(type) }
+
         LibHTS.bam_aux2f(aux_ptr)
       end
 
-      def get_string(tag : String)
+      # Returns the string value for *tag*, `nil` when absent, and raises
+      # `AuxTypeError` when the tag exists with a non-string type.
+      def get_string(tag : String) : String?
         aux_ptr = get_aux_pointer(tag)
         return if aux_ptr.null?
+        ensure_aux_type!(tag, aux_ptr, "string") { |type| AUX_STRING_TYPES.includes?(type) }
+
         String.new LibHTS.bam_aux2_z(aux_ptr)
       end
 
-      def get_char(tag : String)
+      # Returns the character value for *tag*, `nil` when absent, and raises
+      # `AuxTypeError` when the tag exists with a non-character type.
+      def get_char(tag : String) : Char?
         aux_ptr = get_aux_pointer(tag)
         return if aux_ptr.null?
+        ensure_aux_type!(tag, aux_ptr, "character") { |type| type == AUX_CHAR_TYPE }
+
         LibHTS.bam_aux2_a(aux_ptr).chr
+      end
+
+      # Returns the integer array for *tag*, `nil` when absent, and raises
+      # `AuxTypeError` when the tag exists with a non-integer-array type.
+      def get_int_array(tag : String) : Array(Int64)?
+        aux_ptr = get_aux_pointer(tag)
+        return if aux_ptr.null?
+        ensure_aux_type!(tag, aux_ptr, "integer array") { |type| type == AUX_ARRAY_TYPE }
+
+        array_type = (aux_ptr + 1).value
+        raise_aux_type_error!(tag, "integer array") unless AUX_INT_TYPES.includes?(array_type)
+
+        length = LibHTS.bam_aux_b_len(aux_ptr)
+        Array(Int64).new(length) { |i| LibHTS.bam_aux_b2i(aux_ptr, i) }
+      end
+
+      # Returns the float array for *tag*, `nil` when absent, and raises
+      # `AuxTypeError` when the tag exists with a non-float-array type.
+      def get_float_array(tag : String) : Array(Float64)?
+        aux_ptr = get_aux_pointer(tag)
+        return if aux_ptr.null?
+        ensure_aux_type!(tag, aux_ptr, "float array") { |type| type == AUX_ARRAY_TYPE }
+        raise_aux_type_error!(tag, "float array") unless (aux_ptr + 1).value == AUX_FLOAT_ARRAY_TYPE
+
+        length = LibHTS.bam_aux_b_len(aux_ptr)
+        Array(Float64).new(length) { |i| LibHTS.bam_aux_b2f(aux_ptr, i) }
       end
 
       def update_int(tag : String, value : Int)
@@ -284,6 +329,14 @@ module HTS
         raise "Failed to update AUX tag #{tag}" if rc < 0
       end
 
+      private def ensure_aux_type!(tag : String, aux_ptr, expected_type : String, &)
+        raise_aux_type_error!(tag, expected_type) unless yield aux_ptr.value
+      end
+
+      private def raise_aux_type_error!(tag : String, expected_type : String)
+        raise AuxTypeError.new("AUX tag #{tag} is not #{expected_type}")
+      end
+
       private def replace_with_append!(tag : String, tag_array : StaticArray(UInt8, 2), type : Char, len : Int32, data : Pointer(UInt8))
         existing = LibHTS.bam_aux_get(@bam1, tag_array)
         check_update_rc!(LibHTS.bam_aux_del(@bam1, existing), tag) unless existing.null?
@@ -301,13 +354,6 @@ module HTS
         end
 
         check_update_rc!(LibHTS.bam_aux_update_array(@bam1, tag_array, subtype.ord.to_u8, items, converted.to_unsafe.as(Void*)), tag)
-      end
-
-      # Get auxiliary value for specific tag
-      private def get_aux_value(tag)
-        aux_ptr = get_aux_pointer(tag)
-        return if aux_ptr.null?
-        parse_aux_value(aux_ptr)
       end
 
       # HTSlib sam_format_aux1 compliant output with original type information
