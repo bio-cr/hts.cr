@@ -32,7 +32,11 @@ def capture_stderr(&) : String
     STDERR.flush rescue nil
     STDERR.reopen(original_stderr)
     original_stderr.close
-    temp.close
+    begin
+      temp.close
+    rescue IO::Error
+      # The descriptor may already have been closed while STDERR was reopened.
+    end
     File.delete(temp_path) if temp_path && File.exists?(temp_path)
   end
 end
