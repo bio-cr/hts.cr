@@ -8,13 +8,16 @@ module HTS
       def {{ name.id }}
         check_closed
         position = tell
-        ary = map do |record|
-          record.{{ name.id }}
-        end
-        if position.nil?
-          STDERR.puts "Warning: #{@file_name} is not seekable"
-        else
-          seek(position)
+        begin
+          ary = map do |record|
+            record.{{ name.id }}
+          end
+        ensure
+          if position.nil?
+            STDERR.puts "Warning: #{@file_name} is not seekable"
+          else
+            seek(position)
+          end
         end
         ary
       end
@@ -56,9 +59,7 @@ module HTS
     end
 
     def close
-      return if closed?
-      LibHTS.hts_close(@hts_file)
-      @hts_file = @hts_file.class.null
+      close_hts_file
     end
 
     def closed?
@@ -82,6 +83,12 @@ module HTS
 
     private def check_closed
       raise IO::Error.new("Closed stream") if closed?
+    end
+
+    protected def close_hts_file
+      return if closed?
+      LibHTS.hts_close(@hts_file)
+      @hts_file = @hts_file.class.null
     end
 
     def seek(offset)
