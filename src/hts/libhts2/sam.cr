@@ -90,12 +90,12 @@ module HTS
     end
 
     def sam_itr_next(htsfp, itr, r)
-      raise "Null iterator" if itr.null?
+      raise ArgumentError.new("Null iterator") if itr.null?
 
       flags = htsfp.value.flags
       is_cram = (flags & 0x8) != 0
       is_bgzf = (flags & 0x10) != 0
-      raise "File is not BGZF or CRAM" unless is_bgzf || is_cram
+      raise HTS::FileFormatError.new("File is not BGZF or CRAM") unless is_bgzf || is_cram
 
       # htslib's sam_itr_next is a static inline wrapper that dispatches
       # multi-region iterators through hts_itr_multi_next.

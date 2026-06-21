@@ -1,4 +1,5 @@
 require "./version"
+require "./error"
 
 # LibHTS
 require "./libhts/libhts"

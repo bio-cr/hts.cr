@@ -251,7 +251,7 @@ module HTS
     end
 
     def bcf_hdr_id2name(hdr, rid)
-      raise "invalid rid" if hdr.to_unsafe.null? || rid < 0 || rid >= hdr.to_unsafe.value.n[LibHTS2::BCF_DT_CTG]
+      raise ArgumentError.new("Invalid rid: #{rid}") if hdr.to_unsafe.null? || rid < 0 || rid >= hdr.to_unsafe.value.n[LibHTS2::BCF_DT_CTG]
 
       Pointer(LibHTS::BcfIdpairT).new(
         (hdr.to_unsafe.value.id[LibHTS2::BCF_DT_CTG]).address +
