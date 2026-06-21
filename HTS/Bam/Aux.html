@@ -72,8 +72,8 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Bam/AuxValue" data-name="hts::bam::auxvalue">
-      <a href="../../HTS/Bam/AuxValue.html">AuxValue</a>
+  <li class=" " data-id="hts/HTS/Bam/AuxTypeError" data-name="hts::bam::auxtypeerror">
+      <a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a>
       
     </li>
   
@@ -409,12 +409,12 @@ using HTSlib's bam_aux_first and bam_aux_next functions.</p>
 <p>record.aux.each do |tag, value|
 puts &quot;#{tag}: #{value}&quot;
 end</p>
-<h1><a id="access-specific-tag" class="anchor" href="#access-specific-tag">
+<h1><a id="access-specific-tags-with-stable-return-types" class="anchor" href="#access-specific-tags-with-stable-return-types">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-</a>Access specific tag</h1>
-<p>as_score = record.aux[&quot;AS&quot;]</p>
+</a>Access specific tags with stable return types</h1>
+<p>as_score = record.aux.get_int(&quot;AS&quot;)</p>
 
 
 
@@ -441,7 +441,7 @@ end</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L29" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L31" target="_blank">
         hts/bam/auxi.cr
       </a>
     
@@ -449,6 +449,50 @@ end</p>
   
 
 
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="AUX_ARRAY_TYPE">
+        <strong>AUX_ARRAY_TYPE</strong> = <code><span class="s">&#39;B&#39;</span>.ord.to_u8</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AUX_CHAR_TYPE">
+        <strong>AUX_CHAR_TYPE</strong> = <code><span class="s">&#39;A&#39;</span>.ord.to_u8</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AUX_FLOAT_ARRAY_TYPE">
+        <strong>AUX_FLOAT_ARRAY_TYPE</strong> = <code><span class="s">&#39;f&#39;</span>.ord.to_u8</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AUX_FLOAT_TYPES">
+        <strong>AUX_FLOAT_TYPES</strong> = <code>{<span class="s">&#39;f&#39;</span>.ord.to_u8, <span class="s">&#39;d&#39;</span>.ord.to_u8}</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AUX_INT_TYPES">
+        <strong>AUX_INT_TYPES</strong> = <code>{<span class="s">&#39;c&#39;</span>.ord.to_u8, <span class="s">&#39;C&#39;</span>.ord.to_u8, <span class="s">&#39;s&#39;</span>.ord.to_u8, <span class="s">&#39;S&#39;</span>.ord.to_u8, <span class="s">&#39;i&#39;</span>.ord.to_u8, <span class="s">&#39;I&#39;</span>.ord.to_u8}</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AUX_STRING_TYPES">
+        <strong>AUX_STRING_TYPES</strong> = <code>{<span class="s">&#39;Z&#39;</span>.ord.to_u8, <span class="s">&#39;H&#39;</span>.ord.to_u8}</code>
+      </dt>
+      
+    
+  </dl>
 
 
 
@@ -487,13 +531,6 @@ end</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#%5B%5D%28tag%3AString%29-instance-method" class="signature"><strong>#[]</strong>(tag : String)</a>
-        
-          <div class="summary"><p>Array-style access to specific tags</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
         <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
         
           <div class="summary"><p>Iterate over all auxiliary tags</p></div>
@@ -508,24 +545,44 @@ end</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#get_char%28tag%3AString%29-instance-method" class="signature"><strong>#get_char</strong>(tag : String)</a>
+        <a href="#get_char%28tag%3AString%29%3AChar%7CNil-instance-method" class="signature"><strong>#get_char</strong>(tag : String) : Char | Nil</a>
+        
+          <div class="summary"><p>Returns the character value for <em>tag</em>, <code>nil</code> when absent, and raises <code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-character type.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_float%28tag%3AString%29-instance-method" class="signature"><strong>#get_float</strong>(tag : String)</a>
+        <a href="#get_float%28tag%3AString%29%3AFloat64%7CNil-instance-method" class="signature"><strong>#get_float</strong>(tag : String) : Float64 | Nil</a>
+        
+          <div class="summary"><p>Returns the float value for <em>tag</em>, <code>nil</code> when absent, and raises <code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-float type.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_int%28tag%3AString%29-instance-method" class="signature"><strong>#get_int</strong>(tag : String)</a>
+        <a href="#get_float_array%28tag%3AString%29%3AArray%28Float64%29%7CNil-instance-method" class="signature"><strong>#get_float_array</strong>(tag : String) : Array(Float64) | Nil</a>
         
-          <div class="summary"><p>Type-specific access methods</p></div>
+          <div class="summary"><p>Returns the float array for <em>tag</em>, <code>nil</code> when absent, and raises <code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-float-array type.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_string%28tag%3AString%29-instance-method" class="signature"><strong>#get_string</strong>(tag : String)</a>
+        <a href="#get_int%28tag%3AString%29%3AInt64%7CNil-instance-method" class="signature"><strong>#get_int</strong>(tag : String) : Int64 | Nil</a>
+        
+          <div class="summary"><p>Returns the integer value for <em>tag</em>, <code>nil</code> when absent, and raises <code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-integer type.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_int_array%28tag%3AString%29%3AArray%28Int64%29%7CNil-instance-method" class="signature"><strong>#get_int_array</strong>(tag : String) : Array(Int64) | Nil</a>
+        
+          <div class="summary"><p>Returns the integer array for <em>tag</em>, <code>nil</code> when absent, and raises <code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-integer-array type.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_string%28tag%3AString%29%3AString%7CNil-instance-method" class="signature"><strong>#get_string</strong>(tag : String) : String | Nil</a>
+        
+          <div class="summary"><p>Returns the string value for <em>tag</em>, <code>nil</code> when absent, and raises <code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-string type.</p></div>
         
       </li>
     
@@ -656,7 +713,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L41" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -677,27 +734,6 @@ end</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="[](tag:String)-instance-method">
-      <div class="signature">
-        
-        def <strong>[]</strong>(tag : String)
-
-        <a class="method-permalink" href="#%5B%5D%28tag%3AString%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Array-style access to specific tags</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L61" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
     <div class="entry-detail" id="each(&amp;)-instance-method">
       <div class="signature">
         
@@ -714,7 +750,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -735,76 +771,139 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L56" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_char(tag:String)-instance-method">
+    <div class="entry-detail" id="get_char(tag:String):Char|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get_char</strong>(tag : String)
+        def <strong>get_char</strong>(tag : String) : Char | Nil
 
-        <a class="method-permalink" href="#get_char%28tag%3AString%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L84" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_float(tag:String)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_float</strong>(tag : String)
-
-        <a class="method-permalink" href="#get_float%28tag%3AString%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L72" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_int(tag:String)-instance-method">
-      <div class="signature">
-        
-        def <strong>get_int</strong>(tag : String)
-
-        <a class="method-permalink" href="#get_int%28tag%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#get_char%28tag%3AString%29%3AChar%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Type-specific access methods</p>
+          <p>Returns the character value for <em>tag</em>, <code>nil</code> when absent, and raises
+<code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-character type.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L66" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L101" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_string(tag:String)-instance-method">
+    <div class="entry-detail" id="get_float(tag:String):Float64|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get_string</strong>(tag : String)
+        def <strong>get_float</strong>(tag : String) : Float64 | Nil
 
-        <a class="method-permalink" href="#get_string%28tag%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#get_float%28tag%3AString%29%3AFloat64%7CNil-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns the float value for <em>tag</em>, <code>nil</code> when absent, and raises
+<code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-float type.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L78" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L81" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_float_array(tag:String):Array(Float64)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_float_array</strong>(tag : String) : Array(Float64) | Nil
+
+        <a class="method-permalink" href="#get_float_array%28tag%3AString%29%3AArray%28Float64%29%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the float array for <em>tag</em>, <code>nil</code> when absent, and raises
+<code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-float-array type.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L125" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_int(tag:String):Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_int</strong>(tag : String) : Int64 | Nil
+
+        <a class="method-permalink" href="#get_int%28tag%3AString%29%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the integer value for <em>tag</em>, <code>nil</code> when absent, and raises
+<code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-integer type.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L71" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_int_array(tag:String):Array(Int64)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_int_array</strong>(tag : String) : Array(Int64) | Nil
+
+        <a class="method-permalink" href="#get_int_array%28tag%3AString%29%3AArray%28Int64%29%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the integer array for <em>tag</em>, <code>nil</code> when absent, and raises
+<code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-integer-array type.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L111" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_string(tag:String):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>get_string</strong>(tag : String) : String | Nil
+
+        <a class="method-permalink" href="#get_string%28tag%3AString%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the string value for <em>tag</em>, <code>nil</code> when absent, and raises
+<code><a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a></code> when the tag exists with a non-string type.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -825,7 +924,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L314" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L360" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -841,7 +940,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -857,7 +956,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L180" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -873,7 +972,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L154" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L199" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -889,7 +988,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -905,7 +1004,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L189" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -921,7 +1020,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -937,7 +1036,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L179" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L224" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -953,7 +1052,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L197" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L242" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -969,7 +1068,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L206" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -985,7 +1084,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L102" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1001,7 +1100,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L188" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L233" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1017,7 +1116,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L206" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L251" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1033,7 +1132,7 @@ end</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/2275beb78b054bf18471a4f88eb0f312da858f92/src/hts/bam/auxi.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/c12ad1133dc6a335403d32f475ce2506702255e3/src/hts/bam/auxi.cr#L215" target="_blank">View source</a>]
         
       </div>
     </div>
