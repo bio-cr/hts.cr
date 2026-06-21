@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="crystal_docs.project_version" content="develop">
+<meta name="crystal_docs.project_name" content="hts">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="hts">
+  <title>HTS::Faidx::ReadError - hts develop</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          hts
+        </a>
+      </h1>
+
+      <span class="project-version">
+        develop
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="hts/HTS" data-name="hts">
+      <a href="../../HTS.html">HTS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="hts/HTS/Bam" data-name="hts::bam">
+      <a href="../../HTS/Bam.html">Bam</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
+      <a href="../../HTS/Bam/Aux.html">Aux</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/AuxError" data-name="hts::bam::auxerror">
+      <a href="../../HTS/Bam/AuxError.html">AuxError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/AuxTypeError" data-name="hts::bam::auxtypeerror">
+      <a href="../../HTS/Bam/AuxTypeError.html">AuxTypeError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+      <a href="../../HTS/Bam/BaseMod.html">BaseMod</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
+      <a href="../../HTS/Bam/BaseMod/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Modification" data-name="hts::bam::basemod::modification">
+      <a href="../../HTS/Bam/BaseMod/Modification.html">Modification</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Position" data-name="hts::bam::basemod::position">
+      <a href="../../HTS/Bam/BaseMod/Position.html">Position</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Cigar" data-name="hts::bam::cigar">
+      <a href="../../HTS/Bam/Cigar.html">Cigar</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Error" data-name="hts::bam::error">
+      <a href="../../HTS/Bam/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/FastaIndexError" data-name="hts::bam::fastaindexerror">
+      <a href="../../HTS/Bam/FastaIndexError.html">FastaIndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Flag" data-name="hts::bam::flag">
+      <a href="../../HTS/Bam/Flag.html">Flag</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Header" data-name="hts::bam::header">
+      <a href="../../HTS/Bam/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/HeaderError" data-name="hts::bam::headererror">
+      <a href="../../HTS/Bam/HeaderError.html">HeaderError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/IndexError" data-name="hts::bam::indexerror">
+      <a href="../../HTS/Bam/IndexError.html">IndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/MissingIndexError" data-name="hts::bam::missingindexerror">
+      <a href="../../HTS/Bam/MissingIndexError.html">MissingIndexError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
+      <a href="../../HTS/Bam/Mpileup.html">Mpileup</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/Mpileup/InputData" data-name="hts::bam::mpileup::inputdata">
+      <a href="../../HTS/Bam/Mpileup/InputData.html">InputData</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/MpileupError" data-name="hts::bam::mpileuperror">
+      <a href="../../HTS/Bam/MpileupError.html">MpileupError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/OpenError" data-name="hts::bam::openerror">
+      <a href="../../HTS/Bam/OpenError.html">OpenError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Bam/Pileup" data-name="hts::bam::pileup">
+      <a href="../../HTS/Bam/Pileup.html">Pileup</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Alignment" data-name="hts::bam::pileup::alignment">
+      <a href="../../HTS/Bam/Pileup/Alignment.html">Alignment</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Column" data-name="hts::bam::pileup::column">
+      <a href="../../HTS/Bam/Pileup/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/InputData" data-name="hts::bam::pileup::inputdata">
+      <a href="../../HTS/Bam/Pileup/InputData.html">InputData</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/PileupError" data-name="hts::bam::pileuperror">
+      <a href="../../HTS/Bam/PileupError.html">PileupError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/QueryError" data-name="hts::bam::queryerror">
+      <a href="../../HTS/Bam/QueryError.html">QueryError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/ReadError" data-name="hts::bam::readerror">
+      <a href="../../HTS/Bam/ReadError.html">ReadError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Record" data-name="hts::bam::record">
+      <a href="../../HTS/Bam/Record.html">Record</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/RecordError" data-name="hts::bam::recorderror">
+      <a href="../../HTS/Bam/RecordError.html">RecordError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/WriteError" data-name="hts::bam::writeerror">
+      <a href="../../HTS/Bam/WriteError.html">WriteError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Bcf" data-name="hts::bcf">
+      <a href="../../HTS/Bcf.html">Bcf</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Error" data-name="hts::bcf::error">
+      <a href="../../HTS/Bcf/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/FieldError" data-name="hts::bcf::fielderror">
+      <a href="../../HTS/Bcf/FieldError.html">FieldError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
+      <a href="../../HTS/Bcf/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/FormatDefinitionError" data-name="hts::bcf::formatdefinitionerror">
+      <a href="../../HTS/Bcf/FormatDefinitionError.html">FormatDefinitionError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/FormatError" data-name="hts::bcf::formaterror">
+      <a href="../../HTS/Bcf/FormatError.html">FormatError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/FormatReadError" data-name="hts::bcf::formatreaderror">
+      <a href="../../HTS/Bcf/FormatReadError.html">FormatReadError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/FormatTypeError" data-name="hts::bcf::formattypeerror">
+      <a href="../../HTS/Bcf/FormatTypeError.html">FormatTypeError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/FormatUpdateError" data-name="hts::bcf::formatupdateerror">
+      <a href="../../HTS/Bcf/FormatUpdateError.html">FormatUpdateError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Header" data-name="hts::bcf::header">
+      <a href="../../HTS/Bcf/Header.html">Header</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/HeaderError" data-name="hts::bcf::headererror">
+      <a href="../../HTS/Bcf/HeaderError.html">HeaderError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/IndexError" data-name="hts::bcf::indexerror">
+      <a href="../../HTS/Bcf/IndexError.html">IndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Info" data-name="hts::bcf::info">
+      <a href="../../HTS/Bcf/Info.html">Info</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/InfoDefinitionError" data-name="hts::bcf::infodefinitionerror">
+      <a href="../../HTS/Bcf/InfoDefinitionError.html">InfoDefinitionError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/InfoError" data-name="hts::bcf::infoerror">
+      <a href="../../HTS/Bcf/InfoError.html">InfoError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/InfoReadError" data-name="hts::bcf::inforeaderror">
+      <a href="../../HTS/Bcf/InfoReadError.html">InfoReadError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/InfoTypeError" data-name="hts::bcf::infotypeerror">
+      <a href="../../HTS/Bcf/InfoTypeError.html">InfoTypeError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/InfoUpdateError" data-name="hts::bcf::infoupdateerror">
+      <a href="../../HTS/Bcf/InfoUpdateError.html">InfoUpdateError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/MissingIndexError" data-name="hts::bcf::missingindexerror">
+      <a href="../../HTS/Bcf/MissingIndexError.html">MissingIndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/OpenError" data-name="hts::bcf::openerror">
+      <a href="../../HTS/Bcf/OpenError.html">OpenError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/QueryError" data-name="hts::bcf::queryerror">
+      <a href="../../HTS/Bcf/QueryError.html">QueryError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/ReadError" data-name="hts::bcf::readerror">
+      <a href="../../HTS/Bcf/ReadError.html">ReadError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Record" data-name="hts::bcf::record">
+      <a href="../../HTS/Bcf/Record.html">Record</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/RecordError" data-name="hts::bcf::recorderror">
+      <a href="../../HTS/Bcf/RecordError.html">RecordError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/SubsetError" data-name="hts::bcf::subseterror">
+      <a href="../../HTS/Bcf/SubsetError.html">SubsetError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/UnknownSampleError" data-name="hts::bcf::unknownsampleerror">
+      <a href="../../HTS/Bcf/UnknownSampleError.html">UnknownSampleError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/UnsupportedFormatOperationError" data-name="hts::bcf::unsupportedformatoperationerror">
+      <a href="../../HTS/Bcf/UnsupportedFormatOperationError.html">UnsupportedFormatOperationError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/UnsupportedInfoOperationError" data-name="hts::bcf::unsupportedinfooperationerror">
+      <a href="../../HTS/Bcf/UnsupportedInfoOperationError.html">UnsupportedInfoOperationError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/WriteError" data-name="hts::bcf::writeerror">
+      <a href="../../HTS/Bcf/WriteError.html">WriteError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Bgzf" data-name="hts::bgzf">
+      <a href="../../HTS/Bgzf.html">Bgzf</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bgzf/Error" data-name="hts::bgzf::error">
+      <a href="../../HTS/Bgzf/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bgzf/FileFormatError" data-name="hts::bgzf::fileformaterror">
+      <a href="../../HTS/Bgzf/FileFormatError.html">FileFormatError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bgzf/OpenError" data-name="hts::bgzf::openerror">
+      <a href="../../HTS/Bgzf/OpenError.html">OpenError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bgzf/ReadError" data-name="hts::bgzf::readerror">
+      <a href="../../HTS/Bgzf/ReadError.html">ReadError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bgzf/WriteError" data-name="hts::bgzf::writeerror">
+      <a href="../../HTS/Bgzf/WriteError.html">WriteError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Error" data-name="hts::error">
+      <a href="../../HTS/Error.html">Error</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="hts/HTS/Faidx" data-name="hts::faidx">
+      <a href="../../HTS/Faidx.html">Faidx</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Faidx/Error" data-name="hts::faidx::error">
+      <a href="../../HTS/Faidx/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Faidx/FileFormatError" data-name="hts::faidx::fileformaterror">
+      <a href="../../HTS/Faidx/FileFormatError.html">FileFormatError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Faidx/IndexError" data-name="hts::faidx::indexerror">
+      <a href="../../HTS/Faidx/IndexError.html">IndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Faidx/OpenError" data-name="hts::faidx::openerror">
+      <a href="../../HTS/Faidx/OpenError.html">OpenError</a>
+      
+    </li>
+  
+  <li class=" current" data-id="hts/HTS/Faidx/ReadError" data-name="hts::faidx::readerror">
+      <a href="../../HTS/Faidx/ReadError.html">ReadError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/FileFormatError" data-name="hts::fileformaterror">
+      <a href="../../HTS/FileFormatError.html">FileFormatError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Hts" data-name="hts::hts">
+      <a href="../../HTS/Hts.html">Hts</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/LibHTS2" data-name="hts::libhts2">
+      <a href="../../HTS/LibHTS2.html">LibHTS2</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/RewindError" data-name="hts::rewinderror">
+      <a href="../../HTS/RewindError.html">RewindError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="hts/HTS/Tabix" data-name="hts::tabix">
+      <a href="../../HTS/Tabix.html">Tabix</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Tabix/Error" data-name="hts::tabix::error">
+      <a href="../../HTS/Tabix/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Tabix/IndexError" data-name="hts::tabix::indexerror">
+      <a href="../../HTS/Tabix/IndexError.html">IndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Tabix/MissingIndexError" data-name="hts::tabix::missingindexerror">
+      <a href="../../HTS/Tabix/MissingIndexError.html">MissingIndexError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Tabix/OpenError" data-name="hts::tabix::openerror">
+      <a href="../../HTS/Tabix/OpenError.html">OpenError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Tabix/QueryError" data-name="hts::tabix::queryerror">
+      <a href="../../HTS/Tabix/QueryError.html">QueryError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Tabix/ReadError" data-name="hts::tabix::readerror">
+      <a href="../../HTS/Tabix/ReadError.html">ReadError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/ThreadError" data-name="hts::threaderror">
+      <a href="../../HTS/ThreadError.html">ThreadError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> HTS::<wbr>Faidx::<wbr>ReadError
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Faidx/ReadError.html">HTS::Faidx::ReadError</a></li><li class="superclass"><a href="../../HTS/Faidx/Error.html">HTS::Faidx::Error</a></li><li class="superclass"><a href="../../HTS/Error.html">HTS::Error</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/bio-cr/hts.cr/blob/58797d059c7772f3e4cd196896d0139031e9d671/src/hts/faidx.cr#L16" target="_blank">
+        hts/faidx.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+
+</div>
+
+</body>
+</html>
