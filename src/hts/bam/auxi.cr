@@ -2,8 +2,6 @@
 
 module HTS
   class Bam < Hts
-    class AuxTypeError < Exception; end
-
     AUX_TAG_PATTERN = /\A[A-Za-z][A-Za-z0-9]\z/
 
     def self.aux_tag_to_static_array(tag : String) : StaticArray(UInt8, 2)

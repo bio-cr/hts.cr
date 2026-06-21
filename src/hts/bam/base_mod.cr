@@ -5,7 +5,7 @@ module HTS
     # Base modification information from MM/ML tags
     # View over a Record's MM/ML tags using htslib base-mod API
     class BaseMod
-      class Error < Exception; end
+      class Error < Bam::Error; end
 
       # Default flags for parsing base modifications via htslib
       # HTS_MOD_REPORT_UNCHECKED = 1 (report unvalidated mods instead of failing)

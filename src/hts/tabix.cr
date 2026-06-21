@@ -1,14 +1,12 @@
 require "./libhts"
 require "./version"
+require "./error"
 
 require "./bgzf"
+require "./tabix/errors"
 
 module HTS
   class Tabix < Bgzf
-    class QueryError < Exception; end
-
-    class MissingIndexError < QueryError; end
-
     @idx : LibHTS::TbxT*
     @@tbx_name2id = ->(tbx : Void*, ss : LibC::Char*) : LibC::Int {
       LibHTS.tbx_name2id(tbx.as(LibHTS::TbxT*), ss)
@@ -40,7 +38,7 @@ module HTS
         # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
 
         @hts_file = LibHTS.hts_open(@file_name.to_s.to_unsafe, @mode.to_unsafe)
-        raise "Failed to open file #{@file_name}" if @hts_file.null?
+        raise OpenError.new("Failed to open file #{@file_name}") if @hts_file.null?
 
         set_threads(threads) if threads > 0
 
@@ -76,9 +74,9 @@ module HTS
 
       case rc
       when 0 # success
-      when -1 then raise "general failure indexing #{fn}"
-      when -2 then raise "compression not BGZF: #{fn}"
-      else         raise "unknown error indexing #{fn} (rc=#{rc})"
+      when -1 then raise IndexError.new("General failure indexing #{fn}")
+      when -2 then raise IndexError.new("Compression is not BGZF: #{fn}")
+      else         raise IndexError.new("Unknown error indexing #{fn} (rc=#{rc})")
       end
     end
 
@@ -117,11 +115,11 @@ module HTS
       n = 0
       names = LibHTS.tbx_seqnames(@idx, pointerof(n))
       begin
-        raise "Failed to load seqnames for #{@file_name}" if names.null? && n > 0
+        raise ReadError.new("Failed to load seqnames for #{@file_name}") if names.null? && n > 0
 
         Array(String).new(n) do |i|
           name = names[i]
-          raise "Failed to load seqname #{i} for #{@file_name}" if name.null?
+          raise ReadError.new("Failed to load seqname #{i} for #{@file_name}") if name.null?
           String.new(name)
         end
       ensure
@@ -206,9 +204,10 @@ module HTS
       r.s = Pointer(LibC::Char).null
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       begin
-        while LibHTS.hts_itr_next(bgzf_fp, qiter, pointerof(r).as(Void*), @idx.as(Void*)) > 0
+        while (rc = LibHTS.hts_itr_next(bgzf_fp, qiter, pointerof(r).as(Void*), @idx.as(Void*))) > 0
           yield String.new(r.s, r.l).split('\t')
         end
+        raise ReadError.new("Failed to read tabix query record from #{@file_name} (rc=#{rc})") if rc < -1
       ensure
         LibC.free(r.s) unless r.s.null?
       end

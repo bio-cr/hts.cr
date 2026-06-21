@@ -3,6 +3,7 @@ require "./version"
 require "./error"
 
 require "./hts"
+require "./bam/errors"
 require "./bam/header"
 require "./bam/cigar"
 require "./bam/flag"
@@ -13,10 +14,6 @@ require "./bam/mpileup"
 
 module HTS
   class Bam < Hts
-    class QueryError < Exception; end
-
-    class MissingIndexError < QueryError; end
-
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT

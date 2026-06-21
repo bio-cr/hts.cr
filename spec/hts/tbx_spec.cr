@@ -50,6 +50,12 @@ class TabixTest
     end
   end
 
+  def test_open_missing_file_raises_open_error
+    with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+      expect_raises(HTS::Tabix::OpenError) { HTS::Tabix.open("/tmp/no_such_tabix_file.vcf.gz") }
+    end
+  end
+
   def test_index_loaded
     HTS::Tabix.open(@vcf_gz) do |tbx|
       (tbx.index_loaded?).should be_true
@@ -202,6 +208,23 @@ class TabixTest
     # build_index creates a .tbi file next to the input
     tbi = "#{@vcf_gz}.tbi"
     (File.exists?(tbi)).should be_true
+  end
+
+  def test_build_index_rejects_plain_text
+    plain = File.tempfile("tbx_plain", ".vcf")
+    path = plain.path || raise "tempfile path is nil"
+    begin
+      VCF_LINES.each { |line| plain.puts(line) }
+      plain.close
+
+      expect_raises(HTS::Tabix::IndexError) do
+        HTS::Tabix.build_index(path, verbose: false)
+      end
+    ensure
+      plain.close rescue nil
+      File.delete(path) if File.exists?(path)
+      File.delete("#{path}.tbi") if File.exists?("#{path}.tbi")
+    end
   end
 end
 
