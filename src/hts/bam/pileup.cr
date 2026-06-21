@@ -254,7 +254,7 @@ module HTS
           id = data.as(Pointer(InputData)).value
           if id.itr.null?
             r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
-            r >= 0 ? 0 : -1
+            r >= 0 ? 0 : r
           else
             r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
             r >= 0 ? 0 : r
