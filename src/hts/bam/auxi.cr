@@ -272,8 +272,6 @@ module HTS
         when 'B'
           parse_aux_array(aux_ptr) # Basic array type support
         end
-      rescue
-        nil
       end
 
       # Parse auxiliary value with original type information preserved
@@ -295,8 +293,6 @@ module HTS
                 end
 
         {value, original_type}
-      rescue
-        {nil, nil}
       end
 
       # Parse auxiliary array values
@@ -313,8 +309,6 @@ module HTS
         else
           "Array[#{array_type.chr}]:#{length}" # Unsupported array type - return descriptive string
         end
-      rescue
-        "Array[?]:0"
       end
 
       # Get pointer to auxiliary tag

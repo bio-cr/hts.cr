@@ -162,7 +162,7 @@ module HTS
 
     def finalize
       close unless closed?
-    rescue
+    rescue Exception
       nil
     end
 
