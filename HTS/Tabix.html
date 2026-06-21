@@ -578,14 +578,14 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L9" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L9" target="_blank">
         hts/tabix.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix/errors.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix/errors.cr#L2" target="_blank">
         hts/tabix/errors.cr
       </a>
     
@@ -608,7 +608,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>)</a>
+        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)</a>
         
       </li>
     
@@ -627,19 +627,19 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#build_index%28file_name%3APath%7CString%2Cindex_name%3D%22%22%2Cmin_shift%3D0%2Cthreads%3D0%2Cverbose%3Dtrue%29-class-method" class="signature"><strong>.build_index</strong>(file_name : Path | String, index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, threads = <span class="n">0</span>, verbose = <span class="n">true</span>)</a>
+        <a href="#build_index%28file_name%3APath%7CString%2Cindex_name%3D%22%22%2Cmin_shift%3D0%2Cthreads%3D0%2Cverbose%3Dtrue%2Cpreset%3D%3Avcf%29-class-method" class="signature"><strong>.build_index</strong>(file_name : Path | String, index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, threads = <span class="n">0</span>, verbose = <span class="n">true</span>, preset = <span class="n">:vcf</span>)</a>
         
           <div class="summary"><p>Build a tabix index for <em>file_name</em> on disk.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>)</a>
+        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, &)</a>
+        <a href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%2C%26%29-class-method" class="signature"><strong>.open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>, &)</a>
         
       </li>
     
@@ -660,7 +660,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#build_index%28index_name%3D%22%22%2Cmin_shift%3D0%2Cverbose%3Dtrue%29-instance-method" class="signature"><strong>#build_index</strong>(index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, verbose = <span class="n">true</span>)</a>
+        <a href="#build_index%28index_name%3D%22%22%2Cmin_shift%3D0%2Cverbose%3Dtrue%2Cpreset%3D%3Avcf%29-instance-method" class="signature"><strong>#build_index</strong>(index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, verbose = <span class="n">true</span>, preset = <span class="n">:vcf</span>)</a>
         
           <div class="summary"><p>Build a tabix index for this file.</p></div>
         
@@ -964,18 +964,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false)-class-method">
+    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false,preset=:vcf)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>)
+        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)
 
-        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -992,55 +992,56 @@
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="build_index(file_name:Path|String,index_name=&quot;&quot;,min_shift=0,threads=0,verbose=true)-class-method">
+    <div class="entry-detail" id="build_index(file_name:Path|String,index_name=&quot;&quot;,min_shift=0,threads=0,verbose=true,preset=:vcf)-class-method">
       <div class="signature">
         
-        def self.<strong>build_index</strong>(file_name : Path | String, index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, threads = <span class="n">0</span>, verbose = <span class="n">true</span>)
+        def self.<strong>build_index</strong>(file_name : Path | String, index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, threads = <span class="n">0</span>, verbose = <span class="n">true</span>, preset = <span class="n">:vcf</span>)
 
-        <a class="method-permalink" href="#build_index%28file_name%3APath%7CString%2Cindex_name%3D%22%22%2Cmin_shift%3D0%2Cthreads%3D0%2Cverbose%3Dtrue%29-class-method">#</a>
+        <a class="method-permalink" href="#build_index%28file_name%3APath%7CString%2Cindex_name%3D%22%22%2Cmin_shift%3D0%2Cthreads%3D0%2Cverbose%3Dtrue%2Cpreset%3D%3Avcf%29-class-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Build a tabix index for <em>file_name</em> on disk. Uses the VCF preset by default.</p>
+<p>Supported presets are <code>:vcf</code>, <code>:bed</code>, <code>:gff</code>, <code>:sam</code>, and <code>:psltbl</code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L55" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false,preset=:vcf)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>)
+        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)
 
-        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false,&amp;)-class-method">
+    <div class="entry-detail" id="open(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false,preset=:vcf,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, &)
+        def self.<strong>open</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>, &)
 
-        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%2C%26%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1059,12 +1060,12 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="build_index(index_name=&quot;&quot;,min_shift=0,verbose=true)-instance-method">
+    <div class="entry-detail" id="build_index(index_name=&quot;&quot;,min_shift=0,verbose=true,preset=:vcf)-instance-method">
       <div class="signature">
         
-        def <strong>build_index</strong>(index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, verbose = <span class="n">true</span>)
+        def <strong>build_index</strong>(index_name = <span class="s">&quot;&quot;</span>, min_shift = <span class="n">0</span>, verbose = <span class="n">true</span>, preset = <span class="n">:vcf</span>)
 
-        <a class="method-permalink" href="#build_index%28index_name%3D%22%22%2Cmin_shift%3D0%2Cverbose%3Dtrue%29-instance-method">#</a>
+        <a class="method-permalink" href="#build_index%28index_name%3D%22%22%2Cmin_shift%3D0%2Cverbose%3Dtrue%2Cpreset%3D%3Avcf%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1075,7 +1076,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L86" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1091,7 +1092,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L164" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1107,7 +1108,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1123,7 +1124,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L172" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1139,7 +1140,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L98" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L100" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1155,7 +1156,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1171,7 +1172,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1192,7 +1193,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L106" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1214,7 +1215,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L150" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L152" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1236,7 +1237,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L132" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L134" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1257,7 +1258,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/6f2da2c27ae2d800a6a769bfc503a33b03c1d283/src/hts/tabix.cr#L112" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7a4abe55c6de64a9533222fae82d55f7f2171534/src/hts/tabix.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
