@@ -241,6 +241,15 @@ class BamRecordTest
     (aln1.qual).should eq([17] * 70)
   end
 
+  def test_each_qual
+    qualities = [] of UInt8
+    aln1.each_qual do |quality|
+      qualities << quality
+    end
+
+    qualities.should eq(aln1.qual)
+  end
+
   def test_qual_string
     (aln1.qual_string).should eq("2" * 70)
   end

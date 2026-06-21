@@ -274,6 +274,14 @@ module HTS
         end
       end
 
+      # Iterate over base qualities without building an Array.
+      def each_qual(&)
+        q_ptr = LibHTS2.bam_get_qual(@bam1)
+        len.times do |i|
+          yield q_ptr[i]
+        end
+      end
+
       def qual_string
         q_ptr = LibHTS2.bam_get_qual(@bam1)
         return "" if len == 0
