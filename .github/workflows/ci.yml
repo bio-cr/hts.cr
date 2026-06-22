@@ -9,7 +9,7 @@ jobs:
       matrix:
         os: ["ubuntu", "macos", "windows"]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: crystal-lang/install-crystal@v1
         if: matrix.os != 'windows'
       - name: Install Crystal (MinGW64)
