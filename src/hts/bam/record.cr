@@ -217,6 +217,30 @@ module HTS
         Cigar.new(LibHTS2.bam_get_cigar(@bam1), @bam1.value.core.n_cigar)
       end
 
+      # Returns the number of CIGAR operations in this record without
+      # allocating a `Cigar` object.
+      def cigar_size : UInt32
+        @bam1.value.core.n_cigar
+      end
+
+      # Iterate over CIGAR operations without allocating a `Cigar` object or
+      # copying the encoded CIGAR words out of the BAM record. This yields the
+      # same `{op, len}` tuple shape as `Cigar#each`, but reads from this record's
+      # underlying BAM memory during the block. Use `#cigar` when an independent,
+      # retained CIGAR object is needed.
+      def each_cigar(& : Tuple(Char, UInt32) ->) : self
+        return self if cigar_size == 0
+
+        cigar_ptr = LibHTS2.bam_get_cigar(@bam1)
+        raise RecordError.new("BAM record has CIGAR operations but no CIGAR data") if cigar_ptr.null?
+
+        cigar_size.times do |i|
+          cigar_op = cigar_ptr[i]
+          yield({LibHTS2.bam_cigar_opchr(cigar_op), LibHTS2.bam_cigar_oplen(cigar_op)})
+        end
+        self
+      end
+
       def qlen
         LibHTS.bam_cigar2qlen(
           @bam1.value.core.n_cigar,
