@@ -306,6 +306,14 @@ module HTS
         Flag.new @bam1.value.core.flag
       end
 
+      def flag_value : UInt16
+        @bam1.value.core.flag
+      end
+
+      def has_flag?(mask) : Bool
+        (flag_value & mask.to_u16) != 0
+      end
+
       def flag=(flag)
         @bam1.value.core.flag = flag
       end
@@ -336,9 +344,9 @@ module HTS
         aux.get_char(str)
       end
 
-      {% for name, _ in Flag::TABLE %}
+      {% for name, flag_mask in Flag::TABLE %}
       def {{ name.id }}
-        flag.{{ name.id }}
+        has_flag?({{ flag_mask.id }})
       end
       {% end %}
 
