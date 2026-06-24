@@ -192,8 +192,112 @@ class BamRecordTest
     (aln.mapq).should eq(0)
   end
 
+  def test_flag_value_and_has_flag
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      2 | 64,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M"),
+      "ACGT",
+      [30_u8, 30_u8, 30_u8, 30_u8]
+    )
+
+    (aln.flag_value).should eq(66)
+    (aln.has_flag?(2)).should be_true
+    (aln.has_flag?(64)).should be_true
+    (aln.has_flag?(128)).should be_false
+    (aln.proper_pair?).should be_true
+    (aln.read1?).should be_true
+    (aln.read2?).should be_false
+  end
+
   def test_cigar
     (aln1.cigar).should be_a(HTS::Bam::Cigar)
+  end
+
+  def test_cigar_size
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M1I2D"),
+      "ACGTT",
+      [30_u8, 30_u8, 30_u8, 30_u8, 30_u8]
+    )
+
+    (aln.cigar_size).should eq(3)
+  end
+
+  def test_each_cigar
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M1I2D"),
+      "ACGTT",
+      [30_u8, 30_u8, 30_u8, 30_u8, 30_u8]
+    )
+
+    ops = [] of Tuple(Char, UInt32)
+    returned = aln.each_cigar do |op|
+      ops << op
+    end
+
+    (returned).should be(aln)
+    (ops).should eq([{'M', 4_u32}, {'I', 1_u32}, {'D', 2_u32}])
+    (ops).should eq(aln.cigar.to_a)
+  end
+
+  def test_each_cigar_supports_tuple_unpacking
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M1I2D"),
+      "ACGTT",
+      [30_u8, 30_u8, 30_u8, 30_u8, 30_u8]
+    )
+
+    ops = [] of Tuple(Char, UInt32)
+    aln.each_cigar do |op, len|
+      ops << {op, len}
+    end
+
+    (ops).should eq(aln.cigar.to_a)
+  end
+
+  def test_each_cigar_with_no_cigar_operations
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      4,
+      0,
+      0_i64,
+      0,
+      [] of UInt32,
+      "",
+      [] of UInt8
+    )
+
+    yielded = false
+    returned = aln.each_cigar { yielded = true }
+
+    (returned).should be(aln)
+    (yielded).should be_false
+    (aln.cigar_size).should eq(0)
+    (aln.cigar.to_a).should eq([] of Tuple(Char, UInt32))
   end
 
   def test_qlen
