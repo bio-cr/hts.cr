@@ -115,6 +115,42 @@ module HTS
       bytes_written + newline_written
     end
 
+    def puts : Int64
+      write("\n")
+    end
+
+    def puts(*objects) : Nil
+      objects.each do |object|
+        print(object)
+        write("\n")
+      end
+      nil
+    end
+
+    def print(data : String) : Nil
+      write(data)
+      nil
+    end
+
+    def print(data : Bytes) : Nil
+      write(data)
+      nil
+    end
+
+    def print(data) : Nil
+      print(data.to_s)
+    end
+
+    def print(*objects) : Nil
+      objects.each { |object| print(object) }
+      nil
+    end
+
+    def <<(data) : self
+      print(data)
+      self
+    end
+
     def read(size : Int32) : Bytes
       check_closed
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)

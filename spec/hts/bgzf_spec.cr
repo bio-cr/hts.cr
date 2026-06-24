@@ -224,6 +224,53 @@ class BgzfTest
     test_file.delete
   end
 
+  def test_write_data_with_print_and_append
+    test_file = File.tempfile("test", ".gz")
+    test_file.close
+
+    HTS::Bgzf.open(test_file.path, "wz") do |bgzf|
+      if bgzf.is_bgzf?
+        (bgzf.print("Hello")).should be_nil
+        bgzf.print(", ")
+        returned = bgzf << "BGZF" << 123
+        (returned).should be(bgzf)
+        bgzf.flush
+      end
+    end
+
+    HTS::Bgzf.open(test_file.path, "r") do |bgzf|
+      if bgzf.is_bgzf?
+        data = bgzf.read(100)
+        (String.new(data)).should eq("Hello, BGZF123")
+      end
+    end
+
+    test_file.delete
+  end
+
+  def test_write_lines_with_puts_objects
+    test_file = File.tempfile("test", ".gz")
+    test_file.close
+
+    HTS::Bgzf.open(test_file.path, "wz") do |bgzf|
+      if bgzf.is_bgzf?
+        bgzf.puts
+        bgzf.puts(1, "two")
+        bgzf.flush
+      end
+    end
+
+    HTS::Bgzf.open(test_file.path, "r") do |bgzf|
+      if bgzf.is_bgzf?
+        lines = [] of String
+        bgzf.each_line { |line| lines << line }
+        (lines).should eq(["", "1", "two"])
+      end
+    end
+
+    test_file.delete
+  end
+
   def test_close_raises_on_write_failure
     return unless File.exists?("/dev/full")
 
