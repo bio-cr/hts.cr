@@ -306,13 +306,17 @@ module HTS
         end
       end
 
+      # Return base qualities as a Phred+33 QUAL string.
+      #
+      # Matches htslib's SAM formatter: if the first quality byte is 0xff,
+      # QUAL is returned as "*"; otherwise each quality byte is emitted as
+      # byte + 33 without validating later bytes.
       def qual_string
         q_ptr = LibHTS2.bam_get_qual(@bam1)
         return "" if len == 0
-        return "*" if len.times.all? { |i| q_ptr[i] == 0xff }
-        raise ArgumentError.new("missing base quality cannot be represented in QUAL string") if len.times.any? { |i| q_ptr[i] == 0xff }
+        return "*" if q_ptr[0] == 0xff
 
-        slice = Slice.new(len) { |i| (q_ptr[i].to_i + 33).to_u8 }
+        slice = Slice.new(len) { |i| q_ptr[i] &+ 33_u8 }
         String.new(slice)
       end
 
