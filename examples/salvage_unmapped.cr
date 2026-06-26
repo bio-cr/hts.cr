@@ -13,19 +13,17 @@ def valid_quality_char?(char : String) : Bool
   byte >= 33 && byte <= 126
 end
 
-def terminal_softclip_lengths(record : HTS::Bam::Record) : Tuple(UInt32, UInt32)
-  left = 0_u32
-  right = 0_u32
+def terminal_softclip_at_least?(record : HTS::Bam::Record, min_softclip : UInt32) : Bool
   op_count = record.cigar_size
   index = 0_u32
 
   record.each_cigar do |op, len|
-    left = len if index == 0 && op == 'S'
-    right = len if index + 1 == op_count && op == 'S'
+    return true if op == 'S' && len >= min_softclip && (index == 0 || index + 1 == op_count)
+
     index += 1
   end
 
-  {left, right}
+  false
 end
 
 def fastq_name(record : HTS::Bam::Record, append_read_number : Bool) : String
@@ -57,19 +55,19 @@ def reverse_complement(sequence : String) : String
   end
 end
 
-def fastq_sequence(record : HTS::Bam::Record) : String
+def fastq_sequence(record : HTS::Bam::Record, reverse_read : Bool) : String
   sequence = record.seq
-  return sequence if record.unmapped? || !record.reverse?
+  return sequence unless reverse_read
 
   # BAM stores mapped reverse-strand SEQ in alignment orientation.
   # FASTQ should be restored to the original read orientation.
   reverse_complement(sequence)
 end
 
-def fastq_quality(record : HTS::Bam::Record, missing_quality : String) : String
+def fastq_quality(record : HTS::Bam::Record, missing_quality : String, reverse_read : Bool) : String
   quality = record.qual_string
   return missing_quality * record.len if quality == "*"
-  return quality if record.unmapped? || !record.reverse?
+  return quality unless reverse_read
 
   quality.reverse
 end
@@ -110,35 +108,100 @@ abort "ERROR: --missing-quality must be a single ASCII quality character" unless
 abort "ERROR: --threads must be >= 0" if threads < 0
 
 input_path = ARGV[0]
+min_softclip_u32 = min_softclip.to_u32
 writer = if path = output_path
            Fastx::Fastq::Writer.new(path)
          else
            Fastx::Fastq::Writer.new(STDOUT)
          end
 
+total_records = 0_u64
+emitted_records = 0_u64
+emitted_unmapped = 0_u64
+emitted_softclip = 0_u64
+skipped_empty = 0_u64
+skipped_short = 0_u64
+skipped_secondary_or_supplementary = 0_u64
+skipped_qcfail = 0_u64
+skipped_duplicate = 0_u64
+skipped_low_mapq = 0_u64
+skipped_no_terminal_softclip = 0_u64
+
 begin
   HTS::Bam.open(input_path, threads: threads) do |bam|
     bam.each do |record|
-      next if record.len == 0
-      next if record.len < min_read_length
-      next if record.secondary? || record.supplementary?
-      next if !include_qcfail && record.qcfail?
-      next if !include_duplicates && record.duplicate?
+      total_records += 1
 
-      unless record.unmapped?
-        next if record.mapq < min_mapq
-
-        left_softclip, right_softclip = terminal_softclip_lengths(record)
-        next unless left_softclip >= min_softclip || right_softclip >= min_softclip
+      if record.len == 0
+        skipped_empty += 1
+        next
       end
+
+      if record.len < min_read_length
+        skipped_short += 1
+        next
+      end
+
+      if record.secondary? || record.supplementary?
+        skipped_secondary_or_supplementary += 1
+        next
+      end
+
+      if !include_qcfail && record.qcfail?
+        skipped_qcfail += 1
+        next
+      end
+
+      if !include_duplicates && record.duplicate?
+        skipped_duplicate += 1
+        next
+      end
+
+      unmapped = record.unmapped?
+
+      unless unmapped
+        if record.mapq < min_mapq
+          skipped_low_mapq += 1
+          next
+        end
+
+        unless terminal_softclip_at_least?(record, min_softclip_u32)
+          skipped_no_terminal_softclip += 1
+          next
+        end
+      end
+
+      emitted_records += 1
+      if unmapped
+        emitted_unmapped += 1
+      else
+        emitted_softclip += 1
+      end
+
+      reverse_read = !unmapped && record.reverse?
 
       writer.write(
         fastq_name(record, append_read_number),
-        fastq_sequence(record),
-        fastq_quality(record, missing_quality)
+        fastq_sequence(record, reverse_read),
+        fastq_quality(record, missing_quality, reverse_read)
       )
     end
   end
 ensure
   writer.close
 end
+
+STDERR.puts "salvage_unmapped summary"
+STDERR.puts "  input: #{input_path}"
+STDERR.puts "  records: #{total_records}"
+STDERR.puts "  emitted: #{emitted_records}"
+STDERR.puts "    unmapped: #{emitted_unmapped}"
+STDERR.puts "    softclip: #{emitted_softclip}"
+STDERR.puts "  skipped:"
+STDERR.puts "    empty sequence: #{skipped_empty}"
+STDERR.puts "    shorter than --min-read-length: #{skipped_short}"
+STDERR.puts "    secondary/supplementary: #{skipped_secondary_or_supplementary}"
+STDERR.puts "    QC-fail: #{skipped_qcfail}" unless include_qcfail
+STDERR.puts "    duplicate: #{skipped_duplicate}" unless include_duplicates
+STDERR.puts "    low MAPQ: #{skipped_low_mapq}" if min_mapq > 0
+STDERR.puts "    no terminal softclip >= #{min_softclip}: #{skipped_no_terminal_softclip}"
