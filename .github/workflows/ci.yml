@@ -40,22 +40,33 @@ jobs:
       - name: Install dependencies
         if: matrix.os != 'windows'
         run: shards install
+      - name: Install example dependencies
+        if: matrix.os != 'windows'
+        working-directory: examples
+        run: shards install
       - name: Install dependencies (MinGW64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
+        run: shards install
+      - name: Install example dependencies (MinGW64)
+        if: matrix.os == 'windows'
+        shell: msys2 {0}
+        working-directory: examples
         run: shards install
       - name: Format check
         if: matrix.os != 'windows'
         run: crystal tool format --check
       - name: Examples compile check
         if: matrix.os != 'windows'
+        working-directory: examples
         run: |
-          for f in examples/*.cr; do crystal build "$f" --no-codegen; done
+          for f in *.cr; do crystal build "$f" --no-codegen; done
       - name: Examples compile check (MinGW64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
+        working-directory: examples
         run: |
-          for f in examples/*.cr; do crystal build "$f" --no-codegen; done
+          for f in *.cr; do crystal build "$f" --no-codegen; done
       - name: Run tests
         if: matrix.os != 'windows'
         run: |
