@@ -217,7 +217,7 @@ class BcfTest
 
   def test_query_region_copy
     positions = [] of Int64
-    indexed_bcf.query("poo:4000-4500", copy: true) do |record|
+    indexed_bcf.query_copy("poo:4000-4500") do |record|
       positions << record.pos
     end
     (positions).should eq([4020, 4309, 4336])
@@ -250,7 +250,7 @@ class BcfTest
 
   def test_query_multi_regions_copy
     positions = [] of Int64
-    indexed_bcf.query(["poo:4000-4100", "poo:4300-4400"], copy: true) do |record|
+    indexed_bcf.query_copy(["poo:4000-4100", "poo:4300-4400"]) do |record|
       positions << record.pos
     end
     (positions).should eq([4020, 4309, 4336])
@@ -279,7 +279,7 @@ class BcfTest
   end
 
   def test_each_copy
-    bcf.each(copy: true) do |record|
+    bcf.each_copy do |record|
       (record).should be_a(HTS::Bcf::Record)
     end
   end

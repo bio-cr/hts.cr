@@ -324,22 +324,22 @@ module HTS
       end
     end
 
-    def each(copy = false, &)
-      if copy
-        each_record_copy do |record|
-          yield record
-        end
-      else
-        each_record_reuse do |record|
-          yield record
-        end
+    def each(&)
+      each_record_reuse do |record|
+        yield record
+      end
+    end
+
+    def each_copy(&)
+      each_record_copy do |record|
+        yield record
       end
     end
 
     # Ensure collected records are independent and safe after iteration ends.
     def to_a : Array(Record)
       ary = [] of Record
-      each(copy: true) { |record| ary << record }
+      each_copy { |record| ary << record }
       ary
     end
 
@@ -411,7 +411,7 @@ module HTS
       end
     end
 
-    def query(region : String, copy = false, &)
+    def query(region : String, &)
       check_closed
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_query_index!
@@ -419,24 +419,48 @@ module HTS
       qiter = LibHTS.sam_itr_querys(@idx, header, region)
       raise_region_query_error(region) if qiter.null?
       begin
-        iterate_iterator(qiter, copy) { |record| yield record }
+        iterate_iterator(qiter) { |record| yield record }
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    def query_copy(region : String, &)
+      check_closed
+      raise ArgumentError.new("region must not be empty") if region.empty?
+      ensure_query_index!
+
+      qiter = LibHTS.sam_itr_querys(@idx, header, region)
+      raise_region_query_error(region) if qiter.null?
+      begin
+        iterate_iterator_copy(qiter) { |record| yield record }
       ensure
         LibHTS.hts_itr_destroy(qiter)
       end
     end
 
     # Multi-region query. This currently uses sequential single-region iterators.
-    # It preserves the same copy semantics as the single-region query.
     # Records overlapping multiple regions may be yielded more than once;
     # regions are not merged or deduplicated.
-    def query(regions : Array(String), copy = false, &)
+    def query(regions : Array(String), &)
       check_closed
       raise ArgumentError.new("regions must not be empty") if regions.empty?
       ensure_query_index!
 
       regions.each_with_index do |region, index|
         raise ArgumentError.new("regions[#{index}] must not be empty") if region.empty?
-        query(region, copy) { |record| yield record }
+        query(region) { |record| yield record }
+      end
+    end
+
+    def query_copy(regions : Array(String), &)
+      check_closed
+      raise ArgumentError.new("regions must not be empty") if regions.empty?
+      ensure_query_index!
+
+      regions.each_with_index do |region, index|
+        raise ArgumentError.new("regions[#{index}] must not be empty") if region.empty?
+        query_copy(region) { |record| yield record }
       end
     end
 
@@ -450,7 +474,7 @@ module HTS
     #   Be careful not to decrement the end coordinate during conversion.
 
     # Numeric (tid) query: coordinates are 0-based half-open [beg, end)
-    def query(tid : Int32, beg : Int64, end_pos : Int64, copy = false, &)
+    def query(tid : Int32, beg : Int64, end_pos : Int64, &)
       check_closed
       ensure_query_index!
       validate_tid!(tid)
@@ -460,14 +484,30 @@ module HTS
       qiter = LibHTS.sam_itr_queryi(@idx, tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
-        iterate_iterator(qiter, copy) { |record| yield record }
+        iterate_iterator(qiter) { |record| yield record }
+      ensure
+        LibHTS.hts_itr_destroy(qiter)
+      end
+    end
+
+    def query_copy(tid : Int32, beg : Int64, end_pos : Int64, &)
+      check_closed
+      ensure_query_index!
+      validate_tid!(tid)
+      raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
+      raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
+
+      qiter = LibHTS.sam_itr_queryi(@idx, tid, beg, end_pos)
+      raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
+      begin
+        iterate_iterator_copy(qiter) { |record| yield record }
       ensure
         LibHTS.hts_itr_destroy(qiter)
       end
     end
 
     # Chromosome name + range using SAM-style 1-based inclusive coordinates.
-    def query(chrom : String, beg : Int64, end_pos : Int64, copy = false, &)
+    def query(chrom : String, beg : Int64, end_pos : Int64, &)
       raise ArgumentError.new("chrom must not be empty") if chrom.empty?
       raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
@@ -476,7 +516,18 @@ module HTS
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
       # Convert 1-based inclusive [beg, end] to 0-based half-open [beg - 1, end).
-      query(tid, beg - 1, end_pos, copy) { |record| yield record }
+      query(tid, beg - 1, end_pos) { |record| yield record }
+    end
+
+    def query_copy(chrom : String, beg : Int64, end_pos : Int64, &)
+      raise ArgumentError.new("chrom must not be empty") if chrom.empty?
+      raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
+      raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
+
+      tid = @header.get_tid(chrom)
+      raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
+
+      query_copy(tid, beg - 1, end_pos) { |record| yield record }
     end
 
     private def ensure_query_index! : Nil
@@ -501,30 +552,30 @@ module HTS
       raise QueryError.new("Failed to create an iterator for #{ref_name}:#{beg}-#{end_pos} (tid=#{tid}, 0-based half-open) in #{@file_name}. The index may be stale or incompatible with the file.")
     end
 
-    private def iterate_iterator(qiter, copy, & : HTS::Bam::Record ->)
-      if copy
-        bam1 = new_bam1!
-        begin
-          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          while slen >= 0
-            record = Record.new(header, take_bam1!(pointerof(bam1)))
-            yield record
-            bam1 = new_bam1!
-            slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
-          end
-          raise ReadError.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
-        ensure
-          LibHTS.bam_destroy1(bam1) unless bam1.null?
-        end
-      else
-        bam1 = new_bam1!
-        record = Record.new(header, bam1)
+    private def iterate_iterator(qiter, & : HTS::Bam::Record ->)
+      bam1 = new_bam1!
+      record = Record.new(header, bam1)
+      slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+      while slen >= 0
+        yield record
+        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
+      end
+      raise ReadError.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
+    end
+
+    private def iterate_iterator_copy(qiter, & : HTS::Bam::Record ->)
+      bam1 = new_bam1!
+      begin
         slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         while slen >= 0
+          record = Record.new(header, take_bam1!(pointerof(bam1)))
           yield record
+          bam1 = new_bam1!
           slen = LibHTS2.sam_itr_next(@hts_file, qiter, bam1)
         end
         raise ReadError.new("Failed to read SAM/BAM query record from #{@file_name} (rc=#{slen})") if slen < -1
+      ensure
+        LibHTS.bam_destroy1(bam1) unless bam1.null?
       end
     end
 

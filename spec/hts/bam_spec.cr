@@ -179,7 +179,7 @@ class BamTest
 
         def test_query_copy_{{ ft }}
           arr = [] of Int64
-          {{ ft }}.query("chr2:350-700", copy: true) do |aln|
+          {{ ft }}.query_copy("chr2:350-700") do |aln|
             arr << aln.pos
           end
           (arr).should eq([341, 658])
@@ -219,7 +219,7 @@ class BamTest
 
         def test_query_multi_regions_copy_{{ ft }}
           arr = [] of Int64
-          {{ ft }}.query(["chr1:100-200", "chr2:350-700"], copy: true) do |aln|
+          {{ ft }}.query_copy(["chr1:100-200", "chr2:350-700"]) do |aln|
             arr << aln.pos
           end
           (arr).should contain(341)
@@ -246,7 +246,7 @@ class BamTest
 
       def test_each_copy_{{ ft }}
         c = 0
-        {{ ft }}.each(copy: true) do |aln|
+        {{ ft }}.each_copy do |aln|
           c += 1
           (aln).should be_a(HTS::Bam::Record)
         end

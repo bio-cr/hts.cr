@@ -90,7 +90,7 @@ class BamWriteTest
     # Read back and verify
     bam_in = HTS::Bam.open(path)
     records = [] of HTS::Bam::Record
-    bam_in.each(copy: true) do |rec|
+    bam_in.each_copy do |rec|
       records << rec
     end
     bam_in.close
