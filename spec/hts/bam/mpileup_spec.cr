@@ -17,6 +17,8 @@ class BamMpileupSmokeTest
       end
       first_columns = first || raise "no mpileup columns yielded"
       (first_columns.size).should eq(2)
+      (first_columns.count).should eq(2)
+      (first_columns.count { |col| col.depth >= 0 }).should eq(2)
       first_columns.each do |col|
         (col).should be_a(HTS::Bam::Pileup::Column)
         (col.tid.is_a?(Int32) || col.tid.is_a?(Int64)).should be_true
@@ -49,6 +51,67 @@ class BamMpileupSmokeTest
         (col).should be_a(HTS::Bam::Pileup::Column)
         (col.depth >= 0).should be_true
       end
+    ensure
+      mp.close
+      b1.close
+      b2.close
+    end
+  end
+
+  def test_multipileup_min_mapq_filter
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    b1 = HTS::Bam.new(path)
+    b2 = HTS::Bam.new(path)
+    mp = HTS::Bam::Mpileup.new([b1, b2], maxcnt: 1000, filter: HTS::Bam::Pileup::Filter.new(min_mapq: 61))
+    begin
+      seen = 0
+      mp.each do
+        seen += 1
+      end
+
+      (seen).should eq(0)
+    ensure
+      mp.close
+      b1.close
+      b2.close
+    end
+  end
+
+  def test_multipileup_count_consumes_iterator
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    b1 = HTS::Bam.new(path)
+    b2 = HTS::Bam.new(path)
+    mp = HTS::Bam::Mpileup.new([b1, b2], maxcnt: 1000)
+    begin
+      (mp.count).should be > 0
+    ensure
+      mp.close
+      b1.close
+      b2.close
+    end
+  end
+
+  def test_multipileup_count_with_block
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    b1 = HTS::Bam.new(path)
+    b2 = HTS::Bam.new(path)
+    mp = HTS::Bam::Mpileup.new([b1, b2], maxcnt: 1000)
+    begin
+      (mp.count { |position| position.depth(0) > 0 }).should be > 0
+    ensure
+      mp.close
+      b1.close
+      b2.close
+    end
+  end
+
+  def test_multipileup_count_empty_filter
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    b1 = HTS::Bam.new(path)
+    b2 = HTS::Bam.new(path)
+    mp = HTS::Bam::Mpileup.new([b1, b2], maxcnt: 1000, filter: HTS::Bam::Pileup::Filter.new(min_mapq: 61))
+    begin
+      (mp.count).should eq(0)
     ensure
       mp.close
       b1.close

@@ -12,16 +12,16 @@ class BamPileupSmokeTest
       first_base_qual = nil
       first_qname = nil
       plp = HTS::Bam::Pileup.new(bam, maxcnt: 1000)
-      # Alignment metadata and per-position base calls are copied into Crystal
-      # values, but record() still duplicates the htslib record and must be
-      # called before close.
+      # Column and Alignment are zero-copy views valid only during iteration.
+      # Per-position scalars (query_pos/base/base_qual) are copied out, and
+      # record() duplicates the htslib record; both must be captured before close.
       rec1 = nil
       rec2 = nil
       begin
         plp.each do |col|
           first_col ||= col
           if rec1.nil? && col.depth > 0
-            aln = col.alignments.first
+            aln = col[0]
             first_query_pos = aln.query_pos
             rec1 = aln.record
             rec2 = aln.record
@@ -35,6 +35,8 @@ class BamPileupSmokeTest
               (first_base_qual).should eq(record.base_qual(aln.query_pos))
               (first_qname).should eq(record.qname)
             end
+            (col.count).should eq(col.depth)
+            (col.count { |read| read.del? }).should be_a(Int32)
           end
           seen += 1
           break if seen >= 3
@@ -45,15 +47,16 @@ class BamPileupSmokeTest
 
       column = first_col || raise "no pileup column yielded"
       (column).should be_a(HTS::Bam::Pileup::Column)
+      # tid/pos/depth are copied-out scalars and stay readable after close.
       (column.tid.is_a?(Int32) || column.tid.is_a?(Int64)).should be_true
       (column.pos.is_a?(Int64) || column.pos.is_a?(Int32)).should be_true
       (column.depth >= 0).should be_true
 
-      # Copied alignment metadata remains available after close.
-      if column.depth > 0
-        (column.alignments.first.query_pos).should eq(first_query_pos)
-        (column.alignments.first.base).should eq(first_base)
-        (column.alignments.first.base_qual).should eq(first_base_qual)
+      # Data retained via the borrowing contract (scalars + duplicated record)
+      # survives after close; the views themselves do not.
+      if rec1
+        (first_query_pos).should_not be_nil
+        (first_base_qual).should_not be_nil
         (rec2).same?(rec1).should be_true
         (rec1).should be_a(HTS::Bam::Record)
       end
@@ -72,6 +75,42 @@ class BamPileupSmokeTest
 
         column = first_col || raise "no pileup column yielded"
         (column.depth >= 0).should be_true
+      end
+    end
+  end
+
+  def test_pileup_count_consumes_iterator
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    HTS::Bam.open(path) do |bam|
+      plp = HTS::Bam::Pileup.new(bam, maxcnt: 1000)
+      begin
+        (plp.count).should be > 0
+      ensure
+        plp.close
+      end
+    end
+  end
+
+  def test_pileup_count_with_block
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    HTS::Bam.open(path) do |bam|
+      plp = HTS::Bam::Pileup.new(bam, maxcnt: 1000)
+      begin
+        (plp.count { |col| col.depth > 0 }).should be > 0
+      ensure
+        plp.close
+      end
+    end
+  end
+
+  def test_pileup_count_empty_filter
+    path = File.expand_path("../../fixtures/moo.bam", __DIR__)
+    HTS::Bam.open(path) do |bam|
+      plp = HTS::Bam::Pileup.new(bam, maxcnt: 1000, filter: HTS::Bam::Pileup::Filter.new(min_mapq: 61))
+      begin
+        (plp.count).should eq(0)
+      ensure
+        plp.close
       end
     end
   end

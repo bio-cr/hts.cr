@@ -1,45 +1,70 @@
 module HTS
   class Bam < Hts
     # High-level pileup iterator over a single BAM/CRAM input.
-    # Yields Column objects with tid, pos, and alignments at each position.
+    # Yields a zero-copy Column view (tid, pos, and per-read Alignment access) at
+    # each position. Iterating a Column allocates nothing per read; see Column's
+    # borrowing contract for the validity rules.
     class Pileup
-      # Represents a pileup column at a genomic position
-      struct Column
-        getter tid : Int32
-        getter pos : Int64
-        getter alignments : Array(Alignment)
-        @header : Bam::Header
+      # Read-level filter applied by the pileup engine before a record reaches a
+      # column. Shared by both Pileup (single input) and Mpileup (multiple inputs).
+      #
+      # Flags follow the SAM/samtools convention (see Bam::Flag constants):
+      #   exclude_flags - skip the read if ANY of these bits are set   (samtools -F / --ff)
+      #   require_flags - skip the read unless ALL of these bits are set (samtools -f)
+      #   min_mapq      - skip reads with mapping quality below this
+      #   count_orphans - when false, skip paired reads not in a proper pair
+      #
+      # Example:
+      #   Pileup::Filter.new(min_mapq: 20,
+      #     exclude_flags: Bam::Flag::UNMAP | Bam::Flag::SECONDARY |
+      #                    Bam::Flag::QCFAIL | Bam::Flag::DUP | Bam::Flag::SUPPLEMENTARY,
+      #     count_orphans: false)
+      struct Filter
+        getter min_mapq : Int32
+        getter? count_orphans : Bool
+        @exclude_flags : UInt16
+        @require_flags : UInt16
 
-        def initialize(@tid : Int32, @pos : Int64, @alignments : Array(Alignment), @header : Bam::Header); end
-
-        # Depth equals number of alignments covering this position
-        def depth : Int32
-          @alignments.size
+        def initialize(@min_mapq : Int32 = 0, *,
+                       exclude_flags : Bam::Flag = Bam::Flag::NONE,
+                       require_flags : Bam::Flag = Bam::Flag::NONE,
+                       count_orphans : Bool = true)
+          raise ArgumentError.new("min_mapq must be non-negative") if @min_mapq < 0
+          @exclude_flags = exclude_flags.to_i
+          @require_flags = require_flags.to_i
+          @count_orphans = count_orphans
         end
 
-        # Reference (chromosome) name for this position
-        # Returns empty string if tid is -1 (unmapped)
-        def chrom : String
-          return "" if @tid == -1
-          @header.target_name(@tid)
+        def exclude_flags : Bam::Flag
+          Bam::Flag.new(@exclude_flags)
+        end
+
+        def require_flags : Bam::Flag
+          Bam::Flag.new(@require_flags)
+        end
+
+        # Whether the pileup engine should skip this record.
+        def skip?(rec : LibHTS::Bam1T*) : Bool
+          flag = rec.value.core.flag
+          return true if @exclude_flags != 0 && (flag & @exclude_flags) != 0
+          return true if @require_flags != 0 && (flag & @require_flags) != @require_flags
+          return true if rec.value.core.qual.to_i < @min_mapq
+          unless count_orphans?
+            return true if (flag & LibHTS2::BAM_FPAIRED) != 0 && (flag & LibHTS2::BAM_FPROPER_PAIR) == 0
+          end
+          false
         end
       end
 
-      include Enumerable(Column)
-
-      # C-callback user data. Packed pointers needed by the read function.
-      struct InputData
-        getter htsfp : LibHTS::HtsFile*
-        getter hdr : LibHTS::SamHdrT*
-        getter itr : LibHTS::HtsItrT*
-
-        def initialize(@htsfp : LibHTS::HtsFile*, @hdr : LibHTS::SamHdrT*, @itr : LibHTS::HtsItrT*)
-        end
-      end
-
-      # Thin wrapper around a single bam_pileup1_t entry.
-      # Small fields are copied so they remain valid after the iterator moves on.
-      class Alignment
+      # Thin value-type view over a single bam_pileup1_t entry. Small scalars
+      # (query_pos, indel, bitfields, base, base_qual) are copied at construction
+      # so they remain valid after the iterator moves on; record()/qname() reach
+      # back into the live htslib record and must be called during iteration.
+      # qname()/record() memoization is per captured Alignment value; repeated
+      # `column[0].record` calls construct fresh Alignment values and duplicate
+      # the record each time. Store `alignment = column[0]` when reusing them.
+      # A struct so that iterating a Column allocates no per-read heap object.
+      struct Alignment
         @entry : Pointer(LibHTS::BamPileup1T)
         @header : Bam::Header
         @record : Bam::Record?
@@ -118,6 +143,84 @@ module HTS
         end
       end
 
+      # A pileup column at a genomic position, as a zero-copy view over htslib's
+      # current pileup buffer. It holds only pointers and constructs Alignment
+      # values lazily, so iterating (#each / #[]) allocates nothing per read and
+      # matches the C mpileup hot-path cost.
+      #
+      # BORROWING CONTRACT: a Column and any Alignment obtained from it are valid
+      # ONLY during the current iteration step (the current block invocation).
+      # To retain data across positions, read the copied-out scalars
+      # (Alignment#base, #base_qual, #query_pos) or call Alignment#record. Do not
+      # deref a Column after the iterator advances or the Pileup is closed.
+      #
+      # This borrowed view intentionally does not include Enumerable: methods
+      # such as `to_a` or `map` would make short-lived C-backed entries look
+      # like ordinary retained Crystal values.
+      struct Column
+        getter tid : Int32
+        getter pos : Int64
+        @base : Pointer(LibHTS::BamPileup1T)
+        @count : Int32
+        @header : Bam::Header
+
+        def initialize(@tid : Int32, @pos : Int64, @base : Pointer(LibHTS::BamPileup1T),
+                       @count : Int32, @header : Bam::Header)
+        end
+
+        # Depth equals number of alignments covering this position
+        def depth : Int32
+          @count
+        end
+
+        # Number of reads covering this position.
+        def count : Int32
+          @count
+        end
+
+        # Count reads matching the block without materializing an Array.
+        def count(& : Alignment -> Bool) : Int32
+          matched = 0
+          each do |alignment|
+            matched += 1 if yield alignment
+          end
+          matched
+        end
+
+        # Reference (chromosome) name for this position
+        # Returns empty string if tid is -1 (unmapped)
+        def chrom : String
+          return "" if @tid == -1
+          @header.target_name(@tid)
+        end
+
+        # Iterate the reads covering this position without allocating an Array.
+        def each(& : Alignment ->) : Nil
+          return if @count <= 0 || @base.null?
+          i = 0
+          while i < @count
+            yield Alignment.new(@base + i, @header)
+            i += 1
+          end
+        end
+
+        def [](index : Int32) : Alignment
+          raise IndexError.new("pileup column index #{index} out of range 0...#{@count}") unless 0 <= index < @count
+          Alignment.new(@base + index, @header)
+        end
+      end
+
+      # C-callback user data. Packed pointers needed by the read function.
+      struct InputData
+        getter htsfp : LibHTS::HtsFile*
+        getter hdr : LibHTS::SamHdrT*
+        getter itr : LibHTS::HtsItrT*
+        getter filter : Filter
+
+        def initialize(@htsfp : LibHTS::HtsFile*, @hdr : LibHTS::SamHdrT*, @itr : LibHTS::HtsItrT*, @filter : Filter)
+        end
+      end
+
       @bam : Bam
       @hdr : Bam::Header
       @plp : LibHTS::BamPlpT?
@@ -128,8 +231,8 @@ module HTS
       @maxcnt : Int32?
 
       # Open a Pileup iterator with block (RAII style)
-      def self.open(bam : Bam, region : String? = nil, maxcnt : Int32? = nil, &)
-        pileup = new(bam, region, maxcnt)
+      def self.open(bam : Bam, region : String? = nil, maxcnt : Int32? = nil, *, filter : Filter = Filter.new, &)
+        pileup = new(bam, region, maxcnt, filter: filter)
         begin
           yield pileup
         ensure
@@ -138,15 +241,16 @@ module HTS
       end
 
       # Open a Pileup iterator using keyword arguments, matching Mpileup.
-      def self.open(bam : Bam, *, region : String? = nil, maxcnt : Int32? = nil, &)
-        open(bam, region, maxcnt) { |pileup| yield pileup }
+      def self.open(bam : Bam, *, region : String? = nil, maxcnt : Int32? = nil, filter : Filter = Filter.new, &)
+        open(bam, region, maxcnt, filter: filter) { |pileup| yield pileup }
       end
 
       # Create a Pileup iterator
       # @param bam [HTS::Bam]
       # @param region [String, nil] Optional region string (e.g., "chr1:1000-2000", requires index)
       # @param maxcnt [Int32, nil] Max per-position depth (capped)
-      def initialize(@bam : Bam, region : String? = nil, @maxcnt : Int32? = nil)
+      # @param filter [Filter] Read-level filter applied before pileup (see Filter)
+      def initialize(@bam : Bam, region : String? = nil, @maxcnt : Int32? = nil, *, filter : Filter = Filter.new)
         @hdr = uninitialized Bam::Header
 
         begin
@@ -164,7 +268,8 @@ module HTS
           udata.value = InputData.new(
             @bam.to_unsafe,
             @hdr.to_unsafe,
-            itr_ptr
+            itr_ptr,
+            filter
           )
 
           cb = pileup_read_callback
@@ -182,7 +287,8 @@ module HTS
         end
       end
 
-      # Iterate over pileup columns
+      # Iterate over pileup columns. Yields a zero-copy Column view valid only
+      # for the duration of the block (see Column's borrowing contract).
       def each(& : Column ->) : Nil
         return unless plp = @plp
 
@@ -197,15 +303,24 @@ module HTS
             raise PileupError.new("HTSlib pileup error (bam_plp64_auto), n=#{n}")
           end
 
-          aligns = Array(Alignment).new(n)
-          i = 0
-          while i < n
-            entry_ptr = plp1 + i
-            aligns << Alignment.new(entry_ptr, @hdr)
-            i += 1
-          end
-          yield Column.new(tid, pos, aligns, @hdr)
+          yield Column.new(tid, pos, plp1, n, @hdr)
         end
+      end
+
+      # Count pileup columns by consuming this iterator.
+      def count : Int32
+        total = 0
+        each { total += 1 }
+        total
+      end
+
+      # Count pileup columns matching the block by consuming this iterator.
+      def count(& : Column -> Bool) : Int32
+        matched = 0
+        each do |column|
+          matched += 1 if yield column
+        end
+        matched
       end
 
       # Reset internal state, if needed by the caller
@@ -252,12 +367,15 @@ module HTS
       private def pileup_read_callback
         ->(data : Void*, b : LibHTS::Bam1T*) : LibC::Int {
           id = data.as(Pointer(InputData)).value
-          if id.itr.null?
-            r = LibHTS.sam_read1(id.htsfp, id.hdr, b)
-            r >= 0 ? 0 : r
-          else
-            r = LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
-            r >= 0 ? 0 : r
+          loop do
+            r = if id.itr.null?
+                  LibHTS.sam_read1(id.htsfp, id.hdr, b)
+                else
+                  LibHTS2.sam_itr_next(id.htsfp, id.itr, b)
+                end
+            return r if r < 0
+            next if id.filter.skip?(b)
+            return 0
           end
         }
       end

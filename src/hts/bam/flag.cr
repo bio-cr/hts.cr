@@ -7,6 +7,22 @@ module HTS
 
       getter :value # FIXME: naming.
 
+      # Named FLAG bit constants, as Flag values so they compose with `|`.
+      # e.g. Bam::Flag::UNMAP | Bam::Flag::SECONDARY | Bam::Flag::DUP
+      NONE          = new(0_u16)
+      PAIRED        = new(LibHTS2::BAM_FPAIRED.to_u16)
+      PROPER_PAIR   = new(LibHTS2::BAM_FPROPER_PAIR.to_u16)
+      UNMAP         = new(LibHTS2::BAM_FUNMAP.to_u16)
+      MUNMAP        = new(LibHTS2::BAM_FMUNMAP.to_u16)
+      REVERSE       = new(LibHTS2::BAM_FREVERSE.to_u16)
+      MREVERSE      = new(LibHTS2::BAM_FMREVERSE.to_u16)
+      READ1         = new(LibHTS2::BAM_FREAD1.to_u16)
+      READ2         = new(LibHTS2::BAM_FREAD2.to_u16)
+      SECONDARY     = new(LibHTS2::BAM_FSECONDARY.to_u16)
+      QCFAIL        = new(LibHTS2::BAM_FQCFAIL.to_u16)
+      DUP           = new(LibHTS2::BAM_FDUP.to_u16)
+      SUPPLEMENTARY = new(LibHTS2::BAM_FSUPPLEMENTARY.to_u16)
+
       # BAM_FPAIRED        =    1
       # BAM_FPROPER_PAIR   =    2
       # BAM_FUNMAP         =    4

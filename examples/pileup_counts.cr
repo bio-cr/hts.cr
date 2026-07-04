@@ -41,7 +41,7 @@ def run_pileup(io : IO, in_path : String, region : String?, maxcnt : Int32?, thr
         n_del = 0
         n_refskip = 0
 
-        col.alignments.each do |aln|
+        col.each do |aln|
           next n_refskip += 1 if aln.refskip?
           next n_del += 1 if aln.del?
 

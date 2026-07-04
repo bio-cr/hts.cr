@@ -25,7 +25,7 @@ in_path = ARGV.shift
 HTS::Bam.open(in_path) do |bam|
   HTS::Bam::Pileup.open(bam, region) do |pileup|
     pileup.each do |column|
-      column.alignments.each do |pileup_read|
+      column.each do |pileup_read|
         next if pileup_read.del? || pileup_read.refskip?
 
         # Get base modification information for this read
