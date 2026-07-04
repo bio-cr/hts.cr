@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::BaseMod::Error - hts develop</title>
+  <title>HTS::Bam::Pileup::Filter - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -87,12 +87,12 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+  <li class="parent " data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
       <a href="../../../HTS/Bam/BaseMod.html">BaseMod</a>
       
         <ul>
   
-  <li class=" current" data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
       <a href="../../../HTS/Bam/BaseMod/Error.html">Error</a>
       
     </li>
@@ -182,7 +182,7 @@
       
     </li>
   
-  <li class="parent " data-id="hts/HTS/Bam/Pileup" data-name="hts::bam::pileup">
+  <li class="parent open current" data-id="hts/HTS/Bam/Pileup" data-name="hts::bam::pileup">
       <a href="../../../HTS/Bam/Pileup.html">Pileup</a>
       
         <ul>
@@ -197,7 +197,7 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
+  <li class=" current" data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
       <a href="../../../HTS/Bam/Pileup/Filter.html">Filter</a>
       
     </li>
@@ -557,16 +557,38 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
-  </span> HTS::<wbr>Bam::<wbr>BaseMod::<wbr>Error
+    struct
+  </span> HTS::<wbr>Bam::<wbr>Pileup::<wbr>Filter
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/BaseMod/Error.html">HTS::Bam::BaseMod::Error</a></li><li class="superclass"><a href="../../../HTS/Bam/Error.html">HTS::Bam::Error</a></li><li class="superclass"><a href="../../../HTS/Error.html">HTS::Error</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/Pileup/Filter.html">HTS::Bam::Pileup::Filter</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Read-level filter applied by the pileup engine before a record reaches a
+column. Shared by both Pileup (single input) and Mpileup (multiple inputs).</p>
+<p>Flags follow the SAM/samtools convention (see Bam::Flag constants):
+exclude_flags - skip the read if ANY of these bits are set   (samtools -F / --ff)
+require_flags - skip the read unless ALL of these bits are set (samtools -f)
+min_mapq      - skip reads with mapping quality below this
+count_orphans - when false, skip paired reads not in a proper pair</p>
+<p>Example:
+Pileup::Filter.new(min_mapq: 20,
+exclude_flags: Bam::Flag::UNMAP | Bam::Flag::SECONDARY |
+Bam::Flag::QCFAIL | Bam::Flag::DUP | Bam::Flag::SUPPLEMENTARY,
+count_orphans: false)</p>
 
 
 
@@ -593,8 +615,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/base_mod.cr#L8" target="_blank">
-        hts/bam/base_mod.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L22" target="_blank">
+        hts/bam/pileup.cr
       </a>
     
     <br/>
@@ -605,12 +627,68 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28min_mapq%3AInt32%3D0%2C%2A%2Cexclude_flags%3ABam%3A%3AFlag%3DBam%3A%3AFlag%3A%3ANONE%2Crequire_flags%3ABam%3A%3AFlag%3DBam%3A%3AFlag%3A%3ANONE%2Ccount_orphans%3ABool%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(min_mapq : Int32 = <span class="n">0</span>, *, exclude_flags : Bam::Flag = <span class="t">Bam</span><span class="t">::</span><span class="t">Flag</span><span class="t">::</span><span class="t">NONE</span>, require_flags : Bam::Flag = <span class="t">Bam</span><span class="t">::</span><span class="t">Flag</span><span class="t">::</span><span class="t">NONE</span>, count_orphans : Bool = <span class="n">true</span>)</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#count_orphans%3F%3ABool-instance-method" class="signature"><strong>#count_orphans?</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#exclude_flags%3ABam%3A%3AFlag-instance-method" class="signature"><strong>#exclude_flags</strong> : Bam::Flag</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#min_mapq%3AInt32-instance-method" class="signature"><strong>#min_mapq</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#require_flags%3ABam%3A%3AFlag-instance-method" class="signature"><strong>#require_flags</strong> : Bam::Flag</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#skip%3F%28rec%3APointer%28LibHTS%3A%3ABam1T%29%29%3ABool-instance-method" class="signature"><strong>#skip?</strong>(rec : Pointer(LibHTS::Bam1T)) : Bool</a>
+        
+          <div class="summary"><p>Whether the pileup engine should skip this record.</p></div>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
@@ -654,41 +732,136 @@
 
 
     
-      
-
-
-      
-
-
-      
-
-
-      
-
-
-    
-      
-
-
-      
-
-
-      
-
-
-      
-
-
-    
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(min_mapq:Int32=0,*,exclude_flags:Bam::Flag=Bam::Flag::NONE,require_flags:Bam::Flag=Bam::Flag::NONE,count_orphans:Bool=true)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(min_mapq : Int32 = <span class="n">0</span>, *, exclude_flags : <a href="../../../HTS/Bam/Flag.html">Bam::Flag</a> = <span class="t">Bam</span><span class="t">::</span><span class="t">Flag</span><span class="t">::</span><span class="t">NONE</span>, require_flags : <a href="../../../HTS/Bam/Flag.html">Bam::Flag</a> = <span class="t">Bam</span><span class="t">::</span><span class="t">Flag</span><span class="t">::</span><span class="t">NONE</span>, count_orphans : Bool = <span class="n">true</span>)
+
+        <a class="method-permalink" href="#new%28min_mapq%3AInt32%3D0%2C%2A%2Cexclude_flags%3ABam%3A%3AFlag%3DBam%3A%3AFlag%3A%3ANONE%2Crequire_flags%3ABam%3A%3AFlag%3DBam%3A%3AFlag%3A%3ANONE%2Ccount_orphans%3ABool%3Dtrue%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="count_orphans?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>count_orphans?</strong> : Bool
+
+        <a class="method-permalink" href="#count_orphans%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="exclude_flags:Bam::Flag-instance-method">
+      <div class="signature">
+        
+        def <strong>exclude_flags</strong> : <a href="../../../HTS/Bam/Flag.html">Bam::Flag</a>
+
+        <a class="method-permalink" href="#exclude_flags%3ABam%3A%3AFlag-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L38" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="min_mapq:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>min_mapq</strong> : Int32
+
+        <a class="method-permalink" href="#min_mapq%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L23" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="require_flags:Bam::Flag-instance-method">
+      <div class="signature">
+        
+        def <strong>require_flags</strong> : <a href="../../../HTS/Bam/Flag.html">Bam::Flag</a>
+
+        <a class="method-permalink" href="#require_flags%3ABam%3A%3AFlag-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L42" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="skip?(rec:Pointer(LibHTS::Bam1T)):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>skip?</strong>(rec : Pointer(LibHTS::Bam1T)) : Bool
+
+        <a class="method-permalink" href="#skip%3F%28rec%3APointer%28LibHTS%3A%3ABam1T%29%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Whether the pileup engine should skip this record.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>

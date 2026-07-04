@@ -162,6 +162,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
+      <a href="../../HTS/Bam/Mpileup/Position.html">Position</a>
+      
+    </li>
+  
 </ul>
 
       
@@ -189,6 +194,11 @@
   
   <li class=" " data-id="hts/HTS/Bam/Pileup/Column" data-name="hts::bam::pileup::column">
       <a href="../../HTS/Bam/Pileup/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
+      <a href="../../HTS/Bam/Pileup/Filter.html">Filter</a>
       
     </li>
   
@@ -568,27 +578,15 @@
   </h2>
 
   <p>High-level pileup iterator over a single BAM/CRAM input.
-Yields Column objects with tid, pos, and alignments at each position.</p>
+Yields a zero-copy Column view (tid, pos, and per-read Alignment access) at
+each position. Iterating a Column allocates nothing per read; see Column's
+borrowing contract for the validity rules.</p>
 
 
 
 
 
 
-
-  <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Included Modules
-  </h2>
-  <ul class="other-types-list">
-    
-      <li class="other-type">Enumerable(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>)</li>
-    
-  </ul>
 
 
 
@@ -609,7 +607,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L5" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L7" target="_blank">
         hts/bam/pileup.cr
       </a>
     
@@ -632,9 +630,9 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(bam : Bam, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%2A%2Cfilter%3AFilter%3DFilter.new%29-class-method" class="signature"><strong>.new</strong>(bam : Bam, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, *, filter : Filter = <span class="t">Filter</span>.new)</a>
         
-          <div class="summary"><p>Create a Pileup iterator @param bam [HTS::Bam] @param region [String, nil] Optional region string (e.g., &quot;chr1:1000-2000&quot;, requires index) @param maxcnt [Int32, nil] Max per-position depth (capped)</p></div>
+          <div class="summary"><p>Create a Pileup iterator @param bam [HTS::Bam] @param region [String, nil] Optional region string (e.g., &quot;chr1:1000-2000&quot;, requires index) @param maxcnt [Int32, nil] Max per-position depth (capped) @param filter [Filter] Read-level filter applied before pileup (see Filter)</p></div>
         
       </li>
     
@@ -653,14 +651,14 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#open%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%26%29-class-method" class="signature"><strong>.open</strong>(bam : Bam, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, &)</a>
+        <a href="#open%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%2A%2Cfilter%3AFilter%3DFilter.new%2C%26%29-class-method" class="signature"><strong>.open</strong>(bam : Bam, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, *, filter : Filter = <span class="t">Filter</span>.new, &)</a>
         
           <div class="summary"><p>Open a Pileup iterator with block (RAII style)</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28bam%3ABam%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%26%29-class-method" class="signature"><strong>.open</strong>(bam : Bam, *, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, &)</a>
+        <a href="#open%28bam%3ABam%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Cfilter%3AFilter%3DFilter.new%2C%26%29-class-method" class="signature"><strong>.open</strong>(bam : Bam, *, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, filter : Filter = <span class="t">Filter</span>.new, &)</a>
         
           <div class="summary"><p>Open a Pileup iterator using keyword arguments, matching Mpileup.</p></div>
         
@@ -690,9 +688,23 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#count%3AInt32-instance-method" class="signature"><strong>#count</strong> : Int32</a>
+        
+          <div class="summary"><p>Count pileup columns by consuming this iterator.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#count%28%26%3AColumn-%3EBool%29%3AInt32-instance-method" class="signature"><strong>#count</strong>(& : Column -> Bool) : Int32</a>
+        
+          <div class="summary"><p>Count pileup columns matching the block by consuming this iterator.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#each%28%26%3AColumn-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(& : Column -> ) : Nil</a>
         
-          <div class="summary"><p>Iterate over pileup columns</p></div>
+          <div class="summary"><p>Iterate over pileup columns.</p></div>
         
       </li>
     
@@ -740,19 +752,6 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
 
 
     
-      
-
-
-      
-
-
-      
-
-
-      
-
-
-    
   </div>
 
   
@@ -765,12 +764,12 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(bam:Bam,region:String|Nil=nil,maxcnt:Int32|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(bam:Bam,region:String|Nil=nil,maxcnt:Int32|Nil=nil,*,filter:Filter=Filter.new)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(bam : <a href="../../HTS/Bam.html">Bam</a>, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(bam : <a href="../../HTS/Bam.html">Bam</a>, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, *, filter : <a href="../../HTS/Bam/Pileup/Filter.html">Filter</a> = <span class="t">Filter</span>.new)
 
-        <a class="method-permalink" href="#new%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%2A%2Cfilter%3AFilter%3DFilter.new%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -778,13 +777,14 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
           <p>Create a Pileup iterator
 @param bam [HTS::Bam]
 @param region [String, nil] Optional region string (e.g., &quot;chr1:1000-2000&quot;, requires index)
-@param maxcnt [Int32, nil] Max per-position depth (capped)</p>
+@param maxcnt [Int32, nil] Max per-position depth (capped)
+@param filter [Filter] Read-level filter applied before pileup (see Filter)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L149" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L253" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -801,12 +801,12 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="open(bam:Bam,region:String|Nil=nil,maxcnt:Int32|Nil=nil,&amp;)-class-method">
+    <div class="entry-detail" id="open(bam:Bam,region:String|Nil=nil,maxcnt:Int32|Nil=nil,*,filter:Filter=Filter.new,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(bam : <a href="../../HTS/Bam.html">Bam</a>, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, &)
+        def self.<strong>open</strong>(bam : <a href="../../HTS/Bam.html">Bam</a>, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, *, filter : <a href="../../HTS/Bam/Pileup/Filter.html">Filter</a> = <span class="t">Filter</span>.new, &)
 
-        <a class="method-permalink" href="#open%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28bam%3ABam%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%2A%2Cfilter%3AFilter%3DFilter.new%2C%26%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -817,17 +817,17 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L234" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(bam:Bam,*,region:String|Nil=nil,maxcnt:Int32|Nil=nil,&amp;)-class-method">
+    <div class="entry-detail" id="open(bam:Bam,*,region:String|Nil=nil,maxcnt:Int32|Nil=nil,filter:Filter=Filter.new,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(bam : <a href="../../HTS/Bam.html">Bam</a>, *, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, &)
+        def self.<strong>open</strong>(bam : <a href="../../HTS/Bam.html">Bam</a>, *, region : String | Nil = <span class="n">nil</span>, maxcnt : Int32 | Nil = <span class="n">nil</span>, filter : <a href="../../HTS/Bam/Pileup/Filter.html">Filter</a> = <span class="t">Filter</span>.new, &)
 
-        <a class="method-permalink" href="#open%28bam%3ABam%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28bam%3ABam%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Cfilter%3AFilter%3DFilter.new%2C%26%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -838,7 +838,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L141" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L244" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -873,7 +873,49 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L217" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L332" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong> : Int32
+
+        <a class="method-permalink" href="#count%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Count pileup columns by consuming this iterator.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L311" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count(&amp;:Column-&gt;Bool):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong>(& : <a href="../../HTS/Bam/Pileup/Column.html">Column</a> -> Bool) : Int32
+
+        <a class="method-permalink" href="#count%28%26%3AColumn-%3EBool%29%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Count pileup columns matching the block by consuming this iterator.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L318" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -888,13 +930,14 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       
         <div class="doc">
           
-          <p>Iterate over pileup columns</p>
+          <p>Iterate over pileup columns. Yields a zero-copy Column view valid only
+for the duration of the block (see Column's borrowing contract).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L186" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L292" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -910,7 +953,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L235" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L350" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -931,7 +974,7 @@ Yields Column objects with tid, pos, and alignments at each position.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L212" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L327" target="_blank">View source</a>]
         
       </div>
     </div>

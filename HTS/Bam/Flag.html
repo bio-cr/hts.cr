@@ -162,6 +162,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
+      <a href="../../HTS/Bam/Mpileup/Position.html">Position</a>
+      
+    </li>
+  
 </ul>
 
       
@@ -189,6 +194,11 @@
   
   <li class=" " data-id="hts/HTS/Bam/Pileup/Column" data-name="hts::bam::pileup::column">
       <a href="../../HTS/Bam/Pileup/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
+      <a href="../../HTS/Bam/Pileup/Filter.html">Filter</a>
       
     </li>
   
@@ -583,7 +593,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L3" target="_blank">
         hts/bam/flag.cr
       </a>
     
@@ -604,6 +614,71 @@
   
   <dl>
     
+      <dt class="entry-const" id="DUP">
+        <strong>DUP</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FDUP</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MREVERSE">
+        <strong>MREVERSE</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FMREVERSE</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MUNMAP">
+        <strong>MUNMAP</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FMUNMAP</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="NONE">
+        <strong>NONE</strong> = <code>new(<span class="n">0_u16</span>)</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Named FLAG bit constants, as Flag values so they compose with <code><a href="../../HTS/Bam/Flag.html#%7C%28other%29-instance-method">#|</a></code>.
+e.g. Bam::Flag::UNMAP | Bam::Flag::SECONDARY | Bam::Flag::DUP</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PAIRED">
+        <strong>PAIRED</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FPAIRED</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PROPER_PAIR">
+        <strong>PROPER_PAIR</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FPROPER_PAIR</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="QCFAIL">
+        <strong>QCFAIL</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FQCFAIL</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="READ1">
+        <strong>READ1</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FREAD1</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="READ2">
+        <strong>READ2</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FREAD2</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REVERSE">
+        <strong>REVERSE</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FREVERSE</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SECONDARY">
+        <strong>SECONDARY</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FSECONDARY</span>.to_u16)</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SUPPLEMENTARY">
+        <strong>SUPPLEMENTARY</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FSUPPLEMENTARY</span>.to_u16)</code>
+      </dt>
+      
+    
       <dt class="entry-const" id="TABLE">
         <strong>TABLE</strong> = <code>{<span class="s">&quot;paired?&quot;</span>: <span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FPAIRED</span>,
   <span class="s">&quot;proper_pair?&quot;</span>: <span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FPROPER_PAIR</span>,
@@ -617,6 +692,11 @@
   <span class="s">&quot;qcfail?&quot;</span>: <span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FQCFAIL</span>,
   <span class="s">&quot;duplicate?&quot;</span>: <span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FDUP</span>,
   <span class="s">&quot;supplementary?&quot;</span>: <span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FSUPPLEMENTARY</span>}</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="UNMAP">
+        <strong>UNMAP</strong> = <code>new(<span class="t">LibHTS2</span><span class="t">::</span><span class="t">BAM_FUNMAP</span>.to_u16)</code>
       </dt>
       
     
@@ -825,7 +905,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -857,7 +937,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L64" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -873,7 +953,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -889,7 +969,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L89" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -905,7 +985,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L72" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -921,7 +1001,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L52" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L68" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -937,7 +1017,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L60" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L76" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -953,7 +1033,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -969,7 +1049,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L44" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L60" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -985,7 +1065,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1001,7 +1081,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1017,7 +1097,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1033,7 +1113,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1049,7 +1129,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1065,7 +1145,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1081,7 +1161,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1097,7 +1177,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1113,7 +1193,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1129,7 +1209,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1145,7 +1225,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L77" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1177,7 +1257,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L81" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L97" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1193,7 +1273,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1209,7 +1289,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/flag.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/flag.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>

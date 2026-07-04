@@ -162,6 +162,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
+      <a href="../../HTS/Bam/Mpileup/Position.html">Position</a>
+      
+    </li>
+  
 </ul>
 
       
@@ -189,6 +194,11 @@
   
   <li class=" " data-id="hts/HTS/Bam/Pileup/Column" data-name="hts::bam::pileup::column">
       <a href="../../HTS/Bam/Pileup/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
+      <a href="../../HTS/Bam/Pileup/Filter.html">Filter</a>
       
     </li>
   
@@ -568,30 +578,17 @@
   </h2>
 
   <p>High-level mpileup iterator over multiple BAM/CRAM inputs.
-Yields an Array of Pileup::Column (one per input) for each position.
-Columns contain the same Pileup::Alignment objects as single-input pileup;
-use Alignment#base, #base_qual, and #qname in hot paths before falling back
-to Alignment#record.</p>
+Yields a zero-copy Position view for each genomic position. A Position is an
+ordered collection of Pileup::Column views (one per input); index it with
+position[i] or iterate it. Nothing is allocated per position, and Alignment
+values are constructed lazily only for the reads the consumer touches, so it
+matches the C mpileup hot-path cost. See Pileup::Column's borrowing contract.</p>
 
 
 
 
 
 
-
-  <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Included Modules
-  </h2>
-  <ul class="other-types-list">
-    
-      <li class="other-type">Enumerable(Array(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>))</li>
-    
-  </ul>
 
 
 
@@ -612,7 +609,7 @@ to Alignment#record.</p>
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L8" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L9" target="_blank">
         hts/bam/mpileup.cr
       </a>
     
@@ -635,7 +632,7 @@ to Alignment#record.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2Cfilter%3APileup%3A%3AFilter%3DPileup%3A%3AFilter.new%29-class-method" class="signature"><strong>.new</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, filter : Pileup::Filter = <span class="t">Pileup</span><span class="t">::</span><span class="t">Filter</span>.new)</a>
         
           <div class="summary"><p>Accept Array(Bam).</p></div>
         
@@ -656,14 +653,14 @@ to Alignment#record.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, &)</a>
+        <a href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2Cfilter%3APileup%3A%3AFilter%3DPileup%3A%3AFilter.new%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, filter : Pileup::Filter = <span class="t">Pileup</span><span class="t">::</span><span class="t">Filter</span>.new, &)</a>
         
           <div class="summary"><p>Open an Mpileup iterator with block (RAII style)</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#open%28inputs%3AArray%28Bam%29%2C%2A%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), *, maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, &)</a>
+        <a href="#open%28inputs%3AArray%28Bam%29%2C%2A%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2Cfilter%3APileup%3A%3AFilter%3DPileup%3A%3AFilter.new%2C%26%29-class-method" class="signature"><strong>.open</strong>(inputs : Array(Bam), *, maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, filter : Pileup::Filter = <span class="t">Pileup</span><span class="t">::</span><span class="t">Filter</span>.new, &)</a>
         
           <div class="summary"><p>Open an Mpileup iterator using keyword arguments.</p></div>
         
@@ -691,9 +688,23 @@ to Alignment#record.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#each%28%26%3AArray%28HTS%3A%3ABam%3A%3APileup%3A%3AColumn%29-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(& : Array(HTS::Bam::Pileup::Column) -> ) : Nil</a>
+        <a href="#count%3AInt32-instance-method" class="signature"><strong>#count</strong> : Int32</a>
         
-          <div class="summary"><p>Iterate and yield per-position columns array (aligned by tid,pos across inputs)</p></div>
+          <div class="summary"><p>Count mpileup positions by consuming this iterator.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#count%28%26%3APosition-%3EBool%29%3AInt32-instance-method" class="signature"><strong>#count</strong>(& : Position -> Bool) : Int32</a>
+        
+          <div class="summary"><p>Count mpileup positions matching the block by consuming this iterator.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each%28%26%3APosition-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(& : Position -> ) : Nil</a>
+        
+          <div class="summary"><p>Iterate and yield a zero-copy Position view per genomic position.</p></div>
         
       </li>
     
@@ -734,19 +745,6 @@ to Alignment#record.</p>
 
 
     
-      
-
-
-      
-
-
-      
-
-
-      
-
-
-    
   </div>
 
   
@@ -759,12 +757,12 @@ to Alignment#record.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,*,region:String|Nil=nil,regions:Array(String)|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,*,region:String|Nil=nil,regions:Array(String)|Nil=nil,filter:Pileup::Filter=Pileup::Filter.new)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, filter : <a href="../../HTS/Bam/Pileup/Filter.html">Pileup::Filter</a> = <span class="t">Pileup</span><span class="t">::</span><span class="t">Filter</span>.new)
 
-        <a class="method-permalink" href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2Cfilter%3APileup%3A%3AFilter%3DPileup%3A%3AFilter.new%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -772,13 +770,14 @@ to Alignment#record.</p>
           <p>Accept Array(Bam). If region is set, it uses SAM-style 1-based inclusive
 coordinates and each input must already have an index loaded. If regions
 is set, htslib's multi-region iterator is used and overlapping records
-are returned once.</p>
+are returned once. <code>filter</code> applies the same read-level filtering as
+single-input Pileup (see Pileup::Filter).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -795,12 +794,12 @@ are returned once.</p>
     Class Method Detail
   </h2>
   
-    <div class="entry-detail" id="open(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,*,region:String|Nil=nil,regions:Array(String)|Nil=nil,&amp;)-class-method">
+    <div class="entry-detail" id="open(inputs:Array(Bam),maxcnt:Int32|Nil=nil,overlaps:Bool=false,*,region:String|Nil=nil,regions:Array(String)|Nil=nil,filter:Pileup::Filter=Pileup::Filter.new,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, &)
+        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, *, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, filter : <a href="../../HTS/Bam/Pileup/Filter.html">Pileup::Filter</a> = <span class="t">Pileup</span><span class="t">::</span><span class="t">Filter</span>.new, &)
 
-        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2C%2A%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2Cfilter%3APileup%3A%3AFilter%3DPileup%3A%3AFilter.new%2C%26%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -811,17 +810,17 @@ are returned once.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L34" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="open(inputs:Array(Bam),*,maxcnt:Int32|Nil=nil,overlaps:Bool=false,region:String|Nil=nil,regions:Array(String)|Nil=nil,&amp;)-class-method">
+    <div class="entry-detail" id="open(inputs:Array(Bam),*,maxcnt:Int32|Nil=nil,overlaps:Bool=false,region:String|Nil=nil,regions:Array(String)|Nil=nil,filter:Pileup::Filter=Pileup::Filter.new,&amp;)-class-method">
       <div class="signature">
         
-        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), *, maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, &)
+        def self.<strong>open</strong>(inputs : Array(<a href="../../HTS/Bam.html">Bam</a>), *, maxcnt : Int32 | Nil = <span class="n">nil</span>, overlaps : Bool = <span class="n">false</span>, region : String | Nil = <span class="n">nil</span>, regions : Array(String) | Nil = <span class="n">nil</span>, filter : <a href="../../HTS/Bam/Pileup/Filter.html">Pileup::Filter</a> = <span class="t">Pileup</span><span class="t">::</span><span class="t">Filter</span>.new, &)
 
-        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2C%2A%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2C%26%29-class-method">#</a>
+        <a class="method-permalink" href="#open%28inputs%3AArray%28Bam%29%2C%2A%2Cmaxcnt%3AInt32%7CNil%3Dnil%2Coverlaps%3ABool%3Dfalse%2Cregion%3AString%7CNil%3Dnil%2Cregions%3AArray%28String%29%7CNil%3Dnil%2Cfilter%3APileup%3A%3AFilter%3DPileup%3A%3AFilter.new%2C%26%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -832,7 +831,7 @@ are returned once.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L43" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -862,28 +861,71 @@ are returned once.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L156" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L221" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each(&amp;:Array(HTS::Bam::Pileup::Column)-&gt;):Nil-instance-method">
+    <div class="entry-detail" id="count:Int32-instance-method">
       <div class="signature">
         
-        def <strong>each</strong>(& : Array(<a href="../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>) -> ) : Nil
+        def <strong>count</strong> : Int32
 
-        <a class="method-permalink" href="#each%28%26%3AArray%28HTS%3A%3ABam%3A%3APileup%3A%3AColumn%29-%3E%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#count%3AInt32-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Iterate and yield per-position columns array (aligned by tid,pos across inputs)</p>
+          <p>Count mpileup positions by consuming this iterator.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L115" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L206" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count(&amp;:Position-&gt;Bool):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong>(& : <a href="../../HTS/Bam/Mpileup/Position.html">Position</a> -> Bool) : Int32
+
+        <a class="method-permalink" href="#count%28%26%3APosition-%3EBool%29%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Count mpileup positions matching the block by consuming this iterator.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L213" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each(&amp;:Position-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(& : <a href="../../HTS/Bam/Mpileup/Position.html">Position</a> -> ) : Nil
+
+        <a class="method-permalink" href="#each%28%26%3APosition-%3E%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Iterate and yield a zero-copy Position view per genomic position. The view
+is valid only for the duration of the block (see Position's contract).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L187" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -899,7 +941,7 @@ are returned once.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L169" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L234" target="_blank">View source</a>]
         
       </div>
     </div>

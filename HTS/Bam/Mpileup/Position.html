@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::BaseMod::Error - hts develop</title>
+  <title>HTS::Bam::Mpileup::Position - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -87,12 +87,12 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+  <li class="parent " data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
       <a href="../../../HTS/Bam/BaseMod.html">BaseMod</a>
       
         <ul>
   
-  <li class=" current" data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Error" data-name="hts::bam::basemod::error">
       <a href="../../../HTS/Bam/BaseMod/Error.html">Error</a>
       
     </li>
@@ -152,7 +152,7 @@
       
     </li>
   
-  <li class="parent " data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
+  <li class="parent open current" data-id="hts/HTS/Bam/Mpileup" data-name="hts::bam::mpileup">
       <a href="../../../HTS/Bam/Mpileup.html">Mpileup</a>
       
         <ul>
@@ -162,7 +162,7 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
+  <li class=" current" data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
       <a href="../../../HTS/Bam/Mpileup/Position.html">Position</a>
       
     </li>
@@ -557,16 +557,35 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
-  </span> HTS::<wbr>Bam::<wbr>BaseMod::<wbr>Error
+    struct
+  </span> HTS::<wbr>Bam::<wbr>Mpileup::<wbr>Position
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/BaseMod/Error.html">HTS::Bam::BaseMod::Error</a></li><li class="superclass"><a href="../../../HTS/Bam/Error.html">HTS::Bam::Error</a></li><li class="superclass"><a href="../../../HTS/Error.html">HTS::Error</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/Mpileup/Position.html">HTS::Bam::Mpileup::Position</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A zero-copy view of one genomic position across all inputs. It is an
+ordered collection of Pileup::Column views (one per input) sharing the
+same tid/pos. It holds only pointers into htslib's current pileup buffer;
+nothing is allocated per position and per-read Alignment values are built
+lazily only for the columns the consumer touches.</p>
+<p>BORROWING CONTRACT: a Position, its Columns, and any Alignment obtained
+from them are valid ONLY during the current iteration step. To retain data
+across positions, read the copied-out scalars (Alignment#base, #base_qual,
+#query_pos) or call Alignment#record.</p>
 
 
 
@@ -593,8 +612,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/base_mod.cr#L8" target="_blank">
-        hts/bam/base_mod.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L127" target="_blank">
+        hts/bam/mpileup.cr
       </a>
     
     <br/>
@@ -605,12 +624,93 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28tid%3AInt32%2Cpos%3AInt64%2Cn_plp%3APointer%28Int32%29%2Cplp%3APointer%28Pointer%28LibHTS%3A%3ABamPileup1T%29%29%2Cheaders%3AArray%28Bam%3A%3AHeader%29%2Cn_inputs%3AInt32%29-class-method" class="signature"><strong>.new</strong>(tid : Int32, pos : Int64, n_plp : Pointer(Int32), plp : Pointer(Pointer(LibHTS::BamPileup1T)), headers : Array(Bam::Header), n_inputs : Int32)</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28input%3AInt32%29%3AHTS%3A%3ABam%3A%3APileup%3A%3AColumn-instance-method" class="signature"><strong>#[]</strong>(input : Int32) : HTS::Bam::Pileup::Column</a>
+        
+          <div class="summary"><p>Column view for one input.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#count%3AInt32-instance-method" class="signature"><strong>#count</strong> : Int32</a>
+        
+          <div class="summary"><p>Number of inputs (files) at this position.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#count%28%26%3AHTS%3A%3ABam%3A%3APileup%3A%3AColumn-%3EBool%29%3AInt32-instance-method" class="signature"><strong>#count</strong>(& : HTS::Bam::Pileup::Column -> Bool) : Int32</a>
+        
+          <div class="summary"><p>Count input columns matching the block without materializing an Array.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#depth%28input%3AInt32%29%3AInt32-instance-method" class="signature"><strong>#depth</strong>(input : Int32) : Int32</a>
+        
+          <div class="summary"><p>Raw pileup depth for one input at this position (before per-base filters).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each%28%26%3AHTS%3A%3ABam%3A%3APileup%3A%3AColumn-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(& : HTS::Bam::Pileup::Column -> ) : Nil</a>
+        
+          <div class="summary"><p>Iterate the per-input Column views.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pos%3AInt64-instance-method" class="signature"><strong>#pos</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3AInt32-instance-method" class="signature"><strong>#size</strong> : Int32</a>
+        
+          <div class="summary"><p>Number of inputs (files) at this position.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tid%3AInt32-instance-method" class="signature"><strong>#tid</strong> : Int32</a>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
@@ -654,41 +754,209 @@
 
 
     
-      
-
-
-      
-
-
-      
-
-
-      
-
-
-    
-      
-
-
-      
-
-
-      
-
-
-      
-
-
-    
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(tid:Int32,pos:Int64,n_plp:Pointer(Int32),plp:Pointer(Pointer(LibHTS::BamPileup1T)),headers:Array(Bam::Header),n_inputs:Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(tid : Int32, pos : Int64, n_plp : Pointer(Int32), plp : Pointer(Pointer(LibHTS::BamPileup1T)), headers : Array(<a href="../../../HTS/Bam/Header.html">Bam::Header</a>), n_inputs : Int32)
+
+        <a class="method-permalink" href="#new%28tid%3AInt32%2Cpos%3AInt64%2Cn_plp%3APointer%28Int32%29%2Cplp%3APointer%28Pointer%28LibHTS%3A%3ABamPileup1T%29%29%2Cheaders%3AArray%28Bam%3A%3AHeader%29%2Cn_inputs%3AInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L135" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="[](input:Int32):HTS::Bam::Pileup::Column-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(input : Int32) : <a href="../../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a>
+
+        <a class="method-permalink" href="#%5B%5D%28input%3AInt32%29%3AHTS%3A%3ABam%3A%3APileup%3A%3AColumn-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Column view for one input.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L160" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong> : Int32
+
+        <a class="method-permalink" href="#count%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Number of inputs (files) at this position.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L146" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count(&amp;:HTS::Bam::Pileup::Column-&gt;Bool):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong>(& : <a href="../../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a> -> Bool) : Int32
+
+        <a class="method-permalink" href="#count%28%26%3AHTS%3A%3ABam%3A%3APileup%3A%3AColumn-%3EBool%29%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Count input columns matching the block without materializing an Array.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L151" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="depth(input:Int32):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>depth</strong>(input : Int32) : Int32
+
+        <a class="method-permalink" href="#depth%28input%3AInt32%29%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Raw pileup depth for one input at this position (before per-base filters).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L168" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each(&amp;:HTS::Bam::Pileup::Column-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(& : <a href="../../../HTS/Bam/Pileup/Column.html">HTS::Bam::Pileup::Column</a> -> ) : Nil
+
+        <a class="method-permalink" href="#each%28%26%3AHTS%3A%3ABam%3A%3APileup%3A%3AColumn-%3E%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Iterate the per-input Column views.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L176" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pos:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>pos</strong> : Int64
+
+        <a class="method-permalink" href="#pos%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L129" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong> : Int32
+
+        <a class="method-permalink" href="#size%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Number of inputs (files) at this position.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L141" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tid:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>tid</strong> : Int32
+
+        <a class="method-permalink" href="#tid%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L128" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>

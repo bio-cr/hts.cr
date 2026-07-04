@@ -162,6 +162,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
+      <a href="../../../HTS/Bam/Mpileup/Position.html">Position</a>
+      
+    </li>
+  
 </ul>
 
       
@@ -189,6 +194,11 @@
   
   <li class=" " data-id="hts/HTS/Bam/Pileup/Column" data-name="hts::bam::pileup::column">
       <a href="../../../HTS/Bam/Pileup/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
+      <a href="../../../HTS/Bam/Pileup/Filter.html">Filter</a>
       
     </li>
   
@@ -594,7 +604,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L12" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L11" target="_blank">
         hts/bam/mpileup.cr
       </a>
     
@@ -617,7 +627,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28htsfp%3APointer%28LibHTS%3A%3AHtsFile%29%2Chdr%3APointer%28LibHTS%3A%3ASamHdrT%29%2Citr%3APointer%28LibHTS%3A%3AHtsItrT%29%29-class-method" class="signature"><strong>.new</strong>(htsfp : Pointer(LibHTS::HtsFile), hdr : Pointer(LibHTS::SamHdrT), itr : Pointer(LibHTS::HtsItrT))</a>
+        <a href="#new%28htsfp%3APointer%28LibHTS%3A%3AHtsFile%29%2Chdr%3APointer%28LibHTS%3A%3ASamHdrT%29%2Citr%3APointer%28LibHTS%3A%3AHtsItrT%29%2Cfilter%3APileup%3A%3AFilter%29-class-method" class="signature"><strong>.new</strong>(htsfp : Pointer(LibHTS::HtsFile), hdr : Pointer(LibHTS::SamHdrT), itr : Pointer(LibHTS::HtsItrT), filter : Pileup::Filter)</a>
         
       </li>
     
@@ -638,6 +648,11 @@
     Instance Method Summary
   </h2>
   <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#filter%3APileup%3A%3AFilter-instance-method" class="signature"><strong>#filter</strong> : Pileup::Filter</a>
+        
+      </li>
     
       <li class="entry-summary">
         <a href="#hdr%3APointer%28LibHTS%3A%3ASamHdrT%29-instance-method" class="signature"><strong>#hdr</strong> : Pointer(LibHTS::SamHdrT)</a>
@@ -711,18 +726,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(htsfp:Pointer(LibHTS::HtsFile),hdr:Pointer(LibHTS::SamHdrT),itr:Pointer(LibHTS::HtsItrT))-class-method">
+    <div class="entry-detail" id="new(htsfp:Pointer(LibHTS::HtsFile),hdr:Pointer(LibHTS::SamHdrT),itr:Pointer(LibHTS::HtsItrT),filter:Pileup::Filter)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(htsfp : Pointer(LibHTS::HtsFile), hdr : Pointer(LibHTS::SamHdrT), itr : Pointer(LibHTS::HtsItrT))
+        def self.<strong>new</strong>(htsfp : Pointer(LibHTS::HtsFile), hdr : Pointer(LibHTS::SamHdrT), itr : Pointer(LibHTS::HtsItrT), filter : <a href="../../../HTS/Bam/Pileup/Filter.html">Pileup::Filter</a>)
 
-        <a class="method-permalink" href="#new%28htsfp%3APointer%28LibHTS%3A%3AHtsFile%29%2Chdr%3APointer%28LibHTS%3A%3ASamHdrT%29%2Citr%3APointer%28LibHTS%3A%3AHtsItrT%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28htsfp%3APointer%28LibHTS%3A%3AHtsFile%29%2Chdr%3APointer%28LibHTS%3A%3ASamHdrT%29%2Citr%3APointer%28LibHTS%3A%3AHtsItrT%29%2Cfilter%3APileup%3A%3AFilter%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -743,6 +758,22 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="filter:Pileup::Filter-instance-method">
+      <div class="signature">
+        
+        def <strong>filter</strong> : <a href="../../../HTS/Bam/Pileup/Filter.html">Pileup::Filter</a>
+
+        <a class="method-permalink" href="#filter%3APileup%3A%3AFilter-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L15" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="hdr:Pointer(LibHTS::SamHdrT)-instance-method">
       <div class="signature">
         
@@ -754,7 +785,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -770,7 +801,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -786,7 +817,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/mpileup.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/mpileup.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>

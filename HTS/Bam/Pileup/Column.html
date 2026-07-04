@@ -162,6 +162,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/Bam/Mpileup/Position" data-name="hts::bam::mpileup::position">
+      <a href="../../../HTS/Bam/Mpileup/Position.html">Position</a>
+      
+    </li>
+  
 </ul>
 
       
@@ -189,6 +194,11 @@
   
   <li class=" current" data-id="hts/HTS/Bam/Pileup/Column" data-name="hts::bam::pileup::column">
       <a href="../../../HTS/Bam/Pileup/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bam/Pileup/Filter" data-name="hts::bam::pileup::filter">
+      <a href="../../../HTS/Bam/Pileup/Filter.html">Filter</a>
       
     </li>
   
@@ -567,7 +577,18 @@
     Overview
   </h2>
 
-  <p>Represents a pileup column at a genomic position</p>
+  <p>A pileup column at a genomic position, as a zero-copy view over htslib's
+current pileup buffer. It holds only pointers and constructs Alignment
+values lazily, so iterating (#each / #[]) allocates nothing per read and
+matches the C mpileup hot-path cost.</p>
+<p>BORROWING CONTRACT: a Column and any Alignment obtained from it are valid
+ONLY during the current iteration step (the current block invocation).
+To retain data across positions, read the copied-out scalars
+(Alignment#base, #base_qual, #query_pos) or call Alignment#record. Do not
+deref a Column after the iterator advances or the Pileup is closed.</p>
+<p>This borrowed view intentionally does not include Enumerable: methods
+such as <code>to_a</code> or <code>map</code> would make short-lived C-backed entries look
+like ordinary retained Crystal values.</p>
 
 
 
@@ -594,7 +615,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L7" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L160" target="_blank">
         hts/bam/pileup.cr
       </a>
     
@@ -617,7 +638,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28tid%3AInt32%2Cpos%3AInt64%2Calignments%3AArray%28Alignment%29%2Cheader%3ABam%3A%3AHeader%29-class-method" class="signature"><strong>.new</strong>(tid : Int32, pos : Int64, alignments : Array(Alignment), header : Bam::Header)</a>
+        <a href="#new%28tid%3AInt32%2Cpos%3AInt64%2Cbase%3APointer%28LibHTS%3A%3ABamPileup1T%29%2Ccount%3AInt32%2Cheader%3ABam%3A%3AHeader%29-class-method" class="signature"><strong>.new</strong>(tid : Int32, pos : Int64, base : Pointer(LibHTS::BamPileup1T), count : Int32, header : Bam::Header)</a>
         
       </li>
     
@@ -640,7 +661,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#alignments%3AArray%28Alignment%29-instance-method" class="signature"><strong>#alignments</strong> : Array(Alignment)</a>
+        <a href="#%5B%5D%28index%3AInt32%29%3AAlignment-instance-method" class="signature"><strong>#[]</strong>(index : Int32) : Alignment</a>
         
       </li>
     
@@ -652,9 +673,30 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#count%3AInt32-instance-method" class="signature"><strong>#count</strong> : Int32</a>
+        
+          <div class="summary"><p>Number of reads covering this position.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#count%28%26%3AAlignment-%3EBool%29%3AInt32-instance-method" class="signature"><strong>#count</strong>(& : Alignment -> Bool) : Int32</a>
+        
+          <div class="summary"><p>Count reads matching the block without materializing an Array.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#depth%3AInt32-instance-method" class="signature"><strong>#depth</strong> : Int32</a>
         
           <div class="summary"><p>Depth equals number of alignments covering this position</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each%28%26%3AAlignment-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(& : Alignment -> ) : Nil</a>
+        
+          <div class="summary"><p>Iterate the reads covering this position without allocating an Array.</p></div>
         
       </li>
     
@@ -725,18 +767,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(tid:Int32,pos:Int64,alignments:Array(Alignment),header:Bam::Header)-class-method">
+    <div class="entry-detail" id="new(tid:Int32,pos:Int64,base:Pointer(LibHTS::BamPileup1T),count:Int32,header:Bam::Header)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(tid : Int32, pos : Int64, alignments : Array(<a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a>), header : <a href="../../../HTS/Bam/Header.html">Bam::Header</a>)
+        def self.<strong>new</strong>(tid : Int32, pos : Int64, base : Pointer(LibHTS::BamPileup1T), count : Int32, header : <a href="../../../HTS/Bam/Header.html">Bam::Header</a>)
 
-        <a class="method-permalink" href="#new%28tid%3AInt32%2Cpos%3AInt64%2Calignments%3AArray%28Alignment%29%2Cheader%3ABam%3A%3AHeader%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28tid%3AInt32%2Cpos%3AInt64%2Cbase%3APointer%28LibHTS%3A%3ABamPileup1T%29%2Ccount%3AInt32%2Cheader%3ABam%3A%3AHeader%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L167" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -757,18 +799,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="alignments:Array(Alignment)-instance-method">
+    <div class="entry-detail" id="[](index:Int32):Alignment-instance-method">
       <div class="signature">
         
-        def <strong>alignments</strong> : Array(<a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a>)
+        def <strong>[]</strong>(index : Int32) : <a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a>
 
-        <a class="method-permalink" href="#alignments%3AArray%28Alignment%29-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%28index%3AInt32%29%3AAlignment-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L207" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -790,7 +832,49 @@ Returns empty string if tid is -1 (unmapped)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L192" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong> : Int32
+
+        <a class="method-permalink" href="#count%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Number of reads covering this position.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L177" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="count(&amp;:Alignment-&gt;Bool):Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>count</strong>(& : <a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a> -> Bool) : Int32
+
+        <a class="method-permalink" href="#count%28%26%3AAlignment-%3EBool%29%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Count reads matching the block without materializing an Array.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L182" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -811,7 +895,28 @@ Returns empty string if tid is -1 (unmapped)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L172" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each(&amp;:Alignment-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(& : <a href="../../../HTS/Bam/Pileup/Alignment.html">Alignment</a> -> ) : Nil
+
+        <a class="method-permalink" href="#each%28%26%3AAlignment-%3E%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Iterate the reads covering this position without allocating an Array.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -827,7 +932,7 @@ Returns empty string if tid is -1 (unmapped)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L162" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -843,7 +948,7 @@ Returns empty string if tid is -1 (unmapped)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/be8de86b133f61c3aa7945af75ec5c2c47ab5fb3/src/hts/bam/pileup.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/3d57f4da9df4abba92c1c3af1f2c72731863368f/src/hts/bam/pileup.cr#L161" target="_blank">View source</a>]
         
       </div>
     </div>
