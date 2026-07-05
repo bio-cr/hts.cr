@@ -58,8 +58,8 @@ def parse_options : HardclipOptions
 
   parser = OptionParser.parse do |parser_config|
     parser_config.banner = "Usage: hardclip_stats [options] <in.bam|in.cram|in.sam>"
-    parser_config.on("-@ N", "--threads N", "Number of threads for BAM/CRAM decoding") { |value| options.threads = value.to_i }
-    parser_config.on("-q N", "--min-mapq N", "Minimum MAPQ for mapped records") { |value| options.min_mapq = value.to_i }
+    parser_config.on("-@", "--threads N", "Number of threads for BAM/CRAM decoding") { |value| options.threads = value.to_i }
+    parser_config.on("-q", "--min-mapq N", "Minimum MAPQ for mapped records") { |value| options.min_mapq = value.to_i }
     parser_config.on("-p", "--primary-only", "Only inspect primary records (-F 0x900)") { options.primary_only = true }
     parser_config.on("-h", "--help", "Show help") { puts parser_config; exit 0 }
   end

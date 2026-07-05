@@ -84,15 +84,15 @@ output_path : String? = nil
 
 parser = OptionParser.parse do |parser_config|
   parser_config.banner = "Usage: #{File.basename(PROGRAM_NAME)} [options] <in.bam|in.cram|in.sam>"
-  parser_config.on("-s N", "--min-softclip N", "Minimum terminal softclip length [50]") { |value| min_softclip = value.to_i }
-  parser_config.on("-l N", "--min-read-length N", "Minimum read length to emit [0]") { |value| min_read_length = value.to_i }
-  parser_config.on("-q N", "--min-mapq N", "Minimum MAPQ for mapped reads [0]") { |value| min_mapq = value.to_i }
+  parser_config.on("-s", "--min-softclip N", "Minimum terminal softclip length [50]") { |value| min_softclip = value.to_i }
+  parser_config.on("-l", "--min-read-length N", "Minimum read length to emit [0]") { |value| min_read_length = value.to_i }
+  parser_config.on("-q", "--min-mapq N", "Minimum MAPQ for mapped reads [0]") { |value| min_mapq = value.to_i }
   parser_config.on("--missing-quality CHAR", "FASTQ quality character for records with missing QUAL [!]") { |value| missing_quality = value }
-  parser_config.on("-@ N", "--threads N", "Number of threads for BAM/CRAM decoding [0]") { |value| threads = value.to_i }
+  parser_config.on("-@", "--threads N", "Number of threads for BAM/CRAM decoding [0]") { |value| threads = value.to_i }
   parser_config.on("--include-qcfail", "Include reads flagged QC-fail") { include_qcfail = true }
   parser_config.on("--include-duplicates", "Include duplicate reads") { include_duplicates = true }
   parser_config.on("--no-append-read-number", "Do not append /1 or /2 to FASTQ names") { append_read_number = false }
-  parser_config.on("-o PATH", "--output PATH", "Write FASTQ to PATH instead of stdout") { |value| output_path = value }
+  parser_config.on("-o", "--output PATH", "Write FASTQ to PATH instead of stdout") { |value| output_path = value }
   parser_config.on("-h", "--help", "Show help") { puts parser_config; exit 0 }
 end
 

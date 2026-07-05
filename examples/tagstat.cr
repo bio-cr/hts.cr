@@ -93,7 +93,7 @@ def parse_options : TagStatOptions
     parser_config.on("--json", "Output JSON instead of TSV") { options.json_output = true }
     parser_config.on("--limit N", "Maximum number of examples per tag/type (default: #{options.example_limit})") { |value| options.example_limit = value.to_i }
     parser_config.on("--distinct-limit N", "Maximum distinct values to track exactly (default: #{options.distinct_limit})") { |value| options.distinct_limit = value.to_i }
-    parser_config.on("-t N", "--threads N", "Number of threads for BAM/CRAM decoding") { |value| options.threads = value.to_i }
+    parser_config.on("-t", "--threads N", "Number of threads for BAM/CRAM decoding") { |value| options.threads = value.to_i }
     parser_config.on("-h", "--help", "Show help") { puts parser_config; exit 0 }
   end
 

@@ -14,10 +14,10 @@ threads = 0
 
 parser = OptionParser.parse do |parser_config|
   parser_config.banner = "Usage: pileup_counts [options] <in.bam|in.cram>"
-  parser_config.on("--maxcnt=N", "Max reads per column") { |value| maxcnt = value.to_i }
-  parser_config.on("-r REGION", "--region=REGION", "Region (e.g., chr1:1000-2000)") { |value| region = value }
-  parser_config.on("-o FILE", "--output=FILE", "Output TSV (default: stdout)") { |value| output_path = value }
-  parser_config.on("-@ THREADS", "--threads=THREADS", "Number of threads for decompression (default: 0)") { |value| threads = value.to_i }
+  parser_config.on("--maxcnt N", "Max reads per column") { |value| maxcnt = value.to_i }
+  parser_config.on("-r", "--region REGION", "Region (e.g., chr1:1000-2000)") { |value| region = value }
+  parser_config.on("-o", "--output FILE", "Output TSV (default: stdout)") { |value| output_path = value }
+  parser_config.on("-@", "--threads THREADS", "Number of threads for decompression (default: 0)") { |value| threads = value.to_i }
   parser_config.on("-h", "--help", "Show help") { puts parser_config; exit 0 }
 end
 

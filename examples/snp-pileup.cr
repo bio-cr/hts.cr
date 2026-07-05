@@ -295,18 +295,18 @@ options = Options.new
 parser = OptionParser.new do |parser_config|
   parser_config.banner = "Usage: snp_pileup [options] <variants.vcf|bcf> <output.csv> <in1.bam|cram> [in2.bam|cram ...]"
   parser_config.on("-A", "--count-orphans", "Count anomalous read pairs") { options.count_orphans = true }
-  parser_config.on("-d DEPTH", "--max-depth=DEPTH", "Maximum per-file depth (default: 4000)") { |value| options.max_depth = value.to_i }
+  parser_config.on("-d", "--max-depth DEPTH", "Maximum per-file depth (default: 4000)") { |value| options.max_depth = value.to_i }
   parser_config.on("-g", "--gzip", "Compress output with BGZF") { options.gzip = true }
   parser_config.on("-p", "--progress", "Show progress; scans the VCF once before counting") { options.progress = true }
-  parser_config.on("-P MULTIPLE", "--pseudo-snps=MULTIPLE", "Add pseudo records every MULTIPLE covered positions") { |value| options.pseudo_snps = value.to_i }
-  parser_config.on("-q QUALITY", "--min-map-quality=QUALITY", "Minimum mapping quality (default: 0)") { |value| options.min_map_quality = value.to_i }
-  parser_config.on("-Q QUALITY", "--min-base-quality=QUALITY", "Minimum base quality (default: 0)") { |value| options.min_base_quality = value.to_i }
-  parser_config.on("-r READS", "--min-read-counts=READS", "Comma-separated minimum raw pileup depths per input") do |value|
+  parser_config.on("-P", "--pseudo-snps MULTIPLE", "Add pseudo records every MULTIPLE covered positions") { |value| options.pseudo_snps = value.to_i }
+  parser_config.on("-q", "--min-map-quality QUALITY", "Minimum mapping quality (default: 0)") { |value| options.min_map_quality = value.to_i }
+  parser_config.on("-Q", "--min-base-quality QUALITY", "Minimum base quality (default: 0)") { |value| options.min_base_quality = value.to_i }
+  parser_config.on("-r", "--min-read-counts READS", "Comma-separated minimum raw pileup depths per input") do |value|
     options.min_read_counts = value.split(',').map(&.to_i)
   end
   parser_config.on("-s", "--include-supplementary", "Include supplementary alignments") { options.include_supplementary = true }
   parser_config.on("-x", "--ignore-overlaps", "Disable paired-read overlap detection") { options.ignore_overlaps = true }
-  parser_config.on("-@ THREADS", "--threads=THREADS", "Threads for decompression") { |value| options.threads = value.to_i }
+  parser_config.on("-@", "--threads THREADS", "Threads for decompression") { |value| options.threads = value.to_i }
   parser_config.on("-h", "--help", "Show this help") do
     puts parser_config
     exit

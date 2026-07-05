@@ -5,7 +5,7 @@ nthreads = 0
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: chrom-count [options] <bam_file>"
-  parser.on("-t NUM", "--threads NUM") { |v| nthreads = v.to_i }
+  parser.on("-t", "--threads NUM") { |v| nthreads = v.to_i }
   parser.on("-h", "--help", "Show this help") do
     puts parser
     exit
