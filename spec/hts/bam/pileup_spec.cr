@@ -36,7 +36,7 @@ class BamPileupSmokeTest
               (first_qname).should eq(record.qname)
             end
             (col.count).should eq(col.depth)
-            (col.count { |read| read.del? }).should be_a(Int32)
+            (col.count(&.del?)).should be_a(Int32)
           end
           seen += 1
           break if seen >= 3
