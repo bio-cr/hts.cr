@@ -1035,7 +1035,6 @@ module HTS
     fun bcf_enc_vchar(s : KstringT*, l : LibC::Int, a : LibC::Char*) : LibC::Int
     fun bcf_enc_vint(s : KstringT*, n : LibC::Int, a : Int32T*, wsize : LibC::Int) : LibC::Int
     fun bcf_enc_vfloat(s : KstringT*, n : LibC::Int, a : LibC::Float*) : LibC::Int
-    fun bcf_itr_next(htsfp : HtsFile*, itr : HtsItrT*, r : Void*) : LibC::Int
     fun bcf_itr_querys1(idx : HtsIdxT, hdr : BcfHdrT*, region : LibC::Char*) : HtsItrT*
     fun bcf_itr_regarray(idx : HtsIdxT, hdr : BcfHdrT*, regarray : LibC::Char**, regcount : LibC::UInt) : HtsItrT*
     fun bcf_index_load2(fn : LibC::Char*, fnidx : LibC::Char*) : HtsIdxT
@@ -1049,7 +1048,6 @@ module HTS
     fun bcf_float_is_missing(f : LibC::Float) : LibC::Int
     fun bcf_float_is_vector_end(f : LibC::Float) : LibC::Int
     fun bcf_format_gt_v2(hdr : BcfHdrT*, fmt : BcfFmtT*, isample : LibC::Int, str : KstringT*) : LibC::Int
-    fun bcf_format_gt(fmt : BcfFmtT*, isample : LibC::Int, str : KstringT*) : LibC::Int
     fun bcf_enc_size(s : KstringT*, size : LibC::Int, type : LibC::Int) : LibC::Int
     fun bcf_enc_inttype(x : LibC::Long) : LibC::Int
     fun bcf_enc_int1(s : KstringT*, x : Int32T) : LibC::Int
