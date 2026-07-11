@@ -12,6 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: crystal-lang/install-crystal@v1
+      - name: Install documentation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libhts-dev
       - name: Generate document
         run: crystal docs
       - name: Publish Documentation on GitHub Pages
