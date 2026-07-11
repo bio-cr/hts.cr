@@ -64,12 +64,33 @@ module HTS
     alias_method :vcf_parse1, :vcf_parse
     alias_method :bcf_clear1, :bcf_clear
     alias_method :vcf_format1, :vcf_format
+    alias_method :bcf_itr_querys, :bcf_itr_querys1
 
     alias_method :bcf_open, :hts_open
     alias_method :vcf_open, :hts_open
     # alias_method bcf_flush hts_flush
     alias_method :bcf_close, hts_close
     alias_method :vcf_close, hts_close
+
+    def bcf_itr_queryi(idx, tid, beg, end_)
+      LibHTS.hts_itr_query(idx, tid, beg, end_, ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*))
+    end
+
+    def bcf_itr_next(htsfp, itr, r)
+      raise ArgumentError.new("Null iterator") if itr.null?
+
+      flags = htsfp.value.flags
+      is_bgzf = (flags & 0x10) != 0
+      raise HTS::FileFormatError.new("Only bgzf compressed files can be used with iterators") unless is_bgzf
+
+      return LibHTS.hts_itr_multi_next(htsfp, itr, r) if (itr.value.bitfields & 0x10) != 0
+
+      LibHTS.hts_itr_next(htsfp.value.fp.bgzf, itr, r, Pointer(Void).null)
+    end
+
+    def bcf_format_gt(fmt, isample, str)
+      LibHTS.bcf_format_gt_v2(Pointer(LibHTS::BcfHdrT).null, fmt, isample, str)
+    end
 
     BCF_UN_STR  = 1                                       # up to ALT inclusive
     BCF_UN_FLT  = 2                                       # up to FILTER

@@ -814,6 +814,9 @@ module HTS
     end
 
     fun tbx_name2id(tbx : TbxT*, ss : LibC::Char*) : LibC::Int
+    fun tbx_itr_querys1(tbx : TbxT*, region : LibC::Char*) : HtsItrT*
+    fun tbx_itr_regarray(tbx : TbxT*, regarray : LibC::Char**, regcount : LibC::UInt) : HtsItrT*
+    fun tbx_itr_next1(htsfp : HtsFile*, tbx : TbxT*, iter : HtsItrT*, r : Void*) : LibC::Int
     fun hts_get_bgzfp(fp : HtsFile*) : Bgzf*
     fun tbx_readrec(fp : Bgzf*, tbxv : Void*, sv : Void*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*) : LibC::Int
     fun tbx_index(fp : Bgzf*, min_shift : LibC::Int, conf : TbxConfT*) : TbxT*
@@ -1033,6 +1036,8 @@ module HTS
     fun bcf_enc_vint(s : KstringT*, n : LibC::Int, a : Int32T*, wsize : LibC::Int) : LibC::Int
     fun bcf_enc_vfloat(s : KstringT*, n : LibC::Int, a : LibC::Float*) : LibC::Int
     fun bcf_itr_next(htsfp : HtsFile*, itr : HtsItrT*, r : Void*) : LibC::Int
+    fun bcf_itr_querys1(idx : HtsIdxT, hdr : BcfHdrT*, region : LibC::Char*) : HtsItrT*
+    fun bcf_itr_regarray(idx : HtsIdxT, hdr : BcfHdrT*, regarray : LibC::Char**, regcount : LibC::UInt) : HtsItrT*
     fun bcf_index_load2(fn : LibC::Char*, fnidx : LibC::Char*) : HtsIdxT
     fun bcf_index_load3(fn : LibC::Char*, fnidx : LibC::Char*, flags : LibC::Int) : HtsIdxT
     fun bcf_index_build(fn : LibC::Char*, min_shift : LibC::Int) : LibC::Int
@@ -1043,6 +1048,7 @@ module HTS
     fun bcf_float_set(ptr : LibC::Float*, value : Uint32T)
     fun bcf_float_is_missing(f : LibC::Float) : LibC::Int
     fun bcf_float_is_vector_end(f : LibC::Float) : LibC::Int
+    fun bcf_format_gt_v2(hdr : BcfHdrT*, fmt : BcfFmtT*, isample : LibC::Int, str : KstringT*) : LibC::Int
     fun bcf_format_gt(fmt : BcfFmtT*, isample : LibC::Int, str : KstringT*) : LibC::Int
     fun bcf_enc_size(s : KstringT*, size : LibC::Int, type : LibC::Int) : LibC::Int
     fun bcf_enc_inttype(x : LibC::Long) : LibC::Int

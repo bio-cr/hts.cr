@@ -19,4 +19,5 @@ end
 require "./libhts2/hfile"
 require "./libhts2/bgzf"
 require "./libhts2/sam"
+require "./libhts2/tbx"
 require "./libhts2/vcf"
