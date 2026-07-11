@@ -11,10 +11,6 @@ require "./bcf/record"
 
 module HTS
   class Bcf < Hts
-    @@bcf_name2id = ->(hdr : Void*, name : LibC::Char*) : LibC::Int {
-      LibHTS.bcf_hdr_id2int(hdr.as(LibHTS::BcfHdrT*), LibHTS2::BCF_DT_CTG, name)
-    }
-
     include Enumerable(Bcf::Record)
 
     @idx : LibHTS::HtsIdxT
@@ -253,10 +249,7 @@ module HTS
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_query_index!
 
-      readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
-      itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
-
-      qiter = LibHTS.hts_itr_querys(@idx, region, @@bcf_name2id, header_for_reading.to_unsafe.as(Void*), itr_query, readrec)
+      qiter = LibHTS2.bcf_itr_querys(@idx, header_for_reading, region)
       raise_region_query_error(region) if qiter.null?
       begin
         iterate_query_iterator(qiter) { |record| yield record }
@@ -270,10 +263,7 @@ module HTS
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_query_index!
 
-      readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
-      itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
-
-      qiter = LibHTS.hts_itr_querys(@idx, region, @@bcf_name2id, header_for_reading.to_unsafe.as(Void*), itr_query, readrec)
+      qiter = LibHTS2.bcf_itr_querys(@idx, header_for_reading, region)
       raise_region_query_error(region) if qiter.null?
       begin
         iterate_query_iterator_copy(qiter) { |record| yield record }
@@ -315,9 +305,7 @@ module HTS
       raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
-      readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
-
-      qiter = LibHTS.hts_itr_query(@idx, tid, beg, end_pos, readrec)
+      qiter = LibHTS2.bcf_itr_queryi(@idx, tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         iterate_query_iterator(qiter) { |record| yield record }
@@ -333,9 +321,7 @@ module HTS
       raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
-      readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
-
-      qiter = LibHTS.hts_itr_query(@idx, tid, beg, end_pos, readrec)
+      qiter = LibHTS2.bcf_itr_queryi(@idx, tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         iterate_query_iterator_copy(qiter) { |record| yield record }
@@ -385,11 +371,11 @@ module HTS
     private def iterate_query_iterator(qiter, & : HTS::Bcf::Record ->)
       bcf1 = new_bcf1!
       record = Bcf::Record.new(header, bcf1)
-      slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+      slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
       while slen >= 0
         apply_subset!(record)
         yield record
-        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+        slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
       end
       raise ReadError.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
     end
@@ -397,13 +383,13 @@ module HTS
     private def iterate_query_iterator_copy(qiter, & : HTS::Bcf::Record ->)
       bcf1 = new_bcf1!
       begin
-        slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+        slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
         while slen >= 0
           record = Bcf::Record.new(header, take_bcf1!(pointerof(bcf1)))
           apply_subset!(record)
           yield record
           bcf1 = new_bcf1!
-          slen = LibHTS2.sam_itr_next(@hts_file, qiter, bcf1)
+          slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
         end
         raise ReadError.new("Failed to read BCF/VCF query record from #{@file_name} (rc=#{slen})") if slen < -1
       ensure

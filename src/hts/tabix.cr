@@ -8,9 +8,6 @@ require "./tabix/errors"
 module HTS
   class Tabix < Bgzf
     @idx : LibHTS::TbxT*
-    @@tbx_name2id = ->(tbx : Void*, ss : LibC::Char*) : LibC::Int {
-      LibHTS.tbx_name2id(tbx.as(LibHTS::TbxT*), ss)
-    }
 
     getter :file_name
     getter :mode
@@ -131,9 +128,7 @@ module HTS
       check_closed
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_index!("query")
-      readrec = ->LibHTS.tbx_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
-      itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
-      qiter = LibHTS.hts_itr_querys(@idx.value.idx, region, @@tbx_name2id, @idx.as(Void*), itr_query, readrec)
+      qiter = LibHTS2.tbx_itr_querys(@idx, region)
       raise_region_query_error(region) if qiter.null?
       begin
         query_yield(qiter) { |fields| yield fields }
@@ -172,8 +167,7 @@ module HTS
     end
 
     private def query_by_coord(tid : Int32, beg : Int64, end_pos : Int64, &)
-      readrec = ->LibHTS.tbx_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
-      qiter = LibHTS.hts_itr_query(@idx.value.idx, tid, beg, end_pos, readrec)
+      qiter = LibHTS2.tbx_itr_queryi(@idx, tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         query_yield(qiter) { |fields| yield fields }
@@ -202,9 +196,8 @@ module HTS
       r.l = 0
       r.m = 0
       r.s = Pointer(LibC::Char).null
-      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       begin
-        while (rc = LibHTS.hts_itr_next(bgzf_fp, qiter, pointerof(r).as(Void*), @idx.as(Void*))) > 0
+        while (rc = LibHTS2.tbx_itr_next(@hts_file, @idx, qiter, pointerof(r).as(Void*))) > 0
           yield String.new(r.s, r.l).split('\t')
         end
         raise ReadError.new("Failed to read tabix query record from #{@file_name} (rc=#{rc})") if rc < -1

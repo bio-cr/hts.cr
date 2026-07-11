@@ -64,13 +64,39 @@ module HTS
     alias_method :vcf_parse1, :vcf_parse
     alias_method :bcf_clear1, :bcf_clear
     alias_method :vcf_format1, :vcf_format
-    alias_method :bcf_itr_querys, :bcf_itr_querys1
+
+    htslib_at_least(1, 24, 0) do
+      alias_method :bcf_itr_querys, :bcf_itr_querys1
+
+      def bcf_itr_regarray(idx, hdr, regarray, regcount)
+        LibHTS.bcf_itr_regarray(idx, hdr, regarray, regcount)
+      end
+    end
+
+    htslib_before(1, 24, 0) do
+      def bcf_itr_querys(idx, hdr, s)
+        readrec = ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*)
+        itr_query = ->LibHTS.hts_itr_query(LibHTS::HtsIdxT, LibC::Int, LibHTS::HtsPosT, LibHTS::HtsPosT, (LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT* -> LibC::Int))
+        name2id = ->(h : Void*, name : LibC::Char*) : LibC::Int {
+          LibHTS.bcf_hdr_id2int(h.as(LibHTS::BcfHdrT*), BCF_DT_CTG, name)
+        }
+        LibHTS.hts_itr_querys(idx, s, name2id, bcf_hdr_void(hdr), itr_query, readrec)
+      end
+    end
 
     alias_method :bcf_open, :hts_open
     alias_method :vcf_open, :hts_open
     # alias_method bcf_flush hts_flush
     alias_method :bcf_close, hts_close
     alias_method :vcf_close, hts_close
+
+    private def bcf_hdr_void(hdr : Pointer(LibHTS::BcfHdrT))
+      hdr.as(Void*)
+    end
+
+    private def bcf_hdr_void(hdr)
+      hdr.to_unsafe.as(Void*)
+    end
 
     def bcf_itr_queryi(idx, tid, beg, end_)
       LibHTS.hts_itr_query(idx, tid, beg, end_, ->LibHTS.bcf_readrec(LibHTS::Bgzf*, Void*, Void*, LibC::Int*, LibHTS::HtsPosT*, LibHTS::HtsPosT*))
@@ -83,7 +109,9 @@ module HTS
       is_bgzf = (flags & 0x10) != 0
       raise HTS::FileFormatError.new("Only bgzf compressed files can be used with iterators") unless is_bgzf
 
-      return LibHTS.hts_itr_multi_next(htsfp, itr, r) if (itr.value.bitfields & 0x10) != 0
+      htslib_at_least(1, 24, 0) do
+        return LibHTS.hts_itr_multi_next(htsfp, itr, r) if (itr.value.bitfields & 0x10) != 0
+      end
 
       LibHTS.hts_itr_next(htsfp.value.fp.bgzf, itr, r, Pointer(Void).null)
     end
