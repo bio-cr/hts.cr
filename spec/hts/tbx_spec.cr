@@ -169,6 +169,58 @@ class TabixTest
     end
   end
 
+  def test_each_line_and_line_view
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      lines = [] of String
+      tbx.each_line("poo:100-200") { |line| lines << line }
+      (lines).should eq(VCF_LINES[2, 2])
+
+      views = [] of String
+      tbx.each_line_view("poo:100-200") do |line|
+        (line.to_unsafe.null?).should be_false
+        views << String.new(line)
+      end
+      (views).should eq(lines)
+    end
+  end
+
+  def test_each_fields_preserves_query_convenience
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      fields = [] of Array(String)
+      tbx.each_fields("poo:100-100") { |row| fields << row }
+      (fields).should eq([["poo", "100", ".", "A", "T", ".", ".", "."]])
+    end
+  end
+
+  def test_each_selected_fields
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      selected = [] of Array(String)
+      array_id = nil.as(UInt64?)
+
+      tbx.each_selected_fields("poo:100-200", 0, 3, 4) do |values|
+        array_id ||= values.object_id
+        (values.object_id).should eq(array_id)
+        selected << values.map { |value| String.new(value) }
+      end
+
+      (selected).should eq([
+        ["poo", "A", "T"],
+        ["poo", "G", "C"],
+      ])
+    end
+  end
+
+  def test_each_selected_fields_validates_indices
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      expect_raises(ArgumentError, "field index must not be negative: -1") do
+        tbx.each_selected_fields("poo:100-100", -1) { }
+      end
+      expect_raises(IndexError, "field index 8 out of range 0...8") do
+        tbx.each_selected_fields("poo:100-100", 8) { }
+      end
+    end
+  end
+
   def test_query_requires_index
     without_index do |tbx|
       ex = expect_raises(HTS::Tabix::MissingIndexError) do

@@ -128,12 +128,48 @@ module HTS
       check_closed
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_index!("query")
+      each_fields(region) { |fields| yield fields }
+    end
+
+    def each_fields(region : String, & : Array(String) ->) : self
+      each_line_view(region) { |line| yield owning_fields(line) }
+      self
+    end
+
+    def each_line(region : String, & : String ->) : self
+      each_line_view(region) { |line| yield String.new(line) }
+      self
+    end
+
+    # The borrowed line is valid only during the block.
+    @[Experimental]
+    def each_line_view(region : String, & : Bytes ->) : self
+      check_closed
+      raise ArgumentError.new("region must not be empty") if region.empty?
+      ensure_index!("each_line_view")
       qiter = LibHTS2.tbx_itr_querys(@idx, region)
       raise_region_query_error(region) if qiter.null?
       begin
-        query_yield(qiter) { |fields| yield fields }
+        each_line_view_from_iterator(qiter) { |line| yield line }
       ensure
         LibHTS.hts_itr_destroy(qiter)
+      end
+      self
+    end
+
+    # The values and their backing array are reused after each block call.
+    @[Experimental]
+    def each_selected_fields(region : String, *field_indices, & : Array(Bytes) ->) : self
+      indices = field_indices.map(&.to_i32)
+      if index = indices.find { |field_index| field_index < 0 }
+        raise ArgumentError.new("field index must not be negative: #{index}")
+      end
+
+      values = Array(Bytes).new(indices.size, Bytes.empty)
+      found = Array(Bool).new(indices.size, false)
+      each_line_view(region) do |line|
+        select_fields!(line, indices, values, found)
+        yield values
       end
       self
     end
@@ -148,7 +184,7 @@ module HTS
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
       raise ArgumentError.new("start (#{start}) must be >= 0 for 0-based half-open coordinates") if start < 0
       raise ArgumentError.new("start (#{start}) must be <= end_ (#{end_})") if start > end_
-      query_by_coord(tid, start.to_i64, end_.to_i64) { |fields| yield fields }
+      query_by_coord(tid, start.to_i64, end_.to_i64) { |line| yield owning_fields(line) }
       self
     end
 
@@ -170,7 +206,7 @@ module HTS
       qiter = LibHTS2.tbx_itr_queryi(@idx, tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
-        query_yield(qiter) { |fields| yield fields }
+        each_line_view_from_iterator(qiter) { |line| yield line }
       ensure
         LibHTS.hts_itr_destroy(qiter)
       end
@@ -191,19 +227,54 @@ module HTS
       raise QueryError.new("Failed to create an iterator for #{ref_name}:#{beg}-#{end_pos} (tid=#{tid}, 0-based half-open) in #{@file_name}. The index may be stale or incompatible with the file.")
     end
 
-    private def query_yield(qiter, &)
+    private def each_line_view_from_iterator(qiter, & : Bytes ->) : Nil
       r = LibHTS::KstringT.new
       r.l = 0
       r.m = 0
       r.s = Pointer(LibC::Char).null
       begin
         while (rc = LibHTS2.tbx_itr_next(@hts_file, @idx, qiter, pointerof(r).as(Void*))) > 0
-          yield String.new(r.s, r.l).split('\t')
+          yield Bytes.new(r.s.as(UInt8*), r.l.to_i)
         end
         raise ReadError.new("Failed to read tabix query record from #{@file_name} (rc=#{rc})") if rc < -1
       ensure
         LibC.free(r.s) unless r.s.null?
       end
+    end
+
+    private def owning_fields(line : Bytes) : Array(String)
+      fields = [] of String
+      each_field_view(line) { |field| fields << String.new(field) }
+      fields
+    end
+
+    private def select_fields!(line : Bytes, indices, values : Array(Bytes), found : Array(Bool)) : Nil
+      found.fill(false)
+      field_count = 0
+      each_field_view(line) do |field|
+        indices.each_with_index do |requested_index, output_index|
+          if requested_index == field_count
+            values[output_index] = field
+            found[output_index] = true
+          end
+        end
+        field_count += 1
+      end
+
+      if output_index = found.index(false)
+        raise ::IndexError.new("field index #{indices[output_index]} out of range 0...#{field_count}")
+      end
+    end
+
+    private def each_field_view(line : Bytes, & : Bytes ->) : Nil
+      field_start = 0
+      line.each_with_index do |byte, index|
+        next unless byte == '\t'.ord
+
+        yield line[field_start, index - field_start]
+        field_start = index + 1
+      end
+      yield line[field_start, line.size - field_start]
     end
 
     private def self.tabix_conf_for(preset)
