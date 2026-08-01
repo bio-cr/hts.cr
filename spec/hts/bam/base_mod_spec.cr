@@ -34,10 +34,7 @@ class BamBaseModGenerateTest
   end
 
   private def skip_unless_samtools_available
-    unless have_samtools?
-      puts "[INFO] samtools not found; skipping base_mod generation test"
-      return
-    end
+    pending! "samtools not found" unless have_samtools?
   end
 
   private def create_and_parse_base_mod : HTS::Bam::BaseMod

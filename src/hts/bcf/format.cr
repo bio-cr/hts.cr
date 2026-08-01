@@ -17,10 +17,10 @@ module HTS
         # Missing alleles use -1 as their allele index. Vector-end sentinels are
         # excluded from this view and are not yielded.
         def each_allele(& : Int32, Bool, Bool ->) : Nil
-          @values.each do |encoded|
+          @values.each_with_index do |encoded, allele_offset|
             missing = LibHTS2.bcf_gt_is_missing(encoded) != 0
             allele_index = missing ? -1 : LibHTS2.bcf_gt_allele(encoded)
-            phased = LibHTS2.bcf_gt_is_phased(encoded) != 0
+            phased = allele_offset > 0 && LibHTS2.bcf_gt_is_phased(encoded) != 0
             yield allele_index, phased, missing
           end
         end

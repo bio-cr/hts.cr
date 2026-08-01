@@ -432,6 +432,24 @@ class BcfFormatTest
     end
   end
 
+  def test_genotype_view_ignores_phase_bit_on_first_allele
+    values = Slice[
+      HTS::LibHTS2.bcf_gt_phased(0),
+      HTS::LibHTS2.bcf_gt_phased(1),
+    ]
+    genotype = HTS::Bcf::Format::GenotypeView.new(values)
+    alleles = [] of {Int32, Bool, Bool}
+
+    genotype.each_allele do |allele, phased, missing|
+      alleles << {allele, phased, missing}
+    end
+
+    alleles.should eq([
+      {0, false, false},
+      {1, true, false},
+    ])
+  end
+
   def test_genotype_at_accesses_one_sample_directly
     with_temp_gt_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
