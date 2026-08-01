@@ -134,6 +134,29 @@ class BcfInfoTest
     end
   end
 
+  def test_borrowed_string_view
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        info = record.info
+
+        yielded = false
+        info.with_string_view("CH") do |bytes|
+          yielded = true
+          (bytes).should eq(Bytes['Q'.ord])
+          (bytes.to_unsafe).should eq(record.scratch.info_char)
+          (bytes.size).should eq(1)
+        end.should be_true
+        (yielded).should be_true
+
+        yielded = false
+        info.with_string_view("ABSS") { yielded = true }.should be_false
+        (yielded).should be_false
+        (info.get_string("CH")).should eq("Q")
+      end
+    end
+  end
+
   def test_int64_and_character_info
     with_temp_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
@@ -160,10 +183,12 @@ class BcfInfoTest
     expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_string("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_flag("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::InfoDefinitionError) { info.with_i32_buffer("NO_SUCH_TAG") { } }
+    expect_raises(HTS::Bcf::InfoDefinitionError) { info.with_string_view("NO_SUCH_TAG") { } }
 
     ex = expect_raises(HTS::Bcf::InfoTypeError) { info.get_float("DP") }
     (ex.message).should eq("Tag DP is not float INFO field")
     expect_raises(HTS::Bcf::InfoTypeError) { info.with_f32_buffer("DP") { } }
+    expect_raises(HTS::Bcf::InfoTypeError) { info.with_string_view("DP") { } }
   end
 
   def test_defined_but_absent_tags

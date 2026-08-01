@@ -71,13 +71,22 @@ module HTS
       end
 
       def get_string(tag) : String?
+        result = nil.as(String?)
+        with_string_view(tag) { |bytes| result = String.new(bytes) }
+        result
+      end
+
+      @[Experimental]
+      def with_string_view(tag : String, & : Bytes ->) : Bool
         scratch = @record.scratch
         hdr = @record.header
-        r = @record
-        rc = LibHTS2.bcf_get_info_string(hdr, r, tag, scratch.info_char_data_address, scratch.info_char_capacity_address)
+        record = @record
+        rc = LibHTS2.bcf_get_info_string(hdr, record, tag, scratch.info_char_data_address, scratch.info_char_capacity_address)
         rc = normalize_info_rc(rc, tag, "string")
-        return unless rc
-        String.new scratch.info_char
+        return false unless rc
+
+        yield Bytes.new(scratch.info_char, rc)
+        true
       end
 
       def get_flag(tag) : Bool?
