@@ -291,6 +291,7 @@ module HTS
         raise_unsupported_format_flag(tag)
         hdr = @record.header
         rec = @record
+        scratch = @record.scratch
         rc = 0
 
         {% if T == Int32 %}
@@ -298,8 +299,8 @@ module HTS
             hdr,
             rec,
             tag,
-            @record.scratch.format_i32_data_address,
-            @record.scratch.format_i32_capacity_address,
+            scratch.format_i32_data_address,
+            scratch.format_i32_capacity_address,
             type
           )
         {% elsif T == Float32 %}
@@ -307,8 +308,8 @@ module HTS
             hdr,
             rec,
             tag,
-            @record.scratch.format_f32_data_address,
-            @record.scratch.format_f32_capacity_address,
+            scratch.format_f32_data_address,
+            scratch.format_f32_capacity_address,
             type
           )
         {% else %}
@@ -320,9 +321,9 @@ module HTS
         return false unless rc
 
         {% if T == Int32 %}
-          yield Slice(T).new(@record.scratch.format_i32, rc)
+          yield Slice(T).new(scratch.format_i32, rc)
         {% else %}
-          yield Slice(T).new(@record.scratch.format_f32, rc)
+          yield Slice(T).new(scratch.format_f32, rc)
         {% end %}
         true
       end
