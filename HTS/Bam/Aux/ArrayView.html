@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bam::BaseMod::Position - hts develop</title>
+  <title>HTS::Bam::Aux::ArrayView - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -67,12 +67,12 @@
       
         <ul>
   
-  <li class="parent " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
+  <li class="parent open current" data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
       <a href="../../../HTS/Bam/Aux.html">Aux</a>
       
         <ul>
   
-  <li class=" " data-id="hts/HTS/Bam/Aux/ArrayView" data-name="hts::bam::aux::arrayview">
+  <li class=" current" data-id="hts/HTS/Bam/Aux/ArrayView" data-name="hts::bam::aux::arrayview">
       <a href="../../../HTS/Bam/Aux/ArrayView.html">ArrayView</a>
       
     </li>
@@ -97,7 +97,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
+  <li class="parent " data-id="hts/HTS/Bam/BaseMod" data-name="hts::bam::basemod">
       <a href="../../../HTS/Bam/BaseMod.html">BaseMod</a>
       
         <ul>
@@ -112,7 +112,7 @@
       
     </li>
   
-  <li class=" current" data-id="hts/HTS/Bam/BaseMod/Position" data-name="hts::bam::basemod::position">
+  <li class=" " data-id="hts/HTS/Bam/BaseMod/Position" data-name="hts::bam::basemod::position">
       <a href="../../../HTS/Bam/BaseMod/Position.html">Position</a>
       
     </li>
@@ -582,13 +582,13 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
-  </span> HTS::<wbr>Bam::<wbr>BaseMod::<wbr>Position
+    struct
+  </span> HTS::<wbr>Bam::<wbr>Aux::<wbr>ArrayView
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/BaseMod/Position.html">HTS::Bam::BaseMod::Position</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../HTS/Bam/Aux/ArrayView.html">HTS::Bam::Aux::ArrayView</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -602,7 +602,8 @@
     Overview
   </h2>
 
-  <p>Position-specific modifications</p>
+  <p>Borrowed view of a BAM B-array payload.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p>
 
 
 
@@ -629,8 +630,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L54" target="_blank">
-        hts/bam/base_mod.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L41" target="_blank">
+        hts/bam/auxi.cr
       </a>
     
     <br/>
@@ -652,7 +653,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28position%3AInt32%2Cmodifications%3AArray%28Modification%29%29-class-method" class="signature"><strong>.new</strong>(position : Int32, modifications : Array(Modification))</a>
+        <a href="#new%28payload%3APointer%28UInt8%29%2Csize%3AInt32%2Csubtype%3AUInt8%29-class-method" class="signature"><strong>.new</strong>(payload : Pointer(UInt8), size : Int32, subtype : UInt8)</a>
         
       </li>
     
@@ -675,29 +676,54 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#hydroxymethylated%3F%3ABool-instance-method" class="signature"><strong>#hydroxymethylated?</strong> : Bool</a>
+        <a href="#%5B%5D%28index%3AInt%29%3AInt64%7CFloat64-instance-method" class="signature"><strong>#[]</strong>(index : Int) : Int64 | Float64</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#methylated%3F%3ABool-instance-method" class="signature"><strong>#methylated?</strong> : Bool</a>
+        <a href="#as_slice%28type%3AT.class%29%3ASlice%28T%29%7CNilforallT-instance-method" class="signature"><strong>#as_slice</strong>(type : <span class="t">T</span>.<span class="k">class</span>) : Slice(T) | Nil forall T</a>
+        
+          <div class="summary"><p>The slice is available only for a matching native type and is borrowed.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#modifications%3AArray%28Modification%29-instance-method" class="signature"><strong>#modifications</strong> : Array(Modification)</a>
+        <a href="#each_float%28%26%3AFloat64-%3E%29%3ANil-instance-method" class="signature"><strong>#each_float</strong>(& : Float64 -> ) : Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#position%3AInt32-instance-method" class="signature"><strong>#position</strong> : Int32</a>
+        <a href="#each_int%28%26%3AInt64-%3E%29%3ANil-instance-method" class="signature"><strong>#each_int</strong>(& : Int64 -> ) : Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#to_s%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io : IO) : Nil</a>
+        <a href="#float%3F%3ABool-instance-method" class="signature"><strong>#float?</strong> : Bool</a>
         
-          <div class="summary"><p>Appends a short String representation of this object which includes its class name and its object address.</p></div>
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#float_at%28index%3AInt%29%3AFloat64-instance-method" class="signature"><strong>#float_at</strong>(index : Int) : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#int_at%28index%3AInt%29%3AInt64-instance-method" class="signature"><strong>#int_at</strong>(index : Int) : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#integer%3F%3ABool-instance-method" class="signature"><strong>#integer?</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3AInt32-instance-method" class="signature"><strong>#size</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subtype%3AChar-instance-method" class="signature"><strong>#subtype</strong> : Char</a>
         
       </li>
     
@@ -706,6 +732,19 @@
 
 
   <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
     
       
 
@@ -745,18 +784,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(position:Int32,modifications:Array(Modification))-class-method">
+    <div class="entry-detail" id="new(payload:Pointer(UInt8),size:Int32,subtype:UInt8)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(position : Int32, modifications : Array(<a href="../../../HTS/Bam/BaseMod/Modification.html">Modification</a>))
+        def self.<strong>new</strong>(payload : Pointer(UInt8), size : Int32, subtype : UInt8)
 
-        <a class="method-permalink" href="#new%28position%3AInt32%2Cmodifications%3AArray%28Modification%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28payload%3APointer%28UInt8%29%2Csize%3AInt32%2Csubtype%3AUInt8%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L58" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -777,98 +816,167 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="hydroxymethylated?:Bool-instance-method">
+    <div class="entry-detail" id="[](index:Int):Int64|Float64-instance-method">
       <div class="signature">
         
-        def <strong>hydroxymethylated?</strong> : Bool
+        def <strong>[]</strong>(index : Int) : Int64 | Float64
 
-        <a class="method-permalink" href="#hydroxymethylated%3F%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%28index%3AInt%29%3AInt64%7CFloat64-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="methylated?:Bool-instance-method">
+    <div class="entry-detail" id="as_slice(type:T.class):Slice(T)|NilforallT-instance-method">
       <div class="signature">
         
-        def <strong>methylated?</strong> : Bool
+        def <strong>as_slice</strong>(type : <span class="t">T</span>.<span class="k">class</span>) : Slice(<a href="../../../HTS/Bam/Record.html">T</a>) | Nil forall T
 
-        <a class="method-permalink" href="#methylated%3F%3ABool-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L61" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="modifications:Array(Modification)-instance-method">
-      <div class="signature">
-        
-        def <strong>modifications</strong> : Array(<a href="../../../HTS/Bam/BaseMod/Modification.html">Modification</a>)
-
-        <a class="method-permalink" href="#modifications%3AArray%28Modification%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L56" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="position:Int32-instance-method">
-      <div class="signature">
-        
-        def <strong>position</strong> : Int32
-
-        <a class="method-permalink" href="#position%3AInt32-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L55" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="to_s(io:IO):Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>to_s</strong>(io : IO) : Nil
-
-        <a class="method-permalink" href="#to_s%28io%3AIO%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#as_slice%28type%3AT.class%29%3ASlice%28T%29%7CNilforallT-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-            <div class="doc-inherited">
-              Description copied from class Reference
-            </div>
-          
-          <p>Appends a short String representation of this object
-which includes its class name and its object address.</p>
-<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Person</span>
-  <span class="k">def</span> <span class="m">initialize</span>(@name : <span class="t">String</span>, @age : <span class="t">Int32</span>)
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="t">Person</span>.new(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).to_s <span class="c"># =&gt; #&lt;Person:0x10a199f20&gt;</span></code></pre>
+          <p>The slice is available only for a matching native type and is borrowed.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/base_mod.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L109" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each_float(&amp;:Float64-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each_float</strong>(& : Float64 -> ) : Nil
+
+        <a class="method-permalink" href="#each_float%28%26%3AFloat64-%3E%29%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L97" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each_int(&amp;:Int64-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each_int</strong>(& : Int64 -> ) : Nil
+
+        <a class="method-permalink" href="#each_int%28%26%3AInt64-%3E%29%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L83" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="float?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>float?</strong> : Bool
+
+        <a class="method-permalink" href="#float%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="float_at(index:Int):Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>float_at</strong>(index : Int) : Float64
+
+        <a class="method-permalink" href="#float_at%28index%3AInt%29%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L75" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="int_at(index:Int):Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>int_at</strong>(index : Int) : Int64
+
+        <a class="method-permalink" href="#int_at%28index%3AInt%29%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L61" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="integer?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>integer?</strong> : Bool
+
+        <a class="method-permalink" href="#integer%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L49" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong> : Int32
+
+        <a class="method-permalink" href="#size%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subtype:Char-instance-method">
+      <div class="signature">
+        
+        def <strong>subtype</strong> : Char
+
+        <a class="method-permalink" href="#subtype%3AChar-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bam/auxi.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>

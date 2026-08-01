@@ -67,8 +67,18 @@
       
         <ul>
   
-  <li class=" " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
+  <li class="parent " data-id="hts/HTS/Bam/Aux" data-name="hts::bam::aux">
       <a href="../HTS/Bam/Aux.html">Aux</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bam/Aux/ArrayView" data-name="hts::bam::aux::arrayview">
+      <a href="../HTS/Bam/Aux/ArrayView.html">ArrayView</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -622,7 +632,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L5" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L5" target="_blank">
         hts/bgzf.cr
       </a>
     
@@ -711,6 +721,14 @@
     
       <li class="entry-summary">
         <a href="#each_line%28delimiter%3D%27%5Cn%27%2C%26%29-instance-method" class="signature"><strong>#each_line</strong>(delimiter = <span class="s">&#39;\n&#39;</span>, &)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each_line_view%28delimiter%3D%27%5Cn%27%2C%26%3ABytes-%3E%29%3Aself-instance-method" class="signature"><strong>#each_line_view</strong>(delimiter = <span class="s">&#39;\n&#39;</span>, & : Bytes -> ) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>The borrowed line is valid only during the block.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
         
       </li>
     
@@ -949,7 +967,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L36" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -977,7 +995,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -993,7 +1011,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1023,7 +1041,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L149" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L139" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1039,7 +1057,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L238" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L248" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1055,7 +1073,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L230" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L240" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1071,7 +1089,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L220" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L230" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1087,7 +1105,29 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L212" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L202" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each_line_view(delimiter=&#39;\n&#39;,&amp;:Bytes-&gt;):self-instance-method">
+      <div class="signature">
+        
+        def <strong>each_line_view</strong>(delimiter = <span class="s">&#39;\n&#39;</span>, & : Bytes -> ) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#each_line_view%28delimiter%3D%27%5Cn%27%2C%26%3ABytes-%3E%29%3Aself-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The borrowed line is valid only during the block.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L209" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1103,7 +1143,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1119,7 +1159,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L204" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L194" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1135,7 +1175,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L193" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1151,7 +1191,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L58" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L58" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1167,7 +1207,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1188,7 +1228,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L243" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L253" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1204,7 +1244,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1220,7 +1260,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L120" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1236,7 +1276,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L125" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1252,7 +1292,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L140" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L130" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1268,7 +1308,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L134" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1284,7 +1324,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L102" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L92" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1300,7 +1340,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L118" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1316,7 +1356,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L122" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L112" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1332,7 +1372,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L154" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L144" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1353,7 +1393,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L250" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L260" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1369,7 +1409,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L260" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L270" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1385,7 +1425,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L171" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L161" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1401,7 +1441,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0c5c2e80a03846e5603f4d24b855be55b321b556/src/hts/bgzf.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/13f8dcc3b4fe1c69015bb9bd663025607566c845/src/hts/bgzf.cr#L172" target="_blank">View source</a>]
         
       </div>
     </div>
