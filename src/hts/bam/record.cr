@@ -430,6 +430,20 @@ module HTS
         Bam::BaseMod.new(self)
       end
 
+      # Streams primitive base-modification fields without domain objects.
+      @[Experimental]
+      def each_base_mod_raw(max_mods : Int32 = 10, & : Int32, Int32, Int32, Int32, Int32 ->) : self
+        base_mod = Bam::BaseMod.new(self)
+        begin
+          base_mod.each_raw(max_mods) do |position, canonical_base, modified_base, strand, qual|
+            yield position, canonical_base, modified_base, strand, qual
+          end
+        ensure
+          base_mod.close
+        end
+        self
+      end
+
       # garbagew collection
       def finalize
         LibHTS.bam_destroy1 @bam1 unless @bam1.null?

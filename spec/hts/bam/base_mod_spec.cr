@@ -280,6 +280,23 @@ describe HTS::Bam::BaseMod do
         (positions[0].position).should eq(0)
         (positions[0].modifications.map(&.code)).should eq(codes.chars.map(&.to_s))
         (positions[0].modifications.map(&.qual)).should eq(qualities)
+
+        raw = [] of Tuple(Int32, Int32, Int32, Int32, Int32)
+        returned = base_mod.each_raw(max_mods: 10) do |position, canonical_base, modified_base, strand, qual|
+          raw << {position, canonical_base, modified_base, strand, qual}
+        end
+        returned.should be(base_mod)
+        raw.map(&.[0]).should eq([0] * codes.size)
+        raw.map(&.[1]).should eq(['C'.ord] * codes.size)
+        raw.map(&.[2]).should eq(codes.chars.map(&.ord))
+        raw.map(&.[3]).should eq([0] * codes.size)
+        raw.map(&.[4]).should eq(qualities)
+
+        record_raw = [] of Tuple(Int32, Int32, Int32, Int32, Int32)
+        record.each_base_mod_raw(max_mods: 10) do |position, canonical_base, modified_base, strand, qual|
+          record_raw << {position, canonical_base, modified_base, strand, qual}
+        end.should be(record)
+        record_raw.should eq(raw)
       end
     ensure
       file.close unless file.closed?

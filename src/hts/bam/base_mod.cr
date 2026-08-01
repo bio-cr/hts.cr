@@ -145,19 +145,51 @@ module HTS
 
       # Iterate over all positions with modifications
       def each(max_mods : Int32 = 10, & : Position ->)
+        current_position : Int32? = nil
+        modifications = [] of Modification
+
+        each_raw(max_mods) do |position, canonical_base, modified_base, strand, qual|
+          if previous_position = current_position
+            if position != previous_position
+              yield Position.new(previous_position, modifications)
+              modifications = [] of Modification
+            end
+          end
+          current_position = position
+          modifications << Modification.new(modified_base, canonical_base, strand, qual)
+        end
+
+        if position = current_position
+          yield Position.new(position, modifications)
+        end
+        self
+      end
+
+      # Streams primitive modification fields without domain-object allocation.
+      @[Experimental]
+      def each_raw(max_mods : Int32 = 10, & : Int32, Int32, Int32, Int32, Int32 ->) : self
         check_closed!
+        raise ArgumentError.new("max_mods must be positive") unless max_mods > 0
         reparse_or_parse!
 
         ensure_buffer_capacity(max_mods)
         mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
         loop do
           ret = LibHTS.bam_next_basemod(@record, @state, mods_ptr, max_mods, out pos)
-          break if ret <= 0
-          # If more mods exist than the buffer size, fetch the full set for this position
+          raise Error.new("Failed to read base modifications") if ret < 0
+          break if ret == 0
+
           if ret > max_mods
-            yield fetch_position_from_fresh_state(pos, ret)
+            with_modifications_from_fresh_state(pos, ret) do |full_ptr, count|
+              yield_raw_modifications(pos, full_ptr, count) do |position, canonical_base, modified_base, strand, qual|
+                yield position, canonical_base, modified_base, strand, qual
+              end
+            end
+            mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
           else
-            yield build_position(pos, mods_ptr, ret)
+            yield_raw_modifications(pos, mods_ptr, ret) do |position, canonical_base, modified_base, strand, qual|
+              yield position, canonical_base, modified_base, strand, qual
+            end
           end
         end
         self
@@ -246,25 +278,45 @@ module HTS
       end
 
       private def fetch_position_from_fresh_state(position : Int32, max_mods : Int32) : Position
-        state = LibHTS.hts_base_mod_state_alloc
-        raise Error.new("Failed to allocate hts_base_mod_state") if state.null?
+        result : Position? = nil
+        with_modifications_from_fresh_state(position, max_mods) do |mods_ptr, count|
+          result = build_position(position, mods_ptr, count)
+        end
+        result || raise Error.new("Failed to read base modifications at query position #{position}")
+      end
 
-        begin
-          ret = LibHTS.bam_parse_basemod2(@record, state, HTS_MOD_REPORT_UNCHECKED)
-          raise Error.new("Failed to parse base modifications") if ret < 0
+      private def with_modifications_from_fresh_state(position : Int32, max_mods : Int32, & : Pointer(LibHTS::HtsBaseMod), Int32 ->) : Nil
+        capacity = max_mods
+        loop do
+          state = LibHTS.hts_base_mod_state_alloc
+          raise Error.new("Failed to allocate hts_base_mod_state") if state.null?
 
-          ensure_buffer_capacity(max_mods)
-          mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
-          ret = LibHTS.bam_mods_at_qpos(@record, position, state, mods_ptr, max_mods)
-          raise Error.new("Failed to read base modifications at query position #{position}") if ret < 0
+          begin
+            ret = LibHTS.bam_parse_basemod2(@record, state, HTS_MOD_REPORT_UNCHECKED)
+            raise Error.new("Failed to parse base modifications") if ret < 0
 
-          if ret > max_mods
-            return fetch_position_from_fresh_state(position, ret)
+            ensure_buffer_capacity(capacity)
+            mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
+            ret = LibHTS.bam_mods_at_qpos(@record, position, state, mods_ptr, capacity)
+            raise Error.new("Failed to read base modifications at query position #{position}") if ret < 0
+
+            if ret > capacity
+              capacity = ret
+              next
+            end
+
+            yield mods_ptr, ret
+            return
+          ensure
+            LibHTS.hts_base_mod_state_free(state) unless state.null?
           end
+        end
+      end
 
-          build_position(position, mods_ptr, ret)
-        ensure
-          LibHTS.hts_base_mod_state_free(state) unless state.null?
+      private def yield_raw_modifications(position : Int32, mods_ptr : Pointer(LibHTS::HtsBaseMod), count : Int32, &) : Nil
+        count.times do |index|
+          modification = mods_ptr[index]
+          yield position, modification.canonical_base, modification.modified_base, modification.strand, modification.qual
         end
       end
 
