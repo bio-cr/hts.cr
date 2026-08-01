@@ -29,12 +29,11 @@ module HTS
     class Aux
       # include Enumerable # DO NOT
 
-      AUX_INT_TYPES        = {'c'.ord.to_u8, 'C'.ord.to_u8, 's'.ord.to_u8, 'S'.ord.to_u8, 'i'.ord.to_u8, 'I'.ord.to_u8}
-      AUX_FLOAT_TYPES      = {'f'.ord.to_u8, 'd'.ord.to_u8}
-      AUX_STRING_TYPES     = {'Z'.ord.to_u8, 'H'.ord.to_u8}
-      AUX_ARRAY_TYPE       = 'B'.ord.to_u8
-      AUX_CHAR_TYPE        = 'A'.ord.to_u8
-      AUX_FLOAT_ARRAY_TYPE = 'f'.ord.to_u8
+      AUX_INT_TYPES    = {'c'.ord.to_u8, 'C'.ord.to_u8, 's'.ord.to_u8, 'S'.ord.to_u8, 'i'.ord.to_u8, 'I'.ord.to_u8}
+      AUX_FLOAT_TYPES  = {'f'.ord.to_u8, 'd'.ord.to_u8}
+      AUX_STRING_TYPES = {'Z'.ord.to_u8, 'H'.ord.to_u8}
+      AUX_ARRAY_TYPE   = 'B'.ord.to_u8
+      AUX_CHAR_TYPE    = 'A'.ord.to_u8
 
       # Borrowed view of a BAM B-array payload.
       @[Experimental]
