@@ -70,20 +70,10 @@ module HTS
     def gets(delimiter = '\n') : String?
       check_closed
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
-
-      str = LibHTS::KstringT.new
-      str.l = 0
-      str.m = 0
-      str.s = Pointer(LibC::Char).null
+      str = empty_kstring
 
       begin
-        result =
-          if bgzf_fp.null?
-            # Fall back to HTS file reading
-            LibHTS.hts_getline(@hts_file, delimiter.ord, pointerof(str))
-          else
-            LibHTS.bgzf_getline(bgzf_fp, delimiter.ord, pointerof(str))
-          end
+        result = read_line(bgzf_fp, delimiter, pointerof(str))
 
         if result == -1
           nil
@@ -210,9 +200,29 @@ module HTS
     # Iterator methods
 
     def each_line(delimiter = '\n', &)
+      each_line_view(delimiter) { |line| yield String.new(line) }
+      self
+    end
+
+    # The borrowed line is valid only during the block.
+    @[Experimental]
+    def each_line_view(delimiter = '\n', & : Bytes ->) : self
       check_closed
-      while line = gets(delimiter)
-        yield line
+      bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
+      str = empty_kstring
+
+      begin
+        loop do
+          result = read_line(bgzf_fp, delimiter, pointerof(str))
+          break if result == -1
+          if result <= -2 || str.s.null?
+            raise ReadError.new("Failed to read line from #{@file_name}")
+          end
+
+          yield Slice.new(str.s.as(Pointer(UInt8)), str.l.to_i)
+        end
+      ensure
+        LibC.free(str.s) unless str.s.null?
       end
       self
     end
@@ -269,6 +279,22 @@ module HTS
 
     protected def close_error : Exception
       WriteError.new("Failed to close BGZF file #{@file_name}")
+    end
+
+    private def empty_kstring : LibHTS::KstringT
+      str = LibHTS::KstringT.new
+      str.l = 0
+      str.m = 0
+      str.s = Pointer(LibC::Char).null
+      str
+    end
+
+    private def read_line(bgzf_fp : LibHTS::Bgzf*, delimiter : Char, str : LibHTS::KstringT*) : Int32
+      if bgzf_fp.null?
+        LibHTS.hts_getline(@hts_file, delimiter.ord, str)
+      else
+        LibHTS.bgzf_getline(bgzf_fp, delimiter.ord, str)
+      end
     end
   end
 end

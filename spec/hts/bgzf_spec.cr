@@ -115,6 +115,52 @@ class BgzfTest
     test_file.delete
   end
 
+  def test_each_line_view_reuses_buffer
+    test_file = File.tempfile("line_view", ".gz")
+    path = test_file.path
+    test_file.close
+
+    begin
+      HTS::Bgzf.open(path, "wz") do |bgzf|
+        bgzf.puts("Line A")
+        bgzf.puts("Line B")
+        bgzf.puts("Line C")
+      end
+
+      lines = [] of String
+      addresses = [] of UInt64
+      HTS::Bgzf.open(path, "r") do |bgzf|
+        bgzf.each_line_view do |line|
+          lines << String.new(line)
+          addresses << line.to_unsafe.address
+        end
+      end
+
+      lines.should eq(["Line A", "Line B", "Line C"])
+      addresses.uniq.size.should eq(1)
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
+  def test_each_line_view_supports_plain_text
+    test_file = File.tempfile("line_view", ".txt")
+    path = test_file.path
+    test_file.puts("first")
+    test_file.puts("second")
+    test_file.close
+
+    begin
+      lines = [] of String
+      HTS::Bgzf.open(path, "r") do |bgzf|
+        bgzf.each_line_view { |line| lines << String.new(line) }
+      end
+      lines.should eq(["first", "second"])
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def test_read_characters_with_getc
     test_file = File.tempfile("test", ".gz")
     test_file.close
