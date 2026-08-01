@@ -308,27 +308,35 @@ module HTS
       ).value.key
     end
 
-    # def bcf_hdr_id2length(hdr, type, int_id)
-    #   LibHTS::BcfIdpair.new(
-    #     hdr[:id][LibHTS::BCF_DT_ID].to_ptr +
-    #     LibHTS::BcfIdpair.size * int_id # offset
-    #   )[:val][:info][type] >> 8 & 0xf
-    # end
+    def bcf_hdr_id2length(hdr, type, int_id)
+      ((bcf_hdr_idinfo(hdr, int_id).info[type] >> 8) & 0xf).to_i
+    end
 
-    # def bcf_hdr_id2number(hdr, type, int_id)
-    #   LibHTS::BcfIdpair.new(
-    #     hdr[:id][LibHTS::BCF_DT_ID].to_ptr +
-    #     LibHTS::BcfIdpair.size * int_id # offset
-    #   )[:val][:info][type] >> 12
-    # end
+    def bcf_hdr_id2number(hdr, type, int_id)
+      (bcf_hdr_idinfo(hdr, int_id).info[type] >> 12).to_i
+    end
 
     # Crystal equivalent of htslib's bcf_hdr_id2type() macro.
     def bcf_hdr_id2type(hdr, type, int_id)
-      entry = Pointer(LibHTS::BcfIdpairT).new(
+      ((bcf_hdr_idinfo(hdr, int_id).info[type] >> 4) & 0xf).to_i
+    end
+
+    def bcf_hdr_idinfo_exists(hdr, type, int_id)
+      return false if int_id < 0 || int_id >= hdr.to_unsafe.value.n[BCF_DT_ID]
+
+      entry = bcf_hdr_idpair(hdr, int_id)
+      !entry.val.null? && (entry.val.value.info[type] & 0xf) != 0xf
+    end
+
+    private def bcf_hdr_idinfo(hdr, int_id)
+      bcf_hdr_idpair(hdr, int_id).val.value
+    end
+
+    private def bcf_hdr_idpair(hdr, int_id)
+      Pointer(LibHTS::BcfIdpairT).new(
         (hdr.to_unsafe.value.id[BCF_DT_ID]).address +
         sizeof(LibHTS::BcfIdpairT) * int_id
-      )
-      ((entry.value.val.value.info[type] >> 4) & 0xf).to_i
+      ).value
     end
   end
 end

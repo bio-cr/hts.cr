@@ -1,6 +1,16 @@
 module HTS
   class Bcf < Hts
     class Header
+      private struct SchemaEntry
+        getter id : Int32
+        getter type : Symbol
+        getter number_kind : Symbol
+        getter number : Int32?
+
+        def initialize(@id, @type, @number_kind, @number)
+        end
+      end
+
       BCF_TYPE_MAP = {
         :int       => "Integer",
         :integer   => "Integer",
@@ -23,6 +33,7 @@ module HTS
         @subset_samples = nil
         @subset_imap = nil
         @subset_imap_buffer = Pointer(Int32).null
+        @schema_cache = Hash({Int32, String}, SchemaEntry?).new
       end
 
       # for clone
@@ -35,6 +46,7 @@ module HTS
         @subset_samples = nil
         @subset_imap = nil
         @subset_imap_buffer = Pointer(Int32).null
+        @schema_cache = Hash({Int32, String}, SchemaEntry?).new
       end
 
       def initialize
@@ -46,6 +58,7 @@ module HTS
         @subset_samples = nil
         @subset_imap = nil
         @subset_imap_buffer = Pointer(Int32).null
+        @schema_cache = Hash({Int32, String}, SchemaEntry?).new
       end
 
       def to_unsafe
@@ -183,11 +196,12 @@ module HTS
         rc = LibHTS.bcf_hdr_sync(@bcf_hdr)
         raise HeaderError.new("Failed to sync BCF header") if rc < 0
         @sync_needed = false
+        invalidate_schema_cache!
         self
       end
 
       def read_bcf(fname)
-        LibHTS.bcf_hdr_set(@bcf_hdr, fname)
+        LibHTS.bcf_hdr_set(@bcf_hdr, fname).tap { invalidate_schema_cache! }
       end
 
       def append(line)
@@ -396,6 +410,11 @@ module HTS
 
       private def mark_sync_needed! : Nil
         @sync_needed = true
+        invalidate_schema_cache!
+      end
+
+      private def invalidate_schema_cache! : Nil
+        @schema_cache.clear
       end
 
       private def sync_if_needed! : Nil
@@ -421,9 +440,25 @@ module HTS
       end
 
       private def tag_type(tag : String, header_line_type : Int32)
-        id = LibHTS.bcf_hdr_id2int(@bcf_hdr, LibHTS2::BCF_DT_ID, tag)
-        return if id < 0
+        tag_schema(tag, header_line_type).try &.type
+      end
 
+      private def tag_schema(tag : String, header_line_type : Int32) : SchemaEntry?
+        key = {header_line_type, tag}
+        return @schema_cache[key] if @schema_cache.has_key?(key)
+
+        id = LibHTS.bcf_hdr_id2int(@bcf_hdr, LibHTS2::BCF_DT_ID, tag)
+        entry = if hrec_exists?(header_line_type, tag) && LibHTS2.bcf_hdr_idinfo_exists(self, header_line_type, id)
+                  type = schema_type(header_line_type, id)
+                  length = LibHTS2.bcf_hdr_id2length(self, header_line_type, id)
+                  number_kind = schema_number_kind(length)
+                  number = length == LibHTS2::BCF_VL_FIXED ? LibHTS2.bcf_hdr_id2number(self, header_line_type, id) : nil
+                  SchemaEntry.new(id, type, number_kind, number)
+                end
+        @schema_cache[key] = entry
+      end
+
+      private def schema_type(header_line_type : Int32, id : Int32) : Symbol
         case LibHTS2.bcf_hdr_id2type(self, header_line_type, id)
         when LibHTS2::BCF_HT_FLAG
           :flag
@@ -433,6 +468,20 @@ module HTS
           :float
         when LibHTS2::BCF_HT_STR
           :string
+        else
+          raise HeaderError.new("Unknown BCF schema type for field ID #{id}")
+        end
+      end
+
+      private def schema_number_kind(length : Int32) : Symbol
+        case length
+        when LibHTS2::BCF_VL_FIXED then :fixed
+        when LibHTS2::BCF_VL_VAR   then :variable
+        when LibHTS2::BCF_VL_A     then :a
+        when LibHTS2::BCF_VL_G     then :g
+        when LibHTS2::BCF_VL_R     then :r
+        else
+          raise HeaderError.new("Unknown BCF Number semantics: #{length}")
         end
       end
 
