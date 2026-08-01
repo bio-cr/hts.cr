@@ -158,6 +158,56 @@ module HTS
         with_numeric_buffer(tag, LibHTS2::BCF_HT_REAL, Float32) { |values| yield values }
       end
 
+      @[Experimental]
+      def each_scalar_i32(tag : String, & : Int32, Int32 ->) : Bool
+        each_scalar_numeric(tag, LibHTS2::BCF_HT_INT, Int32) { |sample_index, value| yield sample_index, value }
+      end
+
+      @[Experimental]
+      def each_scalar_f32(tag : String, & : Int32, Float32 ->) : Bool
+        each_scalar_numeric(tag, LibHTS2::BCF_HT_REAL, Float32) { |sample_index, value| yield sample_index, value }
+      end
+
+      @[Experimental]
+      def each_vector_i32(tag : String, & : Int32, Slice(Int32) ->) : Bool
+        each_vector_numeric(tag, LibHTS2::BCF_HT_INT, Int32) { |sample_index, values| yield sample_index, values }
+      end
+
+      @[Experimental]
+      def each_vector_f32(tag : String, & : Int32, Slice(Float32) ->) : Bool
+        each_vector_numeric(tag, LibHTS2::BCF_HT_REAL, Float32) { |sample_index, values| yield sample_index, values }
+      end
+
+      @[Experimental]
+      def each_string_view(tag : String, & : Int32, Bytes ->) : Bool
+        raise UnsupportedFormatOperationError.new("Use each_genotype for FORMAT/GT") if tag == "GT"
+        raise_unsupported_format_flag(tag)
+
+        scratch = @record.scratch
+        hdr = @record.header
+        rec = @record
+        rc = LibHTS2.bcf_get_format_char(hdr, rec, tag, scratch.format_char_data_address, scratch.format_char_capacity_address)
+        rc = normalize_format_rc(rc, tag, "string")
+        return false unless rc
+
+        fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
+        raise FormatReadError.new("Failed to inspect FORMAT/#{tag}") if fmt.null?
+
+        bytes_per_sample = fmt.value.n
+        sample_count = @record.header.nsamples
+        validate_format_cardinality!(tag, rc, bytes_per_sample, sample_count)
+
+        data = scratch.format_char
+        sample_index = 0
+        while sample_index < sample_count
+          bytes = Bytes.new(data + sample_index * bytes_per_sample, bytes_per_sample)
+          size = bytes.index(0_u8) || bytes_per_sample
+          yield sample_index, bytes[0, size]
+          sample_index += 1
+        end
+        true
+      end
+
       # Yields each sample index and a borrowed view of its encoded GT values.
       #
       # Returns false without yielding when GT is absent. A view is valid only
@@ -198,31 +248,11 @@ module HTS
       # Returns one String per sample. Character FORMAT fields are handled here too.
       def get_string(tag) : Array(String)?
         return decode_genotypes if tag == "GT"
-        raise_unsupported_format_flag(tag)
-
-        scratch = @record.scratch
-        hdr = @record.header
-        rec = @record
-
-        rc = LibHTS2.bcf_get_format_char(hdr, rec, tag, scratch.format_char_data_address, scratch.format_char_capacity_address)
-        rc = normalize_format_rc(rc, tag, "string")
-        return unless rc
-
-        fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
-        raise FormatReadError.new("Failed to inspect FORMAT/#{tag}") if fmt.null?
-
-        bytes_per_sample = fmt.value.n
-        return [] of String if bytes_per_sample <= 0
-
-        data = scratch.format_char
-        sample_count = rc // bytes_per_sample
-
-        Array(String).new(sample_count) do |sample_index|
-          offset = sample_index * bytes_per_sample
-          slice = Bytes.new(data + offset, bytes_per_sample)
-          size = slice.index(0_u8) || bytes_per_sample
-          String.new(slice[0, size])
+        strings = Array(String).new(@record.header.nsamples)
+        present = each_string_view(tag) do |_sample_index, bytes|
+          strings << String.new(bytes)
         end
+        present ? strings : nil
       end
 
       def genotypes : Array(Int32)?
@@ -244,30 +274,6 @@ module HTS
       end
 
       # ameba:enable Naming/AccessorMethodName
-
-      private def get_int_samples(tag : String) : Array(Array(Int32))?
-        values = get_int(tag)
-        return unless values
-        split_integer_samples(values)
-      end
-
-      private def get_int_samples_opt(tag : String) : Array(Array(Int32?))?
-        values = get_int(tag)
-        return unless values
-        split_integer_samples_opt(values)
-      end
-
-      private def get_float_samples(tag : String) : Array(Array(Float32))?
-        values = get_float(tag)
-        return unless values
-        split_float_samples(values)
-      end
-
-      private def get_float_samples_opt(tag : String) : Array(Array(Float32?))?
-        values = get_float(tag)
-        return unless values
-        split_float_samples_opt(values)
-      end
 
       private def get_numeric_values(tag, type, value_type : T.class) : Array(T)? forall T
         result = nil.as(Array(T)?)
@@ -315,6 +321,57 @@ module HTS
           yield Slice(T).new(@record.scratch.format_f32, rc)
         {% end %}
         true
+      end
+
+      private def each_scalar_numeric(tag, type, value_type : T.class, & : Int32, T ->) : Bool forall T
+        with_numeric_buffer(tag, type, value_type) do |values|
+          sample_count = @record.header.nsamples
+          values_per_sample = format_values_per_sample(tag, values.size, sample_count)
+          unless values_per_sample == 1
+            raise FormatReadError.new("FORMAT/#{tag} has #{values_per_sample} values per sample; use the vector iterator")
+          end
+
+          sample_index = 0
+          while sample_index < sample_count
+            yield sample_index, values[sample_index]
+            sample_index += 1
+          end
+        end
+      end
+
+      private def each_vector_numeric(tag, type, value_type : T.class, & : Int32, Slice(T) ->) : Bool forall T
+        with_numeric_buffer(tag, type, value_type) do |values|
+          sample_count = @record.header.nsamples
+          values_per_sample = format_values_per_sample(tag, values.size, sample_count)
+
+          sample_index = 0
+          while sample_index < sample_count
+            offset = sample_index * values_per_sample
+            sample_values = values[offset, values_per_sample]
+            end_index = sample_values.index do |value|
+              {% if T == Int32 %}
+                LibHTS2.bcf_int32_is_vector_end(value) != 0
+              {% else %}
+                LibHTS2.bcf_float_is_vector_end(value) != 0
+              {% end %}
+            end || sample_values.size
+            yield sample_index, sample_values[0, end_index]
+            sample_index += 1
+          end
+        end
+      end
+
+      private def format_values_per_sample(tag : String, value_count : Int32, sample_count : Int32) : Int32
+        if sample_count <= 0 || value_count % sample_count != 0
+          raise FormatReadError.new("Failed to split FORMAT/#{tag} values by sample")
+        end
+        value_count // sample_count
+      end
+
+      private def validate_format_cardinality!(tag : String, value_count : Int32, values_per_sample : Int32, sample_count : Int32) : Nil
+        if values_per_sample <= 0 || sample_count <= 0 || value_count != values_per_sample * sample_count
+          raise FormatReadError.new("Failed to split FORMAT/#{tag} values by sample")
+        end
       end
 
       private def raise_unsupported_format_flag(tag : String)
@@ -411,10 +468,7 @@ module HTS
       end
 
       private def genotype_values_per_sample(values : Slice(Int32), sample_count : Int32) : Int32
-        unless values.size % sample_count == 0
-          raise FormatReadError.new("Failed to split FORMAT/GT values by sample")
-        end
-        values.size // sample_count
+        format_values_per_sample("GT", values.size, sample_count)
       end
 
       private def genotype_view_at(values : Slice(Int32), values_per_sample : Int32, sample_index : Int) : GenotypeView
@@ -424,55 +478,6 @@ module HTS
           LibHTS2.bcf_gt_is_vector_end(value) != 0
         end || sample_values.size
         GenotypeView.new(sample_values[0, end_index])
-      end
-
-      private def split_integer_samples(values : Array(Int32)) : Array(Array(Int32))
-        split_sample_values(values).map { |sample_values| trim_integer_vector_end(sample_values) }
-      end
-
-      private def split_integer_samples_opt(values : Array(Int32)) : Array(Array(Int32?))
-        split_sample_values(values).map { |sample_values| map_integer_missing(trim_integer_vector_end(sample_values)) }
-      end
-
-      private def split_float_samples(values : Array(Float32)) : Array(Array(Float32))
-        split_sample_values(values).map { |sample_values| trim_float_vector_end(sample_values) }
-      end
-
-      private def split_float_samples_opt(values : Array(Float32)) : Array(Array(Float32?))
-        split_sample_values(values).map { |sample_values| map_float_missing(trim_float_vector_end(sample_values)) }
-      end
-
-      private def split_sample_values(values : Array(T)) : Array(Array(T)) forall T
-        sample_count = @record.header.nsamples
-        return [] of Array(T) if sample_count <= 0
-
-        if values.size % sample_count != 0
-          raise FormatReadError.new("Failed to split FORMAT values by sample")
-        end
-
-        values_per_sample = values.size // sample_count
-        Array(Array(T)).new(sample_count) do |sample_index|
-          start = sample_index * values_per_sample
-          values[start, values_per_sample]
-        end
-      end
-
-      private def trim_integer_vector_end(values : Array(Int32)) : Array(Int32)
-        end_index = values.index { |value| LibHTS2.bcf_int32_is_vector_end(value) != 0 } || values.size
-        values[0, end_index]
-      end
-
-      private def trim_float_vector_end(values : Array(Float32)) : Array(Float32)
-        end_index = values.index { |value| LibHTS2.bcf_float_is_vector_end(value) != 0 } || values.size
-        values[0, end_index]
-      end
-
-      private def map_integer_missing(values : Array(Int32)) : Array(Int32?)
-        values.map { |value| LibHTS2.bcf_int32_is_missing(value) != 0 ? nil : value }
-      end
-
-      private def map_float_missing(values : Array(Float32)) : Array(Float32?)
-        values.map { |value| LibHTS2.bcf_float_is_missing(value) != 0 ? nil : value }
       end
 
       private def format_present?(tag : String) : Bool

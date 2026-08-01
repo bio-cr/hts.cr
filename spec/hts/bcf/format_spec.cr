@@ -271,6 +271,94 @@ class BcfFormatTest
     end
   end
 
+  def test_scalar_format_iterators
+    with_temp_format_source_vcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        format = bcf.first.format
+        ints = [] of {Int32, Int32}
+        floats = [] of {Int32, Float32}
+
+        format.each_scalar_i32("GQ") { |sample_index, value| ints << {sample_index, value} }.should be_true
+        format.each_scalar_f32("TF") { |sample_index, value| floats << {sample_index, value} }.should be_true
+
+        (ints).should eq([{0, 10}, {1, 20}])
+        (floats).should eq([{0, 1.5_f32}, {1, 2.5_f32}])
+      end
+    end
+
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        format = bcf.first.format
+        yielded = false
+        format.each_scalar_i32("MISSI") { yielded = true }.should be_false
+        format.each_scalar_f32("MISSF") { yielded = true }.should be_false
+        (yielded).should be_false
+
+        expect_raises(HTS::Bcf::FormatReadError, "FORMAT/PL has 3 values per sample; use the vector iterator") do
+          format.each_scalar_i32("PL") { }
+        end
+      end
+    end
+  end
+
+  def test_vector_format_iterators
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        format = record.format
+        pls = [] of {Int32, Array(Int32)}
+
+        format.each_vector_i32("PL") do |sample_index, values|
+          (values.to_unsafe).should eq(record.scratch.format_i32 + sample_index * 3)
+          pls << {sample_index, values.to_a}
+        end.should be_true
+        (pls).should eq([{0, [10, 20, 30]}, {1, [40, 50, 60]}])
+
+        ints = [] of Array(Int32)
+        format.each_vector_i32("IV") { |_sample_index, values| ints << values.to_a }.should be_true
+        (ints[0]).should eq([10])
+        (ints[1].size).should eq(1)
+        (HTS::LibHTS2.bcf_int32_is_missing(ints[1][0])).should eq(1)
+
+        floats = [] of Array(Float32)
+        format.each_vector_f32("FV") { |_sample_index, values| floats << values.to_a }.should be_true
+        (floats[0]).should eq([1.5_f32])
+        (floats[1].size).should eq(1)
+        (HTS::LibHTS2.bcf_float_is_missing(floats[1][0])).should eq(1)
+
+        yielded = false
+        format.each_vector_i32("MISSI") { yielded = true }.should be_false
+        format.each_vector_f32("MISSF") { yielded = true }.should be_false
+        (yielded).should be_false
+      end
+    end
+  end
+
+  def test_string_format_views
+    with_temp_character_format_vcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        format = record.format
+        strings = [] of {Int32, String}
+
+        format.each_string_view("ST") do |sample_index, bytes|
+          (bytes.to_unsafe >= record.scratch.format_char).should be_true
+          strings << {sample_index, String.new(bytes)}
+        end.should be_true
+        (strings).should eq([{0, "ALPHA"}, {1, "BETA"}])
+
+        yielded = false
+        format.each_string_view("MISS") { yielded = true }.should be_false
+        (yielded).should be_false
+        (format.get_string("ST")).should eq(["ALPHA", "BETA"])
+
+        expect_raises(HTS::Bcf::UnsupportedFormatOperationError, "Use each_genotype for FORMAT/GT") do
+          format.each_string_view("GT") { }
+        end
+      end
+    end
+  end
+
   def test_multisample_gt_and_flat_numeric_buffers
     with_temp_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
