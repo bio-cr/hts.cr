@@ -75,6 +75,18 @@ class BcfTest
     end
   end
 
+  private def with_temp_indexed_three_sample_bcf(&)
+    with_temp_three_sample_bcf do |path|
+      index_path = "#{path}.csi"
+      begin
+        HTS::Bcf.build_index(path, index_path, 14, 0, false)
+        yield path, index_path
+      ensure
+        File.delete(index_path) if File.exists?(index_path)
+      end
+    end
+  end
+
   def bcf
     @bcf ||= with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
   end
@@ -194,6 +206,28 @@ class BcfTest
       (subset_bcf.samples).should eq(["B", "A"])
       (record.format.get_string("GT")).should eq(["0/1", "0/0"])
       (record.format.get_int("GQ")).should eq([20, 10])
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
+  def test_indexed_queries_apply_the_same_sample_subset
+    with_temp_indexed_three_sample_bcf do |path, index_path|
+      subset_bcf = HTS::Bcf.new(path, "r", index_path, subset: ["C", "A"])
+      reused = [] of {Array(String), Array(Int32)}
+      copied = [] of {Array(String), Array(Int32)}
+
+      subset_bcf.query("1:1-100") do |record|
+        reused << {record.format.get_string("GT").not_nil!, record.format.get_int("GQ").not_nil!}
+      end
+      subset_bcf.query_copy("1:1-100") do |record|
+        copied << {record.format.get_string("GT").not_nil!, record.format.get_int("GQ").not_nil!}
+      end
+
+      expected = [{["1/1", "0/0"], [30, 10]}]
+      (subset_bcf.samples).should eq(["C", "A"])
+      (reused).should eq(expected)
+      (copied).should eq(expected)
     ensure
       subset_bcf.try &.close
     end

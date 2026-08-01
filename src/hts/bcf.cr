@@ -384,7 +384,7 @@ module HTS
       record = Bcf::Record.new(header, bcf1)
       slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
       while slen >= 0
-        apply_subset!(record)
+        apply_iterator_subset!(record)
         yield record
         slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
       end
@@ -397,7 +397,7 @@ module HTS
         slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
         while slen >= 0
           record = Bcf::Record.new(header, take_bcf1!(pointerof(bcf1)))
-          apply_subset!(record)
+          apply_iterator_subset!(record)
           yield record
           bcf1 = new_bcf1!
           slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
@@ -458,16 +458,18 @@ module HTS
       raise SubsetError.new("Failed to reorder selected samples while reading #{@file_name}")
     end
 
-    private def apply_subset!(record : Bcf::Record) : Nil
+    private def apply_iterator_subset!(record : Bcf::Record) : Nil
       output_header = @header
       return unless output_header
       return unless output_header.subset?
 
       source_header = @read_header || output_header
-      rc = LibHTS.bcf_subset(source_header, record, output_header.subset_sample_count, output_header.subset_imap_buffer)
-      return if rc >= 0
+      rc = LibHTS.bcf_subset_format(source_header, record)
+      unless rc >= 0
+        raise SubsetError.new("Failed to subset samples #{output_header.subset_samples.inspect} while querying #{@file_name}")
+      end
 
-      raise SubsetError.new("Failed to subset samples #{output_header.subset_samples.inspect} while reading #{@file_name}")
+      apply_read_subset_order!(record)
     end
 
     define_getter :chrom
