@@ -17,6 +17,7 @@ module HTS
     @idx : LibHTS::HtsIdxT
     @header : Bcf::Header?
     @read_header : Bcf::Header?
+    @read_subset_imap : Slice(Int32)?
     # Auto index after close when opened for writing with build_index: true
     @auto_index_on_close : Bool = false
     @index_name_on_close : String = ""
@@ -54,6 +55,7 @@ module HTS
       @idx = LibHTS::HtsIdxT.null
       @header = nil
       @read_header = nil
+      @read_subset_imap = nil
       @hts_file = Pointer(LibHTS::HtsFile).null
 
       begin
@@ -80,7 +82,15 @@ module HTS
 
         @read_header = Bcf::Header.new(@hts_file)
         if source_header = @read_header
-          @header = subset ? source_header.subset(subset) : source_header
+          if subset
+            subset_names = subset.map(&.to_s).to_a
+            source_samples = source_header.samples
+            @header = source_header.subset(subset_names)
+            configure_sample_selection!(source_header, subset_names)
+            @read_subset_imap = sample_reorder_imap(source_samples, subset_names)
+          else
+            @header = source_header
+          end
         end
         @header_written = true
 
@@ -221,7 +231,7 @@ module HTS
         ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
         while ret >= 0
           record = Bcf::Record.new(header, take_bcf1!(pointerof(bcf1)))
-          apply_subset!(record)
+          apply_read_subset_order!(record)
           yield record
           bcf1 = new_bcf1!
           ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
@@ -238,7 +248,7 @@ module HTS
       record = Bcf::Record.new(header, bcf1)
       ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
       while ret >= 0
-        apply_subset!(record)
+        apply_read_subset_order!(record)
         yield record
         ret = LibHTS.bcf_read(@hts_file, header_for_reading, bcf1)
       end
@@ -418,6 +428,34 @@ module HTS
       else
         raise Error.new("Header is not available for #{@file_name}")
       end
+    end
+
+    private def configure_sample_selection!(source_header : Bcf::Header, samples : Array(String)) : Nil
+      sample_list = samples.join(',')
+      encoded_samples = samples.empty? ? Pointer(LibC::Char).null : sample_list.to_unsafe
+      rc = LibHTS.bcf_hdr_set_samples(source_header, encoded_samples, 0)
+      return if rc == 0
+
+      raise SubsetError.new("Failed to configure sample selection #{samples.inspect} for #{@file_name}")
+    end
+
+    private def sample_reorder_imap(source_samples : Array(String), requested_samples : Array(String)) : Slice(Int32)?
+      requested = requested_samples.to_set
+      read_order = source_samples.select { |sample| requested.includes?(sample) }
+      imap = Slice(Int32).new(requested_samples.size) do |index|
+        read_order.index(requested_samples[index]).not_nil!.to_i32
+      end
+      imap.each_with_index.all? { |source_index, output_index| source_index == output_index } ? nil : imap
+    end
+
+    private def apply_read_subset_order!(record : Bcf::Record) : Nil
+      return unless imap = @read_subset_imap
+
+      source_header = @read_header || header
+      rc = LibHTS.bcf_subset(source_header, record, imap.size, imap.to_unsafe)
+      return if rc >= 0
+
+      raise SubsetError.new("Failed to reorder selected samples while reading #{@file_name}")
     end
 
     private def apply_subset!(record : Bcf::Record) : Nil
