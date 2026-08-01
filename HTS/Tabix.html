@@ -628,14 +628,14 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L9" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L9" target="_blank">
         hts/tabix.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix/errors.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix/errors.cr#L2" target="_blank">
         hts/tabix/errors.cr
       </a>
     
@@ -658,7 +658,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)</a>
+        <a href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3AString%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method" class="signature"><strong>.new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index : String = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)</a>
         
       </li>
     
@@ -763,7 +763,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#load_index%28index_name%3D%22%22%29-instance-method" class="signature"><strong>#load_index</strong>(index_name = <span class="s">&quot;&quot;</span>)</a>
+        <a href="#load_index%28index_name%3D%40index_name%29-instance-method" class="signature"><strong>#load_index</strong>(index_name = @index_name)</a>
         
       </li>
     
@@ -1055,18 +1055,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,index=&quot;&quot;,threads=0,build_index=false,preset=:vcf)-class-method">
+    <div class="entry-detail" id="new(file_name:Path|String,mode=&quot;r&quot;,index:String=&quot;&quot;,threads=0,build_index=false,preset=:vcf)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)
+        def self.<strong>new</strong>(file_name : Path | String, mode = <span class="s">&quot;r&quot;</span>, index : String = <span class="s">&quot;&quot;</span>, threads = <span class="n">0</span>, build_index = <span class="n">false</span>, preset = <span class="n">:vcf</span>)
 
-        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28file_name%3APath%7CString%2Cmode%3D%22r%22%2Cindex%3AString%3D%22%22%2Cthreads%3D0%2Cbuild_index%3Dfalse%2Cpreset%3D%3Avcf%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1100,7 +1100,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L52" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1116,7 +1116,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1132,7 +1132,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L19" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1167,7 +1167,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L79" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L81" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1183,7 +1183,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L191" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L193" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1199,7 +1199,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L134" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L136" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1215,7 +1215,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1237,7 +1237,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L146" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1259,7 +1259,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L164" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1275,7 +1275,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1291,7 +1291,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L199" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L201" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1307,23 +1307,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L93" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="load_index(index_name=&quot;&quot;)-instance-method">
+    <div class="entry-detail" id="load_index(index_name=@index_name)-instance-method">
       <div class="signature">
         
-        def <strong>load_index</strong>(index_name = <span class="s">&quot;&quot;</span>)
+        def <strong>load_index</strong>(index_name = @index_name)
 
-        <a class="method-permalink" href="#load_index%28index_name%3D%22%22%29-instance-method">#</a>
+        <a class="method-permalink" href="#load_index%28index_name%3D%40index_name%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L86" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1339,7 +1339,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1360,7 +1360,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L101" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1382,7 +1382,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L179" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L181" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1404,7 +1404,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L129" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1425,7 +1425,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/bfb1c8a1cd8c1087ba3f383f7ce494903fd950fe/src/hts/tabix.cr#L107" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/4537a2d0489fa1c67a9a91129a3091a487039abb/src/hts/tabix.cr#L109" target="_blank">View source</a>]
         
       </div>
     </div>
