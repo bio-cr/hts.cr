@@ -192,6 +192,55 @@ class BcfFormatTest
     (format.get_genotypes).should eq([4, 4])
   end
 
+  def test_getters_reuse_typed_scratch_buffers
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        format = record.format
+        scratch = record.scratch
+
+        (scratch.format_i32.null?).should be_true
+        (scratch.format_f32.null?).should be_true
+        (scratch.format_char.null?).should be_true
+
+        (format.get_int("PL")).should eq([10, 20, 30, 40, 50, 60])
+        int_pointer = scratch.format_i32
+        int_capacity = scratch.format_i32_capacity
+        (int_pointer.null?).should be_false
+        (int_capacity > 0).should be_true
+
+        (format.get_int("PL")).should eq([10, 20, 30, 40, 50, 60])
+        (scratch.format_i32).should eq(int_pointer)
+        (scratch.format_i32_capacity).should eq(int_capacity)
+
+        (format.get_float("FV")).should_not be_nil
+        (scratch.format_f32.null?).should be_false
+        (format.get_string("GT")).should eq(["0/1", "1/1"])
+
+        # GT shares Int32 storage; float getters use separate storage.
+        (scratch.format_i32).should eq(int_pointer)
+        (scratch.format_char.null?).should be_true
+      end
+    end
+
+    with_temp_character_format_vcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        format = record.format
+        scratch = record.scratch
+
+        (format.get_string("ST")).should eq(["ALPHA", "BETA"])
+        char_pointer = scratch.format_char
+        char_capacity = scratch.format_char_capacity
+        (char_pointer.null?).should be_false
+
+        (format.get_string("CH")).should eq(["A", "Z"])
+        (scratch.format_char).should eq(char_pointer)
+        (scratch.format_char_capacity).should eq(char_capacity)
+      end
+    end
+  end
+
   def test_multisample_gt_and_flat_numeric_buffers
     with_temp_bcf do |path|
       HTS::Bcf.open(path) do |bcf|

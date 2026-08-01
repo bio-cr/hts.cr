@@ -5,35 +5,25 @@ module HTS
       end
 
       def get_int(tag) : Array(Int32)?
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         r = @record
-        rc = LibHTS2.bcf_get_info_int32(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        rc = LibHTS2.bcf_get_info_int32(hdr, r, tag, scratch.info_i32_data_address, scratch.info_i32_capacity_address)
         rc = normalize_info_rc(rc, tag, "integer")
         return unless rc
-        begin
-          res = dst.as(Pointer(Int32))
-          Array(Int32).new(rc) { |i| res[i] }
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
-        end
+        res = scratch.info_i32
+        Array(Int32).new(rc) { |i| res[i] }
       end
 
       def get_int64(tag) : Array(Int64)?
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         r = @record
-        rc = LibHTS2.bcf_get_info_int64(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        rc = LibHTS2.bcf_get_info_int64(hdr, r, tag, scratch.info_i64_data_address, scratch.info_i64_capacity_address)
         rc = normalize_info_rc(rc, tag, "integer")
         return unless rc
-        begin
-          res = dst.as(Pointer(Int64))
-          Array(Int64).new(rc) { |i| res[i] }
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
-        end
+        res = scratch.info_i64
+        Array(Int64).new(rc) { |i| res[i] }
       end
 
       def get_int_opt(tag) : Array(Int32?)?
@@ -49,19 +39,14 @@ module HTS
       end
 
       def get_float(tag) : Array(Float32)?
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         r = @record
-        rc = LibHTS2.bcf_get_info_float(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        rc = LibHTS2.bcf_get_info_float(hdr, r, tag, scratch.info_f32_data_address, scratch.info_f32_capacity_address)
         rc = normalize_info_rc(rc, tag, "float")
         return unless rc
-        begin
-          res = dst.as(Pointer(Float32))
-          Array(Float32).new(rc) { |i| res[i] }
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
-        end
+        res = scratch.info_f32
+        Array(Float32).new(rc) { |i| res[i] }
       end
 
       def get_float_opt(tag) : Array(Float32?)?
@@ -71,26 +56,20 @@ module HTS
       end
 
       def get_string(tag) : String?
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         r = @record
-        rc = LibHTS2.bcf_get_info_string(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        rc = LibHTS2.bcf_get_info_string(hdr, r, tag, scratch.info_char_data_address, scratch.info_char_capacity_address)
         rc = normalize_info_rc(rc, tag, "string")
         return unless rc
-        begin
-          String.new dst.as(Pointer(UInt8))
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
-        end
+        String.new scratch.info_char
       end
 
       def get_flag(tag) : Bool?
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         r = @record
-        case LibHTS2.bcf_get_info_flag(hdr, r, tag, pointerof(dst), pointerof(ndst))
+        case LibHTS2.bcf_get_info_flag(hdr, r, tag, scratch.info_flag_data_address, scratch.info_flag_capacity_address)
         when 1
           val = true
         when 0
@@ -106,7 +85,6 @@ module HTS
         else
           raise InfoReadError.new("Unknown return value from bcf_get_info_flag")
         end
-        LibHTS.hts_free(dst) unless dst.null?
         val
       end
 

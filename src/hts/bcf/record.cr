@@ -4,14 +4,20 @@ module HTS
       def initialize(header : Bcf::Header, bcf_t : Pointer(HTS::LibHTS::Bcf1T))
         @header = header
         @bcf1 = bcf_t
+        @scratch = Scratch.new
       end
 
       def initialize(header : Bcf::Header)
         @header = header
         @bcf1 = new_bcf1!
+        @scratch = Scratch.new
       end
 
       getter :header
+
+      # Internal reusable storage for HTSlib getter results.
+      # :nodoc:
+      getter :scratch
 
       def to_unsafe
         @bcf1
@@ -150,6 +156,7 @@ module HTS
 
       # garbage collection
       def finalize
+        @scratch.close
         LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
       end
 

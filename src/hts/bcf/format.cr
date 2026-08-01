@@ -120,52 +120,42 @@ module HTS
         return decode_genotypes if tag == "GT"
         raise_unsupported_format_flag(tag)
 
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         rec = @record
 
-        rc = LibHTS2.bcf_get_format_char(hdr, rec, tag, pointerof(dst), pointerof(ndst))
+        rc = LibHTS2.bcf_get_format_char(hdr, rec, tag, scratch.format_char_data_address, scratch.format_char_capacity_address)
         rc = normalize_format_rc(rc, tag, "string")
         return unless rc
 
         fmt = LibHTS.bcf_get_fmt(hdr, rec, tag)
         raise FormatReadError.new("Failed to inspect FORMAT/#{tag}") if fmt.null?
 
-        begin
-          bytes_per_sample = fmt.value.n
-          return [] of String if bytes_per_sample <= 0
+        bytes_per_sample = fmt.value.n
+        return [] of String if bytes_per_sample <= 0
 
-          buffer = dst.as(Pointer(UInt8))
-          sample_count = rc // bytes_per_sample
+        data = scratch.format_char
+        sample_count = rc // bytes_per_sample
 
-          Array(String).new(sample_count) do |sample_index|
-            offset = sample_index * bytes_per_sample
-            slice = Bytes.new(buffer + offset, bytes_per_sample)
-            size = slice.index(0_u8) || bytes_per_sample
-            String.new(slice[0, size])
-          end
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
+        Array(String).new(sample_count) do |sample_index|
+          offset = sample_index * bytes_per_sample
+          slice = Bytes.new(data + offset, bytes_per_sample)
+          size = slice.index(0_u8) || bytes_per_sample
+          String.new(slice[0, size])
         end
       end
 
       def genotypes : Array(Int32)?
-        ndst = 0
-        dst = Pointer(Void).null
+        scratch = @record.scratch
         hdr = @record.header
         rec = @record
 
-        rc = LibHTS2.bcf_get_genotypes(hdr, rec, pointerof(dst), pointerof(ndst))
+        rc = LibHTS2.bcf_get_genotypes(hdr, rec, scratch.format_i32_data_address, scratch.format_i32_capacity_address)
         rc = normalize_format_rc(rc, "GT", "genotype")
         return unless rc
 
-        begin
-          res = dst.as(Pointer(Int32))
-          Array(Int32).new(rc) { |i| res[i] }
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
-        end
+        res = scratch.format_i32
+        Array(Int32).new(rc) { |i| res[i] }
       end
 
       # ameba:disable Naming/AccessorMethodName
@@ -200,22 +190,41 @@ module HTS
       end
 
       private def get_numeric_values(tag, type, value_type : T.class) : Array(T)? forall T
-        ndst = 0
-        dst = Pointer(Void).null
         hdr = @record.header
         rec = @record
+        rc = 0
 
-        rc = LibHTS.bcf_get_format_values(hdr, rec, tag, pointerof(dst), pointerof(ndst), type)
+        {% if T == Int32 %}
+          rc = LibHTS.bcf_get_format_values(
+            hdr,
+            rec,
+            tag,
+            @record.scratch.format_i32_data_address,
+            @record.scratch.format_i32_capacity_address,
+            type
+          )
+        {% elsif T == Float32 %}
+          rc = LibHTS.bcf_get_format_values(
+            hdr,
+            rec,
+            tag,
+            @record.scratch.format_f32_data_address,
+            @record.scratch.format_f32_capacity_address,
+            type
+          )
+        {% else %}
+          {% raise "Unsupported FORMAT scratch type: #{T}" %}
+        {% end %}
+
         expected_type = value_type == Float32 ? "float" : "integer"
         rc = normalize_format_rc(rc, tag, expected_type)
         return unless rc
 
-        begin
-          res = dst.as(Pointer(T))
-          Array(T).new(rc) { |i| res[i] }
-        ensure
-          LibHTS.hts_free(dst) unless dst.null?
-        end
+        {% if T == Int32 %}
+          Array(T).new(rc) { |i| @record.scratch.format_i32[i] }
+        {% else %}
+          Array(T).new(rc) { |i| @record.scratch.format_f32[i] }
+        {% end %}
       end
 
       private def raise_unsupported_format_flag(tag : String)

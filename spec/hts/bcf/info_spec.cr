@@ -72,6 +72,36 @@ class BcfInfoTest
     (info.get_int("DP4")).should eq([0, 0, 14, 17])
   end
 
+  def test_getters_reuse_typed_scratch_buffers
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        info = record.info
+        scratch = record.scratch
+
+        (scratch.info_i32.null?).should be_true
+        (info.get_int("MIX")).should eq([42, Int32::MIN])
+        int_pointer = scratch.info_i32
+        int_capacity = scratch.info_i32_capacity
+        (int_pointer.null?).should be_false
+
+        (info.get_int("MIX")).should eq([42, Int32::MIN])
+        (scratch.info_i32).should eq(int_pointer)
+        (scratch.info_i32_capacity).should eq(int_capacity)
+
+        (info.get_int64("MIX")).should eq([42_i64, Int64::MIN])
+        (scratch.info_i64.null?).should be_false
+        (info.get_float("FOPT")).should_not be_nil
+        (scratch.info_f32.null?).should be_false
+        (info.get_string("CH")).should eq("Q")
+        (scratch.info_char.null?).should be_false
+
+        # Other INFO element types do not invalidate the Int32 storage.
+        (scratch.info_i32).should eq(int_pointer)
+      end
+    end
+  end
+
   def test_int64_and_character_info
     with_temp_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
