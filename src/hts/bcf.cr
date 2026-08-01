@@ -18,6 +18,7 @@ module HTS
     @header : Bcf::Header?
     @read_header : Bcf::Header?
     @read_subset_imap : Slice(Int32)?
+    @max_unpack : Int32
     # Auto index after close when opened for writing with build_index: true
     @auto_index_on_close : Bool = false
     @index_name_on_close : String = ""
@@ -37,26 +38,37 @@ module HTS
     end
 
     def self.open(file_name : Path | String, mode = "r", index = "",
-                  threads = 0, build_index = false, *, subset : Enumerable(String)? = nil)
-      new(file_name, mode, index, threads, build_index, subset: subset)
+                  threads = 0, build_index = false, *, subset : Enumerable(String)? = nil,
+                  unpack : Symbol = :all)
+      new(file_name, mode, index, threads, build_index, subset: subset, unpack: unpack)
     end
 
     def self.open(file_name : Path | String, mode = "r", index = "",
-                  threads = 0, build_index = false, *, subset : Enumerable(String)? = nil, &)
-      file = new(file_name, mode, index, threads, build_index, subset: subset)
+                  threads = 0, build_index = false, *, subset : Enumerable(String)? = nil,
+                  unpack : Symbol = :all, &)
+      file = new(file_name, mode, index, threads, build_index, subset: subset, unpack: unpack)
       close_after_yield(file) { |handle| yield handle }
       file
     end
 
     def initialize(file_name : Path | String, @mode = "r", index = "",
-                   threads = 0, build_index = false, *, subset : Enumerable(String)? = nil)
+                   threads = 0, build_index = false, *, subset : Enumerable(String)? = nil,
+                   unpack : Symbol = :all)
       @file_name = file_name.to_s
       @nthreads = threads
+      @max_unpack = unpack_level(unpack)
       @idx = LibHTS::HtsIdxT.null
       @header = nil
       @read_header = nil
       @read_subset_imap = nil
       @hts_file = Pointer(LibHTS::HtsFile).null
+
+      if subset && @mode[0] == 'w'
+        raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
+      end
+      if unpack != :all && @mode[0] == 'w'
+        raise ArgumentError.new("Selective unpacking is only available when reading BCF/VCF files")
+      end
 
       begin
         # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
@@ -66,10 +78,6 @@ module HTS
         raise OpenError.new("Failed to open file #{@file_name}") if @hts_file.null?
 
         set_threads(threads) if threads > 0
-
-        if subset && @mode[0] == 'w'
-          raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
-        end
 
         if @mode[0] == 'w'
           # Defer index building until after close
@@ -411,7 +419,19 @@ module HTS
     private def new_bcf1! : LibHTS::Bcf1T*
       bcf1 = LibHTS.bcf_init
       raise RecordError.new("bcf_init failed") if bcf1.null?
+      bcf1.value.max_unpack = @max_unpack
       bcf1
+    end
+
+    private def unpack_level(unpack : Symbol) : Int32
+      case unpack
+      when :site_only then LibHTS2::BCF_UN_SHR
+      when :info      then LibHTS2::BCF_UN_INFO
+      when :format    then LibHTS2::BCF_UN_FMT
+      when :all       then LibHTS2::BCF_UN_ALL
+      else
+        raise ArgumentError.new("Unknown BCF unpack level: #{unpack.inspect}")
+      end
     end
 
     private def take_bcf1!(slot : Pointer(LibHTS::Bcf1T*)) : LibHTS::Bcf1T*

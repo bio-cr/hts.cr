@@ -25,6 +25,10 @@ class BcfTest
     File.expand_path("../fixtures/test.bcf", __DIR__)
   end
 
+  def test_vcf_path
+    File.expand_path("../fixtures/test.vcf", __DIR__)
+  end
+
   def test_bcf_index_path
     File.expand_path("../fixtures/test.bcf.csi.tmp", __DIR__)
   end
@@ -136,6 +140,70 @@ class BcfTest
       end
     end
     (f.closed?).should be_true
+  end
+
+  def test_unpack_levels_are_applied_to_records
+    levels = {
+      site_only: HTS::LibHTS2::BCF_UN_SHR,
+      info:      HTS::LibHTS2::BCF_UN_INFO,
+      format:    HTS::LibHTS2::BCF_UN_FMT,
+      all:       HTS::LibHTS2::BCF_UN_ALL,
+    }
+
+    levels.each do |level, expected|
+      HTS::Bcf.open(test_bcf_path, unpack: level) do |file|
+        (file.first.to_unsafe.value.max_unpack).should eq(expected)
+      end
+    end
+  end
+
+  def test_unpack_level_is_applied_to_copy_and_indexed_reads
+    HTS::Bcf.open(test_bcf_path, unpack: :info) do |file|
+      (file.to_a.first.to_unsafe.value.max_unpack).should eq(HTS::LibHTS2::BCF_UN_INFO)
+    end
+
+    HTS::Bcf.build_index(test_bcf_path, test_bcf_index_path, 14, 0, false)
+    HTS::Bcf.open(test_bcf_path, "r", test_bcf_index_path, unpack: :site_only) do |file|
+      file.query("poo:4000-4100") do |record|
+        (record.to_unsafe.value.max_unpack).should eq(HTS::LibHTS2::BCF_UN_SHR)
+      end
+      file.query_copy("poo:4000-4100") do |record|
+        (record.to_unsafe.value.max_unpack).should eq(HTS::LibHTS2::BCF_UN_SHR)
+      end
+    end
+  end
+
+  def test_site_only_vcf_read_skips_format_columns
+    HTS::Bcf.open(test_vcf_path, unpack: :site_only) do |file|
+      record = file.first
+      (record.chrom).should eq("poo")
+      (record.ref).should eq("T")
+      (record.info.get_int("DP")).should eq([31])
+      (record.to_unsafe.value.indiv.l).should eq(0)
+      (record.format.get_string("GT")).should be_nil
+    end
+
+    HTS::Bcf.open(test_vcf_path, unpack: :format) do |file|
+      (file.first.format.get_string("GT")).should eq(["1/1"])
+    end
+  end
+
+  def test_unknown_unpack_level_is_rejected
+    expect_raises(ArgumentError, "Unknown BCF unpack level: :unknown") do
+      HTS::Bcf.new(test_bcf_path, unpack: :unknown)
+    end
+  end
+
+  def test_selective_unpacking_is_rejected_for_writing
+    file = File.tempfile("selective_unpack_write", ".bcf")
+    path = file.path || raise "tempfile path is nil"
+    file.close
+
+    expect_raises(ArgumentError, "Selective unpacking is only available when reading BCF/VCF files") do
+      HTS::Bcf.new(path, "wb", unpack: :site_only)
+    end
+  ensure
+    File.delete(path) if path && File.exists?(path)
   end
 
   def test_file_name
