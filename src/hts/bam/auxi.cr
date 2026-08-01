@@ -36,6 +36,126 @@ module HTS
       AUX_CHAR_TYPE        = 'A'.ord.to_u8
       AUX_FLOAT_ARRAY_TYPE = 'f'.ord.to_u8
 
+      # Borrowed view of a BAM B-array payload.
+      @[Experimental]
+      struct ArrayView
+        getter subtype : Char
+        getter size : Int32
+
+        def initialize(@payload : Pointer(UInt8), @size : Int32, subtype : UInt8)
+          @subtype = subtype.chr
+        end
+
+        def integer? : Bool
+          {'c', 'C', 's', 'S', 'i', 'I'}.includes?(@subtype)
+        end
+
+        def float? : Bool
+          @subtype == 'f'
+        end
+
+        def [](index : Int) : Int64 | Float64
+          integer? ? int_at(index) : float_at(index)
+        end
+
+        def int_at(index : Int) : Int64
+          check_index(index)
+          case @subtype
+          when 'c' then @payload[index].unsafe_as(Int8).to_i64
+          when 'C' then @payload[index].to_i64
+          when 's' then decode(Int16, index, 2).to_i64
+          when 'S' then decode(UInt16, index, 2).to_i64
+          when 'i' then decode(Int32, index, 4).to_i64
+          when 'I' then decode(UInt32, index, 4).to_i64
+          else
+            raise AuxTypeError.new("B array subtype #{@subtype} is not integer")
+          end
+        end
+
+        def float_at(index : Int) : Float64
+          check_index(index)
+          unless float?
+            raise AuxTypeError.new("B array subtype #{@subtype} is not float")
+          end
+          decode(Float32, index, 4).to_f64
+        end
+
+        def each_int(& : Int64 ->) : Nil
+          unless integer?
+            raise AuxTypeError.new("B array subtype #{@subtype} is not integer")
+          end
+          case @subtype
+          when 'c' then each_integer(Int8, 1) { |value| yield value }
+          when 'C' then each_integer(UInt8, 1) { |value| yield value }
+          when 's' then each_integer(Int16, 2) { |value| yield value }
+          when 'S' then each_integer(UInt16, 2) { |value| yield value }
+          when 'i' then each_integer(Int32, 4) { |value| yield value }
+          when 'I' then each_integer(UInt32, 4) { |value| yield value }
+          end
+        end
+
+        def each_float(& : Float64 ->) : Nil
+          unless float?
+            raise AuxTypeError.new("B array subtype #{@subtype} is not float")
+          end
+          if values = as_slice(Float32)
+            values.each { |value| yield value.to_f64 }
+          else
+            @size.times { |index| yield decode(Float32, index, 4).to_f64 }
+          end
+        end
+
+        # The slice is available only for a matching native type and is borrowed.
+        def as_slice(type : T.class) : Slice(T)? forall T
+          {% if IO::ByteFormat::SystemEndian == IO::ByteFormat::LittleEndian %}
+            return unless matching_type?(type)
+            return unless @payload.address % sizeof(T).to_u64 == 0
+            Slice.new(@payload.as(Pointer(T)), @size)
+          {% else %}
+            nil
+          {% end %}
+        end
+
+        private def matching_type?(type : T.class) : Bool forall T
+          {% if T == Int8 %}
+            @subtype == 'c'
+          {% elsif T == UInt8 %}
+            @subtype == 'C'
+          {% elsif T == Int16 %}
+            @subtype == 's'
+          {% elsif T == UInt16 %}
+            @subtype == 'S'
+          {% elsif T == Int32 %}
+            @subtype == 'i'
+          {% elsif T == UInt32 %}
+            @subtype == 'I'
+          {% elsif T == Float32 %}
+            @subtype == 'f'
+          {% else %}
+            false
+          {% end %}
+        end
+
+        private def decode(type : T.class, index : Int, width : Int32) : T forall T
+          bytes = Slice.new(@payload + index * width, width)
+          IO::ByteFormat::LittleEndian.decode(type, bytes)
+        end
+
+        private def each_integer(type : T.class, width : Int32, & : Int64 ->) : Nil forall T
+          if values = as_slice(type)
+            values.each { |value| yield value.to_i64 }
+          else
+            @size.times { |index| yield decode(type, index, width).to_i64 }
+          end
+        end
+
+        private def check_index(index : Int) : Nil
+          unless 0 <= index < @size
+            raise IndexError.new("Index out of bounds")
+          end
+        end
+      end
+
       def initialize(@bam1 : Pointer(LibHTS::Bam1T))
       end
 
@@ -109,13 +229,12 @@ module HTS
       def get_int_array(tag : String) : Array(Int64)?
         aux_ptr = get_aux_pointer(tag)
         return if aux_ptr.null?
-        ensure_aux_type!(tag, aux_ptr, "integer array") { |type| type == AUX_ARRAY_TYPE }
+        view = array_view(tag, aux_ptr)
+        raise_aux_type_error!(tag, "integer array") unless view.integer?
 
-        array_type = (aux_ptr + 1).value
-        raise_aux_type_error!(tag, "integer array") unless AUX_INT_TYPES.includes?(array_type)
-
-        length = LibHTS.bam_aux_b_len(aux_ptr)
-        Array(Int64).new(length) { |i| LibHTS.bam_aux_b2i(aux_ptr, i) }
+        values = Array(Int64).new(view.size)
+        view.each_int { |value| values << value }
+        values
       end
 
       # Returns the float array for *tag*, `nil` when absent, and raises
@@ -123,11 +242,23 @@ module HTS
       def get_float_array(tag : String) : Array(Float64)?
         aux_ptr = get_aux_pointer(tag)
         return if aux_ptr.null?
-        ensure_aux_type!(tag, aux_ptr, "float array") { |type| type == AUX_ARRAY_TYPE }
-        raise_aux_type_error!(tag, "float array") unless (aux_ptr + 1).value == AUX_FLOAT_ARRAY_TYPE
+        view = array_view(tag, aux_ptr)
+        raise_aux_type_error!(tag, "float array") unless view.float?
 
-        length = LibHTS.bam_aux_b_len(aux_ptr)
-        Array(Float64).new(length) { |i| LibHTS.bam_aux_b2f(aux_ptr, i) }
+        values = Array(Float64).new(view.size)
+        view.each_float { |value| values << value }
+        values
+      end
+
+      # The view and any slice derived from it are valid only during the block.
+      @[Experimental]
+      def each_array(tag : String, & : Char, ArrayView ->) : Bool
+        aux_ptr = get_aux_pointer(tag)
+        return false if aux_ptr.null?
+
+        view = array_view(tag, aux_ptr)
+        yield view.subtype, view
+        true
       end
 
       def update_int(tag : String, value : Int)
@@ -297,17 +428,52 @@ module HTS
 
       # Parse auxiliary array values
       private def parse_aux_array(aux_ptr)
-        # Basic support for array types
-        array_type = (aux_ptr + 1).value
-        length = LibHTS.bam_aux_b_len(aux_ptr)
-
-        case array_type
-        when 'i', 'I', 'c', 'C', 's', 'S'
-          Array.new(length) { |i| LibHTS.bam_aux_b2i(aux_ptr, i) }
-        when 'f'
-          Array.new(length) { |i| LibHTS.bam_aux_b2f(aux_ptr, i) }
+        view = array_view("??", aux_ptr)
+        if view.integer?
+          values = Array(Int64).new(view.size)
+          view.each_int { |value| values << value }
+          values
+        elsif view.float?
+          values = Array(Float64).new(view.size)
+          view.each_float { |value| values << value }
+          values
         else
-          "Array[#{array_type.chr}]:#{length}" # Unsupported array type - return descriptive string
+          "Array[#{view.subtype}]:#{view.size}"
+        end
+      end
+
+      private def array_view(tag : String, aux_ptr : Pointer(UInt8)) : ArrayView
+        ensure_aux_type!(tag, aux_ptr, "B array") { |type| type == AUX_ARRAY_TYPE }
+
+        aux_start = LibHTS2.bam_get_aux(@bam1)
+        aux_length = LibHTS2.bam_get_l_aux(@bam1)
+        raise AuxError.new("Malformed AUX B array #{tag}") if aux_length < 0
+
+        aux_end_address = aux_start.address + aux_length.to_u64
+        if aux_ptr.address < aux_start.address || aux_ptr.address > aux_end_address || aux_end_address - aux_ptr.address < 6
+          raise AuxError.new("Malformed AUX B array #{tag}")
+        end
+
+        subtype = (aux_ptr + 1).value
+        width = array_element_width(subtype)
+        count_bytes = Slice.new(aux_ptr + 2, 4)
+        count = IO::ByteFormat::LittleEndian.decode(UInt32, count_bytes).to_u64
+        payload = aux_ptr + 6
+        payload_size = count * width.to_u64
+        if payload_size > aux_end_address - payload.address || count > Int32::MAX
+          raise AuxError.new("Malformed AUX B array #{tag}")
+        end
+
+        ArrayView.new(payload, count.to_i32, subtype)
+      end
+
+      private def array_element_width(subtype : UInt8) : Int32
+        case subtype
+        when 'c', 'C'      then 1
+        when 's', 'S'      then 2
+        when 'i', 'I', 'f' then 4
+        else
+          raise AuxTypeError.new("Unsupported B array subtype: #{subtype.chr}")
         end
       end
 

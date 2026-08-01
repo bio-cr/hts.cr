@@ -590,6 +590,86 @@ class BamRecordTest
     (aln.aux.get_float_array("XF")).should eq([1.25, 2.5])
   end
 
+  def test_aux_array_view_decodes_all_subtypes
+    aln = aln1
+    aln.aux.update_array("A1", [-128, 127], subtype: 'c')
+    aln.aux.update_array("A2", [0, 255], subtype: 'C')
+    aln.aux.update_array("A3", [-32_768, 32_767], subtype: 's')
+    aln.aux.update_array("A4", [0, 65_535], subtype: 'S')
+    aln.aux.update_array("A5", [Int32::MIN, 0x01020304], subtype: 'i')
+    aln.aux.update_array("A6", [0_i64, UInt32::MAX.to_i64], subtype: 'I')
+    aln.aux.update_array("A7", [-1.25, 2.5], subtype: 'f')
+    aln.aux.update_array("A8", [] of Int32, subtype: 'i')
+
+    {
+      {"A1", 'c', [-128_i64, 127_i64]},
+      {"A2", 'C', [0_i64, 255_i64]},
+      {"A3", 's', [-32_768_i64, 32_767_i64]},
+      {"A4", 'S', [0_i64, 65_535_i64]},
+      {"A5", 'i', [Int32::MIN.to_i64, 0x01020304_i64]},
+      {"A6", 'I', [0_i64, UInt32::MAX.to_i64]},
+    }.each do |tag, expected_subtype, expected_values|
+      yielded = aln.aux.each_array(tag) do |subtype, view|
+        subtype.should eq(expected_subtype)
+        view.integer?.should be_true
+        values = [] of Int64
+        view.each_int { |value| values << value }
+        values.should eq(expected_values)
+      end
+      yielded.should be_true
+    end
+
+    aln.aux.each_array("A7") do |subtype, view|
+      subtype.should eq('f')
+      view.float?.should be_true
+      values = [] of Float64
+      view.each_float { |value| values << value }
+      values.zip([-1.25, 2.5]).each do |actual, expected|
+        (actual - expected).abs.should be <= 1e-6
+      end
+    end.should be_true
+
+    aln.aux.each_array("A8") do |_subtype, view|
+      view.size.should eq(0)
+    end.should be_true
+    aln.aux.each_array("ZZ") { |_subtype, _view| fail "missing tag yielded" }.should be_false
+  end
+
+  def test_aux_array_view_exposes_only_matching_aligned_slices
+    aln = aln1
+    aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
+
+    aln.aux.each_array("XB") do |_subtype, view|
+      view.as_slice(UInt8).should eq(Slice[1_u8, 2_u8, 3_u8])
+      view.as_slice(Int8).should be_nil
+      view.as_slice(UInt16).should be_nil
+    end.should be_true
+  end
+
+  def test_aux_array_view_handles_aligned_and_unaligned_little_endian_values
+    aln = aln1
+    4.times do |index|
+      aln.aux.update_array("B#{index}", [0x01020304], subtype: 'i')
+      aln.aux.update_string("P#{index}", "x") unless index == 3
+    end
+
+    aligned = 0
+    unaligned = 0
+    4.times do |index|
+      aln.aux.each_array("B#{index}") do |_subtype, view|
+        view.int_at(0).should eq(0x01020304)
+        if values = view.as_slice(Int32)
+          values[0].should eq(0x01020304)
+          aligned += 1
+        else
+          unaligned += 1
+        end
+      end.should be_true
+    end
+    aligned.should eq(1)
+    unaligned.should eq(3)
+  end
+
   def test_aux_array_readers_raise_for_type_mismatch
     aln = aln1
     aln.aux.update_array("XB", [1, 2, 3], subtype: 'C')
