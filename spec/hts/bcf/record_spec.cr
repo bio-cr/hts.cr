@@ -74,8 +74,12 @@ class BcfRecordTest
   end
 
   def test_filters
-    (var1.filters).should eq(["PASS"])
-    (var1.filter_count).should eq(0)
+    record = var1
+    (record.filters).should eq(["PASS"])
+    (record.filter_count).should eq(0)
+    yielded = false
+    record.each_filter_id { yielded = true }
+    (yielded).should be_false
   end
 
   def test_numeric_filter_access
@@ -96,6 +100,9 @@ class BcfRecordTest
     (record.filter_count).should eq(2)
     (record.filter_id_at(0)).should eq(low_qual)
     (record.filter_id_at(1)).should eq(strand_bias)
+    iterated_ids = [] of Int32
+    record.each_filter_id { |id| iterated_ids << id }
+    (iterated_ids).should eq(filter_ids)
     (record.filters).should eq(["LowQual", "StrandBias"])
     expect_raises(IndexError, "filter index -1 out of range 0...2") { record.filter_id_at(-1) }
     expect_raises(IndexError, "filter index 2 out of range 0...2") { record.filter_id_at(2) }
@@ -124,6 +131,22 @@ class BcfRecordTest
 
   def test_alleles
     (var1.alleles).should eq(["T", "C"])
+  end
+
+  def test_each_allele_view
+    record = var1
+    alleles = [] of String
+    allele_index = 0
+
+    record.each_allele_view do |allele|
+      pointer = record.to_unsafe.value.d.allele[allele_index]
+      (allele.to_unsafe).should eq(pointer.as(UInt8*))
+      alleles << String.new(allele)
+      allele_index += 1
+    end
+
+    (alleles).should eq(["T", "C"])
+    (allele_index).should eq(record.allele_count)
   end
 
   def test_allele_count

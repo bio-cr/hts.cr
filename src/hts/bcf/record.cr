@@ -67,24 +67,14 @@ module HTS
       end
 
       def filters : Array(String)
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FLT)
-        d = @bcf1.value.d
-        n_flt = d.n_flt
+        count = filter_count
+        return ["PASS"] if count == 0
 
-        case n_flt
-        when 0
-          ["PASS"]
-        when 1
-          i = d.flt.value
-          [String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, i)]
-        when 2..
-          Array(String).new(n_flt) do |index|
-            j = d.flt[index]
-            String.new LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, j)
-          end
-        else
-          raise RecordError.new("Unexpected number of filters. n_flt: #{n_flt}")
+        names = Array(String).new(count)
+        each_filter_id do |id|
+          names << String.new(LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, id))
         end
+        names
       end
 
       @[Experimental]
@@ -100,6 +90,13 @@ module HTS
           raise ::IndexError.new("filter index #{index} out of range 0...#{count}")
         end
         @bcf1.value.d.flt[index]
+      end
+
+      @[Experimental]
+      def each_filter_id(& : Int32 ->) : Nil
+        count = filter_count
+        filter_ids = @bcf1.value.d.flt
+        count.times { |index| yield filter_ids[index] }
       end
 
       # VCF FILTER can contain multiple values, so keep the return type stable.
@@ -121,19 +118,21 @@ module HTS
       end
 
       def alt
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
-        n = allele_count
-        Array(String).new(n - 1) do |i|
-          String.new @bcf1.value.d.allele[i + 1]
+        alleles = Array(String).new(allele_count - 1)
+        allele_index = 0
+        each_allele_view do |allele|
+          alleles << String.new(allele) if allele_index > 0
+          allele_index += 1
         end
+        alleles
       end
 
       def alleles
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
-        n = allele_count
-        Array(String).new(n) do |i|
-          String.new @bcf1.value.d.allele[i]
+        alleles = Array(String).new(allele_count)
+        each_allele_view do |allele|
+          alleles << String.new(allele)
         end
+        alleles
       end
 
       @[Experimental]
@@ -141,6 +140,16 @@ module HTS
         # htslib exposes n_allele as a C bitfield. Crystal cannot bind C
         # bitfields directly, so the binding stores n_info/n_allele packed.
         @bcf1.value.n_info_allele.bits(16..31).to_i32
+      end
+
+      @[Experimental]
+      def each_allele_view(& : Bytes ->) : Nil
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
+        allele_pointers = @bcf1.value.d.allele
+        allele_count.times do |index|
+          allele = allele_pointers[index]
+          yield Bytes.new(allele.as(UInt8*), LibC.strlen(allele).to_i)
+        end
       end
 
       def info
