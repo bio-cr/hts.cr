@@ -181,10 +181,17 @@ class BcfHeaderTest
 
     h.add_info("FIELD", number: 1, type: :int, description: "Info field")
     h.add_format("FIELD", number: :variable, type: :float, description: "Format field")
+    h.add_filter("FILTERED", description: "Filter field")
     2.times do
       (h.info_type("FIELD")).should eq(:int)
       (h.format_type("FIELD")).should eq(:float)
+      (h.info_id("FIELD")).should_not be_nil
+      (h.format_id("FIELD")).should eq(h.info_id("FIELD"))
+      (h.filter_id("FILTERED")).should_not be_nil
     end
+    (h.info_id("FILTERED")).should be_nil
+    (h.format_id("FILTERED")).should be_nil
+    (h.filter_id("FIELD")).should be_nil
 
     h.update_info("FIELD", number: :a, type: :string, description: "Updated info field")
     (h.info_type("FIELD")).should eq(:string)
@@ -192,7 +199,11 @@ class BcfHeaderTest
 
     h.remove_info("FIELD")
     (h.info_type("FIELD")).should be_nil
+    (h.info_id("FIELD")).should be_nil
     (h.format_type("FIELD")).should eq(:float)
+
+    h.remove_filter("FILTERED")
+    (h.filter_id("FILTERED")).should be_nil
   end
 
   def test_add_meta_and_filter

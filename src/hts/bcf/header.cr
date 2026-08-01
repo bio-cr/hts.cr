@@ -34,6 +34,7 @@ module HTS
         @subset_imap = nil
         @subset_imap_buffer = Pointer(Int32).null
         @schema_cache = Hash({Int32, String}, SchemaEntry?).new
+        @filter_id_cache = Hash(String, Int32?).new
       end
 
       # for clone
@@ -47,6 +48,7 @@ module HTS
         @subset_imap = nil
         @subset_imap_buffer = Pointer(Int32).null
         @schema_cache = Hash({Int32, String}, SchemaEntry?).new
+        @filter_id_cache = Hash(String, Int32?).new
       end
 
       def initialize
@@ -59,6 +61,7 @@ module HTS
         @subset_imap = nil
         @subset_imap_buffer = Pointer(Int32).null
         @schema_cache = Hash({Int32, String}, SchemaEntry?).new
+        @filter_id_cache = Hash(String, Int32?).new
       end
 
       def to_unsafe
@@ -119,6 +122,24 @@ module HTS
       # Character is reported as :string because htslib exposes both via BCF_HT_STR.
       def format_type(tag : String)
         tag_type(tag, LibHTS2::BCF_HL_FMT)
+      end
+
+      @[Experimental]
+      def info_id(tag : String) : Int32?
+        tag_schema(tag, LibHTS2::BCF_HL_INFO).try &.id
+      end
+
+      @[Experimental]
+      def format_id(tag : String) : Int32?
+        tag_schema(tag, LibHTS2::BCF_HL_FMT).try &.id
+      end
+
+      @[Experimental]
+      def filter_id(tag : String) : Int32?
+        return @filter_id_cache[tag] if @filter_id_cache.has_key?(tag)
+
+        id = LibHTS.bcf_hdr_id2int(@bcf_hdr, LibHTS2::BCF_DT_ID, tag)
+        @filter_id_cache[tag] = hrec_exists?(LibHTS2::BCF_HL_FLT, tag) ? id : nil
       end
 
       def samples
@@ -415,6 +436,7 @@ module HTS
 
       private def invalidate_schema_cache! : Nil
         @schema_cache.clear
+        @filter_id_cache.clear
       end
 
       private def sync_if_needed! : Nil

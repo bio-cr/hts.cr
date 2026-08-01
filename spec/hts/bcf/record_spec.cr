@@ -75,6 +75,30 @@ class BcfRecordTest
 
   def test_filters
     (var1.filters).should eq(["PASS"])
+    (var1.filter_count).should eq(0)
+  end
+
+  def test_numeric_filter_access
+    header = HTS::Bcf::Header.new
+    header.version = "VCFv4.3"
+    header.add_contig("1", length: 100)
+    header.add_filter("LowQual", description: "Low quality")
+    header.add_filter("StrandBias", description: "Strand bias")
+
+    record = HTS::Bcf::Record.new(header)
+    record.rid = header.name2id("1")
+    low_qual = header.filter_id("LowQual") || raise "LowQual should be defined"
+    strand_bias = header.filter_id("StrandBias") || raise "StrandBias should be defined"
+    filter_ids = [low_qual, strand_bias]
+    rc = HTS::LibHTS.bcf_update_filter(header, record, filter_ids.to_unsafe, filter_ids.size)
+    raise "bcf_update_filter failed (rc=#{rc})" if rc < 0
+
+    (record.filter_count).should eq(2)
+    (record.filter_id_at(0)).should eq(low_qual)
+    (record.filter_id_at(1)).should eq(strand_bias)
+    (record.filters).should eq(["LowQual", "StrandBias"])
+    expect_raises(IndexError, "filter index -1 out of range 0...2") { record.filter_id_at(-1) }
+    expect_raises(IndexError, "filter index 2 out of range 0...2") { record.filter_id_at(2) }
   end
 
   def test_qual
@@ -100,6 +124,10 @@ class BcfRecordTest
 
   def test_alleles
     (var1.alleles).should eq(["T", "C"])
+  end
+
+  def test_allele_count
+    (var1.allele_count).should eq(2)
   end
 
   def test_info

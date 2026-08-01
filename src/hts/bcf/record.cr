@@ -87,6 +87,21 @@ module HTS
         end
       end
 
+      @[Experimental]
+      def filter_count : Int32
+        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FLT)
+        @bcf1.value.d.n_flt
+      end
+
+      @[Experimental]
+      def filter_id_at(index : Int) : Int32
+        count = filter_count
+        unless 0 <= index < count
+          raise ::IndexError.new("filter index #{index} out of range 0...#{count}")
+        end
+        @bcf1.value.d.flt[index]
+      end
+
       # VCF FILTER can contain multiple values, so keep the return type stable.
       def filter : Array(String)
         filters
@@ -107,7 +122,7 @@ module HTS
 
       def alt
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
-        n = n_allele
+        n = allele_count
         Array(String).new(n - 1) do |i|
           String.new @bcf1.value.d.allele[i + 1]
         end
@@ -115,10 +130,17 @@ module HTS
 
       def alleles
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
-        n = n_allele
+        n = allele_count
         Array(String).new(n) do |i|
           String.new @bcf1.value.d.allele[i]
         end
+      end
+
+      @[Experimental]
+      def allele_count : Int32
+        # htslib exposes n_allele as a C bitfield. Crystal cannot bind C
+        # bitfields directly, so the binding stores n_info/n_allele packed.
+        @bcf1.value.n_info_allele.bits(16..31).to_i32
       end
 
       def info
@@ -158,12 +180,6 @@ module HTS
       def finalize
         @scratch.close
         LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
-      end
-
-      private def n_allele : Int32
-        # htslib exposes n_allele as a C bitfield. Crystal cannot bind C
-        # bitfields directly, so the binding stores n_info/n_allele packed.
-        @bcf1.value.n_info_allele.bits(16..31).to_i32
       end
     end
   end
