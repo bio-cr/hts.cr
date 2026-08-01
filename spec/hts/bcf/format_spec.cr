@@ -319,6 +319,50 @@ class BcfFormatTest
     end
   end
 
+  def test_each_genotype_decodes_without_sample_arrays
+    with_temp_gt_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        format = bcf.first.format
+        samples = [] of {Int32, Int32, Array({Int32, Bool, Bool})}
+
+        present = format.each_genotype("GT") do |sample_index, genotype|
+          alleles = [] of {Int32, Bool, Bool}
+          genotype.each_allele do |allele_index, phased, missing|
+            alleles << {allele_index, phased, missing}
+          end
+          samples << {sample_index, genotype.ploidy, alleles}
+        end
+
+        (present).should be_true
+        (samples).should eq([
+          {0, 2, [{0, false, false}, {1, true, false}]},
+          {1, 2, [{0, false, false}, {1, false, false}]},
+          {2, 2, [{-1, false, true}, {-1, false, true}]},
+          {3, 1, [{1, false, false}]},
+        ])
+      end
+    end
+  end
+
+  def test_each_genotype_absent_and_tag_validation
+    header = HTS::Bcf::Header.new
+    header.version = "VCFv4.3"
+    header.append("##contig=<ID=1,length=100>")
+    header.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">")
+    header.add_sample("S1")
+    record = HTS::Bcf::Record.new(header)
+    record.rid = HTS::LibHTS2.bcf_hdr_name2id(header, "1")
+    record.pos = 0
+    format = record.format
+
+    yielded = false
+    format.each_genotype { yielded = true }.should be_false
+    (yielded).should be_false
+    expect_raises(ArgumentError, "Genotype traversal only supports FORMAT/GT") do
+      format.each_genotype("DP") { }
+    end
+  end
+
   def test_low_level_contract
     expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_int("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_float("NO_SUCH_TAG") }

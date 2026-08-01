@@ -1,6 +1,31 @@
 module HTS
   class Bcf < Hts
     class Format
+      # Borrowed view of one sample's encoded GT values.
+      @[Experimental]
+      struct GenotypeView
+        getter values : Slice(Int32)
+
+        def initialize(@values : Slice(Int32))
+        end
+
+        def ploidy : Int32
+          @values.size
+        end
+
+        # Yields allele index, phased flag, and missing flag for each allele.
+        # Missing alleles use -1 as their allele index. Vector-end sentinels are
+        # excluded from this view and are not yielded.
+        def each_allele(& : Int32, Bool, Bool ->) : Nil
+          @values.each do |encoded|
+            missing = LibHTS2.bcf_gt_is_missing(encoded) != 0
+            allele_index = missing ? -1 : LibHTS2.bcf_gt_allele(encoded)
+            phased = LibHTS2.bcf_gt_is_phased(encoded) != 0
+            yield allele_index, phased, missing
+          end
+        end
+      end
+
       def initialize(@record : Bcf::Record)
       end
 
@@ -131,6 +156,36 @@ module HTS
       @[Experimental]
       def with_f32_buffer(tag : String, & : Slice(Float32) ->) : Bool
         with_numeric_buffer(tag, LibHTS2::BCF_HT_REAL, Float32) { |values| yield values }
+      end
+
+      # Yields each sample index and a borrowed view of its encoded GT values.
+      #
+      # Returns false without yielding when GT is absent. A view is valid only
+      # during its block invocation and excludes trailing vector-end sentinels.
+      @[Experimental]
+      def each_genotype(tag : String = "GT", & : Int32, GenotypeView ->) : Bool
+        raise ArgumentError.new("Genotype traversal only supports FORMAT/GT") unless tag == "GT"
+
+        with_i32_buffer(tag) do |values|
+          sample_count = @record.header.nsamples
+          next if sample_count <= 0
+
+          unless values.size % sample_count == 0
+            raise FormatReadError.new("Failed to split FORMAT/GT values by sample")
+          end
+
+          values_per_sample = values.size // sample_count
+          sample_index = 0
+          while sample_index < sample_count
+            offset = sample_index * values_per_sample
+            sample_values = values[offset, values_per_sample]
+            end_index = sample_values.index do |value|
+              LibHTS2.bcf_gt_is_vector_end(value) != 0
+            end || sample_values.size
+            yield sample_index, GenotypeView.new(sample_values[0, end_index])
+            sample_index += 1
+          end
+        end
       end
 
       # Returns one String per sample. Character FORMAT fields are handled here too.
