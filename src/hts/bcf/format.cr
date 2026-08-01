@@ -106,13 +106,31 @@ module HTS
       end
 
       def get_int(tag) : Array(Int32)?
-        raise_unsupported_format_flag(tag)
         get_numeric_values(tag, LibHTS2::BCF_HT_INT, Int32)
       end
 
       def get_float(tag) : Array(Float32)?
-        raise_unsupported_format_flag(tag)
         get_numeric_values(tag, LibHTS2::BCF_HT_REAL, Float32)
+      end
+
+      # Yields a borrowed view of the raw Int32 FORMAT values.
+      #
+      # Returns false without yielding when the field is absent. The slice is
+      # valid only during the block and may be invalidated earlier by another
+      # FORMAT Int32 or genotype getter on the same record.
+      @[Experimental]
+      def with_i32_buffer(tag : String, & : Slice(Int32) ->) : Bool
+        with_numeric_buffer(tag, LibHTS2::BCF_HT_INT, Int32) { |values| yield values }
+      end
+
+      # Yields a borrowed view of the raw Float32 FORMAT values.
+      #
+      # Returns false without yielding when the field is absent. The slice is
+      # valid only during the block and may be invalidated earlier by another
+      # FORMAT Float32 getter on the same record.
+      @[Experimental]
+      def with_f32_buffer(tag : String, & : Slice(Float32) ->) : Bool
+        with_numeric_buffer(tag, LibHTS2::BCF_HT_REAL, Float32) { |values| yield values }
       end
 
       # Returns one String per sample. Character FORMAT fields are handled here too.
@@ -190,6 +208,15 @@ module HTS
       end
 
       private def get_numeric_values(tag, type, value_type : T.class) : Array(T)? forall T
+        result = nil.as(Array(T)?)
+        with_numeric_buffer(tag, type, value_type) do |values|
+          result = values.to_a
+        end
+        result
+      end
+
+      private def with_numeric_buffer(tag, type, value_type : T.class, & : Slice(T) ->) : Bool forall T
+        raise_unsupported_format_flag(tag)
         hdr = @record.header
         rec = @record
         rc = 0
@@ -218,13 +245,14 @@ module HTS
 
         expected_type = value_type == Float32 ? "float" : "integer"
         rc = normalize_format_rc(rc, tag, expected_type)
-        return unless rc
+        return false unless rc
 
         {% if T == Int32 %}
-          Array(T).new(rc) { |i| @record.scratch.format_i32[i] }
+          yield Slice(T).new(@record.scratch.format_i32, rc)
         {% else %}
-          Array(T).new(rc) { |i| @record.scratch.format_f32[i] }
+          yield Slice(T).new(@record.scratch.format_f32, rc)
         {% end %}
+        true
       end
 
       private def raise_unsupported_format_flag(tag : String)

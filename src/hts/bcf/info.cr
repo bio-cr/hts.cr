@@ -5,25 +5,15 @@ module HTS
       end
 
       def get_int(tag) : Array(Int32)?
-        scratch = @record.scratch
-        hdr = @record.header
-        r = @record
-        rc = LibHTS2.bcf_get_info_int32(hdr, r, tag, scratch.info_i32_data_address, scratch.info_i32_capacity_address)
-        rc = normalize_info_rc(rc, tag, "integer")
-        return unless rc
-        res = scratch.info_i32
-        Array(Int32).new(rc) { |i| res[i] }
+        result = nil.as(Array(Int32)?)
+        with_i32_buffer(tag) { |values| result = values.to_a }
+        result
       end
 
       def get_int64(tag) : Array(Int64)?
-        scratch = @record.scratch
-        hdr = @record.header
-        r = @record
-        rc = LibHTS2.bcf_get_info_int64(hdr, r, tag, scratch.info_i64_data_address, scratch.info_i64_capacity_address)
-        rc = normalize_info_rc(rc, tag, "integer")
-        return unless rc
-        res = scratch.info_i64
-        Array(Int64).new(rc) { |i| res[i] }
+        result = nil.as(Array(Int64)?)
+        with_i64_buffer(tag) { |values| result = values.to_a }
+        result
       end
 
       def get_int_opt(tag) : Array(Int32?)?
@@ -39,14 +29,39 @@ module HTS
       end
 
       def get_float(tag) : Array(Float32)?
-        scratch = @record.scratch
-        hdr = @record.header
-        r = @record
-        rc = LibHTS2.bcf_get_info_float(hdr, r, tag, scratch.info_f32_data_address, scratch.info_f32_capacity_address)
-        rc = normalize_info_rc(rc, tag, "float")
-        return unless rc
-        res = scratch.info_f32
-        Array(Float32).new(rc) { |i| res[i] }
+        result = nil.as(Array(Float32)?)
+        with_f32_buffer(tag) { |values| result = values.to_a }
+        result
+      end
+
+      # Yields a borrowed view of the raw Int32 INFO values.
+      #
+      # Returns false without yielding when the field is absent. The slice is
+      # valid only during the block and may be invalidated earlier by another
+      # INFO Int32 getter on the same record.
+      @[Experimental]
+      def with_i32_buffer(tag : String, & : Slice(Int32) ->) : Bool
+        with_numeric_buffer(tag, "integer", Int32) { |values| yield values }
+      end
+
+      # Yields a borrowed view of the raw Int64 INFO values.
+      #
+      # Returns false without yielding when the field is absent. The slice is
+      # valid only during the block and may be invalidated earlier by another
+      # INFO Int64 getter on the same record.
+      @[Experimental]
+      def with_i64_buffer(tag : String, & : Slice(Int64) ->) : Bool
+        with_numeric_buffer(tag, "integer", Int64) { |values| yield values }
+      end
+
+      # Yields a borrowed view of the raw Float32 INFO values.
+      #
+      # Returns false without yielding when the field is absent. The slice is
+      # valid only during the block and may be invalidated earlier by another
+      # INFO Float32 getter on the same record.
+      @[Experimental]
+      def with_f32_buffer(tag : String, & : Slice(Float32) ->) : Bool
+        with_numeric_buffer(tag, "float", Float32) { |values| yield values }
       end
 
       def get_float_opt(tag) : Array(Float32?)?
@@ -181,6 +196,35 @@ module HTS
         else
           rc
         end
+      end
+
+      private def with_numeric_buffer(tag : String, expected_type : String, value_type : T.class, & : Slice(T) ->) : Bool forall T
+        scratch = @record.scratch
+        hdr = @record.header
+        record = @record
+        rc = 0
+
+        {% if T == Int32 %}
+          rc = LibHTS2.bcf_get_info_int32(hdr, record, tag, scratch.info_i32_data_address, scratch.info_i32_capacity_address)
+        {% elsif T == Int64 %}
+          rc = LibHTS2.bcf_get_info_int64(hdr, record, tag, scratch.info_i64_data_address, scratch.info_i64_capacity_address)
+        {% elsif T == Float32 %}
+          rc = LibHTS2.bcf_get_info_float(hdr, record, tag, scratch.info_f32_data_address, scratch.info_f32_capacity_address)
+        {% else %}
+          {% raise "Unsupported INFO scratch type: #{T}" %}
+        {% end %}
+
+        rc = normalize_info_rc(rc, tag, expected_type)
+        return false unless rc
+
+        {% if T == Int32 %}
+          yield Slice(T).new(scratch.info_i32, rc)
+        {% elsif T == Int64 %}
+          yield Slice(T).new(scratch.info_i64, rc)
+        {% else %}
+          yield Slice(T).new(scratch.info_f32, rc)
+        {% end %}
+        true
       end
 
       private def check_update_rc!(rc : Int32, tag : String)

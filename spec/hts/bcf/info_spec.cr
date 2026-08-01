@@ -102,6 +102,38 @@ class BcfInfoTest
     end
   end
 
+  def test_borrowed_numeric_buffers
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        info = record.info
+
+        info.with_i32_buffer("MIX") do |values|
+          (values).should eq(Slice[42, Int32::MIN])
+          (values.to_unsafe).should eq(record.scratch.info_i32)
+          (values.size).should eq(2)
+        end.should be_true
+
+        info.with_i64_buffer("MIX") do |values|
+          (values).should eq(Slice[42_i64, Int64::MIN])
+          (values.to_unsafe).should eq(record.scratch.info_i64)
+          (values.size).should eq(2)
+        end.should be_true
+
+        info.with_f32_buffer("FOPT") do |values|
+          (values.to_unsafe).should eq(record.scratch.info_f32)
+          (values.size).should eq(2)
+          (values[0]).should eq(1.5_f32)
+          (HTS::LibHTS2.bcf_float_is_missing(values[1])).should eq(1)
+        end.should be_true
+
+        absent_yielded = false
+        info.with_i32_buffer("ABSI") { absent_yielded = true }.should be_false
+        (absent_yielded).should be_false
+      end
+    end
+  end
+
   def test_int64_and_character_info
     with_temp_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
@@ -127,9 +159,11 @@ class BcfInfoTest
     expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_int64("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_string("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::InfoDefinitionError) { info.get_flag("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::InfoDefinitionError) { info.with_i32_buffer("NO_SUCH_TAG") { } }
 
     ex = expect_raises(HTS::Bcf::InfoTypeError) { info.get_float("DP") }
     (ex.message).should eq("Tag DP is not float INFO field")
+    expect_raises(HTS::Bcf::InfoTypeError) { info.with_f32_buffer("DP") { } }
   end
 
   def test_defined_but_absent_tags

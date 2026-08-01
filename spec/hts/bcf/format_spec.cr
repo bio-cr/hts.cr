@@ -241,6 +241,36 @@ class BcfFormatTest
     end
   end
 
+  def test_borrowed_numeric_buffers
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        format = record.format
+
+        yielded = false
+        present = format.with_i32_buffer("PL") do |values|
+          yielded = true
+          (values).should eq(Slice[10, 20, 30, 40, 50, 60])
+          (values.to_unsafe).should eq(record.scratch.format_i32)
+          (values.size).should eq(6)
+          (values.size <= record.scratch.format_i32_capacity).should be_true
+        end
+        (present).should be_true
+        (yielded).should be_true
+
+        format.with_f32_buffer("FV") do |values|
+          (values.to_unsafe).should eq(record.scratch.format_f32)
+          (values.size).should eq(4)
+          (values[0]).should eq(1.5_f32)
+        end.should be_true
+
+        absent_yielded = false
+        format.with_i32_buffer("MISSI") { absent_yielded = true }.should be_false
+        (absent_yielded).should be_false
+      end
+    end
+  end
+
   def test_multisample_gt_and_flat_numeric_buffers
     with_temp_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
@@ -293,9 +323,11 @@ class BcfFormatTest
     expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_int("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_float("NO_SUCH_TAG") }
     expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_string("NO_SUCH_TAG") }
+    expect_raises(HTS::Bcf::FormatDefinitionError) { format.with_i32_buffer("NO_SUCH_TAG") { } }
 
     ex = expect_raises(HTS::Bcf::FormatTypeError) { format.get_float("PL") }
     (ex.message).should eq("Tag PL is not float FORMAT field")
+    expect_raises(HTS::Bcf::FormatTypeError) { format.with_f32_buffer("PL") { } }
   end
 
   def test_format_flag_is_unsupported
