@@ -1,23 +1,68 @@
 module HTS
   class Bcf < Hts
     class Record
+      @info : Info?
+      @format : Format?
+
+      # Shared native storage keeps accessor wrappers valid without retaining
+      # the Record object and creating a finalizer cycle.
+      # :nodoc:
+      class Storage
+        getter pointer : Pointer(LibHTS::Bcf1T)
+        getter scratch : Scratch
+
+        def initialize(@pointer : Pointer(LibHTS::Bcf1T))
+          @scratch = Scratch.new
+        end
+
+        def finalize
+          @scratch.close
+          LibHTS.bcf_destroy(@pointer) unless @pointer.null?
+        end
+      end
+
+      # :nodoc:
+      struct AccessorContext
+        getter :header
+
+        def initialize(@header : Bcf::Header, @storage : Storage)
+        end
+
+        def scratch : Scratch
+          @storage.scratch
+        end
+
+        def to_unsafe : Pointer(LibHTS::Bcf1T)
+          @storage.pointer
+        end
+      end
+
       def initialize(header : Bcf::Header, bcf_t : Pointer(HTS::LibHTS::Bcf1T))
         @header = header
         @bcf1 = bcf_t
-        @scratch = Scratch.new
+        @storage = Storage.new(@bcf1)
+        @accessor_context = AccessorContext.new(@header, @storage)
       end
 
       def initialize(header : Bcf::Header)
         @header = header
         @bcf1 = new_bcf1!
-        @scratch = Scratch.new
+        @storage = Storage.new(@bcf1)
+        @accessor_context = AccessorContext.new(@header, @storage)
       end
 
       getter :header
 
       # Internal reusable storage for HTSlib getter results.
       # :nodoc:
-      getter :scratch
+      def scratch : Scratch
+        @storage.scratch
+      end
+
+      # :nodoc:
+      def accessor_context : AccessorContext
+        @accessor_context
+      end
 
       def to_unsafe
         @bcf1
@@ -154,12 +199,12 @@ module HTS
 
       def info
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_SHR)
-        Info.new(self)
+        @info ||= Info.new(@accessor_context)
       end
 
       def format
         LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FMT)
-        Format.new(self)
+        @format ||= Format.new(@accessor_context)
       end
 
       def to_s(io : IO)
@@ -183,12 +228,6 @@ module HTS
         raise RecordError.new("bcf_dup failed") if bcf1.null?
 
         self.class.new(@header, bcf1)
-      end
-
-      # garbage collection
-      def finalize
-        @scratch.close
-        LibHTS.bcf_destroy(@bcf1) unless @bcf1.null?
       end
     end
   end

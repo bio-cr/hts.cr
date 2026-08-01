@@ -1,7 +1,11 @@
 module HTS
   class Bcf < Hts
     class Info
-      def initialize(@record : Bcf::Record)
+      def initialize(record : Bcf::Record)
+        @record = record.accessor_context
+      end
+
+      def initialize(@record : Bcf::Record::AccessorContext)
       end
 
       def get_int(tag) : Array(Int32)?

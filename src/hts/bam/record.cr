@@ -7,6 +7,8 @@ module HTS
     class Record
       SEQ_NT16_STR = "=ACMGRSVTWYHKDBN"
 
+      @aux : Aux?
+
       def initialize(header : Bam::Header, bam1_t : Pointer(HTS::LibHTS::Bam1T))
         @header = header
         @bam1 = bam1_t
@@ -373,7 +375,7 @@ module HTS
 
       # Return Aux object for iteration over all auxiliary tags
       def aux
-        Aux.new(@bam1)
+        @aux ||= Aux.new(@bam1)
       end
 
       # Return Int64

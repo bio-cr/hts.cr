@@ -26,7 +26,11 @@ module HTS
         end
       end
 
-      def initialize(@record : Bcf::Record)
+      def initialize(record : Bcf::Record)
+        @record = record.accessor_context
+      end
+
+      def initialize(@record : Bcf::Record::AccessorContext)
       end
 
       def update_int(tag : String, value : Int)

@@ -483,6 +483,15 @@ class BamRecordTest
     end
   end
 
+  def test_aux_wrapper_is_reused
+    aln = aln1
+    aux = aln.aux
+
+    aux.should be(aln.aux)
+    aux.update_int("AS", 42)
+    aln.aux.get_int("AS").should eq(42)
+  end
+
   def test_aux_type_specific_methods
     aln = aln1
     (aln.aux.get_int("AS")).should eq(0)

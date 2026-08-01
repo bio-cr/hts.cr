@@ -161,6 +161,42 @@ class BcfRecordTest
     (var1.format).should be_a(HTS::Bcf::Format)
   end
 
+  def test_accessor_wrappers_are_reused
+    record = var1
+
+    record.info.should be(record.info)
+    record.format.should be(record.format)
+  end
+
+  def test_accessor_wrappers_follow_reused_record
+    positions = [] of Int64
+    depths = [] of Int32
+    likelihoods = [] of Array(Int32)
+    cached_info : HTS::Bcf::Info? = nil
+    cached_format : HTS::Bcf::Format? = nil
+
+    with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) do
+      HTS::Bcf.open(test_bcf_path) do |bcf|
+        bcf.each do |record|
+          info = record.info
+          format = record.format
+          cached_info ||= info
+          cached_format ||= format
+          info.should be(cached_info)
+          format.should be(cached_format)
+          positions << record.pos
+          depths << (info.get_int("DP") || raise "missing DP")[0]
+          likelihoods << (format.get_int("PL") || raise "missing PL")
+          break if positions.size == 3
+        end
+      end
+    end
+
+    positions.should eq([2125_i64, 2582_i64, 2898_i64])
+    depths.should eq([31, 21, 29])
+    likelihoods.should eq([[172, 93, 0], [60, 0, 79], [44, 0, 106]])
+  end
+
   def test_to_s
     (var1.to_s).should eq("poo\t2126\t.\tT\tC\t142.416\t.\tDP=31;VDB=0.673439;SGB=-0.69311;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,14,17;MQ=60\tGT:PL\t1/1:172,93,0\n")
   end
