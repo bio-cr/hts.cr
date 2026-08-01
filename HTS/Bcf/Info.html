@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.19.1">
+<meta name="generator" content="Crystal Docs 1.20.3">
 <meta name="crystal_docs.project_version" content="develop">
 <meta name="crystal_docs.project_name" content="hts">
 
@@ -262,8 +262,18 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
+  <li class="parent " data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
       <a href="../../HTS/Bcf/Format.html">Format</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Format/GenotypeView" data-name="hts::bcf::format::genotypeview">
+      <a href="../../HTS/Bcf/Format/GenotypeView.html">GenotypeView</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -364,6 +374,11 @@
   
   <li class=" " data-id="hts/HTS/Bcf/RecordError" data-name="hts::bcf::recorderror">
       <a href="../../HTS/Bcf/RecordError.html">RecordError</a>
+      
+    </li>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Scratch" data-name="hts::bcf::scratch">
+      <a href="../../HTS/Bcf/Scratch.html">Scratch</a>
       
     </li>
   
@@ -593,7 +608,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L3" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L3" target="_blank">
         hts/bcf/info.cr
       </a>
     
@@ -723,6 +738,37 @@
         
       </li>
     
+      <li class="entry-summary">
+        <a href="#with_f32_buffer%28tag%3AString%2C%26%3ASlice%28Float32%29-%3E%29%3ABool-instance-method" class="signature"><strong>#with_f32_buffer</strong>(tag : String, & : Slice(Float32) -> ) : Bool</a>
+        
+          <div class="summary"><p>Yields a borrowed view of the raw Float32 INFO values.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#with_i32_buffer%28tag%3AString%2C%26%3ASlice%28Int32%29-%3E%29%3ABool-instance-method" class="signature"><strong>#with_i32_buffer</strong>(tag : String, & : Slice(Int32) -> ) : Bool</a>
+        
+          <div class="summary"><p>Yields a borrowed view of the raw Int32 INFO values.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#with_i64_buffer%28tag%3AString%2C%26%3ASlice%28Int64%29-%3E%29%3ABool-instance-method" class="signature"><strong>#with_i64_buffer</strong>(tag : String, & : Slice(Int64) -> ) : Bool</a>
+        
+          <div class="summary"><p>Yields a borrowed view of the raw Int64 INFO values.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#with_string_view%28tag%3AString%2C%26%3ABytes-%3E%29%3ABool-instance-method" class="signature"><strong>#with_string_view</strong>(tag : String, & : Bytes -> ) : Bool</a>
+        
+          <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        
+      </li>
+    
   </ul>
 
 
@@ -778,7 +824,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -810,7 +856,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L173" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L175" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -826,7 +872,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L92" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -842,7 +888,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -858,7 +904,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -874,7 +920,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -890,7 +936,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -906,7 +952,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -922,7 +968,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L19" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -938,7 +984,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L73" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -954,7 +1000,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L164" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L166" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -970,7 +1016,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -986,7 +1032,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L148" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L150" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1002,7 +1048,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L115" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1018,7 +1064,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L122" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L124" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1034,7 +1080,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L132" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1050,7 +1096,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L134" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L136" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1066,7 +1112,103 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/54eb49276421b16d9700cb1b707775d5bae14b76/src/hts/bcf/info.cr#L156" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L158" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="with_f32_buffer(tag:String,&amp;:Slice(Float32)-&gt;):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>with_f32_buffer</strong>(tag : String, & : Slice(Float32) -> ) : Bool
+
+        <a class="method-permalink" href="#with_f32_buffer%28tag%3AString%2C%26%3ASlice%28Float32%29-%3E%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Yields a borrowed view of the raw Float32 INFO values.</p>
+<p>Returns false without yielding when the field is absent. The slice is
+valid only during the block and may be invalidated earlier by another
+INFO Float32 getter on the same record.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L63" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="with_i32_buffer(tag:String,&amp;:Slice(Int32)-&gt;):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>with_i32_buffer</strong>(tag : String, & : Slice(Int32) -> ) : Bool
+
+        <a class="method-permalink" href="#with_i32_buffer%28tag%3AString%2C%26%3ASlice%28Int32%29-%3E%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Yields a borrowed view of the raw Int32 INFO values.</p>
+<p>Returns false without yielding when the field is absent. The slice is
+valid only during the block and may be invalidated earlier by another
+INFO Int32 getter on the same record.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="with_i64_buffer(tag:String,&amp;:Slice(Int64)-&gt;):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>with_i64_buffer</strong>(tag : String, & : Slice(Int64) -> ) : Bool
+
+        <a class="method-permalink" href="#with_i64_buffer%28tag%3AString%2C%26%3ASlice%28Int64%29-%3E%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Yields a borrowed view of the raw Int64 INFO values.</p>
+<p>Returns false without yielding when the field is absent. The slice is
+valid only during the block and may be invalidated earlier by another
+INFO Int64 getter on the same record.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="with_string_view(tag:String,&amp;:Bytes-&gt;):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>with_string_view</strong>(tag : String, & : Bytes -> ) : Bool
+
+        <a class="method-permalink" href="#with_string_view%28tag%3AString%2C%26%3ABytes-%3E%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p><span class="flag lime">EXPERIMENTAL</span> </p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/info.cr#L80" target="_blank">View source</a>]
         
       </div>
     </div>

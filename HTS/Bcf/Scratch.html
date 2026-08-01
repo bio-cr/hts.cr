@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="hts">
-  <title>HTS::Bcf::Format - hts develop</title>
+  <title>HTS::Bcf::Scratch - hts develop</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -262,7 +262,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
+  <li class="parent " data-id="hts/HTS/Bcf/Format" data-name="hts::bcf::format">
       <a href="../../HTS/Bcf/Format.html">Format</a>
       
         <ul>
@@ -377,7 +377,7 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Bcf/Scratch" data-name="hts::bcf::scratch">
+  <li class=" current" data-id="hts/HTS/Bcf/Scratch" data-name="hts::bcf::scratch">
       <a href="../../HTS/Bcf/Scratch.html">Scratch</a>
       
     </li>
@@ -573,15 +573,29 @@
 
   <span class="kind">
     class
-  </span> HTS::<wbr>Bcf::<wbr>Format
+  </span> HTS::<wbr>Bcf::<wbr>Scratch
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bcf/Format.html">HTS::Bcf::Format</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../HTS/Bcf/Scratch.html">HTS::Bcf::Scratch</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Internal reusable storage for values returned by HTSlib BCF getters.</p>
+<p>The pointers are stored directly in this object. A record therefore adds
+only one scratch object, rather than one wrapper allocation per buffer.
+:nodoc:</p>
 
 
 
@@ -608,8 +622,8 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L3" target="_blank">
-        hts/bcf/format.cr
+      <a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L8" target="_blank">
+        hts/bcf/scratch.cr
       </a>
     
     <br/>
@@ -620,23 +634,6 @@
 
 
   
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#new%28record%3ABcf%3A%3ARecord%29-class-method" class="signature"><strong>.new</strong>(record : Bcf::Record)</a>
-        
-      </li>
-    
-  </ul>
-
 
   
 
@@ -654,138 +651,167 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#delete%28tag%3AString%29%3ABool-instance-method" class="signature"><strong>#delete</strong>(tag : String) : Bool</a>
+        <a href="#close%3ANil-instance-method" class="signature"><strong>#close</strong> : Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each_genotype%28tag%3AString%3D%22GT%22%2C%26%3AInt32%2CGenotypeView-%3E%29%3ABool-instance-method" class="signature"><strong>#each_genotype</strong>(tag : String = <span class="s">&quot;GT&quot;</span>, & : Int32, GenotypeView -> ) : Bool</a>
-        
-          <div class="summary"><p>Yields each sample index and a borrowed view of its encoded GT values.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_char%3APointer%28UInt8%29-instance-method" class="signature"><strong>#format_char</strong> : Pointer(UInt8)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each_scalar_f32%28tag%3AString%2C%26%3AInt32%2CFloat32-%3E%29%3ABool-instance-method" class="signature"><strong>#each_scalar_f32</strong>(tag : String, & : Int32, Float32 -> ) : Bool</a>
-        
-          <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_char_capacity%3AInt32-instance-method" class="signature"><strong>#format_char_capacity</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each_scalar_i32%28tag%3AString%2C%26%3AInt32%2CInt32-%3E%29%3ABool-instance-method" class="signature"><strong>#each_scalar_i32</strong>(tag : String, & : Int32, Int32 -> ) : Bool</a>
-        
-          <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_char_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#format_char_capacity_address</strong> : Pointer(Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each_string_view%28tag%3AString%2C%26%3AInt32%2CBytes-%3E%29%3ABool-instance-method" class="signature"><strong>#each_string_view</strong>(tag : String, & : Int32, Bytes -> ) : Bool</a>
-        
-          <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_char_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#format_char_data_address</strong> : Pointer(Pointer(Void))</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each_vector_f32%28tag%3AString%2C%26%3AInt32%2CSlice%28Float32%29-%3E%29%3ABool-instance-method" class="signature"><strong>#each_vector_f32</strong>(tag : String, & : Int32, Slice(Float32) -> ) : Bool</a>
-        
-          <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_f32%3APointer%28Float32%29-instance-method" class="signature"><strong>#format_f32</strong> : Pointer(Float32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each_vector_i32%28tag%3AString%2C%26%3AInt32%2CSlice%28Int32%29-%3E%29%3ABool-instance-method" class="signature"><strong>#each_vector_i32</strong>(tag : String, & : Int32, Slice(Int32) -> ) : Bool</a>
-        
-          <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_f32_capacity%3AInt32-instance-method" class="signature"><strong>#format_f32_capacity</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#genotype_at%28tag%3AString%2Csample_index%3AInt%2C%26%3AGenotypeView-%3E%29%3ABool-instance-method" class="signature"><strong>#genotype_at</strong>(tag : String, sample_index : Int, & : GenotypeView -> ) : Bool</a>
-        
-          <div class="summary"><p>Yields a borrowed GT view for one sample without traversing other samples.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#format_f32_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#format_f32_capacity_address</strong> : Pointer(Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#genotypes%3AArray%28Int32%29%7CNil-instance-method" class="signature"><strong>#genotypes</strong> : Array(Int32) | Nil</a>
+        <a href="#format_f32_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#format_f32_data_address</strong> : Pointer(Pointer(Void))</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_float%28tag%29%3AArray%28Float32%29%7CNil-instance-method" class="signature"><strong>#get_float</strong>(tag) : Array(Float32) | Nil</a>
+        <a href="#format_i32%3APointer%28Int32%29-instance-method" class="signature"><strong>#format_i32</strong> : Pointer(Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_genotypes%3AArray%28Int32%29%7CNil-instance-method" class="signature"><strong>#get_genotypes</strong> : Array(Int32) | Nil</a>
-        
-          <div class="summary"><p>ameba:disable Naming/AccessorMethodName</p></div>
+        <a href="#format_i32_capacity%3AInt32-instance-method" class="signature"><strong>#format_i32_capacity</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_int%28tag%29%3AArray%28Int32%29%7CNil-instance-method" class="signature"><strong>#get_int</strong>(tag) : Array(Int32) | Nil</a>
+        <a href="#format_i32_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#format_i32_capacity_address</strong> : Pointer(Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_string%28tag%29%3AArray%28String%29%7CNil-instance-method" class="signature"><strong>#get_string</strong>(tag) : Array(String) | Nil</a>
-        
-          <div class="summary"><p>Returns one String per sample.</p></div>
+        <a href="#format_i32_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#format_i32_data_address</strong> : Pointer(Pointer(Void))</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_float%28tag%3AString%2Cvalue%3ANumber%29-instance-method" class="signature"><strong>#update_float</strong>(tag : String, value : Number)</a>
+        <a href="#info_char%3APointer%28UInt8%29-instance-method" class="signature"><strong>#info_char</strong> : Pointer(UInt8)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_float%28tag%3AString%2Cvalues%3AArray%28Float32%29%29-instance-method" class="signature"><strong>#update_float</strong>(tag : String, values : Array(Float32))</a>
+        <a href="#info_char_capacity%3AInt32-instance-method" class="signature"><strong>#info_char_capacity</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_genotypes%28values%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#update_genotypes</strong>(values : Array(Int32))</a>
+        <a href="#info_char_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#info_char_capacity_address</strong> : Pointer(Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_int%28tag%3AString%2Cvalue%3AInt%29-instance-method" class="signature"><strong>#update_int</strong>(tag : String, value : Int)</a>
+        <a href="#info_char_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#info_char_data_address</strong> : Pointer(Pointer(Void))</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_int%28tag%3AString%2Cvalues%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#update_int</strong>(tag : String, values : Array(Int32))</a>
+        <a href="#info_f32%3APointer%28Float32%29-instance-method" class="signature"><strong>#info_f32</strong> : Pointer(Float32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_string%28tag%3AString%2Cvalue%3AString%29-instance-method" class="signature"><strong>#update_string</strong>(tag : String, value : String)</a>
+        <a href="#info_f32_capacity%3AInt32-instance-method" class="signature"><strong>#info_f32_capacity</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#update_string%28tag%3AString%2Cvalues%3AArray%28String%29%29-instance-method" class="signature"><strong>#update_string</strong>(tag : String, values : Array(String))</a>
+        <a href="#info_f32_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#info_f32_capacity_address</strong> : Pointer(Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#with_f32_buffer%28tag%3AString%2C%26%3ASlice%28Float32%29-%3E%29%3ABool-instance-method" class="signature"><strong>#with_f32_buffer</strong>(tag : String, & : Slice(Float32) -> ) : Bool</a>
-        
-          <div class="summary"><p>Yields a borrowed view of the raw Float32 FORMAT values.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        <a href="#info_f32_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#info_f32_data_address</strong> : Pointer(Pointer(Void))</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#with_i32_buffer%28tag%3AString%2C%26%3ASlice%28Int32%29-%3E%29%3ABool-instance-method" class="signature"><strong>#with_i32_buffer</strong>(tag : String, & : Slice(Int32) -> ) : Bool</a>
+        <a href="#info_flag%3APointer%28UInt8%29-instance-method" class="signature"><strong>#info_flag</strong> : Pointer(UInt8)</a>
         
-          <div class="summary"><p>Yields a borrowed view of the raw Int32 FORMAT values.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_flag_capacity%3AInt32-instance-method" class="signature"><strong>#info_flag_capacity</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_flag_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#info_flag_capacity_address</strong> : Pointer(Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_flag_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#info_flag_data_address</strong> : Pointer(Pointer(Void))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i32%3APointer%28Int32%29-instance-method" class="signature"><strong>#info_i32</strong> : Pointer(Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i32_capacity%3AInt32-instance-method" class="signature"><strong>#info_i32_capacity</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i32_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#info_i32_capacity_address</strong> : Pointer(Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i32_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#info_i32_data_address</strong> : Pointer(Pointer(Void))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i64%3APointer%28Int64%29-instance-method" class="signature"><strong>#info_i64</strong> : Pointer(Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i64_capacity%3AInt32-instance-method" class="signature"><strong>#info_i64_capacity</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i64_capacity_address%3APointer%28Int32%29-instance-method" class="signature"><strong>#info_i64_capacity_address</strong> : Pointer(Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#info_i64_data_address%3APointer%28Pointer%28Void%29%29-instance-method" class="signature"><strong>#info_i64_data_address</strong> : Pointer(Pointer(Void))</a>
         
       </li>
     
@@ -824,32 +850,6 @@
   </div>
 
   
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(record:Bcf::Record)-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(record : <a href="../../HTS/Bcf/Record.html">Bcf::Record</a>)
-
-        <a class="method-permalink" href="#new%28record%3ABcf%3A%3ARecord%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L29" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
   
 
@@ -865,422 +865,530 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="delete(tag:String):Bool-instance-method">
+    <div class="entry-detail" id="close:Nil-instance-method">
       <div class="signature">
         
-        def <strong>delete</strong>(tag : String) : Bool
+        def <strong>close</strong> : Nil
 
-        <a class="method-permalink" href="#delete%28tag%3AString%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#close%3ANil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_genotype(tag:String=&quot;GT&quot;,&amp;:Int32,GenotypeView-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_char:Pointer(UInt8)-instance-method">
       <div class="signature">
         
-        def <strong>each_genotype</strong>(tag : String = <span class="s">&quot;GT&quot;</span>, & : Int32, <a href="../../HTS/Bcf/Format/GenotypeView.html">GenotypeView</a> -> ) : Bool
+        def <strong>format_char</strong> : Pointer(UInt8)
 
-        <a class="method-permalink" href="#each_genotype%28tag%3AString%3D%22GT%22%2C%26%3AInt32%2CGenotypeView-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_char%3APointer%28UInt8%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Yields each sample index and a borrowed view of its encoded GT values.</p>
-<p>Returns false without yielding when GT is absent. A view is valid only
-during its block invocation and excludes trailing vector-end sentinels.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L216" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_scalar_f32(tag:String,&amp;:Int32,Float32-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_char_capacity:Int32-instance-method">
       <div class="signature">
         
-        def <strong>each_scalar_f32</strong>(tag : String, & : Int32, Float32 -> ) : Bool
+        def <strong>format_char_capacity</strong> : Int32
 
-        <a class="method-permalink" href="#each_scalar_f32%28tag%3AString%2C%26%3AInt32%2CFloat32-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_char_capacity%3AInt32-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L167" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_scalar_i32(tag:String,&amp;:Int32,Int32-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_char_capacity_address:Pointer(Int32)-instance-method">
       <div class="signature">
         
-        def <strong>each_scalar_i32</strong>(tag : String, & : Int32, Int32 -> ) : Bool
+        def <strong>format_char_capacity_address</strong> : Pointer(Int32)
 
-        <a class="method-permalink" href="#each_scalar_i32%28tag%3AString%2C%26%3AInt32%2CInt32-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_char_capacity_address%3APointer%28Int32%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_string_view(tag:String,&amp;:Int32,Bytes-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_char_data_address:Pointer(Pointer(Void))-instance-method">
       <div class="signature">
         
-        def <strong>each_string_view</strong>(tag : String, & : Int32, Bytes -> ) : Bool
+        def <strong>format_char_data_address</strong> : Pointer(Pointer(Void))
 
-        <a class="method-permalink" href="#each_string_view%28tag%3AString%2C%26%3AInt32%2CBytes-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_char_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_vector_f32(tag:String,&amp;:Int32,Slice(Float32)-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_f32:Pointer(Float32)-instance-method">
       <div class="signature">
         
-        def <strong>each_vector_f32</strong>(tag : String, & : Int32, Slice(Float32) -> ) : Bool
+        def <strong>format_f32</strong> : Pointer(Float32)
 
-        <a class="method-permalink" href="#each_vector_f32%28tag%3AString%2C%26%3AInt32%2CSlice%28Float32%29-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_f32%3APointer%28Float32%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L177" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_vector_i32(tag:String,&amp;:Int32,Slice(Int32)-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_f32_capacity:Int32-instance-method">
       <div class="signature">
         
-        def <strong>each_vector_i32</strong>(tag : String, & : Int32, Slice(Int32) -> ) : Bool
+        def <strong>format_f32_capacity</strong> : Int32
 
-        <a class="method-permalink" href="#each_vector_i32%28tag%3AString%2C%26%3AInt32%2CSlice%28Int32%29-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_f32_capacity%3AInt32-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L172" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="genotype_at(tag:String,sample_index:Int,&amp;:GenotypeView-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="format_f32_capacity_address:Pointer(Int32)-instance-method">
       <div class="signature">
         
-        def <strong>genotype_at</strong>(tag : String, sample_index : Int, & : <a href="../../HTS/Bcf/Format/GenotypeView.html">GenotypeView</a> -> ) : Bool
+        def <strong>format_f32_capacity_address</strong> : Pointer(Int32)
 
-        <a class="method-permalink" href="#genotype_at%28tag%3AString%2Csample_index%3AInt%2C%26%3AGenotypeView-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#format_f32_capacity_address%3APointer%28Int32%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Yields a borrowed GT view for one sample without traversing other
-samples. Returns false without yielding when GT is absent.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L235" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="genotypes:Array(Int32)|Nil-instance-method">
+    <div class="entry-detail" id="format_f32_data_address:Pointer(Pointer(Void))-instance-method">
       <div class="signature">
         
-        def <strong>genotypes</strong> : Array(Int32) | Nil
+        def <strong>format_f32_data_address</strong> : Pointer(Pointer(Void))
 
-        <a class="method-permalink" href="#genotypes%3AArray%28Int32%29%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#format_f32_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L258" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_float(tag):Array(Float32)|Nil-instance-method">
+    <div class="entry-detail" id="format_i32:Pointer(Int32)-instance-method">
       <div class="signature">
         
-        def <strong>get_float</strong>(tag) : Array(Float32) | Nil
+        def <strong>format_i32</strong> : Pointer(Int32)
 
-        <a class="method-permalink" href="#get_float%28tag%29%3AArray%28Float32%29%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#format_i32%3APointer%28Int32%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L137" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_genotypes:Array(Int32)|Nil-instance-method">
+    <div class="entry-detail" id="format_i32_capacity:Int32-instance-method">
       <div class="signature">
         
-        def <strong>get_genotypes</strong> : Array(Int32) | Nil
+        def <strong>format_i32_capacity</strong> : Int32
 
-        <a class="method-permalink" href="#get_genotypes%3AArray%28Int32%29%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#format_i32_capacity%3AInt32-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>ameba:disable Naming/AccessorMethodName</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L272" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_int(tag):Array(Int32)|Nil-instance-method">
+    <div class="entry-detail" id="format_i32_capacity_address:Pointer(Int32)-instance-method">
       <div class="signature">
         
-        def <strong>get_int</strong>(tag) : Array(Int32) | Nil
+        def <strong>format_i32_capacity_address</strong> : Pointer(Int32)
 
-        <a class="method-permalink" href="#get_int%28tag%29%3AArray%28Int32%29%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#format_i32_capacity_address%3APointer%28Int32%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L133" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_string(tag):Array(String)|Nil-instance-method">
+    <div class="entry-detail" id="format_i32_data_address:Pointer(Pointer(Void))-instance-method">
       <div class="signature">
         
-        def <strong>get_string</strong>(tag) : Array(String) | Nil
+        def <strong>format_i32_data_address</strong> : Pointer(Pointer(Void))
 
-        <a class="method-permalink" href="#get_string%28tag%29%3AArray%28String%29%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#format_i32_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Returns one String per sample. Character FORMAT fields are handled here too.</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L249" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_float(tag:String,value:Number)-instance-method">
+    <div class="entry-detail" id="info_char:Pointer(UInt8)-instance-method">
       <div class="signature">
         
-        def <strong>update_float</strong>(tag : String, value : Number)
+        def <strong>info_char</strong> : Pointer(UInt8)
 
-        <a class="method-permalink" href="#update_float%28tag%3AString%2Cvalue%3ANumber%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_char%3APointer%28UInt8%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_float(tag:String,values:Array(Float32))-instance-method">
+    <div class="entry-detail" id="info_char_capacity:Int32-instance-method">
       <div class="signature">
         
-        def <strong>update_float</strong>(tag : String, values : Array(Float32))
+        def <strong>info_char_capacity</strong> : Int32
 
-        <a class="method-permalink" href="#update_float%28tag%3AString%2Cvalues%3AArray%28Float32%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_char_capacity%3AInt32-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L71" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_genotypes(values:Array(Int32))-instance-method">
+    <div class="entry-detail" id="info_char_capacity_address:Pointer(Int32)-instance-method">
       <div class="signature">
         
-        def <strong>update_genotypes</strong>(values : Array(Int32))
+        def <strong>info_char_capacity_address</strong> : Pointer(Int32)
 
-        <a class="method-permalink" href="#update_genotypes%28values%3AArray%28Int32%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_char_capacity_address%3APointer%28Int32%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L100" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_int(tag:String,value:Int)-instance-method">
+    <div class="entry-detail" id="info_char_data_address:Pointer(Pointer(Void))-instance-method">
       <div class="signature">
         
-        def <strong>update_int</strong>(tag : String, value : Int)
+        def <strong>info_char_data_address</strong> : Pointer(Pointer(Void))
 
-        <a class="method-permalink" href="#update_int%28tag%3AString%2Cvalue%3AInt%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_char_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_int(tag:String,values:Array(Int32))-instance-method">
+    <div class="entry-detail" id="info_f32:Pointer(Float32)-instance-method">
       <div class="signature">
         
-        def <strong>update_int</strong>(tag : String, values : Array(Int32))
+        def <strong>info_f32</strong> : Pointer(Float32)
 
-        <a class="method-permalink" href="#update_int%28tag%3AString%2Cvalues%3AArray%28Int32%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_f32%3APointer%28Float32%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_string(tag:String,value:String)-instance-method">
+    <div class="entry-detail" id="info_f32_capacity:Int32-instance-method">
       <div class="signature">
         
-        def <strong>update_string</strong>(tag : String, value : String)
+        def <strong>info_f32_capacity</strong> : Int32
 
-        <a class="method-permalink" href="#update_string%28tag%3AString%2Cvalue%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_f32_capacity%3AInt32-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L82" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update_string(tag:String,values:Array(String))-instance-method">
+    <div class="entry-detail" id="info_f32_capacity_address:Pointer(Int32)-instance-method">
       <div class="signature">
         
-        def <strong>update_string</strong>(tag : String, values : Array(String))
+        def <strong>info_f32_capacity_address</strong> : Pointer(Int32)
 
-        <a class="method-permalink" href="#update_string%28tag%3AString%2Cvalues%3AArray%28String%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#info_f32_capacity_address%3APointer%28Int32%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L86" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="with_f32_buffer(tag:String,&amp;:Slice(Float32)-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="info_f32_data_address:Pointer(Pointer(Void))-instance-method">
       <div class="signature">
         
-        def <strong>with_f32_buffer</strong>(tag : String, & : Slice(Float32) -> ) : Bool
+        def <strong>info_f32_data_address</strong> : Pointer(Pointer(Void))
 
-        <a class="method-permalink" href="#with_f32_buffer%28tag%3AString%2C%26%3ASlice%28Float32%29-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#info_f32_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Yields a borrowed view of the raw Float32 FORMAT values.</p>
-<p>Returns false without yielding when the field is absent. The slice is
-valid only during the block and may be invalidated earlier by another
-FORMAT Float32 getter on the same record.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="with_i32_buffer(tag:String,&amp;:Slice(Int32)-&gt;):Bool-instance-method">
+    <div class="entry-detail" id="info_flag:Pointer(UInt8)-instance-method">
       <div class="signature">
         
-        def <strong>with_i32_buffer</strong>(tag : String, & : Slice(Int32) -> ) : Bool
+        def <strong>info_flag</strong> : Pointer(UInt8)
 
-        <a class="method-permalink" href="#with_i32_buffer%28tag%3AString%2C%26%3ASlice%28Int32%29-%3E%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#info_flag%3APointer%28UInt8%29-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Yields a borrowed view of the raw Int32 FORMAT values.</p>
-<p>Returns false without yielding when the field is absent. The slice is
-valid only during the block and may be invalidated earlier by another
-FORMAT Int32 or genotype getter on the same record.</p>
-<p><span class="flag lime">EXPERIMENTAL</span> </p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/format.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_flag_capacity:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>info_flag_capacity</strong> : Int32
+
+        <a class="method-permalink" href="#info_flag_capacity%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_flag_capacity_address:Pointer(Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>info_flag_capacity_address</strong> : Pointer(Int32)
+
+        <a class="method-permalink" href="#info_flag_capacity_address%3APointer%28Int32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_flag_data_address:Pointer(Pointer(Void))-instance-method">
+      <div class="signature">
+        
+        def <strong>info_flag_data_address</strong> : Pointer(Pointer(Void))
+
+        <a class="method-permalink" href="#info_flag_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i32:Pointer(Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i32</strong> : Pointer(Int32)
+
+        <a class="method-permalink" href="#info_i32%3APointer%28Int32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i32_capacity:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i32_capacity</strong> : Int32
+
+        <a class="method-permalink" href="#info_i32_capacity%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i32_capacity_address:Pointer(Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i32_capacity_address</strong> : Pointer(Int32)
+
+        <a class="method-permalink" href="#info_i32_capacity_address%3APointer%28Int32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i32_data_address:Pointer(Pointer(Void))-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i32_data_address</strong> : Pointer(Pointer(Void))
+
+        <a class="method-permalink" href="#info_i32_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i64:Pointer(Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i64</strong> : Pointer(Int64)
+
+        <a class="method-permalink" href="#info_i64%3APointer%28Int64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i64_capacity:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i64_capacity</strong> : Int32
+
+        <a class="method-permalink" href="#info_i64_capacity%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i64_capacity_address:Pointer(Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i64_capacity_address</strong> : Pointer(Int32)
+
+        <a class="method-permalink" href="#info_i64_capacity_address%3APointer%28Int32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="info_i64_data_address:Pointer(Pointer(Void))-instance-method">
+      <div class="signature">
+        
+        def <strong>info_i64_data_address</strong> : Pointer(Pointer(Void))
+
+        <a class="method-permalink" href="#info_i64_data_address%3APointer%28Pointer%28Void%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/7becc95c31e8fdb37cb77a21eef190a2820fc86a/src/hts/bcf/scratch.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
