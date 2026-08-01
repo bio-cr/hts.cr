@@ -234,6 +234,26 @@ class BamRecordTest
     (aln.cigar_size).should eq(3)
   end
 
+  def test_cigar_at
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("4M1I2D"),
+      "ACGTT",
+      [30_u8, 30_u8, 30_u8, 30_u8, 30_u8]
+    )
+
+    aln.cigar_at(0).should eq({'M', 4_u32})
+    aln.cigar_at(2).should eq({'D', 2_u32})
+    aln.cigar_at(-1).should eq({'D', 2_u32})
+    aln.cigar_at(3).should be_nil
+    aln.cigar_at(-4).should be_nil
+  end
+
   def test_each_cigar
     aln = HTS::Bam::Record.new(
       minimal_header,
@@ -333,12 +353,30 @@ class BamRecordTest
   end
 
   def test_each_base
+    aln = aln1
     bases = [] of Char
-    aln1.each_base do |base|
+    returned = aln.each_base do |base|
       bases << base
     end
 
-    bases.should eq(aln1.seq.chars)
+    returned.should be(aln)
+    bases.should eq(aln.seq.chars)
+  end
+
+  def test_packed_sequence_view
+    aln = HTS::Bam::Record.new(
+      minimal_header,
+      "read1",
+      0,
+      0,
+      0_i64,
+      60,
+      HTS::Bam::Cigar.encode("5M"),
+      "ACGTN",
+      [30_u8, 30_u8, 30_u8, 30_u8, 30_u8]
+    )
+
+    aln.packed_sequence_view.should eq(Bytes[0x12, 0x48, 0xf0])
   end
 
   def test_qual
@@ -346,12 +384,14 @@ class BamRecordTest
   end
 
   def test_each_qual
+    aln = aln1
     qualities = [] of UInt8
-    aln1.each_qual do |quality|
+    returned = aln.each_qual do |quality|
       qualities << quality
     end
 
-    qualities.should eq(aln1.qual)
+    returned.should be(aln)
+    qualities.should eq(aln.qual)
   end
 
   def test_qual_string

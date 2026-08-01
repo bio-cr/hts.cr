@@ -212,7 +212,7 @@ module HTS
         @bam1.value.core.qual = mapq
       end
 
-      # returns a `Cigar` object.
+      # Returns an independent, allocating `Cigar` object.
       def cigar
         Cigar.new(LibHTS2.bam_get_cigar(@bam1), @bam1.value.core.n_cigar)
       end
@@ -221,6 +221,18 @@ module HTS
       # allocating a `Cigar` object.
       def cigar_size : UInt32
         @bam1.value.core.n_cigar
+      end
+
+      # Returns one CIGAR operation without allocating a `Cigar` object.
+      def cigar_at(index : Int) : Tuple(Char, UInt32)?
+        index += cigar_size if index < 0
+        return unless 0 <= index < cigar_size
+
+        cigar_ptr = LibHTS2.bam_get_cigar(@bam1)
+        raise RecordError.new("BAM record has CIGAR operations but no CIGAR data") if cigar_ptr.null?
+
+        cigar_op = cigar_ptr[index]
+        {LibHTS2.bam_cigar_opchr(cigar_op), LibHTS2.bam_cigar_oplen(cigar_op)}
       end
 
       # Iterate over CIGAR operations without allocating a `Cigar` object or
@@ -255,13 +267,10 @@ module HTS
         )
       end
 
-      # return the read sequence
+      # Returns the read sequence as an allocating `String`.
       def seq
-        r = LibHTS2.bam_get_seq(@bam1)
-        String.build do |seq|
-          (len).times do |i|
-            seq << SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
-          end
+        String.build(len) do |seq|
+          each_base { |base| seq << base }
         end
       end
 
@@ -273,6 +282,17 @@ module HTS
         @bam1.value.core.l_qseq
       end
 
+      # The packed 4-bit sequence is borrowed from this record.
+      @[Experimental]
+      def packed_sequence_view : Bytes
+        packed_size = (len + 1) // 2
+        pointer = LibHTS2.bam_get_seq(@bam1)
+        if packed_size > 0 && pointer.null?
+          raise RecordError.new("BAM record has sequence length but no sequence data")
+        end
+        Slice.new(pointer, packed_size)
+      end
+
       # return only the base of the requested index "i" of the query sequence.
       def base(n)
         n += len if n < 0
@@ -282,28 +302,29 @@ module HTS
         SEQ_NT16_STR[LibHTS2.bam_seqi(r, n)]
       end
 
-      # Iterate over query sequence bases without building a String.
-      def each_base(&)
+      # Streams query sequence bases without building a `String`.
+      def each_base(& : Char ->) : self
         r = LibHTS2.bam_get_seq(@bam1)
         len.times do |i|
           yield SEQ_NT16_STR[LibHTS2.bam_seqi(r, i)]
         end
+        self
       end
 
-      # return the base qualities
+      # Returns base qualities as an allocating `Array`.
       def qual
-        q_ptr = LibHTS2.bam_get_qual(@bam1)
-        Array.new(len) do |i|
-          q_ptr[i]
-        end
+        qualities = Array(UInt8).new(len)
+        each_qual { |quality| qualities << quality }
+        qualities
       end
 
-      # Iterate over base qualities without building an Array.
-      def each_qual(&)
+      # Streams base qualities without building an `Array`.
+      def each_qual(& : UInt8 ->) : self
         q_ptr = LibHTS2.bam_get_qual(@bam1)
         len.times do |i|
           yield q_ptr[i]
         end
+        self
       end
 
       # Return base qualities as a Phred+33 QUAL string.
