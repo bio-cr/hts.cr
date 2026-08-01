@@ -19,31 +19,31 @@ module HTS
            } %}
 
         {% for name, type in buffers %}
-          @{{name.id}}_data = Pointer(Void).null
-          @{{name.id}}_capacity = 0
+          @{{ name.id }}_data = Pointer(Void).null
+          @{{ name.id }}_capacity = 0
 
-          def {{name.id}} : Pointer({{type}})
-            @{{name.id}}_data.as(Pointer({{type}}))
+          def {{ name.id }} : Pointer({{ type }})
+            @{{ name.id }}_data.as(Pointer({{ type }}))
           end
 
-          def {{name.id}}_capacity : Int32
-            @{{name.id}}_capacity
+          def {{ name.id }}_capacity : Int32
+            @{{ name.id }}_capacity
           end
 
-          def {{name.id}}_data_address : Pointer(Pointer(Void))
-            pointerof(@{{name.id}}_data)
+          def {{ name.id }}_data_address : Pointer(Pointer(Void))
+            pointerof(@{{ name.id }}_data)
           end
 
-          def {{name.id}}_capacity_address : Pointer(Int32)
-            pointerof(@{{name.id}}_capacity)
+          def {{ name.id }}_capacity_address : Pointer(Int32)
+            pointerof(@{{ name.id }}_capacity)
           end
         {% end %}
 
         def close : Nil
           {% for name, _type in buffers %}
-            LibHTS.hts_free(@{{name.id}}_data) unless @{{name.id}}_data.null?
-            @{{name.id}}_data = Pointer(Void).null
-            @{{name.id}}_capacity = 0
+            LibHTS.hts_free(@{{ name.id }}_data) unless @{{ name.id }}_data.null?
+            @{{ name.id }}_data = Pointer(Void).null
+            @{{ name.id }}_capacity = 0
           {% end %}
         end
       {% end %}

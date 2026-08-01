@@ -440,13 +440,18 @@ module HTS
     fun hts_parse_reg(str : LibC::Char*, beg : LibC::Int*, _end : LibC::Int*) : LibC::Char*
     fun hts_parse_region(s : LibC::Char*, tid : LibC::Int*, beg : HtsPosT*, _end : HtsPosT*, getid : HtsName2idF, hdr : Void*, flags : LibC::Int) : LibC::Char*
     alias HtsName2idF = (Void*, LibC::Char* -> LibC::Int)
-    fun hts_itr_query(idx : HtsIdxT, tid : LibC::Int, beg : HtsPosT, _end : HtsPosT, readrec : (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int)) : HtsItrT*
+    alias HtsReadrecFunc = (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int)
+    alias HtsItrQueryFunc = (HtsIdxT, LibC::Int, HtsPosT, HtsPosT, HtsReadrecFunc -> HtsItrT*)
+    alias HtsItrMultiQueryFunc = (HtsIdxT, HtsItrT* -> LibC::Int)
+    alias HtsSeekFunc = (Void*, Int64T, LibC::Int -> LibC::Int)
+    alias HtsTellFunc = (Void* -> Int64T)
+    fun hts_itr_query(idx : HtsIdxT, tid : LibC::Int, beg : HtsPosT, _end : HtsPosT, readrec : HtsReadrecFunc) : HtsItrT*
     fun hts_itr_destroy(iter : HtsItrT*)
-    fun hts_itr_querys(idx : HtsIdxT, reg : LibC::Char*, getid : HtsName2idF, hdr : Void*, itr_query : (HtsIdxT, LibC::Int, HtsPosT, HtsPosT, (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int) -> HtsItrT*), readrec : (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int)) : HtsItrT*
+    fun hts_itr_querys(idx : HtsIdxT, reg : LibC::Char*, getid : HtsName2idF, hdr : Void*, itr_query : HtsItrQueryFunc, readrec : HtsReadrecFunc) : HtsItrT*
     fun hts_itr_next(fp : Bgzf*, iter : HtsItrT*, r : Void*, data : Void*) : LibC::Int
     fun hts_itr_multi_bam(idx : HtsIdxT, iter : HtsItrT*) : LibC::Int
     fun hts_itr_multi_cram(idx : HtsIdxT, iter : HtsItrT*) : LibC::Int
-    fun hts_itr_regions(idx : HtsIdxT, reglist : HtsReglistT*, count : LibC::Int, getid : HtsName2idF, hdr : Void*, itr_specific : (HtsIdxT, HtsItrT* -> LibC::Int), readrec : (Bgzf*, Void*, Void*, LibC::Int*, HtsPosT*, HtsPosT* -> LibC::Int), seek : (Void*, Int64T, LibC::Int -> LibC::Int), tell : (Void* -> Int64T)) : HtsItrT*
+    fun hts_itr_regions(idx : HtsIdxT, reglist : HtsReglistT*, count : LibC::Int, getid : HtsName2idF, hdr : Void*, itr_specific : HtsItrMultiQueryFunc, readrec : HtsReadrecFunc, seek : HtsSeekFunc, tell : HtsTellFunc) : HtsItrT*
     fun hts_itr_multi_next(fd : HtsFile*, iter : HtsItrT*, r : Void*) : LibC::Int
     fun hts_reglist_create(argv : LibC::Char**, argc : LibC::Int, r_count : LibC::Int*, hdr : Void*, getid : HtsName2idF) : HtsReglistT*
     fun hts_reglist_free(reglist : HtsReglistT*, count : LibC::Int)

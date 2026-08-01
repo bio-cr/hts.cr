@@ -91,6 +91,13 @@ class BcfTest
     end
   end
 
+  private def selected_sample_fields(record : HTS::Bcf::Record) : {Array(String), Array(Int32)}
+    format = record.format
+    genotypes = format.get_string("GT") || raise "GT should be present"
+    qualities = format.get_int("GQ") || raise "GQ should be present"
+    {genotypes, qualities}
+  end
+
   def bcf
     @bcf ||= with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogError) { HTS::Bcf.new(test_bcf_path) }
   end
@@ -286,10 +293,10 @@ class BcfTest
       copied = [] of {Array(String), Array(Int32)}
 
       subset_bcf.query("1:1-100") do |record|
-        reused << {record.format.get_string("GT").not_nil!, record.format.get_int("GQ").not_nil!}
+        reused << selected_sample_fields(record)
       end
       subset_bcf.query_copy("1:1-100") do |record|
-        copied << {record.format.get_string("GT").not_nil!, record.format.get_int("GQ").not_nil!}
+        copied << selected_sample_fields(record)
       end
 
       expected = [{["1/1", "0/0"], [30, 10]}]

@@ -63,12 +63,7 @@ module HTS
       @read_subset_imap = nil
       @hts_file = Pointer(LibHTS::HtsFile).null
 
-      if subset && @mode[0] == 'w'
-        raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
-      end
-      if unpack != :all && @mode[0] == 'w'
-        raise ArgumentError.new("Selective unpacking is only available when reading BCF/VCF files")
-      end
+      validate_reader_options!(subset, unpack)
 
       begin
         # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
@@ -463,7 +458,7 @@ module HTS
       requested = requested_samples.to_set
       read_order = source_samples.select { |sample| requested.includes?(sample) }
       imap = Slice(Int32).new(requested_samples.size) do |index|
-        read_order.index(requested_samples[index]).not_nil!.to_i32
+        read_order.index!(requested_samples[index]).to_i32
       end
       imap.each_with_index.all? { |source_index, output_index| source_index == output_index } ? nil : imap
     end
@@ -490,6 +485,17 @@ module HTS
       end
 
       apply_read_subset_order!(record)
+    end
+
+    private def validate_reader_options!(subset : Enumerable(String)?, unpack : Symbol) : Nil
+      return unless @mode[0] == 'w'
+
+      if subset
+        raise SubsetError.new("Sample subsetting is only available when reading BCF/VCF files")
+      end
+      if unpack != :all
+        raise ArgumentError.new("Selective unpacking is only available when reading BCF/VCF files")
+      end
     end
 
     define_getter :chrom

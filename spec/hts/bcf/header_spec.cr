@@ -174,6 +174,27 @@ class BcfHeaderTest
     (h.to_s.includes?("##FORMAT=<ID=GT")).should be_false
   end
 
+  def test_schema_cache_is_scoped_and_invalidated
+    h = HTS::Bcf::Header.new
+    (h.info_type("FIELD")).should be_nil
+    (h.format_type("FIELD")).should be_nil
+
+    h.add_info("FIELD", number: 1, type: :int, description: "Info field")
+    h.add_format("FIELD", number: :variable, type: :float, description: "Format field")
+    2.times do
+      (h.info_type("FIELD")).should eq(:int)
+      (h.format_type("FIELD")).should eq(:float)
+    end
+
+    h.update_info("FIELD", number: :a, type: :string, description: "Updated info field")
+    (h.info_type("FIELD")).should eq(:string)
+    (h.format_type("FIELD")).should eq(:float)
+
+    h.remove_info("FIELD")
+    (h.info_type("FIELD")).should be_nil
+    (h.format_type("FIELD")).should eq(:float)
+  end
+
   def test_add_meta_and_filter
     h = HTS::Bcf::Header.new
     h.add_meta("source", "myCaller")
