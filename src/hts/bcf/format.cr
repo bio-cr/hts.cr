@@ -164,27 +164,34 @@ module HTS
       # during its block invocation and excludes trailing vector-end sentinels.
       @[Experimental]
       def each_genotype(tag : String = "GT", & : Int32, GenotypeView ->) : Bool
-        raise ArgumentError.new("Genotype traversal only supports FORMAT/GT") unless tag == "GT"
+        ensure_genotype_tag!(tag)
 
         with_i32_buffer(tag) do |values|
           sample_count = @record.header.nsamples
           next if sample_count <= 0
 
-          unless values.size % sample_count == 0
-            raise FormatReadError.new("Failed to split FORMAT/GT values by sample")
-          end
-
-          values_per_sample = values.size // sample_count
+          values_per_sample = genotype_values_per_sample(values, sample_count)
           sample_index = 0
           while sample_index < sample_count
-            offset = sample_index * values_per_sample
-            sample_values = values[offset, values_per_sample]
-            end_index = sample_values.index do |value|
-              LibHTS2.bcf_gt_is_vector_end(value) != 0
-            end || sample_values.size
-            yield sample_index, GenotypeView.new(sample_values[0, end_index])
+            yield sample_index, genotype_view_at(values, values_per_sample, sample_index)
             sample_index += 1
           end
+        end
+      end
+
+      # Yields a borrowed GT view for one sample without traversing other
+      # samples. Returns false without yielding when GT is absent.
+      @[Experimental]
+      def genotype_at(tag : String, sample_index : Int, & : GenotypeView ->) : Bool
+        ensure_genotype_tag!(tag)
+        sample_count = @record.header.nsamples
+        unless 0 <= sample_index < sample_count
+          raise ::IndexError.new("sample index #{sample_index} out of range 0...#{sample_count}")
+        end
+
+        with_i32_buffer(tag) do |values|
+          values_per_sample = genotype_values_per_sample(values, sample_count)
+          yield genotype_view_at(values, values_per_sample, sample_index)
         end
       end
 
@@ -369,38 +376,54 @@ module HTS
         end
       end
 
-      private def get_genotype_samples : Array(Array(Int32))?
-        encoded = get_genotypes
-        return unless encoded
-        split_sample_values(encoded).map { |sample_values| trim_genotype_vector_end(sample_values) }
-      end
-
       private def decode_genotypes : Array(String)?
-        sample_values = get_genotype_samples
-        return unless sample_values
-        sample_values.map { |values| decode_genotype_sample(values) }
+        strings = Array(String).new(@record.header.nsamples)
+        present = each_genotype do |_sample_index, genotype|
+          strings << decode_genotype_sample(genotype)
+        end
+        present ? strings : nil
       end
 
-      private def decode_genotype_sample(values : Array(Int32)) : String
+      private def decode_genotype_sample(genotype : GenotypeView) : String
         io = IO::Memory.new
         wrote_allele = false
 
-        values.each do |value|
+        genotype.each_allele do |allele_index, phased, missing|
           if wrote_allele
-            separator = LibHTS2.bcf_gt_is_phased(value) != 0 ? '|' : '/'
+            separator = phased ? '|' : '/'
             io << separator
           end
 
-          if LibHTS2.bcf_gt_is_missing(value) != 0
+          if missing
             io << '.'
           else
-            io << LibHTS2.bcf_gt_allele(value)
+            io << allele_index
           end
 
           wrote_allele = true
         end
 
         io.to_s
+      end
+
+      private def ensure_genotype_tag!(tag : String) : Nil
+        raise ArgumentError.new("Genotype traversal only supports FORMAT/GT") unless tag == "GT"
+      end
+
+      private def genotype_values_per_sample(values : Slice(Int32), sample_count : Int32) : Int32
+        unless values.size % sample_count == 0
+          raise FormatReadError.new("Failed to split FORMAT/GT values by sample")
+        end
+        values.size // sample_count
+      end
+
+      private def genotype_view_at(values : Slice(Int32), values_per_sample : Int32, sample_index : Int) : GenotypeView
+        offset = sample_index * values_per_sample
+        sample_values = values[offset, values_per_sample]
+        end_index = sample_values.index do |value|
+          LibHTS2.bcf_gt_is_vector_end(value) != 0
+        end || sample_values.size
+        GenotypeView.new(sample_values[0, end_index])
       end
 
       private def split_integer_samples(values : Array(Int32)) : Array(Array(Int32))
@@ -436,11 +459,6 @@ module HTS
 
       private def trim_integer_vector_end(values : Array(Int32)) : Array(Int32)
         end_index = values.index { |value| LibHTS2.bcf_int32_is_vector_end(value) != 0 } || values.size
-        values[0, end_index]
-      end
-
-      private def trim_genotype_vector_end(values : Array(Int32)) : Array(Int32)
-        end_index = values.index { |value| LibHTS2.bcf_gt_is_vector_end(value) != 0 } || values.size
         values[0, end_index]
       end
 

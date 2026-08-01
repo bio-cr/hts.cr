@@ -344,6 +344,39 @@ class BcfFormatTest
     end
   end
 
+  def test_genotype_at_accesses_one_sample_directly
+    with_temp_gt_bcf do |path|
+      HTS::Bcf.open(path) do |bcf|
+        record = bcf.first
+        format = record.format
+        yielded = 0
+
+        format.genotype_at("GT", 3) do |genotype|
+          yielded += 1
+          (genotype.ploidy).should eq(1)
+          (genotype.values.to_unsafe).should eq(record.scratch.format_i32 + 6)
+          alleles = [] of {Int32, Bool, Bool}
+          genotype.each_allele { |allele, phased, missing| alleles << {allele, phased, missing} }
+          (alleles).should eq([{1, false, false}])
+        end.should be_true
+        (yielded).should eq(1)
+
+        format.genotype_at("GT", 2) do |genotype|
+          alleles = [] of {Int32, Bool, Bool}
+          genotype.each_allele { |allele, phased, missing| alleles << {allele, phased, missing} }
+          (alleles).should eq([{-1, false, true}, {-1, false, true}])
+        end.should be_true
+
+        expect_raises(IndexError, "sample index -1 out of range 0...4") do
+          format.genotype_at("GT", -1) { }
+        end
+        expect_raises(IndexError, "sample index 4 out of range 0...4") do
+          format.genotype_at("GT", 4) { }
+        end
+      end
+    end
+  end
+
   def test_each_genotype_absent_and_tag_validation
     header = HTS::Bcf::Header.new
     header.version = "VCFv4.3"
@@ -358,8 +391,13 @@ class BcfFormatTest
     yielded = false
     format.each_genotype { yielded = true }.should be_false
     (yielded).should be_false
+    format.genotype_at("GT", 0) { yielded = true }.should be_false
+    (yielded).should be_false
     expect_raises(ArgumentError, "Genotype traversal only supports FORMAT/GT") do
       format.each_genotype("DP") { }
+    end
+    expect_raises(ArgumentError, "Genotype traversal only supports FORMAT/GT") do
+      format.genotype_at("DP", 0) { }
     end
   end
 
