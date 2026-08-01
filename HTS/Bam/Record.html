@@ -377,8 +377,18 @@
       
     </li>
   
-  <li class=" " data-id="hts/HTS/Bcf/Record" data-name="hts::bcf::record">
+  <li class="parent " data-id="hts/HTS/Bcf/Record" data-name="hts::bcf::record">
       <a href="../../HTS/Bcf/Record.html">Record</a>
+      
+        <ul>
+  
+  <li class=" " data-id="hts/HTS/Bcf/Record/Storage" data-name="hts::bcf::record::storage">
+      <a href="../../HTS/Bcf/Record/Storage.html">Storage</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L7" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L7" target="_blank">
         hts/bam/record.cr
       </a>
     
@@ -810,6 +820,14 @@
         <a href="#each_base%28%26%3AChar-%3E%29%3Aself-instance-method" class="signature"><strong>#each_base</strong>(& : Char -> ) : <span class="k">self</span></a>
         
           <div class="summary"><p>Streams query sequence bases without building a <code>String</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each_base_mod_raw%28max_mods%3AInt32%3D10%2C%26%3AInt32%2CInt32%2CInt32%2CInt32%2CInt32-%3E%29%3Aself-instance-method" class="signature"><strong>#each_base_mod_raw</strong>(max_mods : Int32 = <span class="n">10</span>, & : Int32, Int32, Int32, Int32, Int32 -> ) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Streams primitive base-modification fields without domain objects.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p></div>
         
       </li>
     
@@ -1180,7 +1198,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1201,7 +1219,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1217,7 +1235,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1233,7 +1251,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1270,7 +1288,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L375" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L377" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1286,7 +1304,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L392" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L394" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1302,7 +1320,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L384" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L386" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1323,7 +1341,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L380" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L382" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1339,7 +1357,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L388" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L390" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1360,7 +1378,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L299" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1384,7 +1402,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L429" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L431" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1405,7 +1423,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L345" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L347" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1421,7 +1439,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1437,7 +1455,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L143" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L145" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1458,7 +1476,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L155" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1479,7 +1497,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L216" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L218" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1500,7 +1518,7 @@ for performance optimization once the GC cycle issue is resolved.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L227" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L229" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1522,7 +1540,7 @@ allocating a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L222" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L224" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1538,7 +1556,7 @@ allocating a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L417" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L419" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1559,7 +1577,7 @@ allocating a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L163" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L165" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1575,7 +1593,7 @@ allocating a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1596,7 +1614,29 @@ allocating a <code><a href="../../HTS/Bam/Cigar.html">Cigar</a></code> object.</
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L306" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L308" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each_base_mod_raw(max_mods:Int32=10,&amp;:Int32,Int32,Int32,Int32,Int32-&gt;):self-instance-method">
+      <div class="signature">
+        
+        def <strong>each_base_mod_raw</strong>(max_mods : Int32 = <span class="n">10</span>, & : Int32, Int32, Int32, Int32, Int32 -> ) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#each_base_mod_raw%28max_mods%3AInt32%3D10%2C%26%3AInt32%2CInt32%2CInt32%2CInt32%2CInt32-%3E%29%3Aself-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Streams primitive base-modification fields without domain objects.</p>
+<p><span class="flag lime">EXPERIMENTAL</span> </p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L437" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1621,7 +1661,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L243" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L245" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1642,7 +1682,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L322" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L324" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1663,7 +1703,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L148" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L150" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1684,7 +1724,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L434" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L450" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1705,7 +1745,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L354" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L356" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1721,7 +1761,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L370" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L372" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1737,7 +1777,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L366" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L368" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1753,7 +1793,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L358" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L360" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1769,7 +1809,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L362" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L364" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1785,7 +1825,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1806,7 +1846,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L190" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L192" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1822,7 +1862,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L194" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L196" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1838,7 +1878,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L198" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L200" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1854,7 +1894,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L202" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L204" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1870,7 +1910,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L281" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L283" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1891,7 +1931,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L207" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L209" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1907,7 +1947,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L211" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L213" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1928,7 +1968,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L168" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1944,7 +1984,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L177" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L179" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1965,7 +2005,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L123" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L125" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1981,7 +2021,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L129" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1997,7 +2037,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2013,7 +2053,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L185" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L187" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2029,7 +2069,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2045,7 +2085,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2061,7 +2101,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L137" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2082,7 +2122,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L107" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2098,7 +2138,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L111" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2120,7 +2160,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L287" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L289" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2136,7 +2176,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2157,7 +2197,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L114" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L116" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2173,7 +2213,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L118" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L120" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2189,7 +2229,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2205,7 +2245,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2221,7 +2261,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L256" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2242,7 +2282,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L89" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2258,7 +2298,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L91" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2279,7 +2319,7 @@ retained CIGAR object is needed.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L315" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L317" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2303,7 +2343,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L335" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L337" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2319,7 +2359,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2335,7 +2375,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2351,7 +2391,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2367,7 +2407,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L263" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L265" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2383,7 +2423,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2404,7 +2444,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L271" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L273" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2420,7 +2460,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L277" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L279" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2436,7 +2476,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L181" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2452,7 +2492,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2473,7 +2513,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L98" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2489,7 +2529,7 @@ byte + 33 without validating later bytes.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L100" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2521,7 +2561,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L402" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L404" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2537,7 +2577,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2553,7 +2593,7 @@ which includes its class name and its object address.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/0d51fc8ee9aa8127ec120a474fe2172e6b80acbe/src/hts/bam/record.cr#L396" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/41cad2cf846f00afca7f7f2f48686d0da5e6c9f6/src/hts/bam/record.cr#L398" target="_blank">View source</a>]
         
       </div>
     </div>
