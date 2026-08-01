@@ -15,6 +15,8 @@ module HTS
     include Enumerable(Bcf::Record)
 
     @idx : LibHTS::HtsIdxT
+    # Kept separately so opening a sequential reader does not load the index.
+    @index_name : String
     @header : Bcf::Header?
     @read_header : Bcf::Header?
     @read_subset_imap : Slice(Int32)?
@@ -58,6 +60,7 @@ module HTS
       @nthreads = threads
       @max_unpack = unpack_level(unpack)
       @idx = LibHTS::HtsIdxT.null
+      @index_name = index
       @header = nil
       @read_header = nil
       @read_subset_imap = nil
@@ -99,8 +102,6 @@ module HTS
 
         build_index(index) if build_index
 
-        @idx = load_index(index)
-
         @start_position = tell
       rescue ex
         close rescue nil
@@ -127,7 +128,7 @@ module HTS
       self
     end
 
-    def load_index(index_name = "")
+    def load_index(index_name = @index_name)
       check_closed
 
       if index_name != ""
@@ -369,6 +370,9 @@ module HTS
 
     private def ensure_query_index! : Nil
       return if index_loaded?
+
+      @idx = load_index
+      return unless @idx.null?
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BCF/VCF with a matching index or build one first.")
     end

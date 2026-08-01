@@ -352,10 +352,10 @@ module HTS
       end
 
       private def init_region_iterator(region : String) : LibHTS::HtsItrT*
-        raise MissingIndexError.new("Index file is required to use region pileup") unless @bam.index_loaded?
-
         idx_ptr = @bam.load_index
-        raise MissingIndexError.new("Index not available") if idx_ptr.null?
+        if idx_ptr.null?
+          raise MissingIndexError.new("Region pileup requires an index for #{@bam.file_name}. Open the BAM/CRAM with a matching index first.")
+        end
         @idx_local = idx_ptr
 
         itr_ptr = LibHTS.sam_itr_querys(idx_ptr, @hdr.to_unsafe, region)

@@ -275,15 +275,17 @@ class BamTest
     end
   end
 
-  def test_initialize_build_index_loads_index
+  def test_initialize_build_index_loads_index_lazily
     with_temp_indexable_bam do |path|
       bam = HTS::Bam.new(path, build_index: true)
       begin
+        bam.index_loaded?.should be_false
         positions = [] of Int64
         bam.query("chr2:350-700") do |aln|
           positions << aln.pos
         end
         positions.should eq([341, 658])
+        bam.index_loaded?.should be_true
       ensure
         bam.close
       end

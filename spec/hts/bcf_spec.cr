@@ -308,6 +308,17 @@ class BcfTest
     end
   end
 
+  def test_index_is_loaded_lazily
+    with_temp_indexed_three_sample_bcf do |path, index_path|
+      file = HTS::Bcf.new(path, "r", index_path)
+      file.index_loaded?.should be_false
+      file.query("1:1-100") { |_| }
+      file.index_loaded?.should be_true
+    ensure
+      file.try &.close
+    end
+  end
+
   def test_query_requires_index
     ex = expect_raises(HTS::Bcf::MissingIndexError) do
       bcf.query("poo:4000-4100") { |_| }

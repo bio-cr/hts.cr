@@ -8,6 +8,8 @@ require "./tabix/errors"
 module HTS
   class Tabix < Bgzf
     @idx : LibHTS::TbxT*
+    # Kept separately so opening a sequential reader does not load the index.
+    @index_name : String
 
     getter :file_name
     getter :mode
@@ -25,6 +27,7 @@ module HTS
     def initialize(file_name : Path | String, @mode = "r", index = "", threads = 0, build_index = false, preset = :vcf)
       @file_name = file_name.to_s
       @idx = Pointer(LibHTS::TbxT).null
+      @index_name = index
       @hts_file = Pointer(LibHTS::HtsFile).null
 
       begin
@@ -36,7 +39,6 @@ module HTS
         set_threads(threads) if threads > 0
 
         build_index(index, preset: preset) if build_index
-        @idx = load_index(index)
         @start_position = tell
       rescue ex
         close rescue nil
@@ -81,7 +83,7 @@ module HTS
       self
     end
 
-    def load_index(index_name = "")
+    def load_index(index_name = @index_name)
       check_closed
       if index_name != ""
         LibHTS.tbx_index_load2(@file_name.to_s, index_name)
@@ -214,6 +216,9 @@ module HTS
 
     private def ensure_index!(operation : String) : Nil
       return if index_loaded?
+
+      @idx = load_index
+      return unless @idx.null?
 
       raise MissingIndexError.new("#{operation} requires an index for #{@file_name}. Open the file with a matching .tbi/.csi index or build one first.")
     end

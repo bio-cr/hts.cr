@@ -62,8 +62,10 @@ class TabixTest
     end
   end
 
-  def test_index_loaded
+  def test_index_is_loaded_lazily
     HTS::Tabix.open(@vcf_gz) do |tbx|
+      (tbx.index_loaded?).should be_false
+      (tbx.seqnames).should eq(["poo"])
       (tbx.index_loaded?).should be_true
     end
   end

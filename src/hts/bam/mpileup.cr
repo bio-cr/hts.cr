@@ -267,10 +267,6 @@ module HTS
       private def build_iterator(bam : Bam, region : String?, regions : Array(String)?) : LibHTS::HtsItrT*
         return Pointer(LibHTS::HtsItrT).null if region.nil? && regions.nil?
 
-        unless bam.index_loaded?
-          raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.")
-        end
-
         idx = bam.load_index
         raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.") if idx.null?
 

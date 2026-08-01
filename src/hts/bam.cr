@@ -17,6 +17,8 @@ module HTS
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT
+    # Kept separately so opening a sequential reader does not load the index.
+    @index_name : String
     # Auto index after close when opened for writing with build_index: true
     @auto_index_on_close : Bool = false
     @index_name_on_close : String = ""
@@ -45,6 +47,7 @@ module HTS
       @file_name = file_name.to_s
       @nthreads = threads
       @idx = LibHTS::HtsIdxT.null
+      @index_name = index
       @hts_file = Pointer(LibHTS::HtsFile).null
       @header = uninitialized Bam::Header
 
@@ -89,8 +92,6 @@ module HTS
         else
           @start_position = tell
         end
-
-        @idx = load_index(index)
       rescue ex
         close rescue nil
         raise ex
@@ -168,7 +169,7 @@ module HTS
       self # for method chaining
     end
 
-    def load_index(index_name = "")
+    def load_index(index_name = @index_name)
       check_closed
 
       if index_name != ""
@@ -532,6 +533,9 @@ module HTS
 
     private def ensure_query_index! : Nil
       return if index_loaded?
+
+      @idx = load_index
+      return unless @idx.null?
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BAM/CRAM with a matching index or build one first.")
     end
