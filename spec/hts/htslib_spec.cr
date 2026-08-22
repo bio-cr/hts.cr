@@ -10,19 +10,27 @@ class HTSTest
     (String.new(HTS::LibHTS.hts_version)).should be_a(String)
   end
 
-  def test_hfile_bitfield_layout_and_accessors
+  def test_hfile_bitfield_layout
     offsetof(HTS::LibHTS::HFile, @has_errno).should eq(
       offsetof(HTS::LibHTS::HFile, @bitfields) + sizeof(LibC::UInt)
     )
+  end
 
-    hfile = HTS::LibHTS::HFile.new
-    hfile.bitfields = HTS::LibHTS2::HFILE_AT_EOF | HTS::LibHTS2::HFILE_MOBILE | HTS::LibHTS2::HFILE_PRESERVE
-    pointer = pointerof(hfile)
+  def test_hfile_layout_supports_inline_htell
+    file = File.tempfile("hfile_layout")
+    path = file.path
+    file << "abcdef"
+    file.close
 
-    HTS::LibHTS2.hfile_at_eof?(pointer).should be_true
-    HTS::LibHTS2.hfile_mobile?(pointer).should be_true
-    HTS::LibHTS2.hfile_readonly?(pointer).should be_false
-    HTS::LibHTS2.hfile_preserve?(pointer).should be_true
+    hfile = HTS::LibHTS.hopen(path, "r")
+    hfile.null?.should be_false
+    HTS::LibHTS2.htell(hfile).should eq(0)
+
+    HTS::LibHTS.hseek(hfile, 3, IO::Seek::Set).should eq(3)
+    HTS::LibHTS2.htell(hfile).should eq(3)
+  ensure
+    HTS::LibHTS.hclose(hfile) if hfile && !hfile.null?
+    File.delete(path) if path && File.exists?(path)
   end
 end
 
