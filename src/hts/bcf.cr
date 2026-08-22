@@ -15,6 +15,7 @@ module HTS
     include Enumerable(Bcf::Record)
 
     @idx : LibHTS::HtsIdxT
+    @tbx : LibHTS::TbxT*
     # Kept separately so opening a sequential reader does not load the index.
     @index_name : String
     @header : Bcf::Header?
@@ -59,6 +60,7 @@ module HTS
       @nthreads = threads
       @max_unpack = unpack_level(unpack)
       @idx = LibHTS::HtsIdxT.null
+      @tbx = Pointer(LibHTS::TbxT).null
       @index_name = index
       @header = nil
       @read_header = nil
@@ -117,9 +119,26 @@ module HTS
           STDERR.puts "Create index for #{file_name} to #{index_name}"
         end
       end
+      path = file_name.to_s
       index_path = index_name.empty? ? Pointer(LibC::Char).null : index_name.to_unsafe
-      r = LibHTS.bcf_index_build3(file_name.to_s, index_path, min_shift, threads)
+      r = if vcf_text_file?(path)
+            conf = LibHTS.tbx_conf_vcf
+            LibHTS.tbx_index_build3(path, index_path, min_shift, threads, pointerof(conf))
+          else
+            LibHTS.bcf_index_build3(path, index_path, min_shift, threads)
+          end
       raise IndexError.new("Indexing failed for #{file_name} (rc=#{r})") if r < 0
+    end
+
+    private def self.vcf_text_file?(path : String) : Bool
+      file = LibHTS.hts_open(path, "r")
+      raise OpenError.new("Failed to inspect file #{path} before indexing") if file.null?
+      begin
+        format = LibHTS.hts_get_format(file)
+        !format.null? && format.value.format == LibHTS::HtsExactFormat::Vcf
+      ensure
+        LibHTS.hts_close(file)
+      end
     end
 
     # Instance helper delegating to the class method.
@@ -132,23 +151,36 @@ module HTS
       check_closed
 
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
-      @idx = if index_name != ""
-               LibHTS.bcf_index_load2(@file_name, index_name)
-             else
-               LibHTS.bcf_index_load3(@file_name, nil, 2)
-             end
+      LibHTS.tbx_destroy(@tbx) unless @tbx.null?
+      @idx = LibHTS::HtsIdxT.null
+      @tbx = Pointer(LibHTS::TbxT).null
+      if vcf_text_backend?
+        @tbx = if index_name != ""
+                 LibHTS.tbx_index_load2(@file_name, index_name)
+               else
+                 LibHTS.tbx_index_load3(@file_name, nil, 2)
+               end
+      else
+        @idx = if index_name != ""
+                 LibHTS.bcf_index_load2(@file_name, index_name)
+               else
+                 LibHTS.bcf_index_load3(@file_name, nil, 2)
+               end
+      end
       self
     end
 
     def index_loaded?
       check_closed
 
-      !@idx.null?
+      !@idx.null? || !@tbx.null?
     end
 
     def close
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      LibHTS.tbx_destroy(@tbx) unless @tbx.null?
       @idx = @idx.class.null
+      @tbx = @tbx.class.null
       super
       # Auto-build index after file is closed when requested in write mode
       if @auto_index_on_close
@@ -159,7 +191,9 @@ module HTS
 
     def finalize
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      LibHTS.tbx_destroy(@tbx) unless @tbx.null?
       @idx = @idx.class.null
+      @tbx = @tbx.class.null
       close_hts_file
     rescue Exception
       nil
@@ -266,7 +300,7 @@ module HTS
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_query_index!
 
-      qiter = LibHTS2.bcf_itr_querys(@idx, header_for_reading, region)
+      qiter = query_region_iterator(region)
       raise_region_query_error(region) if qiter.null?
       begin
         iterate_query_iterator(qiter) { |record| yield record }
@@ -280,7 +314,7 @@ module HTS
       raise ArgumentError.new("region must not be empty") if region.empty?
       ensure_query_index!
 
-      qiter = LibHTS2.bcf_itr_querys(@idx, header_for_reading, region)
+      qiter = query_region_iterator(region)
       raise_region_query_error(region) if qiter.null?
       begin
         iterate_query_iterator_copy(qiter) { |record| yield record }
@@ -322,7 +356,7 @@ module HTS
       raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
-      qiter = LibHTS2.bcf_itr_queryi(@idx, tid, beg, end_pos)
+      qiter = query_coordinate_iterator(tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         iterate_query_iterator(qiter) { |record| yield record }
@@ -338,7 +372,7 @@ module HTS
       raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
-      qiter = LibHTS2.bcf_itr_queryi(@idx, tid, beg, end_pos)
+      qiter = query_coordinate_iterator(tid, beg, end_pos)
       raise_coordinate_query_error(tid, beg, end_pos) if qiter.null?
       begin
         iterate_query_iterator_copy(qiter) { |record| yield record }
@@ -374,9 +408,30 @@ module HTS
       return if index_loaded?
 
       load_index
-      return unless @idx.null?
+      return if index_loaded?
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BCF/VCF with a matching index or build one first.")
+    end
+
+    private def vcf_text_backend? : Bool
+      format = LibHTS.hts_get_format(@hts_file)
+      !format.null? && format.value.format == LibHTS::HtsExactFormat::Vcf
+    end
+
+    private def query_region_iterator(region : String)
+      if @tbx.null?
+        LibHTS2.bcf_itr_querys(@idx, header_for_reading, region)
+      else
+        LibHTS2.tbx_itr_querys(@tbx, region)
+      end
+    end
+
+    private def query_coordinate_iterator(tid : Int32, beg : Int64, end_pos : Int64)
+      if @tbx.null?
+        LibHTS2.bcf_itr_queryi(@idx, tid, beg, end_pos)
+      else
+        LibHTS2.tbx_itr_queryi(@tbx, tid, beg, end_pos)
+      end
     end
 
     private def validate_tid!(tid : Int32) : Nil
@@ -396,6 +451,8 @@ module HTS
     end
 
     private def iterate_query_iterator(qiter, & : HTS::Bcf::Record ->)
+      return iterate_vcf_query_iterator(qiter) { |record| yield record } unless @tbx.null?
+
       bcf1 = new_bcf1!
       record = Bcf::Record.new(header, bcf1)
       slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
@@ -408,6 +465,8 @@ module HTS
     end
 
     private def iterate_query_iterator_copy(qiter, & : HTS::Bcf::Record ->)
+      return iterate_vcf_query_iterator_copy(qiter) { |record| yield record } unless @tbx.null?
+
       bcf1 = new_bcf1!
       begin
         slen = LibHTS2.bcf_itr_next(@hts_file, qiter, bcf1)
@@ -422,6 +481,46 @@ module HTS
       ensure
         LibHTS.bcf_destroy(bcf1) unless bcf1.null?
       end
+    end
+
+    private def iterate_vcf_query_iterator(qiter, & : HTS::Bcf::Record ->) : Nil
+      line = LibHTS::KstringT.new
+      bcf1 = new_bcf1!
+      record = Bcf::Record.new(header, bcf1)
+      begin
+        while (rc = LibHTS2.tbx_itr_next(@hts_file, @tbx, qiter, pointerof(line).as(Void*))) >= 0
+          parse_vcf_query_line!(pointerof(line), bcf1)
+          apply_iterator_subset!(record)
+          yield record
+          LibHTS.bcf_clear(bcf1)
+        end
+        raise ReadError.new("Failed to read VCF query record from #{@file_name} (rc=#{rc})") if rc < -1
+      ensure
+        LibC.free(line.s) unless line.s.null?
+      end
+    end
+
+    private def iterate_vcf_query_iterator_copy(qiter, & : HTS::Bcf::Record ->) : Nil
+      line = LibHTS::KstringT.new
+      bcf1 = new_bcf1!
+      begin
+        while (rc = LibHTS2.tbx_itr_next(@hts_file, @tbx, qiter, pointerof(line).as(Void*))) >= 0
+          parse_vcf_query_line!(pointerof(line), bcf1)
+          record = Bcf::Record.new(header, take_bcf1!(pointerof(bcf1)))
+          apply_iterator_subset!(record)
+          yield record
+          bcf1 = new_bcf1!
+        end
+        raise ReadError.new("Failed to read VCF query record from #{@file_name} (rc=#{rc})") if rc < -1
+      ensure
+        LibHTS.bcf_destroy(bcf1) unless bcf1.null?
+        LibC.free(line.s) unless line.s.null?
+      end
+    end
+
+    private def parse_vcf_query_line!(line : LibHTS::KstringT*, bcf1 : LibHTS::Bcf1T*) : Nil
+      rc = LibHTS.vcf_parse(line, header_for_reading, bcf1)
+      raise ReadError.new("Failed to parse indexed VCF record from #{@file_name} (rc=#{rc})") if rc < 0
     end
 
     private def new_bcf1! : LibHTS::Bcf1T*

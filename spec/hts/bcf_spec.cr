@@ -1,5 +1,6 @@
 require "../spec_helper"
 require "../../src/hts/bcf"
+require "../../src/hts/bgzf"
 
 class BcfTest
   include TestBcfMultisampleHelper
@@ -31,6 +32,40 @@ class BcfTest
 
   def test_bcf_index_path
     File.expand_path("../fixtures/test.bcf.csi.tmp", __DIR__)
+  end
+
+  private def with_temp_indexed_vcf_gz(&)
+    file = File.tempfile("bcf_tabix_query", ".vcf.gz")
+    path = file.path || raise "tempfile path is nil"
+    file.close
+    begin
+      HTS::Bgzf.open(path, "wz") do |bgzf|
+        bgzf.puts "##fileformat=VCFv4.3"
+        bgzf.puts "##contig=<ID=chr1,length=100>"
+        bgzf.puts "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO"
+        bgzf.puts "chr1\t10\t.\tA\tC\t.\tPASS\t."
+        bgzf.puts "chr1\t20\t.\tG\tT\t.\tPASS\t."
+      end
+      HTS::Bcf.build_index(path, min_shift: 0, verbose: false)
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+      File.delete("#{path}.tbi") if File.exists?("#{path}.tbi")
+    end
+  end
+
+  def test_query_bgzip_vcf_through_tabix_backend
+    with_temp_indexed_vcf_gz do |path|
+      HTS::Bcf.open(path) do |vcf|
+        positions = [] of Int64
+        vcf.query("chr1", 9_i64, 20_i64) { |record| positions << record.pos }
+        (positions).should eq([9, 19])
+
+        copies = [] of HTS::Bcf::Record
+        vcf.query_copy("chr1:10-20") { |record| copies << record }
+        (copies.map(&.pos)).should eq([9, 19])
+      end
+    end
   end
 
   private def with_temp_three_sample_bcf(&)
