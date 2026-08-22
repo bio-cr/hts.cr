@@ -335,6 +335,16 @@ class BamWriteTest
     bam.close
   end
 
+  def test_header_before_write_header_raises_header_error
+    path = temp_path("temp_no_header.bam")
+    bam = HTS::Bam.open(path, "wb")
+
+    ex = expect_raises(HTS::Bam::HeaderError) { bam.header }
+    ex.message.to_s.should contain("Call write_header")
+  ensure
+    bam.try &.close
+  end
+
   # Test error: unknown reference name
   def test_error_unknown_reference
     header = HTS::Bam::Header.parse(minimal_header_text)

@@ -17,6 +17,7 @@ module HTS
     include Enumerable(Record)
 
     @idx : LibHTS::HtsIdxT
+    @header : Bam::Header?
     # Kept separately so opening a sequential reader does not load the index.
     @index_name : String
     # Auto index after close when opened for writing with build_index: true
@@ -27,8 +28,15 @@ module HTS
 
     getter :file_name
     getter :mode
-    getter :header
     getter :nthreads
+
+    def header : Bam::Header
+      if header = @header
+        header
+      else
+        raise HeaderError.new("Header is not available for #{@file_name}. Call write_header(header) first.")
+      end
+    end
 
     def self.open(file_name : Path | String, mode = "r", index = "", fai = "",
                   threads = 0, build_index = false)
@@ -49,7 +57,7 @@ module HTS
       @idx = LibHTS::HtsIdxT.null
       @index_name = index
       @hts_file = Pointer(LibHTS::HtsFile).null
-      @header = uninitialized Bam::Header
+      @header = nil
 
       begin
         # NOTE: Do not check for the existence of local files, since file_names may be remote URIs.
@@ -506,7 +514,7 @@ module HTS
       raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
-      tid = @header.get_tid(chrom)
+      tid = header.get_tid(chrom)
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
       # Convert 1-based inclusive [beg, end] to 0-based half-open [beg - 1, end).
@@ -518,7 +526,7 @@ module HTS
       raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
-      tid = @header.get_tid(chrom)
+      tid = header.get_tid(chrom)
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
       query_copy(tid, beg - 1, end_pos) { |record| yield record }
