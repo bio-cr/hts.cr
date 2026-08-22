@@ -14,9 +14,7 @@ module HTS
       limit : LibC::Char*
       backend : HFileBackend*
       offset : OffT
-      at_eof : LibC::UInt
-      mobile : LibC::UInt
-      readonly : LibC::UInt
+      bitfields : LibC::UInt
       has_errno : LibC::Int
     end
 
