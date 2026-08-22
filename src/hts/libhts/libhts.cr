@@ -49,7 +49,7 @@ module HTS
     fun bgzf_dopen(fd : LibC::Int, mode : LibC::Char*) : Bgzf*
 
     struct Bgzf
-      bitfields : Uint32T # FIXME
+      bitfields : Uint32T # Packed BGZF flag bitfields.
       # errcode : LibC::UInt
       # reserved : LibC::UInt
       # is_write : LibC::UInt
@@ -226,7 +226,7 @@ module HTS
     fun hts_opt_apply(fp : HtsFile*, opts : HtsOpt*) : LibC::Int
 
     struct HtsFile
-      flags : Uint32T # FIXME
+      flags : Uint32T # Packed htsFile format and mode bitfields.
       # is_bin : Uint32T
       # is_write : Uint32T
       # is_be : Uint32T
@@ -380,7 +380,7 @@ module HTS
     end
 
     struct HtsItrT
-      bitfields : Uint32T # FIXME
+      bitfields : Uint32T # Packed iterator state bitfields.
       # read_rest : Uint32T
       # finished : Uint32T
       # is_cram : Uint32T
@@ -512,7 +512,7 @@ module HTS
       data : Uint8T*
       l_data : LibC::Int
       m_data : Uint32T
-      mempolicy : Uint32T # FIXME
+      mempolicy : Uint32T # Packed BAM memory-policy bitfields.
     end
 
     struct Bam1CoreT
@@ -593,7 +593,7 @@ module HTS
       qpos : Int32T
       indel : LibC::Int
       level : LibC::Int
-      bitfields : Uint32T # FIXME
+      bitfields : Uint32T # Packed pileup state bitfields.
       # is_del : Uint32T
       # is_head : Uint32T
       # is_tail : Uint32T
@@ -880,7 +880,7 @@ module HTS
       type : LibC::Int
       p : Uint8T*
       p_len : Uint32T
-      p_off_free : Uint32T # FIXME
+      p_off_free : Uint32T # Packed p_off and p_free bitfields.
       # p_off : Uint32T
       # p_free : Uint32T
     end
@@ -891,7 +891,7 @@ module HTS
       v1 : BcfInfoTV1
       vptr : Uint8T*
       vptr_len : Uint32T
-      vptr_off_free : Uint32T # FIXME
+      vptr_off_free : Uint32T # Packed vptr_off and vptr_free bitfields.
       # vptr_off : Uint32T
       # vptr_free : Uint32T
       len : LibC::Int
@@ -933,10 +933,10 @@ module HTS
       rlen : HtsPosT
       rid : Int32T
       qual : LibC::Float
-      n_info_allele : Uint32T # FIXME
+      n_info_allele : Uint32T # Packed n_info and n_allele bitfields.
       # n_info : Uint32T
       # n_allele : Uint32T
-      n_fmt_sample : Uint32T # FIXME
+      n_fmt_sample : Uint32T # Packed n_fmt and n_sample bitfields.
       # n_fmt : Uint32T
       # n_sample : Uint32T
       shared : KstringT

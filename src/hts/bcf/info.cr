@@ -138,7 +138,7 @@ module HTS
       end
 
       def update_int64(tag : String, values : Array(Int64))
-        # FIXME
+        # HTSlib's generic INFO update path does not implement BCF_HT_LONG.
         raise UnsupportedInfoOperationError.new("htslib backend does not implement int64 INFO update (BCF_HT_LONG)")
       end
 

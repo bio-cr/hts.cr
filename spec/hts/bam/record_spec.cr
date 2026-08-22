@@ -798,11 +798,14 @@ class BamRecordTest
     expect_raises(ArgumentError) { aln.aux.update_array("XB", [1, 2], subtype: 'd') }
   end
 
-  # TODO: def test_aux_float
+  def test_aux_scalar_convenience_readers
+    aln = aln1
+    aln.aux.update_float("XF", 1.5)
+    aln.aux.update_char("XC", 'Q')
 
-  # TODO: def test_aux_flag
-
-  # TODO: def test_aux_char
+    aln.aux_float("XF").should eq(1.5)
+    aln.aux_char("XC").should eq('Q')
+  end
 
   {% for name in BAM_FLAG_METHODS %}
     def test_{{ name.id }}

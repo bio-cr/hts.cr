@@ -1,0 +1,10 @@
+[default.extend-words]
+# Standard SAM header tags.
+FO = "FO"
+PN = "PN"
+
+# Names copied verbatim from HTSlib's public API and ABI.
+ALS = "ALS"
+als = "als"
+querys = "querys"
+seeked = "seeked"

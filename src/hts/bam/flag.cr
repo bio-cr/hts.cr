@@ -5,7 +5,7 @@ module HTS
         @value = flag_value
       end
 
-      getter :value # FIXME: naming.
+      getter :value
 
       # Named FLAG bit constants, as Flag values so they compose with `|`.
       # e.g. Bam::Flag::UNMAP | Bam::Flag::SECONDARY | Bam::Flag::DUP
@@ -35,8 +35,6 @@ module HTS
       # BAM_FQCFAIL        =  512
       # BAM_FDUP           = 1024
       # BAM_FSUPPLEMENTARY = 2048
-
-      # TODO: Enabling bitwise operations
 
       TABLE = {paired?:        LibHTS2::BAM_FPAIRED,
                proper_pair?:   LibHTS2::BAM_FPROPER_PAIR,
@@ -78,7 +76,7 @@ module HTS
         # But only the lower 12 bits are used for FLAG values.
         # According to the SAM specification,
         # > reserved FLAG bits should be written as zero and ignored on reading by current software.
-        # Parhaps, we should ignore the upper 4 bits.
+        # Perhaps, we should ignore the upper 4 bits.
         self.class.new(~@value)
       end
 
