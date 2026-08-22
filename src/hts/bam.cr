@@ -247,6 +247,7 @@ module HTS
 
     def <<(record)
       write(record)
+      self
     end
 
     define_getter :qname

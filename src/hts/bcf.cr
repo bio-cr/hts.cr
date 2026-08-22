@@ -236,6 +236,7 @@ module HTS
 
     def <<(var)
       write(var)
+      self
     end
 
     def nsamples
