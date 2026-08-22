@@ -315,7 +315,8 @@ class BamTest
         bam.index_loaded?.should be_true
 
         with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
-          bam.load_index("#{path}.missing")
+          bam.try_load_index("#{path}.missing").should be_false
+          expect_raises(HTS::Bam::MissingIndexError) { bam.load_index("#{path}.missing") }
         end
         bam.index_loaded?.should be_false
       ensure

@@ -83,6 +83,12 @@ module HTS
     end
 
     def load_index(index_name = @index_name) : self
+      return self if try_load_index(index_name)
+
+      raise MissingIndexError.new("Failed to load index #{index_name.empty? ? "for #{@file_name}" : index_name}")
+    end
+
+    def try_load_index(index_name = @index_name) : Bool
       check_closed
       LibHTS.tbx_destroy(@idx) unless @idx.null?
       @idx = if index_name != ""
@@ -90,7 +96,7 @@ module HTS
              else
                LibHTS.tbx_index_load3(@file_name.to_s, Pointer(LibC::Char).null, 2)
              end
-      self
+      !@idx.null?
     end
 
     def index_loaded?
@@ -226,8 +232,7 @@ module HTS
     private def ensure_index!(operation : String) : Nil
       return if index_loaded?
 
-      load_index
-      return unless @idx.null?
+      return if try_load_index
 
       raise MissingIndexError.new("#{operation} requires an index for #{@file_name}. Open the file with a matching .tbi/.csi index or build one first.")
     end

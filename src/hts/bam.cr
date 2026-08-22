@@ -161,6 +161,12 @@ module HTS
     end
 
     def load_index(index_name = @index_name) : self
+      return self if try_load_index(index_name)
+
+      raise MissingIndexError.new("Failed to load index #{index_name.empty? ? "for #{@file_name}" : index_name}")
+    end
+
+    def try_load_index(index_name = @index_name) : Bool
       check_closed
 
       LibHTS.hts_idx_destroy(@idx) unless @idx.null?
@@ -169,7 +175,7 @@ module HTS
              else
                LibHTS.sam_index_load3(@hts_file, @file_name, nil, 3) # Changed from 2 to 3 for remote file support
              end
-      self
+      !@idx.null?
     end
 
     # Internal native pointer access for iterator implementations. The Bam
@@ -534,8 +540,7 @@ module HTS
     private def ensure_query_index! : Nil
       return if index_loaded?
 
-      load_index
-      return unless @idx.null?
+      return if try_load_index
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BAM/CRAM with a matching index or build one first.")
     end

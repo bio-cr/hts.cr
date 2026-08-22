@@ -364,7 +364,8 @@ class BcfTest
         file.index_loaded?.should be_true
 
         with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
-          file.load_index("#{index_path}.missing")
+          file.try_load_index("#{index_path}.missing").should be_false
+          expect_raises(HTS::Bcf::MissingIndexError) { file.load_index("#{index_path}.missing") }
         end
         file.index_loaded?.should be_false
       ensure

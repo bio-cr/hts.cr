@@ -78,7 +78,8 @@ class TabixTest
       tbx.index_loaded?.should be_true
 
       with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
-        tbx.load_index("#{@vcf_gz}.missing")
+        tbx.try_load_index("#{@vcf_gz}.missing").should be_false
+        expect_raises(HTS::Tabix::MissingIndexError) { tbx.load_index("#{@vcf_gz}.missing") }
       end
       tbx.index_loaded?.should be_false
     end
