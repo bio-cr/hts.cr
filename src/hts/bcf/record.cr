@@ -121,7 +121,7 @@ module HTS
 
       def filters : Array(String)
         count = filter_count
-        return ["PASS"] if count == 0
+        return [] of String if count == 0
 
         names = Array(String).new(count)
         each_filter_id do |id|
@@ -161,6 +161,18 @@ module HTS
       # VCF FILTER can contain multiple values, so keep the return type stable.
       def filter : Array(String)
         filters
+      end
+
+      def passed? : Bool
+        filters == ["PASS"]
+      end
+
+      def filter_missing? : Bool
+        filter_count == 0
+      end
+
+      def filtered? : Bool
+        !passed? && !filter_missing?
       end
 
       def qual

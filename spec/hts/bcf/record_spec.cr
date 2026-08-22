@@ -85,12 +85,15 @@ class BcfRecordTest
   end
 
   def test_filter
-    (var1.filter).should eq(["PASS"])
+    (var1.filter).should eq([] of String)
+    (var1.filter_missing?).should be_true
+    (var1.passed?).should be_false
+    (var1.filtered?).should be_false
   end
 
   def test_filters
     record = var1
-    (record.filters).should eq(["PASS"])
+    (record.filters).should eq([] of String)
     (record.filter_count).should eq(0)
     yielded = false
     record.each_filter_id { yielded = true }
