@@ -663,13 +663,28 @@
       pos: r.pos <span class="o">+</span> <span class="n">1</span>,
       id: r.id,
       qual: r.qual,
-      filter: r.filter,
+      filters: r.filter,
       ref: r.ref,
       alt: r.alt,
       info_dp: r.info.get_int(<span class="s">&quot;DP&quot;</span>),
       genotypes: r.format.get_string(<span class="s">&quot;GT&quot;</span>)
   <span class="k">end</span>
 <span class="k">end</span></code></pre>
+<p><code>INFO</code> and <code>FORMAT</code> numeric getters return owning arrays and represent missing
+BCF values as <code>nil</code>. For allocation-sensitive streaming scans, consume the
+borrowed buffer inside its block instead:</p>
+<pre><code class="language-crystal">bcf.each <span class="k">do</span> <span class="o">|</span>record<span class="o">|</span>
+  record.info.with_i32_buffer(<span class="s">&quot;DP&quot;</span>) <span class="k">do</span> <span class="o">|</span>values<span class="o">|</span>
+    values.each { <span class="o">|</span>depth<span class="o">|</span> consume(depth) }
+  <span class="k">end</span>
+
+  record.format.with_i32_buffer(<span class="s">&quot;AD&quot;</span>) <span class="k">do</span> <span class="o">|</span>values<span class="o">|</span>
+    values.each { <span class="o">|</span>depth<span class="o">|</span> consume(depth) }
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+<p>Borrowed buffers may contain HTSlib missing/vector-end sentinels and must not
+escape the block. Use <code>get_int_raw</code> / <code>get_float_raw</code> when an owning copy of
+those raw values is required.</p>
 <h2><a id="api-overview" class="anchor" href="#api-overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

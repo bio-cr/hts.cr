@@ -633,14 +633,14 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L9" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L9" target="_blank">
         hts/tabix.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix/errors.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix/errors.cr#L2" target="_blank">
         hts/tabix/errors.cr
       </a>
     
@@ -745,10 +745,17 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#each_selected_fields%28region%3AString%2C%2Afield_indices%2C%26%3AArray%28Bytes%29-%3E%29%3Aself-instance-method" class="signature"><strong>#each_selected_fields</strong>(region : String, *field_indices, & : Array(Bytes) -> ) : <span class="k">self</span></a>
+        <a href="#each_selected_field_views%28region%3AString%2C%2Afield_indices%2C%26%3AArray%28Bytes%29-%3E%29%3Aself-instance-method" class="signature"><strong>#each_selected_field_views</strong>(region : String, *field_indices, & : Array(Bytes) -> ) : <span class="k">self</span></a>
         
-          <div class="summary"><p>The values and their backing array are reused after each block call.</p>
+          <div class="summary"><p>The byte views and their backing array are reused after each block call.</p>
 <p><span class="flag lime">EXPERIMENTAL</span> </p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each_selected_fields%28region%3AString%2C%2Afield_indices%2C%26%3AArray%28String%29-%3E%29%3Aself-instance-method" class="signature"><strong>#each_selected_fields</strong>(region : String, *field_indices, & : Array(String) -> ) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Yield owning strings that remain valid after the block returns.</p></div>
         
       </li>
     
@@ -802,6 +809,11 @@
         <a href="#seqnames%3AArray%28String%29-instance-method" class="signature"><strong>#seqnames</strong> : Array(String)</a>
         
           <div class="summary"><p>Return the list of sequence names stored in the index.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#try_load_index%28index_name%3D%40index_name%29%3ABool-instance-method" class="signature"><strong>#try_load_index</strong>(index_name = @index_name) : Bool</a>
         
       </li>
     
@@ -976,8 +988,8 @@
     seek</a>, 
     
   
-    <a href="../HTS/Hts.html#set_threads%28n%29-instance-method" class="tooltip">
-      <span>set_threads(n)</span>
+    <a href="../HTS/Hts.html#set_threads%28n%29%3Aself-instance-method" class="tooltip">
+      <span>set_threads(n) : <span class="k">self</span></span>
     set_threads</a>, 
     
   
@@ -1071,7 +1083,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1105,7 +1117,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L52" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L51" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1121,7 +1133,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1137,7 +1149,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1172,7 +1184,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L81" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L80" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1188,7 +1200,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L195" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L208" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1204,7 +1216,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L138" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L143" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1220,7 +1232,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L143" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1242,29 +1254,50 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L150" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L155" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_selected_fields(region:String,*field_indices,&amp;:Array(Bytes)-&gt;):self-instance-method">
+    <div class="entry-detail" id="each_selected_field_views(region:String,*field_indices,&amp;:Array(Bytes)-&gt;):self-instance-method">
       <div class="signature">
         
-        def <strong>each_selected_fields</strong>(region : String, *field_indices, & : Array(Bytes) -> ) : <span class="k">self</span>
+        def <strong>each_selected_field_views</strong>(region : String, *field_indices, & : Array(Bytes) -> ) : <span class="k">self</span>
 
-        <a class="method-permalink" href="#each_selected_fields%28region%3AString%2C%2Afield_indices%2C%26%3AArray%28Bytes%29-%3E%29%3Aself-instance-method">#</a>
+        <a class="method-permalink" href="#each_selected_field_views%28region%3AString%2C%2Afield_indices%2C%26%3AArray%28Bytes%29-%3E%29%3Aself-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>The values and their backing array are reused after each block call.</p>
+          <p>The byte views and their backing array are reused after each block call.</p>
 <p><span class="flag lime">EXPERIMENTAL</span> </p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L166" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L179" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each_selected_fields(region:String,*field_indices,&amp;:Array(String)-&gt;):self-instance-method">
+      <div class="signature">
+        
+        def <strong>each_selected_fields</strong>(region : String, *field_indices, & : Array(String) -> ) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#each_selected_fields%28region%3AString%2C%2Afield_indices%2C%26%3AArray%28String%29-%3E%29%3Aself-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Yield owning strings that remain valid after the block returns.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1280,7 +1313,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1296,7 +1329,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L203" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L216" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1312,7 +1345,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L97" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1328,7 +1361,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L86" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1344,7 +1377,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1365,7 +1398,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L103" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1387,7 +1420,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L183" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L196" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1409,7 +1442,7 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L136" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1430,7 +1463,23 @@ Yields each matching record as an Array(String) of tab-split fields.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/tabix.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L116" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="try_load_index(index_name=@index_name):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>try_load_index</strong>(index_name = @index_name) : Bool
+
+        <a class="method-permalink" href="#try_load_index%28index_name%3D%40index_name%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/tabix.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -647,49 +647,49 @@
   </h2>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L14" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L14" target="_blank">
         hts/bcf.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf/errors.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf/errors.cr#L2" target="_blank">
         hts/bcf/errors.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf/format.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf/format.cr#L2" target="_blank">
         hts/bcf/format.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf/header.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf/header.cr#L2" target="_blank">
         hts/bcf/header.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf/info.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf/info.cr#L2" target="_blank">
         hts/bcf/info.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf/record.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf/record.cr#L2" target="_blank">
         hts/bcf/record.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf/scratch.cr#L2" target="_blank">
+      <a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf/scratch.cr#L2" target="_blank">
         hts/bcf/scratch.cr
       </a>
     
@@ -924,7 +924,7 @@
       <li class="entry-summary">
         <a href="#query%28chrom%3AString%2Cbeg%3AInt64%2Cend_pos%3AInt64%2C%26%29-instance-method" class="signature"><strong>#query</strong>(chrom : String, beg : Int64, end_pos : Int64, &)</a>
         
-          <div class="summary"><p>Chromosome name + range using SAM-style 1-based inclusive coordinates.</p></div>
+          <div class="summary"><p>Chromosome name + range using 0-based half-open coordinates [beg, end_pos).</p></div>
         
       </li>
     
@@ -974,6 +974,11 @@
         <a href="#to_a%3AArray%28Bcf%3A%3ARecord%29-instance-method" class="signature"><strong>#to_a</strong> : Array(Bcf::Record)</a>
         
           <div class="summary"><p>Ensure collected records are independent and safe after iteration ends.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#try_load_index%28index_name%3D%40index_name%29%3ABool-instance-method" class="signature"><strong>#try_load_index</strong>(index_name = @index_name) : Bool</a>
         
       </li>
     
@@ -1041,8 +1046,8 @@
     seek</a>, 
     
   
-    <a href="../HTS/Hts.html#set_threads%28n%29-instance-method" class="tooltip">
-      <span>set_threads(n)</span>
+    <a href="../HTS/Hts.html#set_threads%28n%29%3Aself-instance-method" class="tooltip">
+      <span>set_threads(n) : <span class="k">self</span></span>
     set_threads</a>, 
     
   
@@ -1136,7 +1141,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L56" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1169,7 +1174,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1185,7 +1190,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L42" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L43" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1201,7 +1206,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L49" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1231,7 +1236,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L198" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L237" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1247,7 +1252,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L520" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L624" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1268,7 +1273,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L145" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1284,7 +1289,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L515" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L619" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1300,7 +1305,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L150" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L185" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1325,7 +1330,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L214" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L254" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1341,7 +1346,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L531" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L635" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1363,7 +1368,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L526" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L630" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1379,7 +1384,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L220" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L260" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1395,7 +1400,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L528" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L632" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1411,7 +1416,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L533" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L637" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1427,7 +1432,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L529" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L633" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1443,7 +1448,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L527" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L631" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1459,7 +1464,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L532" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L636" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1475,7 +1480,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L530" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L634" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1491,7 +1496,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L517" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L621" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1507,7 +1512,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1523,7 +1528,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L522" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L626" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1539,7 +1544,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1555,7 +1560,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L34" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L35" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1571,7 +1576,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L184" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L223" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1587,7 +1592,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L518" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L622" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1603,7 +1608,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L179" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1619,7 +1624,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L132" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L150" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1635,7 +1640,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1651,7 +1656,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L202" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L242" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1667,7 +1672,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L33" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1683,7 +1688,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L516" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L620" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1699,7 +1704,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L521" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L625" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1720,7 +1725,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L319" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L359" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1735,13 +1740,13 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       
         <div class="doc">
           
-          <p>Chromosome name + range using SAM-style 1-based inclusive coordinates.</p>
+          <p>Chromosome name + range using 0-based half-open coordinates [beg, end_pos).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L352" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L392" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1757,7 +1762,7 @@ depend on each record and its samples. Use Bcf::Record instead.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L265" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L305" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1780,7 +1785,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L296" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L336" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1796,7 +1801,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L335" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L375" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1812,7 +1817,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L363" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L403" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1828,7 +1833,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L279" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L319" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1844,7 +1849,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L307" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L347" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1860,7 +1865,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L519" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L623" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1876,7 +1881,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L208" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L248" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1897,7 +1902,23 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L227" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L267" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="try_load_index(index_name=@index_name):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>try_load_index</strong>(index_name = @index_name) : Bool
+
+        <a class="method-permalink" href="#try_load_index%28index_name%3D%40index_name%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L156" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1913,7 +1934,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L188" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1929,7 +1950,7 @@ regions are not merged or deduplicated.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/bio-cr/hts.cr/blob/a59a417cf14f0bcc50a24b8d4ca45f80791c7f98/src/hts/bcf.cr#L173" target="_blank">View source</a>]
+          [<a href="https://github.com/bio-cr/hts.cr/blob/700ddf99168a2c7222331af3211c611b627a8231/src/hts/bcf.cr#L212" target="_blank">View source</a>]
         
       </div>
     </div>
