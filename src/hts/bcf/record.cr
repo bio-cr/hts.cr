@@ -107,16 +107,16 @@ module HTS
       end
 
       def id
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_INFO)
+        unpack!(LibHTS2::BCF_UN_INFO)
         String.new @bcf1.value.d.id
       end
 
-      def id=(id)
-        LibHTS.bcf_update_id(@header, @bcf1, id)
+      def id=(id : String)
+        update_id!(id)
       end
 
       def clear_id
-        LibHTS.bcf_update_id(@header, @bcf1, ".")
+        update_id!(".")
       end
 
       def filters : Array(String)
@@ -138,7 +138,7 @@ module HTS
 
       @[Experimental]
       def filter_count : Int32
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FLT)
+        unpack!(LibHTS2::BCF_UN_FLT)
         @bcf1.value.d.n_flt
       end
 
@@ -172,7 +172,7 @@ module HTS
       end
 
       def ref
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
+        unpack!(LibHTS2::BCF_UN_STR)
         String.new @bcf1.value.d.allele[0]
       end
 
@@ -203,7 +203,7 @@ module HTS
 
       @[Experimental]
       def each_allele_view(& : Bytes ->) : Nil
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_STR)
+        unpack!(LibHTS2::BCF_UN_STR)
         allele_pointers = @bcf1.value.d.allele
         allele_count.times do |index|
           allele = allele_pointers[index]
@@ -212,12 +212,12 @@ module HTS
       end
 
       def info
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_SHR)
+        unpack!(LibHTS2::BCF_UN_SHR)
         @info ||= Info.new(@accessor_context)
       end
 
       def format
-        LibHTS.bcf_unpack(@bcf1, LibHTS2::BCF_UN_FMT)
+        unpack!(LibHTS2::BCF_UN_FMT)
         @format ||= Format.new(@accessor_context)
       end
 
@@ -242,6 +242,19 @@ module HTS
         raise RecordError.new("bcf_dup failed") if bcf1.null?
 
         self.class.new(@header, bcf1)
+      end
+
+      private def unpack!(which : Int32) : Nil
+        rc = LibHTS.bcf_unpack(@bcf1, which)
+        raise RecordError.new("Failed to unpack BCF record (rc=#{rc})") if rc < 0
+      end
+
+      private def update_id!(id : String) : String
+        raise RecordUpdateError.new("BCF record ID must not contain a NUL byte") if id.includes?('\0')
+
+        rc = LibHTS.bcf_update_id(@header, @bcf1, id)
+        raise RecordUpdateError.new("Failed to update BCF record ID (rc=#{rc})") if rc < 0
+        id
       end
     end
   end

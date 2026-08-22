@@ -66,6 +66,15 @@ class BcfRecordTest
     (var.id).should eq(".")
   end
 
+  def test_id_set_rejects_nul_bytes
+    var = var1.clone
+    original = var.id
+    expect_raises(HTS::Bcf::RecordUpdateError, "must not contain a NUL byte") do
+      var.id = "invalid\0id"
+    end
+    var.id.should eq(original)
+  end
+
   def test_clear_id
     var = var1.clone
     (var.id).should eq(".")

@@ -27,6 +27,9 @@ module HTS
     class RecordError < Error
     end
 
+    class RecordUpdateError < RecordError
+    end
+
     class SubsetError < HeaderError
     end
 
