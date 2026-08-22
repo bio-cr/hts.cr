@@ -56,8 +56,14 @@ class BamFlagTest
   end
 
   def test_bitwise_not
-    ((~flag).value).should eq(61440)
-    ((~flag_zero).value).should eq(65535)
+    ((~flag).value).should eq(0)
+    ((~flag_zero).value).should eq(4095)
+  end
+
+  def test_cross_language_constant_aliases
+    (HTS::Bam::Flag::UNMAPPED).should eq(HTS::Bam::Flag::UNMAP)
+    (HTS::Bam::Flag::MATE_UNMAPPED).should eq(HTS::Bam::Flag::MUNMAP)
+    (HTS::Bam::Flag::DUPLICATE).should eq(HTS::Bam::Flag::DUP)
   end
 
   def test_bitwise_shift_left

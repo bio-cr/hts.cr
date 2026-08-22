@@ -23,6 +23,10 @@ module HTS
       DUP           = new(LibHTS2::BAM_FDUP.to_u16)
       SUPPLEMENTARY = new(LibHTS2::BAM_FSUPPLEMENTARY.to_u16)
 
+      UNMAPPED      = UNMAP
+      MATE_UNMAPPED = MUNMAP
+      DUPLICATE     = DUP
+
       # BAM_FPAIRED        =    1
       # BAM_FPROPER_PAIR   =    2
       # BAM_FUNMAP         =    4
@@ -77,7 +81,7 @@ module HTS
         # According to the SAM specification,
         # > reserved FLAG bits should be written as zero and ignored on reading by current software.
         # Perhaps, we should ignore the upper 4 bits.
-        self.class.new(~@value)
+        self.class.new((~@value) & 0x0fff_u16)
       end
 
       def <<(other)

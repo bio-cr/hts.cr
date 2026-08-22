@@ -82,6 +82,7 @@ module HTS
         raise Error.new("Failed to allocate hts_base_mod_state") if @state.null?
         @closed = false
         @parsed = false
+        @parse_flags = 0_u32
         # Reusable temporary buffer for LibHTS::HtsBaseMod structs
         @mods_buffer = Bytes.new(10 * sizeof(LibHTS::HtsBaseMod))
       end
@@ -102,16 +103,17 @@ module HTS
       end
 
       # Parse MM/ML tags; flags per HTSlib (e.g., HTS_MOD_REPORT_UNCHECKED = 1)
-      # Default to reporting unchecked modifications so we see MM/ML content without strict validation.
-      def parse(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED) : Int32
+      # Match bam_parse_basemod() by default; unchecked reporting is opt-in.
+      def parse(flags : UInt32 = 0_u32) : Int32
         check_closed!
         ret = LibHTS.bam_parse_basemod2(@record, @state, flags)
         raise Error.new("Failed to parse base modifications") if ret < 0
         @parsed = true
+        @parse_flags = flags
         ret
       end
 
-      def ensure_parsed!(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED)
+      def ensure_parsed!(flags : UInt32 = 0_u32)
         check_closed!
         return if @parsed
         raise Error.new("BaseMod is not parsed. Call parse first.") unless @auto_parse
@@ -119,7 +121,7 @@ module HTS
       end
 
       # Ensure a fresh iteration state: if already parsed, re-parse to reset
-      private def reparse_or_parse!(flags : UInt32 = HTS_MOD_REPORT_UNCHECKED)
+      private def reparse_or_parse!(flags : UInt32 = 0_u32)
         if @parsed
           parse(flags)
         else
@@ -294,7 +296,7 @@ module HTS
           raise Error.new("Failed to allocate hts_base_mod_state") if state.null?
 
           begin
-            ret = LibHTS.bam_parse_basemod2(@record, state, HTS_MOD_REPORT_UNCHECKED)
+            ret = LibHTS.bam_parse_basemod2(@record, state, @parse_flags)
             raise Error.new("Failed to parse base modifications") if ret < 0
 
             ensure_buffer_capacity(capacity)
