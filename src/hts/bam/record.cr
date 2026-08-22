@@ -90,8 +90,12 @@ module HTS
         String.new LibHTS2.bam_get_qname(@bam1)
       end
 
-      def qname=(name)
-        LibHTS.bam_set_qname(@bam1, name)
+      def qname=(name : String)
+        raise RecordError.new("QNAME must not contain a NUL byte") if name.includes?('\0')
+
+        rc = LibHTS.bam_set_qname(@bam1, name)
+        raise RecordError.new("Failed to update QNAME (maximum length is 254 bytes)") if rc < 0
+        name
       end
 
       # returns the tid of the record or -1 if not mapped.

@@ -48,6 +48,27 @@ class BamRecordTest
     (aln.qname).should eq("poo_3290_3833_2:0:0_2:0:0_119")
   end
 
+  def test_qname_set_accepts_254_bytes_and_rejects_longer_names
+    aln = aln1
+    max_qname = "q" * 254
+    (aln.qname = max_qname).should eq(max_qname)
+    aln.qname.should eq(max_qname)
+
+    expect_raises(HTS::Bam::RecordError, "maximum length is 254 bytes") do
+      aln.qname = "q" * 255
+    end
+    aln.qname.should eq(max_qname)
+  end
+
+  def test_qname_set_rejects_nul_bytes
+    aln = aln1
+    original = aln.qname
+    expect_raises(HTS::Bam::RecordError, "QNAME must not contain a NUL byte") do
+      aln.qname = "invalid\0qname"
+    end
+    aln.qname.should eq(original)
+  end
+
   def test_tid
     (aln1.tid).should eq(0)
   end
