@@ -227,7 +227,7 @@ module HTS
       @cb : LibHTS::BamPlpAutoF?    # keepalive for C callback
       @udata : Pointer(InputData)?  # keepalive of user data for callback
       @itr : LibHTS::HtsItrT*?      # keepalive for region iterator
-      @idx_local : LibHTS::HtsIdxT? # optional index we loaded for region
+      @idx_local : LibHTS::HtsIdxT? # borrowed from @bam for region iteration
       @maxcnt : Int32?
 
       # Open a Pileup iterator with block (RAII style)
@@ -338,10 +338,7 @@ module HTS
           LibHTS.hts_itr_destroy(itr)
           @itr = nil
         end
-        if idx = @idx_local
-          LibHTS.hts_idx_destroy(idx)
-          @idx_local = nil
-        end
+        @idx_local = nil
         # NOTE:
         # - @udata is allocated via Pointer.malloc (GC managed), no explicit free needed.
         # - @cb is a keepalive reference for the C callback during iteration.
@@ -352,7 +349,8 @@ module HTS
       end
 
       private def init_region_iterator(region : String) : LibHTS::HtsItrT*
-        idx_ptr = @bam.load_index
+        @bam.load_index
+        idx_ptr = @bam.index_pointer
         if idx_ptr.null?
           raise MissingIndexError.new("Region pileup requires an index for #{@bam.file_name}. Open the BAM/CRAM with a matching index first.")
         end

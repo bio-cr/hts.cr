@@ -225,7 +225,7 @@ module HTS
         end
         @itrs.each { |itr| LibHTS.hts_itr_destroy(itr) unless itr.null? }
         @itrs.clear
-        @idxs.each { |idx| LibHTS.hts_idx_destroy(idx) unless idx.null? }
+        # Index pointers are borrowed from @bams, which retain ownership.
         @idxs.clear
         # Note: @data_blocks and @data_array are GC-managed (via Pointer.malloc)
         # and will be automatically freed by the GC.
@@ -267,7 +267,8 @@ module HTS
       private def build_iterator(bam : Bam, region : String?, regions : Array(String)?) : LibHTS::HtsItrT*
         return Pointer(LibHTS::HtsItrT).null if region.nil? && regions.nil?
 
-        idx = bam.load_index
+        bam.load_index
+        idx = bam.index_pointer
         raise Bam::MissingIndexError.new("Region mpileup requires an index for #{bam.file_name}. Open the BAM/CRAM with a matching index first.") if idx.null?
 
         itr =
@@ -279,7 +280,6 @@ module HTS
             Pointer(LibHTS::HtsItrT).null
           end
         if itr.null?
-          LibHTS.hts_idx_destroy(idx)
           target = regions || region
           raise Bam::QueryError.new("Failed to create an iterator for region #{target.inspect} in #{bam.file_name}. Check the region syntax, that the reference exists in the header, and that the index matches the file.")
         end

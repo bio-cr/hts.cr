@@ -319,6 +319,26 @@ class BcfTest
     end
   end
 
+  def test_load_index_retains_reloads_and_clears_the_index
+    with_temp_indexed_three_sample_bcf do |path, index_path|
+      file = HTS::Bcf.new(path)
+      begin
+        file.load_index(index_path).should be(file)
+        file.index_loaded?.should be_true
+        file.load_index(index_path).should be(file)
+        file.index_loaded?.should be_true
+
+        with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+          file.load_index("#{index_path}.missing")
+        end
+        file.index_loaded?.should be_false
+      ensure
+        file.close
+      end
+      file.closed?.should be_true
+    end
+  end
+
   def test_query_requires_index
     ex = expect_raises(HTS::Bcf::MissingIndexError) do
       bcf.query("poo:4000-4100") { |_| }

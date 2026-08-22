@@ -169,14 +169,23 @@ module HTS
       self # for method chaining
     end
 
-    def load_index(index_name = @index_name)
+    def load_index(index_name = @index_name) : self
       check_closed
 
-      if index_name != ""
-        LibHTS.sam_index_load2(@hts_file, @file_name, index_name)
-      else
-        LibHTS.sam_index_load3(@hts_file, @file_name, nil, 3) # Changed from 2 to 3 for remote file support
-      end
+      LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      @idx = if index_name != ""
+               LibHTS.sam_index_load2(@hts_file, @file_name, index_name)
+             else
+               LibHTS.sam_index_load3(@hts_file, @file_name, nil, 3) # Changed from 2 to 3 for remote file support
+             end
+      self
+    end
+
+    # Internal native pointer access for iterator implementations. The Bam
+    # handle retains ownership and invalidates this pointer on reload/close.
+    def index_pointer : LibHTS::HtsIdxT
+      check_closed
+      @idx
     end
 
     def index_loaded?
@@ -534,7 +543,7 @@ module HTS
     private def ensure_query_index! : Nil
       return if index_loaded?
 
-      @idx = load_index
+      load_index
       return unless @idx.null?
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BAM/CRAM with a matching index or build one first.")

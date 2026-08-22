@@ -70,6 +70,20 @@ class TabixTest
     end
   end
 
+  def test_load_index_retains_reloads_and_clears_the_index
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      tbx.load_index.should be(tbx)
+      tbx.index_loaded?.should be_true
+      tbx.load_index.should be(tbx)
+      tbx.index_loaded?.should be_true
+
+      with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+        tbx.load_index("#{@vcf_gz}.missing")
+      end
+      tbx.index_loaded?.should be_false
+    end
+  end
+
   def test_seqnames
     HTS::Tabix.open(@vcf_gz) do |tbx|
       (tbx.seqnames).should eq(["poo"])

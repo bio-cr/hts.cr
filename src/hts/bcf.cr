@@ -128,14 +128,16 @@ module HTS
       self
     end
 
-    def load_index(index_name = @index_name)
+    def load_index(index_name = @index_name) : self
       check_closed
 
-      if index_name != ""
-        LibHTS.bcf_index_load2(@file_name, index_name)
-      else
-        LibHTS.bcf_index_load3(@file_name, nil, 2)
-      end
+      LibHTS.hts_idx_destroy(@idx) unless @idx.null?
+      @idx = if index_name != ""
+               LibHTS.bcf_index_load2(@file_name, index_name)
+             else
+               LibHTS.bcf_index_load3(@file_name, nil, 2)
+             end
+      self
     end
 
     def index_loaded?
@@ -371,7 +373,7 @@ module HTS
     private def ensure_query_index! : Nil
       return if index_loaded?
 
-      @idx = load_index
+      load_index
       return unless @idx.null?
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BCF/VCF with a matching index or build one first.")

@@ -292,6 +292,27 @@ class BamTest
     end
   end
 
+  def test_load_index_retains_reloads_and_clears_the_index
+    with_temp_indexable_bam do |path|
+      HTS::Bam.build_index(path, verbose: false)
+      bam = HTS::Bam.new(path)
+      begin
+        bam.load_index.should be(bam)
+        bam.index_loaded?.should be_true
+        bam.load_index.should be(bam)
+        bam.index_loaded?.should be_true
+
+        with_htslib_log_level(HTS::LibHTS::HtsLogLevel::HtsLogOff) do
+          bam.load_index("#{path}.missing")
+        end
+        bam.index_loaded?.should be_false
+      ensure
+        bam.close
+      end
+      bam.closed?.should be_true
+    end
+  end
+
   def test_file_level_aux_int
     values : Array(Int64?) = bam_string.aux_int("NM")
     expected = [] of Int64?
