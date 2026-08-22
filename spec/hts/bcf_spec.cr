@@ -376,9 +376,12 @@ class BcfTest
     header.append("##contig=<ID=1,length=100>")
     header.add_sample("sample", sync: true)
 
-    HTS::Bcf.open(path, "wb", build_index: true) do |bcf|
-      bcf.write_header(header)
+    stderr = capture_stderr do
+      HTS::Bcf.open(path, "wb", build_index: true) do |bcf|
+        bcf.write_header(header)
+      end
     end
+    stderr.should contain("Create index")
     File.exists?(index_path).should be_true
   ensure
     File.delete(path) if path && File.exists?(path)
