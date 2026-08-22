@@ -118,7 +118,8 @@ module HTS
           STDERR.puts "Create index for #{file_name} to #{index_name}"
         end
       end
-      r = LibHTS.bcf_index_build3(file_name.to_s, index_name, min_shift, threads)
+      index_path = index_name.empty? ? Pointer(LibC::Char).null : index_name.to_unsafe
+      r = LibHTS.bcf_index_build3(file_name.to_s, index_path, min_shift, threads)
       raise IndexError.new("Indexing failed for #{file_name} (rc=#{r})") if r < 0
     end
 

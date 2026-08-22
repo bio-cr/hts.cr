@@ -339,6 +339,52 @@ class BcfTest
     end
   end
 
+  def test_class_build_index_uses_default_index_name
+    with_temp_three_sample_bcf do |path|
+      index_path = "#{path}.csi"
+      begin
+        HTS::Bcf.build_index(path, verbose: false)
+        File.exists?(index_path).should be_true
+      ensure
+        File.delete(index_path) if File.exists?(index_path)
+      end
+    end
+  end
+
+  def test_instance_build_index_uses_default_index_name
+    with_temp_three_sample_bcf do |path|
+      index_path = "#{path}.csi"
+      begin
+        HTS::Bcf.open(path) do |file|
+          file.build_index(verbose: false).should be(file)
+        end
+        File.exists?(index_path).should be_true
+      ensure
+        File.delete(index_path) if File.exists?(index_path)
+      end
+    end
+  end
+
+  def test_write_build_index_uses_default_index_name_on_close
+    file = File.tempfile("bcf_auto_index", ".bcf")
+    path = file.path || raise "tempfile path is nil"
+    file.close
+    index_path = "#{path}.csi"
+
+    header = HTS::Bcf::Header.new
+    header.version = "VCFv4.3"
+    header.append("##contig=<ID=1,length=100>")
+    header.add_sample("sample", sync: true)
+
+    HTS::Bcf.open(path, "wb", build_index: true) do |bcf|
+      bcf.write_header(header)
+    end
+    File.exists?(index_path).should be_true
+  ensure
+    File.delete(path) if path && File.exists?(path)
+    File.delete(index_path) if index_path && File.exists?(index_path)
+  end
+
   def test_query_requires_index
     ex = expect_raises(HTS::Bcf::MissingIndexError) do
       bcf.query("poo:4000-4100") { |_| }
