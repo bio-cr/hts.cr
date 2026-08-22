@@ -130,12 +130,14 @@ module HTS
       # Get modifications at a specific query position (0-based); returns nil if none
       def at_pos(position : Int32, max_mods : Int32 = 10) : Position?
         check_closed!
+        raise ArgumentError.new("max_mods must be positive") unless max_mods > 0
         reparse_or_parse!
 
         ensure_buffer_capacity(max_mods)
         mods_ptr = @mods_buffer.to_unsafe.as(Pointer(LibHTS::HtsBaseMod))
         ret = LibHTS.bam_mods_at_qpos(@record, position, @state, mods_ptr, max_mods)
-        return if ret <= 0
+        raise Error.new("Failed to read base modifications at query position #{position}") if ret < 0
+        return if ret == 0
         # If the buffer was too small, re-fetch with the exact needed size to avoid truncation
         if ret > max_mods
           return fetch_position_from_fresh_state(position, ret)

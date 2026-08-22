@@ -251,6 +251,18 @@ describe BamBaseModChebiIntegrationTest do
 end
 
 describe HTS::Bam::BaseMod do
+  it "rejects non-positive at_pos buffer sizes before parsing" do
+    bam = HTS::Bam.open(File.expand_path("../../fixtures/moo.bam", __DIR__))
+    record = bam.first? || raise "No record in BAM"
+    base_mod = HTS::Bam::BaseMod.new(record, auto_parse: false)
+
+    expect_raises(ArgumentError, "max_mods must be positive") { base_mod.at_pos(0, max_mods: 0) }
+    expect_raises(ArgumentError, "max_mods must be positive") { base_mod.at_pos(0, max_mods: -1) }
+  ensure
+    base_mod.try &.close
+    bam.try &.close
+  end
+
   it "returns all modifications when a position has more modifications than the buffer" do
     file = File.tempfile("base_mod_many_mods", ".sam")
     path = file.path || raise "tempfile path is nil"
