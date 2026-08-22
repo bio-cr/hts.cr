@@ -160,9 +160,17 @@ module HTS
       self
     end
 
-    # The values and their backing array are reused after each block call.
+    # Yield owning strings that remain valid after the block returns.
+    def each_selected_fields(region : String, *field_indices, & : Array(String) ->) : self
+      each_selected_field_views(region, *field_indices) do |views|
+        yield views.map { |view| String.new(view) }
+      end
+      self
+    end
+
+    # The byte views and their backing array are reused after each block call.
     @[Experimental]
-    def each_selected_fields(region : String, *field_indices, & : Array(Bytes) ->) : self
+    def each_selected_field_views(region : String, *field_indices, & : Array(Bytes) ->) : self
       indices = field_indices.map(&.to_i32)
       if index = indices.find { |field_index| field_index < 0 }
         raise ArgumentError.new("field index must not be negative: #{index}")

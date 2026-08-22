@@ -211,18 +211,26 @@ class TabixTest
   def test_each_selected_fields
     HTS::Tabix.open(@vcf_gz) do |tbx|
       selected = [] of Array(String)
-      array_id = nil.as(UInt64?)
 
       tbx.each_selected_fields("poo:100-200", 0, 3, 4) do |values|
-        array_id ||= values.object_id
-        (values.object_id).should eq(array_id)
-        selected << values.map { |value| String.new(value) }
+        selected << values
       end
 
       (selected).should eq([
         ["poo", "A", "T"],
         ["poo", "G", "C"],
       ])
+      (selected[0].object_id).should_not eq(selected[1].object_id)
+    end
+  end
+
+  def test_each_selected_field_views_reuses_storage
+    HTS::Tabix.open(@vcf_gz) do |tbx|
+      array_id = nil.as(UInt64?)
+      tbx.each_selected_field_views("poo:100-200", 0, 3, 4) do |values|
+        array_id ||= values.object_id
+        (values.object_id).should eq(array_id)
+      end
     end
   end
 
