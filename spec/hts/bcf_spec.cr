@@ -418,6 +418,16 @@ class BcfTest
     (positions).should eq([4020, 4309, 4336])
   end
 
+  def test_query_tid_rejects_header_upper_bound
+    tid = indexed_bcf.header.target_count
+    expect_raises(ArgumentError, "tid (#{tid}) must be within 0...#{tid}") do
+      indexed_bcf.query(tid, 0_i64, 1_i64) { |_| }
+    end
+    expect_raises(ArgumentError, "tid (#{tid}) must be within 0...#{tid}") do
+      indexed_bcf.query_copy(tid, 0_i64, 1_i64) { |_| }
+    end
+  end
+
   def test_query_chrom_numeric
     positions = [] of Int64
     indexed_bcf.query("poo", 4000_i64, 4500_i64) do |record|

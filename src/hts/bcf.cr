@@ -319,7 +319,7 @@ module HTS
     def query(tid : Int32, beg : Int64, end_pos : Int64, &)
       check_closed
       ensure_query_index!
-      raise ArgumentError.new("tid (#{tid}) must be >= 0") if tid < 0
+      validate_tid!(tid)
       raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
@@ -335,7 +335,7 @@ module HTS
     def query_copy(tid : Int32, beg : Int64, end_pos : Int64, &)
       check_closed
       ensure_query_index!
-      raise ArgumentError.new("tid (#{tid}) must be >= 0") if tid < 0
+      validate_tid!(tid)
       raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
@@ -378,6 +378,13 @@ module HTS
       return unless @idx.null?
 
       raise MissingIndexError.new("Query requires an index for #{@file_name}. Open the BCF/VCF with a matching index or build one first.")
+    end
+
+    private def validate_tid!(tid : Int32) : Nil
+      target_count = header.target_count
+      unless 0 <= tid < target_count
+        raise ArgumentError.new("tid (#{tid}) must be within 0...#{target_count}")
+      end
     end
 
     private def raise_region_query_error(region : String) : NoReturn

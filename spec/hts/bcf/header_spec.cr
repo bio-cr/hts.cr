@@ -50,6 +50,11 @@ class BcfHeaderTest
     (hdr.target_name(0)).should eq("poo")
   end
 
+  def test_target_name_rejects_out_of_range_rid
+    expect_raises(ArgumentError, "rid (-1) must be within 0...1") { hdr.target_name(-1) }
+    expect_raises(ArgumentError, "rid (1) must be within 0...1") { hdr.target_name(1) }
+  end
+
   def test_target_names
     (hdr.target_names).should eq(["poo"])
   end

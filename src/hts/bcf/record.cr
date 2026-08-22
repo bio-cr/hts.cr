@@ -83,7 +83,15 @@ module HTS
       end
 
       def chrom
-        String.new LibHTS2.bcf_hdr_id2name(@header, rid)
+        record_rid = rid
+        count = @header.target_count
+        unless 0 <= record_rid < count
+          raise RecordError.new("Record rid #{record_rid} is outside header targets 0...#{count}")
+        end
+
+        name = LibHTS2.bcf_hdr_id2name(@header, record_rid)
+        raise RecordError.new("Missing chromosome name for record rid #{record_rid}") if name.null?
+        String.new(name)
       end
 
       def pos
@@ -117,7 +125,13 @@ module HTS
 
         names = Array(String).new(count)
         each_filter_id do |id|
-          names << String.new(LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, id))
+          id_count = @header.to_unsafe.value.n[LibHTS2::BCF_DT_ID]
+          unless 0 <= id < id_count
+            raise RecordError.new("Unknown FILTER id #{id} in record")
+          end
+          name = LibHTS2.bcf_hdr_int2id(@header, LibHTS2::BCF_DT_ID, id)
+          raise RecordError.new("Unknown FILTER id #{id} in record") if name.null?
+          names << String.new(name)
         end
         names
       end

@@ -97,7 +97,14 @@ module HTS
       end
 
       def target_name(rid : Int32) : String
-        String.new LibHTS2.bcf_hdr_id2name(self, rid)
+        count = target_count
+        unless 0 <= rid < count
+          raise ArgumentError.new("rid (#{rid}) must be within 0...#{count}")
+        end
+
+        name = LibHTS2.bcf_hdr_id2name(self, rid)
+        raise HeaderError.new("Missing target name for rid #{rid}") if name.null?
+        String.new(name)
       end
 
       def target_names : Array(String)
@@ -107,7 +114,9 @@ module HTS
           return [] of String if names.null? || nseqs <= 0
 
           Array(String).new(nseqs) do |index|
-            String.new(names[index])
+            name = names[index]
+            raise HeaderError.new("Missing target name for rid #{index}") if name.null?
+            String.new(name)
           end
         ensure
           LibHTS.hts_free(names.as(Void*)) unless names.null?

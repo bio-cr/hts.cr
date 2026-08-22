@@ -30,6 +30,12 @@ class BcfRecordTest
     (var1.chrom).should eq("poo")
   end
 
+  def test_chrom_rejects_record_rid_outside_header
+    var = var1.clone
+    var.rid = var.header.target_count
+    expect_raises(HTS::Bcf::RecordError, "outside header targets") { var.chrom }
+  end
+
   def test_pos
     (var1.pos).should eq(2125)
   end
@@ -106,6 +112,15 @@ class BcfRecordTest
     (record.filters).should eq(["LowQual", "StrandBias"])
     expect_raises(IndexError, "filter index -1 out of range 0...2") { record.filter_id_at(-1) }
     expect_raises(IndexError, "filter index 2 out of range 0...2") { record.filter_id_at(2) }
+  end
+
+  def test_filters_reject_unknown_filter_id
+    record = var1.clone
+    invalid_filter = [Int32::MAX]
+    rc = HTS::LibHTS.bcf_update_filter(record.header, record, invalid_filter.to_unsafe, 1)
+    raise "bcf_update_filter failed (rc=#{rc})" if rc < 0
+
+    expect_raises(HTS::Bcf::RecordError, "Unknown FILTER id") { record.filters }
   end
 
   def test_qual
