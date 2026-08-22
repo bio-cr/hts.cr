@@ -65,7 +65,7 @@ HTS::Bcf.open(bcf_path) do |bcf|
       pos: r.pos + 1,
       id: r.id,
       qual: r.qual,
-      filter: r.filter,
+      filters: r.filter,
       ref: r.ref,
       alt: r.alt,
       info_dp: r.info.get_int("DP"),
@@ -73,6 +73,26 @@ HTS::Bcf.open(bcf_path) do |bcf|
   end
 end
 ```
+
+`INFO` and `FORMAT` numeric getters return owning arrays and represent missing
+BCF values as `nil`. For allocation-sensitive streaming scans, consume the
+borrowed buffer inside its block instead:
+
+```crystal
+bcf.each do |record|
+  record.info.with_i32_buffer("DP") do |values|
+    values.each { |depth| consume(depth) }
+  end
+
+  record.format.with_i32_buffer("AD") do |values|
+    values.each { |depth| consume(depth) }
+  end
+end
+```
+
+Borrowed buffers may contain HTSlib missing/vector-end sentinels and must not
+escape the block. Use `get_int_raw` / `get_float_raw` when an owning copy of
+those raw values is required.
 
 ## API Overview
 

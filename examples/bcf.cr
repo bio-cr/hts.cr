@@ -14,7 +14,7 @@ HTS::Bcf.open(bcf_path) do |bcf|
       qual:      record.qual.round(2),
       ref:       record.ref,
       alt:       record.alt,
-      filter:    record.filter,
+      filters:   record.filter,
       info_dp:   info.get_int("DP"),
       info_vdb:  info.get_float("VDB"),
       genotypes: format.get_string("GT"),

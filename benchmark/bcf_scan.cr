@@ -121,7 +121,7 @@ module BcfScanBenchmark
           present = record.format.each_genotype do |sample_index, genotype|
             checksum &+= sample_index
             genotype.each_allele do |allele_index, phased, missing|
-              checksum &+= allele_index
+              checksum &+= allele_index if allele_index
               checksum &+= 3 if phased
               checksum &+= 5 if missing
             end
@@ -139,7 +139,7 @@ module BcfScanBenchmark
         @bcf.each do |record|
           present = record.format.genotype_at("GT", sample_index) do |genotype|
             genotype.each_allele do |allele_index, phased, missing|
-              checksum &+= allele_index
+              checksum &+= allele_index if allele_index
               checksum &+= 3 if phased
               checksum &+= 5 if missing
             end
@@ -155,7 +155,7 @@ module BcfScanBenchmark
         checksum = 0_i64
         @bcf.each do |record|
           values = record.format.get_int(tag) || raise "FORMAT/#{tag} missing from benchmark fixture"
-          values.each { |value| checksum &+= value }
+          values.each { |value| checksum &+= value if value }
         end
         checksum
       end
@@ -179,7 +179,7 @@ module BcfScanBenchmark
         checksum = 0_i64
         @bcf.each do |record|
           values = record.info.get_int(tag) || raise "INFO/#{tag} missing from benchmark fixture"
-          values.each { |value| checksum &+= value }
+          values.each { |value| checksum &+= value if value }
         end
         checksum
       end
@@ -203,7 +203,7 @@ module BcfScanBenchmark
         checksum = 0_u64
         @bcf.each do |record|
           values = record.info.get_float(tag) || raise "INFO/#{tag} missing from benchmark fixture"
-          values.each { |value| checksum &+= value.unsafe_as(UInt32) }
+          values.each { |value| checksum &+= value.unsafe_as(UInt32) if value }
         end
         checksum
       end
