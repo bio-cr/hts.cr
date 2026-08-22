@@ -43,8 +43,10 @@ class BcfTest
         bgzf.puts "##fileformat=VCFv4.3"
         bgzf.puts "##contig=<ID=chr1,length=100>"
         bgzf.puts "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO"
+        bgzf.puts "chr1\t9\t.\tC\tG\t.\tPASS\t."
         bgzf.puts "chr1\t10\t.\tA\tC\t.\tPASS\t."
         bgzf.puts "chr1\t20\t.\tG\tT\t.\tPASS\t."
+        bgzf.puts "chr1\t21\t.\tT\tA\t.\tPASS\t."
       end
       HTS::Bcf.build_index(path, min_shift: 0, verbose: false)
       yield path
