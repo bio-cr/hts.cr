@@ -105,6 +105,7 @@ module HTS
 
       def tid=(tid)
         @bam1.value.core.tid = tid
+        update_bin!
       end
 
       # returns the tid of the mate or -1 if not mapped.
@@ -123,6 +124,7 @@ module HTS
 
       def pos=(pos)
         @bam1.value.core.pos = pos
+        update_bin!
       end
 
       # returns 0-based mate position
@@ -148,6 +150,27 @@ module HTS
 
       def bin=(bin)
         @bam1.value.core.bin = bin
+      end
+
+      # Recalculate the BAM bin from the current 0-based half-open alignment
+      # interval using the fixed BAI binning parameters stored in BAM records.
+      def update_bin! : UInt16
+        beg_pos = pos
+        end_pos = endpos - 1
+        level = 5
+        shift = 14
+        offset = ((1 << 15) - 1) // 7
+
+        while level > 0
+          if (beg_pos >> shift) == (end_pos >> shift)
+            return @bam1.value.core.bin = (offset + (beg_pos >> shift)).to_u16
+          end
+          level -= 1
+          shift += 3
+          offset -= 1 << (level * 3)
+        end
+
+        @bam1.value.core.bin = 0_u16
       end
 
       # returns end position of the read.
@@ -371,10 +394,12 @@ module HTS
 
       def flag=(flag)
         @bam1.value.core.flag = flag
+        update_bin!
       end
 
       def flag=(flag : Flag)
         @bam1.value.core.flag = flag.value
+        update_bin!
       end
 
       # Return Aux object for iteration over all auxiliary tags

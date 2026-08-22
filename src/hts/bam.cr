@@ -235,6 +235,7 @@ module HTS
       unless @header_written
         raise WriteError.new("Header not written. Call write_header(header) first.")
       end
+      record.update_bin!
       r = LibHTS.sam_write1(@hts_file, header, record)
       raise WriteError.new("Failed to write record: #{record}") if r < 0
     end

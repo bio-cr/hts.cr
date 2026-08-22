@@ -108,6 +108,41 @@ class BamRecordTest
     (aln.pos).should eq(3289)
   end
 
+  def test_coordinate_and_mapping_updates_recalculate_bin
+    aln = aln1
+    aln.pos = 20_000
+    aln.bin.should eq(4682)
+
+    aln.bin = 0
+    aln.flag = aln.flag_value
+    aln.bin.should eq(4682)
+
+    aln.bin = 0
+    aln.tid = aln.tid
+    aln.bin.should eq(4682)
+  end
+
+  def test_write_recalculates_stale_bin
+    aln = aln1
+    aln.pos = 20_000
+    aln.bin = 0
+    file = File.tempfile("bam_stale_bin", ".bam")
+    path = file.path
+    file.close
+
+    HTS::Bam.open(path, "wb") do |bam|
+      bam.write_header(aln.header)
+      bam.write(aln)
+    end
+    aln.bin.should eq(4682)
+
+    HTS::Bam.open(path) do |bam|
+      bam.first.bin.should eq(4682)
+    end
+  ensure
+    File.delete(path) if path && File.exists?(path)
+  end
+
   def test_mpos
     (aln1.mpos).should eq(3289)
   end
