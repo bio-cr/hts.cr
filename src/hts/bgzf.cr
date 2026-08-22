@@ -246,6 +246,7 @@ module HTS
     end
 
     def bgzf? : Bool
+      check_closed
       !LibHTS.hts_get_bgzfp(@hts_file).null?
     end
 

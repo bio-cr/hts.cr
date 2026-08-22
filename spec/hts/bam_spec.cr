@@ -275,6 +275,17 @@ class BamTest
     end
   end
 
+  def test_native_position_and_thread_methods_raise_after_close
+    bam = HTS::Bam.new(path_bam_string)
+    bam.close
+
+    expect_raises(IO::Error, "Closed stream") { bam.set_threads(1) }
+    expect_raises(IO::Error, "Closed stream") { bam.threads = 1 }
+    expect_raises(IO::Error, "Closed stream") { bam.seek(0) }
+    expect_raises(IO::Error, "Closed stream") { bam.tell }
+    expect_raises(IO::Error, "Closed stream") { bam.rewind }
+  end
+
   def test_initialize_build_index_loads_index_lazily
     with_temp_indexable_bam do |path|
       bam = HTS::Bam.new(path, build_index: true)

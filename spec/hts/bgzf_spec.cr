@@ -390,6 +390,19 @@ class BgzfTest
     test_file.delete
   end
 
+  def test_bgzf_predicates_raise_after_close
+    test_file = File.tempfile("closed_bgzf", ".gz")
+    path = test_file.path
+    test_file.close
+
+    bgzf = HTS::Bgzf.open(path, "wz")
+    bgzf.close
+    expect_raises(IO::Error, "Closed stream") { bgzf.bgzf? }
+    expect_raises(IO::Error, "Closed stream") { bgzf.is_bgzf? }
+  ensure
+    File.delete(path) if path && File.exists?(path)
+  end
+
   def test_get_compression_level
     test_file = File.tempfile("test", ".gz")
     test_file.close

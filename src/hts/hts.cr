@@ -73,6 +73,7 @@ module HTS
 
     # ameba:disable Naming/AccessorMethodName
     def set_threads(n)
+      check_closed
       if n > 0
         r = LibHTS.hts_set_threads(@hts_file, n)
         raise ThreadError.new("Failed to set number of threads: #{n}") if r < 0
@@ -112,6 +113,7 @@ module HTS
     end
 
     def seek(offset)
+      check_closed
       # FIXME: Use bit fields
       flags = @hts_file.value.flags
       if flags & "1000".to_i(2) != 0 # cram
@@ -124,6 +126,7 @@ module HTS
     end
 
     def tell
+      check_closed
       flags = @hts_file.value.flags
       if flags & "1000".to_i(2) != 0 # cram
         # LibHTS.cram_tell(@hts_file.value.fp.cram)
@@ -137,6 +140,7 @@ module HTS
     end
 
     def rewind
+      check_closed
       flags = @hts_file.value.flags
       if flags & "1000".to_i(2) != 0 # cram
         # For CRAM files, seek directly to the beginning (tell is not available)
