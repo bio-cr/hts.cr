@@ -108,11 +108,11 @@ module HTS
       end
     end
 
-    protected def self.default_index_name(file_name : String, index : String) : String
+    protected def self.default_index_name(file_name : String, index : String, min_shift = 0) : String
       return index unless index.empty?
       return "#{file_name}.crai" if file_name.ends_with?(".cram")
 
-      "#{file_name}.bai"
+      min_shift > 0 ? "#{file_name}.csi" : "#{file_name}.bai"
     end
 
     protected def self.infer_cram_reference(file_name : String, fai : String) : String
@@ -132,7 +132,7 @@ module HTS
 
     # Class method: build index for any file on disk (even after close)
     def self.build_index(file_name : Path | String, index_name = "", min_shift = 0, threads = 0, verbose = true)
-      index_name = default_index_name(file_name.to_s, index_name)
+      index_name = default_index_name(file_name.to_s, index_name, min_shift)
       if verbose
         STDERR.puts "Create index for #{file_name} to #{index_name}"
       end
@@ -147,26 +147,10 @@ module HTS
       end
     end
 
-    def build_index(index_name, min_shift = 0, verbose = true)
+    def build_index(index_name = "", min_shift = 0, verbose = true)
       check_closed
-
-      if verbose
-        if index_name == ""
-          STDERR.puts "Create index for #{@file_name}"
-        else
-          STDERR.puts "Create index for #{@file_name} to #{index_name}"
-        end
-      end
-
-      case LibHTS.sam_index_build3(@file_name, index_name, min_shift, @nthreads)
-      when 0 # successful
-      when -1 then raise IndexError.new("Indexing failed for #{@file_name}")
-      when -2 then raise OpenError.new("Opening #{@file_name} failed while building index")
-      when -3 then raise IndexError.new("Format is not indexable: #{@file_name}")
-      when -4 then raise IndexError.new("Failed to create and/or save the index for #{@file_name}")
-      else         raise IndexError.new("Unknown error building index for #{@file_name}")
-      end
-      self # for method chaining
+      self.class.build_index(@file_name, index_name, min_shift, @nthreads, verbose)
+      self
     end
 
     def load_index(index_name = @index_name) : self
