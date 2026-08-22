@@ -368,19 +368,22 @@ class BcfFormatTest
         (format.get_genotypes).should eq([2, 4, 4, 4])
         (format.get_int("PL")).should eq([10, 20, 30, 40, 50, 60])
 
-        ints = format.get_int("IV") || raise "IV should be present"
+        ints = format.get_int_raw("IV") || raise "IV should be present"
         (ints.size).should eq(4)
         (ints[0]).should eq(10)
         (HTS::LibHTS2.bcf_int32_is_vector_end(ints[1])).should eq(1)
         (HTS::LibHTS2.bcf_int32_is_missing(ints[2])).should eq(1)
         (HTS::LibHTS2.bcf_int32_is_vector_end(ints[3])).should eq(1)
 
-        floats = format.get_float("FV") || raise "FV should be present"
+        floats = format.get_float_raw("FV") || raise "FV should be present"
         (floats.size).should eq(4)
         (floats[0]).should eq(1.5_f32)
         (HTS::LibHTS2.bcf_float_is_vector_end(floats[1])).should eq(1)
         (HTS::LibHTS2.bcf_float_is_missing(floats[2])).should eq(1)
         (HTS::LibHTS2.bcf_float_is_vector_end(floats[3])).should eq(1)
+
+        (format.get_int("IV")).should eq([10, nil])
+        (format.get_float("FV")).should eq([1.5_f32, nil])
 
         (format.get_int("MISSI")).should be_nil
         (format.get_float("MISSF")).should be_nil
@@ -411,10 +414,10 @@ class BcfFormatTest
     with_temp_gt_bcf do |path|
       HTS::Bcf.open(path) do |bcf|
         format = bcf.first.format
-        samples = [] of {Int32, Int32, Array({Int32, Bool, Bool})}
+        samples = [] of {Int32, Int32, Array({Int32?, Bool, Bool})}
 
         present = format.each_genotype("GT") do |sample_index, genotype|
-          alleles = [] of {Int32, Bool, Bool}
+          alleles = [] of {Int32?, Bool, Bool}
           genotype.each_allele do |allele_index, phased, missing|
             alleles << {allele_index, phased, missing}
           end
@@ -425,7 +428,7 @@ class BcfFormatTest
         (samples).should eq([
           {0, 2, [{0, false, false}, {1, true, false}]},
           {1, 2, [{0, false, false}, {1, false, false}]},
-          {2, 2, [{-1, false, true}, {-1, false, true}]},
+          {2, 2, [{nil, false, true}, {nil, false, true}]},
           {3, 1, [{1, false, false}]},
         ])
       end
@@ -438,7 +441,7 @@ class BcfFormatTest
       HTS::LibHTS2.bcf_gt_phased(1),
     ]
     genotype = HTS::Bcf::Format::GenotypeView.new(values)
-    alleles = [] of {Int32, Bool, Bool}
+    alleles = [] of {Int32?, Bool, Bool}
 
     genotype.each_allele do |allele, phased, missing|
       alleles << {allele, phased, missing}
@@ -461,16 +464,16 @@ class BcfFormatTest
           yielded += 1
           (genotype.ploidy).should eq(1)
           (genotype.values.to_unsafe).should eq(record.scratch.format_i32 + 6)
-          alleles = [] of {Int32, Bool, Bool}
+          alleles = [] of {Int32?, Bool, Bool}
           genotype.each_allele { |allele, phased, missing| alleles << {allele, phased, missing} }
           (alleles).should eq([{1, false, false}])
         end.should be_true
         (yielded).should eq(1)
 
         format.genotype_at("GT", 2) do |genotype|
-          alleles = [] of {Int32, Bool, Bool}
+          alleles = [] of {Int32?, Bool, Bool}
           genotype.each_allele { |allele, phased, missing| alleles << {allele, phased, missing} }
-          (alleles).should eq([{-1, false, true}, {-1, false, true}])
+          (alleles).should eq([{nil, false, true}, {nil, false, true}])
         end.should be_true
 
         expect_raises(IndexError, "sample index -1 out of range 0...4") do
@@ -568,8 +571,8 @@ class BcfFormatTest
 
           floats = format.get_float("TF") || raise "TF should be present"
           (floats.size).should eq(2)
-          ((floats[0]) - (1.25_f32)).abs.should be <= 0.001
-          ((floats[1]) - (2.75_f32)).abs.should be <= 0.001
+          ((floats[0].not_nil!) - (1.25_f32)).abs.should be <= 0.001
+          ((floats[1].not_nil!) - (2.75_f32)).abs.should be <= 0.001
         end
       end
     end

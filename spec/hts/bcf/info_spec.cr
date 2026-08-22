@@ -80,16 +80,16 @@ class BcfInfoTest
         scratch = record.scratch
 
         (scratch.info_i32.null?).should be_true
-        (info.get_int("MIX")).should eq([42, Int32::MIN])
+        (info.get_int_raw("MIX")).should eq([42, Int32::MIN])
         int_pointer = scratch.info_i32
         int_capacity = scratch.info_i32_capacity
         (int_pointer.null?).should be_false
 
-        (info.get_int("MIX")).should eq([42, Int32::MIN])
+        (info.get_int_raw("MIX")).should eq([42, Int32::MIN])
         (scratch.info_i32).should eq(int_pointer)
         (scratch.info_i32_capacity).should eq(int_capacity)
 
-        (info.get_int64("MIX")).should eq([42_i64, Int64::MIN])
+        (info.get_int64_raw("MIX")).should eq([42_i64, Int64::MIN])
         (scratch.info_i64.null?).should be_false
         (info.get_float("FOPT")).should_not be_nil
         (scratch.info_f32.null?).should be_false
@@ -162,15 +162,18 @@ class BcfInfoTest
       HTS::Bcf.open(path) do |bcf|
         record_info = bcf.first.info
 
-        (record_info.get_int("MIX")).should eq([42, Int32::MIN])
+        (record_info.get_int_raw("MIX")).should eq([42, Int32::MIN])
+        (record_info.get_int("MIX")).should eq([42, nil])
         (record_info.get_int_opt("MIX")).should eq([42, nil])
-        (record_info.get_int64("MIX")).should eq([42_i64, Int64::MIN])
+        (record_info.get_int64_raw("MIX")).should eq([42_i64, Int64::MIN])
+        (record_info.get_int64("MIX")).should eq([42_i64, nil])
         (record_info.get_int64_opt("MIX")).should eq([42_i64, nil])
-        raw_float = record_info.get_float("FOPT") || raise "FOPT should be present"
+        raw_float = record_info.get_float_raw("FOPT") || raise "FOPT should be present"
         (raw_float.size).should eq(2)
         (raw_float[0]).should eq(1.5_f32)
         (HTS::LibHTS2.bcf_float_is_missing(raw_float[1])).should eq(1)
         (record_info.get_float_opt("FOPT")).should eq([1.5_f32, nil])
+        (record_info.get_float("FOPT")).should eq([1.5_f32, nil])
         (record_info.get_string("CH")).should eq("Q")
         (bcf.header.info_type("CH")).should eq(:string)
       end

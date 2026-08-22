@@ -94,7 +94,7 @@ class BcfTest
   private def selected_sample_fields(record : HTS::Bcf::Record) : {Array(String), Array(Int32)}
     format = record.format
     genotypes = format.get_string("GT") || raise "GT should be present"
-    qualities = format.get_int("GQ") || raise "GQ should be present"
+    qualities = (format.get_int("GQ") || raise "GQ should be present").map(&.not_nil!)
     {genotypes, qualities}
   end
 

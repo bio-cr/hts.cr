@@ -8,31 +8,27 @@ module HTS
       def initialize(@record : Bcf::Record::AccessorContext)
       end
 
-      def get_int(tag) : Array(Int32)?
+      def get_int_raw(tag) : Array(Int32)?
         result = nil.as(Array(Int32)?)
         with_i32_buffer(tag) { |values| result = values.to_a }
         result
       end
 
-      def get_int64(tag) : Array(Int64)?
+      def get_int64_raw(tag) : Array(Int64)?
         result = nil.as(Array(Int64)?)
         with_i64_buffer(tag) { |values| result = values.to_a }
         result
       end
 
-      def get_int_opt(tag) : Array(Int32?)?
-        ints = get_int(tag)
-        return unless ints
-        ints.map { |v| LibHTS2.bcf_int32_is_missing(v) != 0 ? nil : v }
+      def get_int(tag) : Array(Int32?)?
+        nullable_i32_values(tag)
       end
 
-      def get_int64_opt(tag) : Array(Int64?)?
-        ints = get_int64(tag)
-        return unless ints
-        ints.map { |v| LibHTS2.bcf_int64_is_missing(v) != 0 ? nil : v }
+      def get_int64(tag) : Array(Int64?)?
+        nullable_i64_values(tag)
       end
 
-      def get_float(tag) : Array(Float32)?
+      def get_float_raw(tag) : Array(Float32)?
         result = nil.as(Array(Float32)?)
         with_f32_buffer(tag) { |values| result = values.to_a }
         result
@@ -68,10 +64,20 @@ module HTS
         with_numeric_buffer(tag, "float", Float32) { |values| yield values }
       end
 
-      def get_float_opt(tag) : Array(Float32?)?
-        floats = get_float(tag)
-        return unless floats
-        floats.map { |v| LibHTS2.bcf_float_is_missing(v) != 0 ? nil : v }
+      def get_float(tag) : Array(Float32?)?
+        nullable_f32_values(tag)
+      end
+
+      def get_int_opt(tag)
+        get_int(tag)
+      end
+
+      def get_int64_opt(tag)
+        get_int64(tag)
+      end
+
+      def get_float_opt(tag)
+        get_float(tag)
       end
 
       def get_string(tag) : String?
@@ -114,6 +120,45 @@ module HTS
           raise InfoReadError.new("Unknown return value from bcf_get_info_flag")
         end
         val
+      end
+
+      private def nullable_i32_values(tag) : Array(Int32?)?
+        result = nil.as(Array(Int32?)?)
+        with_i32_buffer(tag) do |values|
+          converted = Array(Int32?).new(values.size)
+          values.each do |value|
+            break if LibHTS2.bcf_int32_is_vector_end(value) != 0
+            converted << (LibHTS2.bcf_int32_is_missing(value) != 0 ? nil : value)
+          end
+          result = converted
+        end
+        result
+      end
+
+      private def nullable_i64_values(tag) : Array(Int64?)?
+        result = nil.as(Array(Int64?)?)
+        with_i64_buffer(tag) do |values|
+          converted = Array(Int64?).new(values.size)
+          values.each do |value|
+            break if LibHTS2.bcf_int64_is_vector_end(value) != 0
+            converted << (LibHTS2.bcf_int64_is_missing(value) != 0 ? nil : value)
+          end
+          result = converted
+        end
+        result
+      end
+
+      private def nullable_f32_values(tag) : Array(Float32?)?
+        result = nil.as(Array(Float32?)?)
+        with_f32_buffer(tag) do |values|
+          converted = Array(Float32?).new(values.size)
+          values.each do |value|
+            break if LibHTS2.bcf_float_is_vector_end(value) != 0
+            converted << (LibHTS2.bcf_float_is_missing(value) != 0 ? nil : value)
+          end
+          result = converted
+        end
+        result
       end
 
       def update_int(tag : String, value : Int)

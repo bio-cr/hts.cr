@@ -14,12 +14,12 @@ module HTS
         end
 
         # Yields allele index, phased flag, and missing flag for each allele.
-        # Missing alleles use -1 as their allele index. Vector-end sentinels are
+        # Missing alleles use nil as their allele index. Vector-end sentinels are
         # excluded from this view and are not yielded.
-        def each_allele(& : Int32, Bool, Bool ->) : Nil
+        def each_allele(& : Int32?, Bool, Bool ->) : Nil
           @values.each_with_index do |encoded, allele_offset|
             missing = LibHTS2.bcf_gt_is_missing(encoded) != 0
-            allele_index = missing ? -1 : LibHTS2.bcf_gt_allele(encoded)
+            allele_index = missing ? nil : LibHTS2.bcf_gt_allele(encoded)
             phased = allele_offset > 0 && LibHTS2.bcf_gt_is_phased(encoded) != 0
             yield allele_index, phased, missing
           end
@@ -134,12 +134,20 @@ module HTS
         true
       end
 
-      def get_int(tag) : Array(Int32)?
+      def get_int_raw(tag) : Array(Int32)?
         get_numeric_values(tag, LibHTS2::BCF_HT_INT, Int32)
       end
 
-      def get_float(tag) : Array(Float32)?
+      def get_float_raw(tag) : Array(Float32)?
         get_numeric_values(tag, LibHTS2::BCF_HT_REAL, Float32)
+      end
+
+      def get_int(tag) : Array(Int32?)?
+        nullable_format_i32_values(tag)
+      end
+
+      def get_float(tag) : Array(Float32?)?
+        nullable_format_f32_values(tag)
       end
 
       # Yields a borrowed view of the raw Int32 FORMAT values.
@@ -342,6 +350,32 @@ module HTS
             sample_index += 1
           end
         end
+      end
+
+      private def nullable_format_i32_values(tag) : Array(Int32?)?
+        result = nil.as(Array(Int32?)?)
+        with_i32_buffer(tag) do |values|
+          converted = Array(Int32?).new(values.size)
+          values.each do |value|
+            next if LibHTS2.bcf_int32_is_vector_end(value) != 0
+            converted << (LibHTS2.bcf_int32_is_missing(value) != 0 ? nil : value)
+          end
+          result = converted
+        end
+        result
+      end
+
+      private def nullable_format_f32_values(tag) : Array(Float32?)?
+        result = nil.as(Array(Float32?)?)
+        with_f32_buffer(tag) do |values|
+          converted = Array(Float32?).new(values.size)
+          values.each do |value|
+            next if LibHTS2.bcf_float_is_vector_end(value) != 0
+            converted << (LibHTS2.bcf_float_is_missing(value) != 0 ? nil : value)
+          end
+          result = converted
+        end
+        result
       end
 
       private def each_vector_numeric(tag, type, value_type : T.class, & : Int32, Slice(T) ->) : Bool forall T
