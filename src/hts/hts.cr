@@ -45,7 +45,7 @@ module HTS
       check_closed
       format = LibHTS.hts_get_format(@hts_file)
       raise FileFormatError.new("Failed to inspect file format for #{@file_name}") if format.null?
-      format.value.format.to_s
+      format.value.format.to_s.downcase
     end
 
     def file_format_version
@@ -75,13 +75,13 @@ module HTS
     end
 
     # ameba:disable Naming/AccessorMethodName
-    def set_threads(n)
+    def set_threads(n) : self
       check_closed
-      if n > 0
-        r = LibHTS.hts_set_threads(@hts_file, n)
-        raise ThreadError.new("Failed to set number of threads: #{n}") if r < 0
-        @nthreads = n
-      end
+      raise ArgumentError.new("Number of threads must be positive") unless n > 0
+      r = LibHTS.hts_set_threads(@hts_file, n)
+      raise ThreadError.new("Failed to set number of threads: #{n}") if r < 0
+      @nthreads = n
+      self
     end
 
     # ameba:enable Naming/AccessorMethodName

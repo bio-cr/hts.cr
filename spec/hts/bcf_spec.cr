@@ -226,7 +226,7 @@ class BcfTest
   end
 
   def test_file_format
-    (bcf.file_format).should eq("Bcf")
+    (bcf.file_format).should eq("bcf")
   end
 
   def test_file_format_version

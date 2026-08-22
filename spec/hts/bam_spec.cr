@@ -128,10 +128,11 @@ class BamTest
       end
 
       def test_open_{{ ft }}_with_block
-        f = HTS::Bam.open(path_{{ ft }}) do |b|
+        result = HTS::Bam.open(path_{{ ft }}) do |b|
           (b).should be_a(HTS::Bam)
+          :block_result
         end
-        (f.closed?).should eq(true)
+        (result).should eq(:block_result)
       end
 
       {% if format == "bam" %}
@@ -161,7 +162,7 @@ class BamTest
       end
 
       def test_file_format_{{ ft }}
-        ({{ ft }}.file_format).should eq({{ format }}.capitalize)
+        ({{ ft }}.file_format).should eq({{ format }})
       end
 
       def test_file_format_version_{{ ft }}

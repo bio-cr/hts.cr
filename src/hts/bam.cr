@@ -47,7 +47,6 @@ module HTS
                   threads = 0, build_index = false, &)
       file = new(file_name, mode, index, fai, threads, build_index)
       close_after_yield(file) { |handle| yield handle }
-      file
     end
 
     def initialize(file_name : Path | String, @mode = "r", index = "", fai = "",
@@ -509,28 +508,27 @@ module HTS
       end
     end
 
-    # Chromosome name + range using SAM-style 1-based inclusive coordinates.
+    # Chromosome name + range using 0-based half-open coordinates [beg, end_pos).
     def query(chrom : String, beg : Int64, end_pos : Int64, &)
       raise ArgumentError.new("chrom must not be empty") if chrom.empty?
-      raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
+      raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
       tid = header.get_tid(chrom)
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
-      # Convert 1-based inclusive [beg, end] to 0-based half-open [beg - 1, end).
-      query(tid, beg - 1, end_pos) { |record| yield record }
+      query(tid, beg, end_pos) { |record| yield record }
     end
 
     def query_copy(chrom : String, beg : Int64, end_pos : Int64, &)
       raise ArgumentError.new("chrom must not be empty") if chrom.empty?
-      raise ArgumentError.new("beg (#{beg}) must be >= 1 for 1-based inclusive coordinates") if beg < 1
+      raise ArgumentError.new("beg (#{beg}) must be >= 0 for 0-based half-open coordinates") if beg < 0
       raise ArgumentError.new("beg (#{beg}) must be <= end_pos (#{end_pos})") if beg > end_pos
 
       tid = header.get_tid(chrom)
       raise ArgumentError.new("Unknown reference name #{chrom.inspect} in #{@file_name}") if tid < 0
 
-      query_copy(tid, beg - 1, end_pos) { |record| yield record }
+      query_copy(tid, beg, end_pos) { |record| yield record }
     end
 
     private def ensure_query_index! : Nil

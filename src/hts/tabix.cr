@@ -21,7 +21,6 @@ module HTS
     def self.open(file_name : Path | String, mode = "r", index = "", threads = 0, build_index = false, preset = :vcf, &)
       file = new(file_name, mode, index, threads, build_index, preset)
       close_after_yield(file) { |handle| yield handle }
-      file
     end
 
     def initialize(file_name : Path | String, @mode = "r", index = "", threads = 0, build_index = false, preset = :vcf)
