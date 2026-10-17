@@ -35,6 +35,7 @@ class BcfFormatTest
       header.append("##FORMAT=<ID=PL,Number=G,Type=Integer,Description=\"Phred likelihoods\">")
       header.append("##FORMAT=<ID=MISSI,Number=1,Type=Integer,Description=\"defined but absent integer\">")
       header.append("##FORMAT=<ID=MISSF,Number=1,Type=Float,Description=\"defined but absent float\">")
+      header.append("##FORMAT=<ID=BAD,Number=0,Type=Flag,Description=\"unsupported\">")
       header.append("##FORMAT=<ID=IV,Number=.,Type=Integer,Description=\"integer with sentinels\">")
       header.append("##FORMAT=<ID=FV,Number=.,Type=Float,Description=\"float with sentinels\">")
       header.add_sample("S1", sync: false)
@@ -190,6 +191,56 @@ class BcfFormatTest
 
   def test_get_genotypes
     (format.get_genotypes).should eq([4, 4])
+  end
+
+  def test_empty_sample_subset_uses_safe_empty_format_values
+    with_temp_bcf do |path|
+      HTS::Bcf.open(path, subset: [] of String) do |bcf|
+        record = bcf.first
+        format = record.format
+
+        bcf.samples.should eq([] of String)
+        bcf.nsamples.should eq(0)
+        format.get_int_raw("PL").should eq([] of Int32)
+        format.get_int("PL").should eq([] of Int32?)
+        format.get_int("MISSI").should eq([] of Int32?)
+        format.get_float_raw("FV").should eq([] of Float32)
+        format.get_float("FV").should eq([] of Float32?)
+        format.get_float("MISSF").should eq([] of Float32?)
+        format.get_string("GT").should eq([] of String)
+        format.get_genotypes.should eq([] of Int32)
+
+        # Individual FORMAT field IDs are absent after selecting no samples,
+        # so both record-present and header-only tags represent zero selected
+        # values. Deletion must not call a native FORMAT updater in this state.
+        format.delete("PL").should be_false
+        format.delete("MISSI").should be_false
+        format.delete("NO_SUCH_TAG").should be_false
+
+        format.with_i32_buffer("PL") { |values| values.empty?.should be_true }.should be_true
+        format.with_f32_buffer("FV") { |values| values.empty?.should be_true }.should be_true
+        format.each_scalar_i32("PL") { |_sample, _value| raise "zero-sample FORMAT must not yield" }.should be_true
+        format.each_vector_f32("FV") { |_sample, _values| raise "zero-sample FORMAT must not yield" }.should be_true
+        format.each_genotype { |_sample, _genotype| raise "zero-sample FORMAT must not yield" }.should be_true
+
+        expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_int("NO_SUCH_TAG") }
+        expect_raises(HTS::Bcf::FormatTypeError) { format.get_float("PL") }
+        expect_raises(HTS::Bcf::FormatTypeError) { format.get_string("PL") }
+        expect_raises(HTS::Bcf::UnsupportedFormatOperationError) { format.get_int("BAD") }
+      end
+    end
+
+    with_temp_character_format_vcf do |path|
+      HTS::Bcf.open(path, subset: [] of String) do |bcf|
+        format = bcf.first.format
+
+        format.get_string("ST").should eq([] of String)
+        format.get_string("CH").should eq([] of String)
+        format.get_string("MISS").should eq([] of String)
+        format.each_string_view("ST") { |_sample, _value| raise "zero-sample FORMAT must not yield" }.should be_true
+        expect_raises(HTS::Bcf::FormatDefinitionError) { format.get_string("NO_SUCH_TAG") }
+      end
+    end
   end
 
   def test_getters_reuse_typed_scratch_buffers

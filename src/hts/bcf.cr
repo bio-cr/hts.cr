@@ -21,6 +21,12 @@ module HTS
     @header : Bcf::Header?
     @read_header : Bcf::Header?
     @read_subset_imap : Slice(Int32)?
+    # Indexed records bypass bcf_read(). Keep an unfiltered header and its
+    # source-column map for that path: bcf_hdr_set_samples() cannot be applied
+    # to manually parsed VCF records, and indexed BCF records need the original
+    # sample positions when they are explicitly subset.
+    @iterator_source_header : Bcf::Header?
+    @iterator_subset_imap : Slice(Int32)?
     @max_unpack : Int32
     # Auto index after close when opened for writing with build_index: true
     @auto_index_on_close : Bool = false
@@ -65,6 +71,8 @@ module HTS
       @header = nil
       @read_header = nil
       @read_subset_imap = nil
+      @iterator_source_header = nil
+      @iterator_subset_imap = nil
       @hts_file = Pointer(LibHTS::HtsFile).null
 
       validate_reader_options!(subset, unpack)
@@ -93,6 +101,8 @@ module HTS
             subset_names = subset.map(&.to_s).to_a
             source_samples = source_header.samples
             @header = source_header.subset(subset_names)
+            @iterator_source_header = source_header.clone
+            @iterator_subset_imap = source_sample_imap(source_samples, subset_names)
             configure_sample_selection!(source_header, subset_names)
             @read_subset_imap = sample_reorder_imap(source_samples, subset_names)
           else
@@ -525,7 +535,8 @@ module HTS
     end
 
     private def parse_vcf_query_line!(line : LibHTS::KstringT*, bcf1 : LibHTS::Bcf1T*) : Nil
-      rc = LibHTS.vcf_parse(line, header_for_reading, bcf1)
+      parse_header = @iterator_source_header || header_for_reading
+      rc = LibHTS.vcf_parse(line, parse_header, bcf1)
       raise ReadError.new("Failed to parse indexed VCF record from #{@file_name} (rc=#{rc})") if rc < 0
     end
 
@@ -581,9 +592,14 @@ module HTS
       imap.each_with_index.all? { |source_index, output_index| source_index == output_index } ? nil : imap
     end
 
+    private def source_sample_imap(source_samples : Array(String), requested_samples : Array(String)) : Slice(Int32)
+      Slice(Int32).new(requested_samples.size) do |index|
+        source_samples.index!(requested_samples[index]).to_i32
+      end
+    end
+
     private def apply_read_subset_order!(record : Bcf::Record) : Nil
       return unless imap = @read_subset_imap
-
       source_header = @read_header || header
       rc = LibHTS.bcf_subset(source_header, record, imap.size, imap.to_unsafe)
       return if rc >= 0
@@ -595,6 +611,14 @@ module HTS
       output_header = @header
       return unless output_header
       return unless output_header.subset?
+
+      if source_imap = @iterator_subset_imap
+        source_header = @iterator_source_header || @read_header || output_header
+        rc = LibHTS.bcf_subset(source_header, record, source_imap.size, source_imap.to_unsafe)
+        return if rc >= 0
+
+        raise SubsetError.new("Failed to subset indexed VCF samples #{output_header.subset_samples.inspect} while querying #{@file_name}")
+      end
 
       source_header = @read_header || output_header
       rc = LibHTS.bcf_subset_format(source_header, record)

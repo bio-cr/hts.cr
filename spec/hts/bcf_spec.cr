@@ -56,6 +56,27 @@ class BcfTest
     end
   end
 
+  private def with_temp_indexed_three_sample_vcf_gz(&)
+    file = File.tempfile("bcf_tabix_subset", ".vcf.gz")
+    path = file.path || raise "tempfile path is nil"
+    file.close
+    begin
+      HTS::Bgzf.open(path, "wz") do |bgzf|
+        bgzf.puts "##fileformat=VCFv4.3"
+        bgzf.puts "##contig=<ID=chr1,length=100>"
+        bgzf.puts "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">"
+        bgzf.puts "##FORMAT=<ID=GQ,Number=1,Type=Integer,Description=\"Genotype quality\">"
+        bgzf.puts "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tA\tB\tC"
+        bgzf.puts "chr1\t10\t.\tA\tC\t.\tPASS\t.\tGT:GQ\t0/0:10\t0/1:20\t1/1:30"
+      end
+      HTS::Bcf.build_index(path, min_shift: 0, verbose: false)
+      yield path
+    ensure
+      File.delete(path) if File.exists?(path)
+      File.delete("#{path}.tbi") if File.exists?("#{path}.tbi")
+    end
+  end
+
   def test_query_bgzip_vcf_through_tabix_backend
     with_temp_indexed_vcf_gz do |path|
       HTS::Bcf.open(path) do |vcf|
@@ -66,6 +87,67 @@ class BcfTest
         copies = [] of HTS::Bcf::Record
         vcf.query_copy("chr1:10-20") { |record| copies << record }
         (copies.map(&.pos)).should eq([9, 19])
+      end
+    end
+  end
+
+  def test_indexed_vcf_queries_apply_sample_subset_and_order
+    with_temp_indexed_three_sample_vcf_gz do |path|
+      HTS::Bcf.open(path, subset: ["C", "A"]) do |vcf|
+        reused = [] of {Array(String), Array(Int32)}
+        copied = [] of {Array(String), Array(Int32)}
+
+        vcf.query("chr1:1-100") { |record| reused << selected_sample_fields(record) }
+        vcf.query_copy("chr1:1-100") { |record| copied << selected_sample_fields(record) }
+
+        expected = [{["1/1", "0/0"], [30, 10]}]
+        vcf.samples.should eq(["C", "A"])
+        reused.should eq(expected)
+        copied.should eq(expected)
+      end
+    end
+  end
+
+  def test_indexed_vcf_queries_allow_an_empty_sample_subset
+    with_temp_indexed_three_sample_vcf_gz do |path|
+      HTS::Bcf.open(path, subset: [] of String) do |vcf|
+        reused = [] of Int64
+        copied = [] of Int64
+
+        vcf.query("chr1:1-100") do |record|
+          assert_empty_sample_fields(record)
+          reused << record.pos
+        end
+        vcf.query_copy("chr1:1-100") do |record|
+          assert_empty_sample_fields(record)
+          copied << record.pos
+        end
+
+        vcf.samples.should eq([] of String)
+        reused.should eq([9_i64])
+        copied.should eq([9_i64])
+      end
+    end
+  end
+
+  def test_indexed_vcf_queries_subset_with_site_only_unpacking
+    with_temp_indexed_three_sample_vcf_gz do |path|
+      HTS::Bcf.open(path, subset: ["C", "A"], unpack: :site_only) do |vcf|
+        reused = [] of Int64
+        copied = [] of Int64
+
+        vcf.query("chr1:1-100") do |record|
+          record.to_unsafe.value.max_unpack.should eq(HTS::LibHTS2::BCF_UN_SHR)
+          reused << record.pos
+        end
+        vcf.query_copy("chr1:1-100") do |record|
+          record.to_unsafe.value.max_unpack.should eq(HTS::LibHTS2::BCF_UN_SHR)
+          copied << record.pos
+        end
+
+        vcf.samples.should eq(["C", "A"])
+        reused.should eq([9_i64])
+        copied.should eq([9_i64])
       end
     end
   end
@@ -133,6 +215,11 @@ class BcfTest
     genotypes = format.get_string("GT") || raise "GT should be present"
     qualities = (format.get_int("GQ") || raise "GQ should be present").map(&.not_nil!)
     {genotypes, qualities}
+  end
+
+  private def assert_empty_sample_fields(record : HTS::Bcf::Record) : Nil
+    record.format.get_string("GT").should eq([] of String)
+    record.format.get_int("GQ").should eq([] of Int32?)
   end
 
   def bcf
@@ -296,6 +383,19 @@ class BcfTest
     end
   end
 
+  def test_sequential_bcf_allows_an_empty_sample_subset
+    with_temp_three_sample_bcf do |path|
+      subset_bcf = HTS::Bcf.new(path, subset: [] of String)
+      record = subset_bcf.first
+
+      subset_bcf.samples.should eq([] of String)
+      subset_bcf.nsamples.should eq(0)
+      assert_empty_sample_fields(record)
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
   def test_subset_records_use_source_header_mapping
     with_temp_three_sample_bcf do |path|
       subset_bcf = HTS::Bcf.new(path, subset: ["C", "A"])
@@ -340,6 +440,77 @@ class BcfTest
       (subset_bcf.samples).should eq(["C", "A"])
       (reused).should eq(expected)
       (copied).should eq(expected)
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
+  def test_indexed_bcf_queries_allow_an_empty_sample_subset
+    with_temp_indexed_three_sample_bcf do |path, index_path|
+      subset_bcf = HTS::Bcf.new(path, "r", index_path, subset: [] of String)
+      reused = [] of Int64
+      copied = [] of Int64
+
+      subset_bcf.query("1:1-100") do |record|
+        assert_empty_sample_fields(record)
+        reused << record.pos
+      end
+      subset_bcf.query_copy("1:1-100") do |record|
+        assert_empty_sample_fields(record)
+        copied << record.pos
+      end
+
+      subset_bcf.samples.should eq([] of String)
+      subset_bcf.nsamples.should eq(0)
+      reused.should eq([9_i64])
+      copied.should eq([9_i64])
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
+  def test_indexed_bcf_queries_subset_with_site_only_unpacking
+    with_temp_indexed_three_sample_bcf do |path, index_path|
+      subset_bcf = HTS::Bcf.new(path, "r", index_path, subset: ["C", "A"], unpack: :site_only)
+      reused = [] of Int64
+      copied = [] of Int64
+
+      subset_bcf.query("1:1-100") do |record|
+        record.to_unsafe.value.max_unpack.should eq(HTS::LibHTS2::BCF_UN_SHR)
+        reused << record.pos
+      end
+      subset_bcf.query_copy("1:1-100") do |record|
+        record.to_unsafe.value.max_unpack.should eq(HTS::LibHTS2::BCF_UN_SHR)
+        copied << record.pos
+      end
+
+      subset_bcf.samples.should eq(["C", "A"])
+      reused.should eq([9_i64])
+      copied.should eq([9_i64])
+    ensure
+      subset_bcf.try &.close
+    end
+  end
+
+  def test_indexed_bcf_empty_subset_with_site_only_unpacking
+    with_temp_indexed_three_sample_bcf do |path, index_path|
+      subset_bcf = HTS::Bcf.new(path, "r", index_path, subset: [] of String, unpack: :site_only)
+      reused = [] of Int64
+      copied = [] of Int64
+
+      subset_bcf.query("1:1-100") do |record|
+        record.to_unsafe.value.max_unpack.should eq(HTS::LibHTS2::BCF_UN_SHR)
+        reused << record.pos
+      end
+      subset_bcf.query_copy("1:1-100") do |record|
+        record.to_unsafe.value.max_unpack.should eq(HTS::LibHTS2::BCF_UN_SHR)
+        copied << record.pos
+      end
+
+      subset_bcf.samples.should eq([] of String)
+      subset_bcf.nsamples.should eq(0)
+      reused.should eq([9_i64])
+      copied.should eq([9_i64])
     ensure
       subset_bcf.try &.close
     end

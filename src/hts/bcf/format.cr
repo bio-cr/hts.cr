@@ -115,6 +115,10 @@ module HTS
       def delete(tag : String) : Bool
         type = tag == "GT" ? :int : @record.header.format_type(tag)
         return false unless type
+        # Empty sample selection discards per-record FORMAT data.  In
+        # particular, do not let the header-level empty-value getter result
+        # below turn into a native update against the absent individual buffer.
+        return false if empty_sample_header?
         return false unless format_present?(tag)
 
         bcf_type = case type
@@ -193,6 +197,12 @@ module HTS
       @[Experimental]
       def each_string_view(tag : String, & : Int32, Bytes ->) : Bool
         raise UnsupportedFormatOperationError.new("Use each_genotype for FORMAT/GT") if tag == "GT"
+
+        if empty_sample_header?
+          ensure_empty_sample_format_type!(tag, :string, "string")
+          return true
+        end
+
         raise_unsupported_format_flag(tag)
 
         scratch = @record.scratch
@@ -268,6 +278,11 @@ module HTS
       end
 
       def genotypes : Array(Int32)?
+        if empty_sample_header?
+          ensure_empty_sample_format_type!("GT", :int, "integer")
+          return [] of Int32
+        end
+
         scratch = @record.scratch
         hdr = @record.header
         rec = @record
@@ -296,6 +311,18 @@ module HTS
       end
 
       private def with_numeric_buffer(tag, type, value_type : T.class, & : Slice(T) ->) : Bool forall T
+        if empty_sample_header?
+          {% if T == Int32 %}
+            ensure_empty_sample_format_type!(tag, :int, "integer")
+          {% elsif T == Float32 %}
+            ensure_empty_sample_format_type!(tag, :float, "float")
+          {% else %}
+            {% raise "Unsupported FORMAT scratch type: #{T}" %}
+          {% end %}
+          yield Slice(T).empty
+          return true
+        end
+
         raise_unsupported_format_flag(tag)
         hdr = @record.header
         rec = @record
@@ -339,6 +366,8 @@ module HTS
       private def each_scalar_numeric(tag, type, value_type : T.class, & : Int32, T ->) : Bool forall T
         with_numeric_buffer(tag, type, value_type) do |values|
           sample_count = @record.header.nsamples
+          next if sample_count <= 0
+
           values_per_sample = format_values_per_sample(tag, values.size, sample_count)
           unless values_per_sample == 1
             raise FormatReadError.new("FORMAT/#{tag} has #{values_per_sample} values per sample; use the vector iterator")
@@ -381,6 +410,8 @@ module HTS
       private def each_vector_numeric(tag, type, value_type : T.class, & : Int32, Slice(T) ->) : Bool forall T
         with_numeric_buffer(tag, type, value_type) do |values|
           sample_count = @record.header.nsamples
+          next if sample_count <= 0
+
           values_per_sample = format_values_per_sample(tag, values.size, sample_count)
 
           sample_index = 0
@@ -504,6 +535,28 @@ module HTS
 
       private def ensure_genotype_tag!(tag : String) : Nil
         raise ArgumentError.new("Genotype traversal only supports FORMAT/GT") unless tag == "GT"
+      end
+
+      # An empty selected sample set leaves a BCF record with no individual
+      # data. Its packed metadata retains only the FORMAT field count, not the
+      # field IDs; bcf_unpack(), bcf_get_fmt(), and typed FORMAT getters cannot
+      # safely recover per-record tag presence from that state. Treat every
+      # header-defined, type-compatible tag as zero selected values instead.
+      # Undefined tags, type mismatches, and unsupported flag fields retain
+      # their usual errors.
+      private def empty_sample_header? : Bool
+        @record.header.nsamples == 0
+      end
+
+      private def ensure_empty_sample_format_type!(tag : String, expected_type : Symbol,
+                                                   expected_label : String) : Nil
+        declared_type = @record.header.format_type(tag)
+        raise FormatDefinitionError.new("FORMAT tag #{tag} not defined in header") unless declared_type
+
+        raise UnsupportedFormatOperationError.new("FORMAT flag fields are not supported: #{tag}") if declared_type == :flag
+
+        actual_type = tag == "GT" ? :int : declared_type
+        raise FormatTypeError.new("Tag #{tag} is not #{expected_label} FORMAT field") unless actual_type == expected_type
       end
 
       private def genotype_values_per_sample(values : Slice(Int32), sample_count : Int32) : Int32
