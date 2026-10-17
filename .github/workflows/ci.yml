@@ -12,20 +12,20 @@ jobs:
       - uses: actions/checkout@v7
       - uses: crystal-lang/install-crystal@v1
         if: matrix.os != 'windows'
-      - name: Install Crystal (MinGW64)
+      - name: Install Crystal (UCRT64)
         if: matrix.os == 'windows'
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
           install: >-
             git
-            mingw-w64-x86_64-crystal
-            mingw-w64-x86_64-shards
-            mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-htslib
-            mingw-w64-x86_64-samtools
-            mingw-w64-x86_64-bcftools
+            mingw-w64-ucrt-x86_64-crystal
+            mingw-w64-ucrt-x86_64-shards
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-htslib
+            mingw-w64-ucrt-x86_64-samtools
+            mingw-w64-ucrt-x86_64-bcftools
       - name: Install latest HTSLib (ubuntu)
         if: ${{ matrix.os == 'ubuntu' }}
         run: |
@@ -45,11 +45,11 @@ jobs:
         if: matrix.os != 'windows'
         working-directory: examples
         run: shards install
-      - name: Install dependencies (MinGW64)
+      - name: Install dependencies (UCRT64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
         run: shards install
-      - name: Install example dependencies (MinGW64)
+      - name: Install example dependencies (UCRT64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
         working-directory: examples
@@ -62,7 +62,7 @@ jobs:
         working-directory: examples
         run: |
           for f in *.cr; do crystal build "$f" --no-codegen; done
-      - name: Examples compile check (MinGW64)
+      - name: Examples compile check (UCRT64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
         working-directory: examples
@@ -73,7 +73,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
           crystal spec --order random --verbose
-      - name: Run tests (MinGW64)
+      - name: Run tests (UCRT64)
         if: matrix.os == 'windows'
         shell: msys2 {0}
         run: |
