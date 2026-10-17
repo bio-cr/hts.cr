@@ -212,8 +212,8 @@ class BcfRecordTest
           info.should be(cached_info)
           format.should be(cached_format)
           positions << record.pos
-          depths << (info.get_int("DP") || raise "missing DP")[0].not_nil!
-          likelihoods << (format.get_int("PL") || raise "missing PL").map(&.not_nil!)
+          depths << ((info.get_int("DP") || raise "missing DP")[0] || raise "missing DP value")
+          likelihoods << (format.get_int("PL") || raise "missing PL").map { |value| value || raise "missing PL value" }
           break if positions.size == 3
         end
       end

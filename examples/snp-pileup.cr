@@ -88,36 +88,34 @@ def start_snp_reader(vcf_path : String, header : HTS::Bam::Header) : Channel(Snp
   channel = Channel(SnpMessage).new(1)
 
   spawn do
-    begin
-      previous_site = nil
-      HTS::Bcf.open(vcf_path) do |vcf|
-        vcf.each do |record|
-          alleles = record.alleles
-          next unless alleles.size == 2
-          next unless alleles[0].bytesize == 1 && alleles[1].bytesize == 1
+    previous_site = nil
+    HTS::Bcf.open(vcf_path) do |vcf|
+      vcf.each do |record|
+        alleles = record.alleles
+        next unless alleles.size == 2
+        next unless alleles[0].bytesize == 1 && alleles[1].bytesize == 1
 
-          chrom = record.chrom
-          tid = chrom_to_tid(chrom, header)
-          next if tid < 0
+        chrom = record.chrom
+        tid = chrom_to_tid(chrom, header)
+        next if tid < 0
 
-          site = SnpSite.new(tid, chrom, record.pos.to_i64, alleles[0][0], alleles[1][0])
-          if previous = previous_site
-            unless site.after?(previous)
-              raise ArgumentError.new(
-                "VCF SNP records must be sorted strictly by BAM header order and position; " \
-                "#{site.label} appears after #{previous.label}"
-              )
-            end
+        site = SnpSite.new(tid, chrom, record.pos.to_i64, alleles[0][0], alleles[1][0])
+        if previous = previous_site
+          unless site.after?(previous)
+            raise ArgumentError.new(
+              "VCF SNP records must be sorted strictly by BAM header order and position; " \
+              "#{site.label} appears after #{previous.label}"
+            )
           end
-
-          previous_site = site
-          channel.send site
         end
+
+        previous_site = site
+        channel.send site
       end
-      channel.send nil
-    rescue ex
-      channel.send ex
     end
+    channel.send nil
+  rescue ex
+    channel.send ex
   end
 
   channel

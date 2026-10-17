@@ -88,7 +88,7 @@ class BgzfTest
     test_file.close
 
     begin
-      HTS::Bgzf.open(path, "wz") { |bgzf| bgzf.puts("hello") }
+      HTS::Bgzf.open(path, "wz", &.puts("hello"))
 
       HTS::Bgzf.open(path, "r") do |bgzf|
         position = bgzf.tell || raise "BGZF position unavailable"

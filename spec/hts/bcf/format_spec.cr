@@ -217,8 +217,8 @@ class BcfFormatTest
         format.delete("MISSI").should be_false
         format.delete("NO_SUCH_TAG").should be_false
 
-        format.with_i32_buffer("PL") { |values| values.empty?.should be_true }.should be_true
-        format.with_f32_buffer("FV") { |values| values.empty?.should be_true }.should be_true
+        format.with_i32_buffer("PL", &.empty?.should(be_true)).should be_true
+        format.with_f32_buffer("FV", &.empty?.should(be_true)).should be_true
         format.each_scalar_i32("PL") { |_sample, _value| raise "zero-sample FORMAT must not yield" }.should be_true
         format.each_vector_f32("FV") { |_sample, _values| raise "zero-sample FORMAT must not yield" }.should be_true
         format.each_genotype { |_sample, _genotype| raise "zero-sample FORMAT must not yield" }.should be_true
@@ -622,8 +622,8 @@ class BcfFormatTest
 
           floats = format.get_float("TF") || raise "TF should be present"
           (floats.size).should eq(2)
-          ((floats[0].not_nil!) - (1.25_f32)).abs.should be <= 0.001
-          ((floats[1].not_nil!) - (2.75_f32)).abs.should be <= 0.001
+          ((floats[0] || raise "TF[0] should be present") - 1.25_f32).abs.should be <= 0.001
+          ((floats[1] || raise "TF[1] should be present") - 2.75_f32).abs.should be <= 0.001
         end
       end
     end

@@ -125,7 +125,7 @@ class FaidxTest
     path = file.path
     file.close
     begin
-      HTS::Bgzf.open(path, "wz") { |bgzf| bgzf.write(FASTQ_TEXT) }
+      HTS::Bgzf.open(path, "wz", &.write(FASTQ_TEXT))
       HTS::Faidx.build_index(path)
 
       HTS::Faidx.open(path) do |faidx|
