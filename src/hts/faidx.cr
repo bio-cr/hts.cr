@@ -166,7 +166,7 @@ module HTS
     end
 
     private def detect_format(file_name : String)
-      file_name =~ /\.(fastq|fq)(\.gz|\.bgz)?\z/i ? :fastq : :fasta
+      file_name =~ /\.(fastq|fq)(\.(gz|bgz|bgzf|bgzip))?\z/i ? :fastq : :fasta
     end
 
     private def fetch_seq_impl(name : String, start : Int64, stop : Int64)

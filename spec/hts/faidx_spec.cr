@@ -120,6 +120,25 @@ class FaidxTest
     (fastq.fetch_qual("chr1_read1", 0, 4)).should eq("22222")
   end
 
+  def test_auto_detects_bgzf_fastq_suffix
+    file = File.tempfile("faidx_fastq", ".fastq.bgzf")
+    path = file.path
+    file.close
+    begin
+      HTS::Bgzf.open(path, "wz") { |bgzf| bgzf.write(FASTQ_TEXT) }
+      HTS::Faidx.build_index(path)
+
+      HTS::Faidx.open(path) do |faidx|
+        faidx.format.should eq(:fastq)
+        faidx.fetch_qual("chr1_read1").should eq("2222222222222222222222222222222222222222")
+      end
+    ensure
+      File.delete(path) if File.exists?(path)
+      File.delete("#{path}.fai") if File.exists?("#{path}.fai")
+      File.delete("#{path}.gzi") if File.exists?("#{path}.gzi")
+    end
+  end
+
   def test_fetch_qual_on_fasta_raises
     expect_raises(HTS::Faidx::FileFormatError) { fasta.fetch_qual("chr1") }
   end
