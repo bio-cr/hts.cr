@@ -287,6 +287,38 @@ class BamTest
     expect_raises(IO::Error, "Closed stream") { bam.rewind }
   end
 
+  def test_seek_raises_when_native_seek_fails
+    [bam_string, sam_string, cram_string].each do |file|
+      position = file.tell
+
+      error = expect_raises(HTS::SeekError) { file.seek(-1_i64) }
+      error.message.to_s.should contain(file.file_name)
+      file.tell.should eq(position)
+    end
+  end
+
+  def test_seek_rejects_offsets_outside_int64_before_calling_native_code
+    [bam_string, sam_string, cram_string].each do |file|
+      position = file.tell
+
+      [UInt64::MAX, Int128::MIN].each do |offset|
+        error = expect_raises(ArgumentError) { file.seek(offset) }
+        error.message.to_s.should contain("outside the supported Int64 range")
+        file.tell.should eq(position)
+      end
+    end
+  end
+
+  def test_seek_preserves_native_success_results
+    sam_position = sam_string.tell || raise "SAM position unavailable"
+    sam_string.seek(sam_position).should eq(sam_position)
+
+    bam_position = bam_string.tell || raise "BAM position unavailable"
+    bam_string.seek(bam_position).should eq(0)
+
+    cram_string.seek(0).should eq(0)
+  end
+
   def test_initialize_build_index_loads_index_lazily
     with_temp_indexable_bam do |path|
       bam = HTS::Bam.new(path, build_index: true)

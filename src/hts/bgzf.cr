@@ -258,13 +258,16 @@ module HTS
     # ameba:enable Naming/PredicateName
 
     # Override seek and tell for BGZF-specific behavior
-    def seek(offset)
+    def seek(offset : Int)
       check_closed
       bgzf_fp = LibHTS.hts_get_bgzfp(@hts_file)
       if bgzf_fp.null?
         super(offset)
       else
-        LibHTS.bgzf_seek(bgzf_fp, offset, IO::Seek::Set)
+        result = LibHTS.bgzf_seek(bgzf_fp, checked_seek_offset(offset), IO::Seek::Set)
+        raise SeekError.new("Failed to seek #{@file_name} to #{offset} (rc=#{result})") if result < 0
+
+        result
       end
     end
 

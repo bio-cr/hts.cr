@@ -115,16 +115,12 @@ module HTS
       result
     end
 
-    def seek(offset)
+    def seek(offset : Int)
       check_closed
-      flags = @hts_file.value.flags
-      if flags & IS_CRAM_MASK != 0
-        LibHTS.cram_seek(@hts_file.value.fp.cram, offset, IO::Seek::Set)
-      elsif flags & IS_BGZF_MASK != 0
-        LibHTS.bgzf_seek(@hts_file.value.fp.bgzf, offset, IO::Seek::Set)
-      else # hfile
-        LibHTS.hseek(@hts_file.value.fp.hfile, offset, IO::Seek::Set)
-      end
+      result = native_seek(checked_seek_offset(offset))
+      raise SeekError.new("Failed to seek #{@file_name} to #{offset} (rc=#{result})") if result < 0
+
+      result
     end
 
     def tell
@@ -152,13 +148,33 @@ module HTS
       else
         # bam / sam
         if start_position = @start_position
-          r = seek(start_position)
+          r = native_seek(start_position)
           raise RewindError.new("Failed to rewind: #{r}") if r < 0
           tell
         else
           raise RewindError.new("Cannot rewind: no start position")
         end
       end
+    end
+
+    private def native_seek(offset : Int64)
+      flags = @hts_file.value.flags
+      if flags & IS_CRAM_MASK != 0
+        LibHTS.cram_seek(@hts_file.value.fp.cram, offset, IO::Seek::Set)
+      elsif flags & IS_BGZF_MASK != 0
+        LibHTS.bgzf_seek(@hts_file.value.fp.bgzf, offset, IO::Seek::Set)
+      else # hfile
+        LibHTS.hseek(@hts_file.value.fp.hfile, offset, IO::Seek::Set)
+      end
+    end
+
+    # HTSlib seek APIs accept a signed 64-bit offset. Keep the public `Int`
+    # input convenient while reporting values that cannot cross that boundary
+    # as invalid arguments instead of leaking a conversion OverflowError.
+    protected def checked_seek_offset(offset : Int) : Int64
+      offset.to_i64
+    rescue OverflowError
+      raise ArgumentError.new("seek offset #{offset} is outside the supported Int64 range")
     end
   end
 end

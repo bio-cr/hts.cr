@@ -82,6 +82,33 @@ class BgzfTest
     end
   end
 
+  def test_seek_raises_on_invalid_virtual_offset
+    test_file = File.tempfile("bad_bgzf_seek", ".gz")
+    path = test_file.path
+    test_file.close
+
+    begin
+      HTS::Bgzf.open(path, "wz") { |bgzf| bgzf.puts("hello") }
+
+      HTS::Bgzf.open(path, "r") do |bgzf|
+        position = bgzf.tell || raise "BGZF position unavailable"
+        bgzf.seek(position).should eq(0)
+        error = expect_raises(HTS::SeekError) { bgzf.seek(-1_i64) }
+
+        error.message.to_s.should contain(path)
+        bgzf.tell.should eq(position)
+
+        [UInt64::MAX, Int128::MIN].each do |offset|
+          error = expect_raises(ArgumentError) { bgzf.seek(offset) }
+          error.message.to_s.should contain("outside the supported Int64 range")
+          bgzf.tell.should eq(position)
+        end
+      end
+    ensure
+      File.delete(path) if File.exists?(path)
+    end
+  end
+
   def test_iterate_over_lines
     test_file = File.tempfile("test", ".gz")
     test_file.close

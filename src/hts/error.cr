@@ -11,6 +11,9 @@ module HTS
   class RewindError < Error
   end
 
+  class SeekError < Error
+  end
+
   class CloseError < Error
   end
 end
