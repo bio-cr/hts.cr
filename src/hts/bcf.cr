@@ -12,7 +12,7 @@ require "./bcf/record"
 
 module HTS
   class Bcf < Hts
-    include Enumerable(Bcf::Record)
+    include RecordStream(Record)
 
     @idx : LibHTS::HtsIdxT
     @tbx : LibHTS::TbxT*
@@ -271,13 +271,6 @@ module HTS
       each_record_copy do |record|
         yield record
       end
-    end
-
-    # Ensure collected records are independent and safe after iteration ends.
-    def to_a : Array(Bcf::Record)
-      ary = [] of Bcf::Record
-      each_copy { |record| ary << record }
-      ary
     end
 
     private def each_record_copy(&)

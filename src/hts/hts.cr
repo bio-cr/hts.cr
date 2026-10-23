@@ -1,4 +1,5 @@
 require "./libhts"
+require "./record_stream"
 
 module HTS
   class Hts
@@ -13,7 +14,7 @@ module HTS
         check_closed
         position = tell
         begin
-          ary = map do |record|
+          ary = collect_record_values do |record|
             record.{{ name.id }}
           end
         ensure

@@ -14,7 +14,7 @@ require "./bam/mpileup"
 
 module HTS
   class Bam < Hts
-    include Enumerable(Record)
+    include RecordStream(Record)
 
     @idx : LibHTS::HtsIdxT
     @header : Bam::Header?
@@ -343,13 +343,6 @@ module HTS
       each_record_copy do |record|
         yield record
       end
-    end
-
-    # Ensure collected records are independent and safe after iteration ends.
-    def to_a : Array(Record)
-      ary = [] of Record
-      each_copy { |record| ary << record }
-      ary
     end
 
     private def each_record_copy(&)

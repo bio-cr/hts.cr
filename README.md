@@ -74,6 +74,9 @@ HTS::Bcf.open(bcf_path) do |bcf|
 end
 ```
 
+`Bam#each` and `Bcf#each` reuse a record while reading. Use `each_copy` when
+you need to keep records after an iteration.
+
 `INFO` and `FORMAT` numeric getters return owning arrays and represent missing
 BCF values as `nil`. For allocation-sensitive streaming scans, consume the
 borrowed buffer inside its block instead:

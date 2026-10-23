@@ -276,6 +276,261 @@ class BamTest
     end
   end
 
+  def test_collection_helpers_keep_independent_records
+    HTS::Bam.open(path_bam_string) do |bam|
+      records = bam.map { |record| record }
+      records.size.should eq(10)
+      records[0].pos.should eq(178)
+      records[2].pos.should eq(474)
+      records[0].should_not be(records[1])
+
+      bam.rewind
+      first_two = bam.first(2)
+      first_two.map(&.pos).should eq([178, 178])
+      first_two[0].should_not be(first_two[1])
+      bam.first?.try(&.pos).should eq(474)
+
+      bam.rewind
+      bam.first.pos.should eq(178)
+      bam.rewind
+      bam.first(0).should be_empty
+      expect_raises(ArgumentError) { bam.first(-1) }
+    end
+  end
+
+  def test_collection_helpers_at_eof
+    HTS::Bam.open(path_bam_string) do |bam|
+      bam.to_a.size.should eq(10)
+      bam.first?.should be_nil
+      bam.first(2).should be_empty
+      bam.map(&.pos).should be_empty
+      expect_raises(Enumerable::EmptyError) { bam.first }
+    end
+  end
+
+  def test_stream_predicates_and_sum
+    HTS::Bam.open(path_bam_string) do |bam|
+      bam.count { |record| record.pos == 178 }.should eq(2)
+
+      bam.rewind
+      seen = [] of Int64
+      bam.any? do |record|
+        seen << record.pos
+        record.pos == 474
+      end.should be_true
+      seen.should eq([178, 178, 474])
+      bam.first.pos.should eq(809)
+
+      bam.rewind
+      bam.all? { |record| record.pos >= 0 }.should be_true
+      bam.rewind
+      bam.all? { |record| record.pos < 474 }.should be_false
+      bam.first.pos.should eq(809)
+      bam.rewind
+      bam.none? { |record| record.pos < 0 }.should be_true
+      bam.rewind
+      bam.none? { |record| record.pos == 178 }.should be_false
+      bam.first.pos.should eq(178)
+
+      bam.rewind
+      positions = bam.map(&.pos)
+      bam.rewind
+      bam.sum(&.pos).should eq(positions.sum)
+      bam.rewind
+      bam.sum(10_i64, &.pos).should eq(positions.sum + 10)
+      bam.rewind
+      bam.sum(10_i32, &.pos).should eq(positions.sum + 10)
+
+      bam.sum(&.pos).should eq(0_i64)
+      bam.sum(10_i64, &.pos).should eq(10_i64)
+      bam.all? { |_| false }.should be_true
+      bam.any? { |_| true }.should be_false
+      bam.none? { |_| true }.should be_true
+    end
+  end
+
+  def test_one_and_index_scan_reused_records
+    HTS::Bam.open(path_bam_string) do |bam|
+      bam.one? { |record| record.pos == 474 }.should be_true
+      bam.rewind
+      bam.one? { |record| record.pos == 178 }.should be_false
+      bam.first.pos.should eq(474)
+      bam.rewind
+      bam.one? { |record| record.pos < 0 }.should be_false
+      bam.one? { |_| true }.should be_false
+
+      bam.rewind
+      bam.index! { |record| record.pos == 178 }.should eq(0)
+      bam.first.pos.should eq(178)
+      bam.rewind
+      bam.index { |record| record.pos == 474 }.should eq(2)
+      bam.first.pos.should eq(809)
+      bam.index { |_| false }.should be_nil
+      expect_raises(Enumerable::NotFoundError) { bam.index! { |_| false } }
+    end
+  end
+
+  def test_each_with_index_reuses_records
+    HTS::Bam.open(path_bam_string) do |bam|
+      positions = [] of {Int32, Int64}
+      bam.each_with_index(5) do |record, index|
+        positions << {index, record.pos}
+      end.should be(bam)
+      positions.first(3).should eq([{5, 178_i64}, {6, 178_i64}, {7, 474_i64}])
+      positions.last[0].should eq(14)
+    end
+  end
+
+  def test_each_copy_with_index_keeps_records_independent
+    HTS::Bam.open(path_bam_string) do |bam|
+      indexed = [] of {Int32, HTS::Bam::Record}
+      bam.each_copy_with_index(5) do |record, index|
+        indexed << {index, record}
+      end.should be(bam)
+
+      indexed.size.should eq(10)
+      indexed.map(&.[0]).should eq((5...15).to_a)
+      indexed[0][1].pos.should eq(178)
+      indexed[2][1].pos.should eq(474)
+      indexed[0][1].should_not be(indexed[1][1])
+    end
+  end
+
+  def test_find_returns_an_independent_record
+    HTS::Bam.open(path_bam_string) do |bam|
+      matched = nil.as(HTS::Bam::Record?)
+      found = bam.find do |record|
+        matched = record if record.pos == 474
+        record.pos == 474
+      end
+      found.should be(matched)
+      found.try(&.pos).should eq(474)
+      bam.first.pos.should eq(809)
+      found.try(&.pos).should eq(474)
+
+      bam.rewind
+      bam.find! { |record| record.pos == 474 }.pos.should eq(474)
+      bam.find(:missing) { |_| false }.should eq(:missing)
+      bam.find { |_| false }.should be_nil
+      bam.rewind
+      expect_raises(Enumerable::NotFoundError) { bam.find! { |_| false } }
+    end
+  end
+
+  def test_map_with_index_keeps_returned_records_independent
+    HTS::Bam.open(path_bam_string) do |bam|
+      indexed = bam.map_with_index(5) { |record, index| {index, record} }
+      indexed.size.should eq(10)
+      indexed.map(&.[0]).should eq((5...15).to_a)
+      indexed[0][1].pos.should eq(178)
+      indexed[2][1].pos.should eq(474)
+      indexed[0][1].should_not be(indexed[1][1])
+    end
+  end
+
+  def test_select_copies_only_matching_records
+    HTS::Bam.open(path_bam_string) do |bam|
+      expected = bam.to_a.select { |record| record.pos >= 474 }.map(&.qname)
+      bam.rewind
+      selected = bam.select { |record| record.pos >= 474 }
+      selected.map(&.qname).should eq(expected)
+      selected[0].should_not be(selected[1])
+
+      bam.rewind
+      bam.to_a.size.should eq(10)
+      selected.map(&.qname).should eq(expected)
+      bam.select { |_| true }.should be_empty
+    end
+  end
+
+  def test_reject_returns_independent_records
+    HTS::Bam.open(path_bam_string) do |bam|
+      expected = bam.to_a.reject { |record| record.pos == 178 }.map(&.pos)
+      bam.rewind
+      rejected = bam.reject { |record| record.pos == 178 }
+      rejected.map(&.pos).should eq(expected)
+      rejected[0].should_not be(rejected[1])
+
+      bam.rewind
+      bam.to_a.size.should eq(10)
+      rejected.map(&.pos).should eq(expected)
+      bam.reject { |_| false }.should be_empty
+    end
+  end
+
+  def test_partition_returns_two_independent_record_groups
+    HTS::Bam.open(path_bam_string) do |bam|
+      expected_matching, expected_other = bam.to_a.partition { |record| record.pos < 474 }
+      bam.rewind
+      matching, other = bam.partition { |record| record.pos < 474 }
+      matching.map(&.qname).should eq(expected_matching.map(&.qname))
+      other.map(&.qname).should eq(expected_other.map(&.qname))
+      matching[0].should_not be(matching[1])
+      other[0].should_not be(other[1])
+
+      bam.rewind
+      bam.to_a.size.should eq(10)
+      matching.map(&.pos).should eq(expected_matching.map(&.pos))
+      other.map(&.pos).should eq(expected_other.map(&.pos))
+      bam.partition { |_| true }.should eq({[] of HTS::Bam::Record, [] of HTS::Bam::Record})
+    end
+  end
+
+  def test_max_by_keeps_the_selected_record_and_borrowed_key_alive
+    HTS::Bam.open(path_bam_string) do |bam|
+      expected = bam.to_a.max_by(&.packed_sequence_view).qname
+      bam.rewind
+      selected = bam.max_by(&.packed_sequence_view)
+      selected.qname.should eq(expected)
+
+      bam.rewind
+      first_qname = bam.first.qname
+      bam.rewind
+      bam.max_by?(&.mapq).try(&.qname).should eq(first_qname)
+      selected.qname.should eq(expected)
+      bam.max_by?(&.mapq).should be_nil
+      expect_raises(Enumerable::EmptyError) { bam.max_by(&.mapq) }
+    end
+  end
+
+  def test_min_by_keeps_the_selected_record_and_borrowed_key_alive
+    HTS::Bam.open(path_bam_string) do |bam|
+      expected = bam.to_a.min_by(&.packed_sequence_view).qname
+      bam.rewind
+      selected = bam.min_by(&.packed_sequence_view)
+      selected.qname.should eq(expected)
+
+      bam.rewind
+      first_flag = bam.first.flag_value
+      bam.rewind
+      bam.min_by?(&.pos).try(&.flag_value).should eq(first_flag)
+      selected.qname.should eq(expected)
+      bam.min_by?(&.pos).should be_nil
+      expect_raises(Enumerable::EmptyError) { bam.min_by(&.pos) }
+    end
+  end
+
+  def test_minmax_by_keeps_both_selected_records_and_borrowed_keys_alive
+    HTS::Bam.open(path_bam_string) do |bam|
+      expected_min, expected_max = bam.to_a.minmax_by(&.packed_sequence_view)
+      bam.rewind
+      minimum, maximum = bam.minmax_by(&.packed_sequence_view)
+      minimum.qname.should eq(expected_min.qname)
+      maximum.qname.should eq(expected_max.qname)
+
+      bam.rewind
+      expected_tied_min, expected_tied_max = bam.to_a.minmax_by(&.mapq)
+      bam.rewind
+      tied_min, tied_max = bam.minmax_by?(&.mapq)
+      tied_min.try(&.qname).should eq(expected_tied_min.qname)
+      tied_max.try(&.qname).should eq(expected_tied_max.qname)
+      minimum.qname.should eq(expected_min.qname)
+      maximum.qname.should eq(expected_max.qname)
+      bam.minmax_by?(&.pos).should eq({nil, nil})
+      expect_raises(Enumerable::EmptyError) { bam.minmax_by(&.pos) }
+    end
+  end
+
   def test_native_position_and_thread_methods_raise_after_close
     bam = HTS::Bam.new(path_bam_string)
     bam.close

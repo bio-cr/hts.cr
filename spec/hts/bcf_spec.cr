@@ -692,6 +692,240 @@ class BcfTest
     end
   end
 
+  def test_collection_helpers_keep_independent_records
+    HTS::Bcf.open(test_bcf_path) do |file|
+      records = file.map { |record| record }
+      (records.size > 1).should be_true
+      expected_positions = records.map(&.pos)
+      expected_positions.uniq.size.should be > 1
+      records.map(&.pos).should eq(expected_positions)
+      records[0].should_not be(records[1])
+
+      file.rewind
+      first_two = file.first(2)
+      first_two.map(&.pos).should eq(expected_positions.first(2))
+      first_two[0].should_not be(first_two[1])
+      file.first?.try(&.pos).should eq(expected_positions[2])
+
+      file.rewind
+      file.first.pos.should eq(expected_positions[0])
+      file.rewind
+      file.first(0).should be_empty
+      expect_raises(ArgumentError) { file.first(-1) }
+    end
+  end
+
+  def test_collection_helpers_at_eof
+    HTS::Bcf.open(test_bcf_path) do |file|
+      (file.to_a.size > 0).should be_true
+      file.first?.should be_nil
+      file.first(2).should be_empty
+      file.map(&.pos).should be_empty
+      expect_raises(Enumerable::EmptyError) { file.first }
+    end
+  end
+
+  def test_stream_predicates_index_and_sum
+    HTS::Bcf.open(test_bcf_path) do |file|
+      positions = file.map(&.pos)
+      first_pos = positions.first
+
+      file.rewind
+      file.count { |record| record.pos == first_pos }.should eq(positions.count(first_pos))
+      file.rewind
+      file.any? { |record| record.pos == first_pos }.should be_true
+      file.rewind
+      file.all? { |record| record.pos >= 0 }.should be_true
+      file.rewind
+      file.none? { |record| record.pos < 0 }.should be_true
+
+      file.rewind
+      indexed = [] of {Int32, Int64}
+      file.each_with_index do |record, index|
+        indexed << {index, record.pos}
+      end.should be(file)
+      indexed.map(&.[0]).should eq((0...positions.size).to_a)
+      indexed.map(&.[1]).should eq(positions)
+
+      file.rewind
+      file.sum(&.pos).should eq(positions.sum)
+      file.rewind
+      file.sum(7_i64, &.pos).should eq(positions.sum + 7)
+    end
+  end
+
+  def test_one_and_index_scan_from_current_position
+    HTS::Bcf.open(test_bcf_path) do |file|
+      positions = file.pos
+      target = positions[1]
+      file.rewind
+
+      seen = 0
+      file.one? do |_record|
+        seen += 1
+        seen == 1
+      end.should be_true
+      file.one? { |_| true }.should be_false
+
+      file.rewind
+      file.one? { |_| true }.should be_false
+      file.rewind
+      file.index { |record| record.pos == target }.should eq(positions.index(target))
+      file.rewind
+      file.index! { |record| record.pos == target }.should eq(positions.index(target))
+      file.index { |_| false }.should be_nil
+      expect_raises(Enumerable::NotFoundError) { file.index! { |_| false } }
+    end
+  end
+
+  def test_each_copy_with_index_keeps_records_independent
+    HTS::Bcf.open(test_bcf_path) do |file|
+      indexed = [] of {Int32, HTS::Bcf::Record}
+      file.each_copy_with_index do |record, index|
+        indexed << {index, record}
+      end.should be(file)
+
+      (indexed.size > 1).should be_true
+      indexed.map(&.[0]).should eq((0...indexed.size).to_a)
+      indexed[0][1].should_not be(indexed[1][1])
+      (indexed.map { |_, record| record.pos }.uniq!.size > 1).should be_true
+    end
+  end
+
+  def test_find_returns_an_independent_record
+    HTS::Bcf.open(test_bcf_path) do |file|
+      positions = file.map(&.pos)
+      target = positions[1]
+
+      file.rewind
+      matched = nil.as(HTS::Bcf::Record?)
+      found = file.find do |record|
+        matched = record if record.pos == target
+        record.pos == target
+      end
+      found.should be(matched)
+      found.try(&.pos).should eq(target)
+      file.to_a.size.should be > 0
+      found.try(&.pos).should eq(target)
+
+      file.rewind
+      file.find! { |record| record.pos == target }.pos.should eq(target)
+      file.find(:missing) { |_| false }.should eq(:missing)
+      file.find { |_| false }.should be_nil
+      file.rewind
+      expect_raises(Enumerable::NotFoundError) { file.find! { |_| false } }
+    end
+  end
+
+  def test_map_with_index_keeps_returned_records_independent
+    HTS::Bcf.open(test_bcf_path) do |file|
+      indexed = file.map_with_index { |record, index| {index, record} }
+      (indexed.size > 1).should be_true
+      indexed.map(&.[0]).should eq((0...indexed.size).to_a)
+      indexed[0][1].should_not be(indexed[1][1])
+      (indexed.map { |_, record| record.pos }.uniq!.size > 1).should be_true
+    end
+  end
+
+  def test_select_returns_stable_matching_records
+    HTS::Bcf.open(test_bcf_path) do |file|
+      positions = file.pos
+      cutoff = positions[1]
+      file.rewind
+      selected = file.select { |record| record.pos >= cutoff }
+      selected.map(&.pos).should eq(positions.select { |pos| pos >= cutoff })
+      selected[0].should_not be(selected[1])
+
+      file.rewind
+      file.to_a.size.should eq(positions.size)
+      selected.map(&.pos).should eq(positions.select { |pos| pos >= cutoff })
+      file.select { |_| true }.should be_empty
+    end
+  end
+
+  def test_reject_returns_stable_records
+    HTS::Bcf.open(test_bcf_path) do |file|
+      positions = file.pos
+      cutoff = positions[1]
+      file.rewind
+      rejected = file.reject { |record| record.pos < cutoff }
+      rejected.map(&.pos).should eq(positions.reject { |pos| pos < cutoff })
+      rejected[0].should_not be(rejected[1])
+
+      file.rewind
+      file.to_a.size.should eq(positions.size)
+      rejected.map(&.pos).should eq(positions.reject { |pos| pos < cutoff })
+      file.reject { |_| false }.should be_empty
+    end
+  end
+
+  def test_partition_returns_two_stable_record_groups
+    HTS::Bcf.open(test_bcf_path) do |file|
+      positions = file.pos
+      cutoff = positions[1]
+      file.rewind
+      matching, other = file.partition { |record| record.pos < cutoff }
+      expected_matching, expected_other = positions.partition { |pos| pos < cutoff }
+      matching.map(&.pos).should eq(expected_matching)
+      other.map(&.pos).should eq(expected_other)
+
+      file.rewind
+      file.to_a.size.should eq(positions.size)
+      matching.map(&.pos).should eq(expected_matching)
+      other.map(&.pos).should eq(expected_other)
+      file.partition { |_| true }.should eq({[] of HTS::Bcf::Record, [] of HTS::Bcf::Record})
+    end
+  end
+
+  def test_max_by_returns_a_stable_record
+    HTS::Bcf.open(test_bcf_path) do |file|
+      expected_pos = file.pos.max
+      file.rewind
+      selected = file.max_by(&.pos)
+      selected.pos.should eq(expected_pos)
+
+      file.rewind
+      file.max_by?(&.pos).try(&.pos).should eq(expected_pos)
+      selected.pos.should eq(expected_pos)
+      file.max_by?(&.pos).should be_nil
+      expect_raises(Enumerable::EmptyError) { file.max_by(&.pos) }
+    end
+  end
+
+  def test_min_by_returns_a_stable_record
+    HTS::Bcf.open(test_bcf_path) do |file|
+      expected_pos = file.pos.min
+      file.rewind
+      selected = file.min_by(&.pos)
+      selected.pos.should eq(expected_pos)
+
+      file.rewind
+      file.min_by?(&.pos).try(&.pos).should eq(expected_pos)
+      selected.pos.should eq(expected_pos)
+      file.min_by?(&.pos).should be_nil
+      expect_raises(Enumerable::EmptyError) { file.min_by(&.pos) }
+    end
+  end
+
+  def test_minmax_by_returns_stable_records
+    HTS::Bcf.open(test_bcf_path) do |file|
+      expected_min, expected_max = file.pos.minmax
+      file.rewind
+      minimum, maximum = file.minmax_by(&.pos)
+      minimum.pos.should eq(expected_min)
+      maximum.pos.should eq(expected_max)
+
+      file.rewind
+      optional_min, optional_max = file.minmax_by?(&.pos)
+      optional_min.try(&.pos).should eq(expected_min)
+      optional_max.try(&.pos).should eq(expected_max)
+      minimum.pos.should eq(expected_min)
+      maximum.pos.should eq(expected_max)
+      file.minmax_by?(&.pos).should eq({nil, nil})
+      expect_raises(Enumerable::EmptyError) { file.minmax_by(&.pos) }
+    end
+  end
+
   def test_chrom
     act = bcf.chrom
     exp = bcf.map(&.chrom)
