@@ -7,7 +7,21 @@ module HTS
     class Record
       SEQ_NT16_STR = "=ACMGRSVTWYHKDBN"
 
+      # Keep native storage alive while an Aux accessor refers to it.
+      # :nodoc:
+      class Storage
+        getter pointer : Pointer(LibHTS::Bam1T)
+
+        def initialize(@pointer : Pointer(LibHTS::Bam1T))
+        end
+
+        def finalize
+          LibHTS.bam_destroy1(@pointer) unless @pointer.null?
+        end
+      end
+
       @aux : Aux?
+      @storage : Storage? = nil
 
       def initialize(header : Bam::Header, bam1_t : Pointer(HTS::LibHTS::Bam1T))
         @header = header
@@ -402,9 +416,13 @@ module HTS
         update_bin!
       end
 
-      # Return Aux object for iteration over all auxiliary tags
+      # The accessor keeps native storage alive, but follows this record when
+      # `Bam#each` reuses it for the next read.
       def aux
-        @aux ||= Aux.new(@bam1)
+        @aux ||= begin
+          storage = @storage ||= Storage.new(@bam1)
+          Aux.new(storage)
+        end
       end
 
       # Return Int64
@@ -475,9 +493,8 @@ module HTS
         self
       end
 
-      # garbagew collection
       def finalize
-        LibHTS.bam_destroy1 @bam1 unless @bam1.null?
+        LibHTS.bam_destroy1(@bam1) if @storage.nil? && !@bam1.null?
       end
     end
   end

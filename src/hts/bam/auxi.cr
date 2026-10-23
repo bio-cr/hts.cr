@@ -155,7 +155,16 @@ module HTS
         end
       end
 
+      # A directly supplied pointer remains the caller's responsibility.
       def initialize(@bam1 : Pointer(LibHTS::Bam1T))
+        @storage = nil.as(Record::Storage?)
+      end
+
+      # Share ownership with the record without retaining the record itself.
+      # :nodoc:
+      def initialize(storage : Record::Storage)
+        @storage = storage
+        @bam1 = storage.pointer
       end
 
       # Iterate over all auxiliary tags

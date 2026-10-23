@@ -298,6 +298,17 @@ class BamTest
     end
   end
 
+  def test_aux_from_mapped_records_keeps_native_storage_alive
+    auxes = [] of HTS::Bam::Aux
+    HTS::Bam.open(path_bam_string) do |bam|
+      auxes = bam.map(&.aux)
+    end
+
+    GC.collect
+    auxes[0].get_int("NM").should eq(1_i64)
+    auxes[1].get_int("NM").should be_nil
+  end
+
   def test_collection_helpers_at_eof
     HTS::Bam.open(path_bam_string) do |bam|
       bam.to_a.size.should eq(10)
