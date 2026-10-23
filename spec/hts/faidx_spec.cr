@@ -64,9 +64,14 @@ class FaidxTest
   end
 
   def test_open_with_block
-    HTS::Faidx.open(fasta_path) do |faidx|
+    opened = nil.as(HTS::Faidx?)
+    result = HTS::Faidx.open(fasta_path) do |faidx|
+      opened = faidx
       (faidx).should be_a(HTS::Faidx)
+      faidx.size
     end
+    result.should eq(5)
+    opened.not_nil!.closed?.should be_true
   end
 
   def test_file_name

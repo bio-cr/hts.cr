@@ -36,7 +36,6 @@ module HTS
       ensure
         file.close
       end
-      file
     end
 
     def self.build_index(file_name : Path | String, fai_path : String? = nil, gzi_path : String? = nil)
