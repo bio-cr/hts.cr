@@ -9,8 +9,8 @@ throughput and Crystal bytes allocated per complete file scan.
 crystal run --release benchmark/bcf_scan.cr
 ```
 
-The default fixture contains 10,000 records and 64 samples. Its default path is
-`/tmp/hts-cr-bcf-benchmark.bcf`. Pass another path as the first argument when
+The default fixture contains 10,000 records and 64 samples. It is written to
+the system temporary directory. Pass another path as the first argument when
 needed:
 
 ```sh
@@ -49,5 +49,5 @@ resource reporting:
 ```
 
 The low-level cases reuse the destination buffer supplied to HTSlib across
-records. The current high-level cases exercise the public owning APIs. Borrowed
-API cases will be added alongside them when those APIs are implemented.
+records. The high-level cases cover both owning getters and borrowed buffer
+accessors.
