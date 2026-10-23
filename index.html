@@ -532,6 +532,11 @@
       
     </li>
   
+  <li class=" " data-id="hts/HTS/RecordStream" data-name="hts::recordstream(t)">
+      <a href="HTS/RecordStream.html">RecordStream</a>
+      
+    </li>
+  
   <li class=" " data-id="hts/HTS/RewindError" data-name="hts::rewinderror">
       <a href="HTS/RewindError.html">RewindError</a>
       
@@ -675,6 +680,8 @@
       genotypes: r.format.get_string(<span class="s">&quot;GT&quot;</span>)
   <span class="k">end</span>
 <span class="k">end</span></code></pre>
+<p><code>Bam#each</code> and <code>Bcf#each</code> reuse a record while reading. Use <code>each_copy</code> when
+you need to keep records after an iteration.</p>
 <p><code>INFO</code> and <code>FORMAT</code> numeric getters return owning arrays and represent missing
 BCF values as <code>nil</code>. For allocation-sensitive streaming scans, consume the
 borrowed buffer inside its block instead:</p>
