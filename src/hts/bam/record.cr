@@ -7,7 +7,8 @@ module HTS
     class Record
       SEQ_NT16_STR = "=ACMGRSVTWYHKDBN"
 
-      # Keep native storage alive while an Aux accessor refers to it.
+      # Shared native storage keeps Aux accessors alive without retaining the
+      # Record object.
       # :nodoc:
       class Storage
         getter pointer : Pointer(LibHTS::Bam1T)
@@ -21,16 +22,17 @@ module HTS
       end
 
       @aux : Aux?
-      @storage : Storage? = nil
 
       def initialize(header : Bam::Header, bam1_t : Pointer(HTS::LibHTS::Bam1T))
         @header = header
         @bam1 = bam1_t
+        @storage = Storage.new(@bam1)
       end
 
       def initialize(header : Bam::Header)
         @header = header
         @bam1 = new_bam1!
+        @storage = Storage.new(@bam1)
       end
 
       def to_unsafe
@@ -57,6 +59,7 @@ module HTS
                      isize : Int64 = 0_i64)
         @header = header
         @bam1 = new_bam1!
+        @storage = Storage.new(@bam1)
 
         raise ArgumentError.new("qual length must equal sequence length") unless qual.size == seq.bytesize
 
@@ -419,10 +422,7 @@ module HTS
       # The accessor keeps native storage alive, but follows this record when
       # `Bam#each` reuses it for the next read.
       def aux
-        @aux ||= begin
-          storage = @storage ||= Storage.new(@bam1)
-          Aux.new(storage)
-        end
+        @aux ||= Aux.new(@storage)
       end
 
       # Return Int64
@@ -491,10 +491,6 @@ module HTS
           base_mod.close
         end
         self
-      end
-
-      def finalize
-        LibHTS.bam_destroy1(@bam1) if @storage.nil? && !@bam1.null?
       end
     end
   end
