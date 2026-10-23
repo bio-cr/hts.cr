@@ -71,7 +71,7 @@ class FaidxTest
       faidx.size
     end
     result.should eq(5)
-    opened.not_nil!.closed?.should be_true
+    opened.try(&.closed?).should be_true
   end
 
   def test_file_name
